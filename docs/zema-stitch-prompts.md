@@ -80,7 +80,7 @@ Using the Zema design brief, create a 4-step onboarding flow (show all 4 screens
    "Skip for now" link at the bottom.
 
 4. Account choice: "Continue as guest" (primary, full width) and "Sign in" (secondary)
-   with Google and phone number options. Note: guests can listen and read lyrics;
+   with a "Continue with Google" button. Note: guests can listen and read lyrics;
    signing in is needed to contribute lyrics or keep your library when changing phones.
 ```
 
@@ -280,10 +280,9 @@ automatically". Preview button plays back with synced highlighting.
 Using the Zema design brief, create the Sign in screen and the Profile screen.
 
 Sign in: 3 benefit rows with icons — "Contribute and sync lyrics", "Back up favorites,
-playlists & settings", "Restore on a new phone". Buttons: Continue with Google,
-Continue with phone number (country picker, +251 default), Continue with email.
-"Continue as guest" link. Also show the phone OTP screen with 6 digit boxes and a
-resend timer.
+playlists & settings", "Restore on a new phone". One primary button "Continue with
+Google" (standard Google sign-in button style), and a "Continue as guest" link.
+No email, password or phone fields.
 
 Profile: avatar, name, role badge (Contributor / Moderator), stats (lyrics added,
 recordings synced, approved). Section "Backup & sync": last backup time, "Auto backup"

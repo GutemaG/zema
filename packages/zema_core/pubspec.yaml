@@ -1,0 +1,15 @@
+name: zema_core
+description: Shared Zema domain logic — models, lyrics, search normalization, matching and repository interfaces. Pure Dart; no Flutter or backend code.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.5
+
+resolution: workspace
+
+dependencies:
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

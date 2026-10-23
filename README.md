@@ -2,15 +2,30 @@
 
 Music player and synchronized-lyrics companion for Ethiopian Orthodox Tewahedo mezmur.
 Plays local files, detects songs playing in YouTube / Telegram, and shows synced lyrics
-in a floating window. Community-contributed lyrics with moderation; sign-in for
+in a floating window. Community-contributed lyrics with moderation; Google sign-in for
 contributing and backup/restore.
 
-## Layout
+## Repository layout
 
-- `lib/` — Flutter (Dart) app code
-- `android/app/src/main/kotlin/` — native Android code (playback detection, overlay)
-- `docs/zema-stitch-prompts.md` — Google Stitch prompts and Flutter build notes
-- `design/stitch/` — exported Stitch designs (HTML / screenshots) used as UI reference
+```
+apps/
+  mobile/            Flutter app (Android/iOS); native Kotlin in android/app/src/main/kotlin
+  admin/             admin website for moderators (planned, Flutter web)
+packages/
+  zema_core/         shared pure-Dart domain logic: models, lyrics, search, matching,
+                     repository interfaces
+backend/             schema, access rules, functions, seed data (backend not chosen yet)
+docs/                screens.md, design prompts, build notes
+design/              design exports and references
+pubspec.yaml         Dart pub workspace root (single shared lockfile)
+```
+
+## Getting started
+
+```
+flutter pub get          # from the repo root; resolves all workspace members
+cd apps/mobile && flutter run
+```
 
 ## Reference
 
