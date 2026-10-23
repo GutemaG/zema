@@ -1,8 +1,9 @@
 # Zema — Screens, Functions & Features
 
 Inventory of every screen and shared component, used as input for specsmd inception
-(intents → requirements → stories). Visual design comes from Google Stitch
-(`docs/zema-stitch-prompts.md`, section numbers shown as "Stitch §N").
+(intents → requirements → stories). Visual design (Night Vigil palette, sans font) is in
+`docs/design-system.md` and on the design canvas linked there; exported screen images are
+in `design/screens/`.
 
 **Priority:** **P1** = first release (MVP) · **P2** = second release · **P3** = later.
 **Platform:** everything works on Android. iOS supports only the in-app player and lyrics
@@ -45,7 +46,7 @@ Outside the app (Android only)
 
 ## 1. Onboarding
 
-### S01 — Welcome · P1 · Stitch §1
+### S01 — Welcome · P1
 **Purpose:** first impression and language choice.
 - App logo, name, tagline.
 - Language selector: English, አማርኛ, Afaan Oromoo, ትግርኛ (each in its own language).
@@ -53,13 +54,13 @@ Outside the app (Android only)
 - "Get started" → S02.
 - Shown only on first launch (or after app data is cleared).
 
-### S02 — How it works · P1 · Stitch §1
+### S02 — How it works · P1
 **Purpose:** explain the core idea in 3 steps.
 - Step illustrations: play on YouTube / Telegram / your files → Zema recognizes the
   song → floating lyrics appear.
 - Next / Skip.
 
-### S03 — Permissions setup · P1 · Stitch §1
+### S03 — Permissions setup · P1
 **Purpose:** get the permissions that power detection, overlay and the local library.
 - Three permission cards, each with explanation and live status (Granted / Allow):
   - **Music & audio files** — scan and play local music (`READ_MEDIA_AUDIO`).
@@ -72,7 +73,7 @@ Outside the app (Android only)
   granted later from S27 or S28.
 - iOS: only the music library permission is shown.
 
-### S04 — Account choice · P1 · Stitch §1
+### S04 — Account choice · P1
 **Purpose:** let users start without an account.
 - "Continue as guest" (default) → Home.
 - "Sign in" → S24.
@@ -82,7 +83,7 @@ Outside the app (Android only)
 
 ## 2. Home & search
 
-### S05 — Home · P1 · Stitch §2
+### S05 — Home · P1
 **Purpose:** fast access to what the user is listening to now and recently.
 - **Now detected card** (Android): appears when a song is detected in YouTube /
   Telegram / another app. Shows source badge, title, artist, progress. Actions:
@@ -96,7 +97,7 @@ Outside the app (Android only)
 - Header: search shortcut (→ S06), profile avatar or guest icon (→ S25).
 - Empty state for new users with no music: prompt to grant music permission or rescan.
 
-### S06 — Search · P1 · Stitch §3
+### S06 — Search · P1
 **Purpose:** find any song, artist, album or lyric line.
 - One search field; works with any keyboard. Matching is normalized:
   - Ethiopic letter variants treated as equal (ሀ/ሐ/ኀ, ሰ/ሠ, አ/ዐ, ጸ/ፀ …).
@@ -110,7 +111,7 @@ Outside the app (Android only)
 - Recent searches (clearable) and popular songs when the field is empty.
 - No results: "Add this song's lyrics" → S19 (P2).
 
-### S07 — Song detail · P1 · Stitch §4
+### S07 — Song detail · P1
 **Purpose:** everything about one song.
 - Header: art, title, transliteration, artist, album. Actions: Play, favorite,
   add to playlist (C04), share.
@@ -125,7 +126,7 @@ Outside the app (Android only)
 
 ## 3. Player
 
-### S08 — Now Playing · P1 · Stitch §5
+### S08 — Now Playing · P1
 **Purpose:** listen with synchronized lyrics.
 - Synced lyrics: current line highlighted and auto-scrolled; past dimmed; tap a line to
   seek. Falls back to plain text when the recording has no timing.
@@ -152,7 +153,7 @@ All library tabs work offline from the device's audio files.
 Common features: song menu (C03) on every track, Play / Shuffle buttons on every list,
 mini player (C01) stays visible.
 
-### S10 — Library: Tracks · P1 · Stitch §8A
+### S10 — Library: Tracks · P1
 - All local tracks, with count.
 - Search-as-you-type filter.
 - Sort: title, artist, album, date added, duration; ascending/descending.
@@ -160,14 +161,14 @@ mini player (C01) stays visible.
 - Row: art, title, artist · duration, lyrics status icon (synced / text / none).
 - Multi-select: add to playlist, add to queue, favorite, hide.
 
-### S11 — Library: Folders · P1 · Stitch §8B
+### S11 — Library: Folders · P1
 - Lists folders that contain audio, from the file system (e.g. Music, Download,
   Telegram Audio, WhatsApp Audio) with song count and path.
 - S11a **Folder contents**: breadcrumb path, subfolders first, then tracks; Play all /
   Shuffle.
 - Hide / unhide a folder from the whole library (also in Settings).
 
-### S12 — Library: Albums · P1 · Stitch §8C
+### S12 — Library: Albums · P1
 - Grid of albums grouped from file metadata; sort by name / artist / year.
 - S12a **Album detail**: cover, name, artist, year, track count, total duration,
   numbered track list, Play / Shuffle.
@@ -176,25 +177,25 @@ mini player (C01) stays visible.
 - List of artists with avatar (from album art) and song count.
 - S13a **Artist detail**: albums and songs by that artist; Play / Shuffle.
 
-### S14 — Library: Favorites · P1 · Stitch §9A
+### S14 — Library: Favorites · P1
 - All favorited songs; search, Play / Shuffle.
 - Remove with undo.
 - Favorites can include local tracks and cloud songs (detected from YouTube/Telegram).
 
-### S15 — Library: Playlists · P1 · Stitch §9B
+### S15 — Library: Playlists · P1
 - "Create playlist" card, then user playlists (cover collage, name, count).
 - Auto playlists (read-only): Recently added, Most played, Recently played.
 
-### S16 — Create / rename playlist dialog · P1 · Stitch §9C
+### S16 — Create / rename playlist dialog · P1
 - Name (required, unique), optional description. Create / Save.
 
-### S17 — Playlist detail · P1 · Stitch §9D
+### S17 — Playlist detail · P1
 - Cover collage, name, count, duration, Play / Shuffle.
 - Reorder by drag, remove by swipe (with undo).
 - Menu: rename, change cover, delete playlist (with confirmation).
 - "Add songs" → S18.
 
-### S18 — Add songs picker · P1 · Stitch §9E
+### S18 — Add songs picker · P1
 - Searchable list of all tracks with checkboxes; sticky "Add N songs" button.
 - Songs already in the playlist are marked.
 
@@ -205,7 +206,7 @@ mini player (C01) stays visible.
 All contribute screens require sign-in. Guests who open the tab see a sign-in prompt
 (→ S24) with an explanation.
 
-### S19 — Add lyrics · P2 · Stitch §10
+### S19 — Add lyrics · P2
 **Step 1 of 4.**
 - Fields: title, transliteration (optional), artist, album (optional).
 - Duplicate check while typing the title: "A similar song exists — add a recording to
@@ -217,7 +218,7 @@ All contribute screens require sign-in. Guests who open the tab see a sign-in pr
   chorus).
 - Draft saved automatically on the device.
 
-### S20 — Link recording · P2 · Stitch §11A
+### S20 — Link recording · P2
 **Step 2 of 4.**
 - Source options:
   - YouTube link → fetch title, thumbnail, duration; store video ID.
@@ -226,7 +227,7 @@ All contribute screens require sign-in. Guests who open the tab see a sign-in pr
 - Artist / choir name.
 - Can also be opened from Song detail to add another recording to an existing song.
 
-### S21 — Tap-to-sync editor · P2 · Stitch §11B
+### S21 — Tap-to-sync editor · P2
 **Step 3 of 4.**
 - Plays the recording; big "Tap for next line" button records the current time for the
   highlighted line.
@@ -241,13 +242,13 @@ All contribute screens require sign-in. Guests who open the tab see a sign-in pr
 - Submit → status "Pending"; a copy is saved locally so the user sees it immediately.
 - Success message and link to S23.
 
-### S23 — My contributions · P2 · Stitch §13A
+### S23 — My contributions · P2
 - Tabs: Pending / Approved / Needs changes / Rejected.
 - Card: song, type (lyrics / sync / recording link), date, moderator comment.
 - "Edit" on "Needs changes" reopens the flow with the submitted data.
 - Notification when status changes (P3).
 
-### S23m — Moderator review queue · P2 · Stitch §13B
+### S23m — Moderator review queue · P2
 - Visible only to users with the Moderator role.
 - Queue of pending submissions, oldest first; filter by type.
 - Review detail: diff of submitted vs current lyrics, sync preview player, checklist,
@@ -258,7 +259,7 @@ All contribute screens require sign-in. Guests who open the tab see a sign-in pr
 
 ## 6. Account & backup
 
-### S24 — Sign in · P2 · Stitch §12
+### S24 — Sign in · P2
 - Benefits list (contribute, back up, restore).
 - Single option: **Continue with Google** (Gmail account). No passwords, phone number
   or OTP; account recovery is handled by Google.
@@ -267,20 +268,20 @@ All contribute screens require sign-in. Guests who open the tab see a sign-in pr
 - "Continue as guest".
 - After sign-in: if a backup exists → S26, otherwise back to where the user came from.
 
-### S25 — Profile · P2 · Stitch §12
+### S25 — Profile · P2
 - Avatar, display name (editable), role badge (Contributor / Moderator).
 - Stats: lyrics added, recordings synced, approved.
 - Links: My contributions (S23), Backup & sync, Settings (S28), Sign out.
 - Guest version: guest icon + "Sign in" card + link to Settings.
 
-### S25b — Backup & sync · P2 · Stitch §12
+### S25b — Backup & sync · P2
 - Last backup time; "Auto backup" toggle (e.g. daily on Wi-Fi); "Back up now";
   "Restore".
 - Included: favorites, playlists (with track identities so they can be re-matched on a
   new phone), song matches, sync offsets, floating lyrics settings, app settings.
 - Not included: audio files themselves.
 
-### S26 — Restore on new phone · P2 · Stitch §12
+### S26 — Restore on new phone · P2
 - "We found your backup from <date> — N favorites, N playlists, settings."
 - Restore → re-links playlists/favorites to tracks found on this phone; reports songs
   not found on the device.
@@ -290,7 +291,7 @@ All contribute screens require sign-in. Guests who open the tab see a sign-in pr
 
 ## 7. Detection & floating lyrics (Android)
 
-### S27 — Floating lyrics overlay · P1 · Stitch §6
+### S27 — Floating lyrics overlay · P1
 Runs over other apps; started by background detection even when Zema is closed.
 - **Detection:** listens to media sessions of enabled apps (YouTube, YouTube Music,
   Telegram, others); reads title, artist, duration, position, play/pause.
@@ -310,7 +311,7 @@ Runs over other apps; started by background detection even when Zema is closed.
 - Position, size and opacity remembered.
 - Does not appear while Zema itself is in the foreground (configurable).
 
-### S27s — Floating lyrics & detection settings · P1 · Stitch §7
+### S27s — Floating lyrics & detection settings · P1
 - Master switch: show floating lyrics when a song is detected.
 - Apps to detect from: YouTube, YouTube Music, Telegram, Zema player, other apps.
 - When to show: automatically / ask first (bubble) / only on tap.
@@ -324,7 +325,7 @@ Runs over other apps; started by background detection even when Zema is closed.
 
 ## 8. Settings
 
-### S28 — Settings · P1 · Stitch §14
+### S28 — Settings · P1
 - **General:** language, theme (light / dark / system).
 - **Lyrics:** font size, show transliteration, default sync offset.
 - **Floating lyrics & detection** → S27s.

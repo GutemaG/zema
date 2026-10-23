@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Zema — screens and palettes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Ethiopic:wght@400;600;700&amp;family=Noto+Sans+Ethiopic:wght@400;500;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Inter:wght@400;500;600;700&amp;family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1D4E89}a:hover{color:#163B68}
+button{font:inherit;cursor:pointer}
+input{font:inherit}
+</style>
+</helmet>
+<div style="width: 2180px; height: 2898px; display: flex; background: #ECEAE6; font-family: Inter, 'Noto Sans Ethiopic', sans-serif; color: #1A1A1A">
+
+  <!-- Screens -->
+  <div style="flex: 1; padding: 56px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 56px; row-gap: 64px; align-content: start">
+
+    <!-- 1 Library: Tracks -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">1 · Library — Tracks</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 28px 20px 0 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <h1 style="margin: 0; font-family: {{c.head}}; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Library</h1>
+            <button aria-label="Sort" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.surface}}; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h12M4 12h9M4 17h6M18 9v10M15 16l3 3 3-3"></path></svg></button>
+          </div>
+          <div style="display: flex; gap: 8px; overflow: hidden">
+            <sc-for list="{{libTabs}}" as="tab" hint-placeholder-count="5">
+              <span style="flex: none; height: 36px; padding: 0 15px; border-radius: 18px; background: {{tab.bg}}; color: {{tab.fg}}; font-size: 14px; font-weight: {{tab.weight}}; display: flex; align-items: center">{{tab.label}}</span>
+            </sc-for>
+          </div>
+          <label style="display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px; background: {{c.surface}}; border: 1px solid {{c.line}}; border-radius: 12px; color: {{c.muted}}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14M20 20l-3.5-3.5"></path></svg>
+            <input placeholder="Filter 248 songs" aria-label="Filter songs" style="border: 0; background: transparent; outline: none; font-size: 15px; color: {{c.text}}; flex: 1; min-width: 0">
+          </label>
+          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: {{c.muted}}">
+            <span>248 songs · Title A–Z</span>
+            <button style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 18px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-size: 13px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3c5 0 7 10 12 10h3M3 17h3c2 0 3-1.5 4-3M14 10c1-1.5 2-3 4-3h3M18 4l3 3-3 3M18 14l3 3-3 3"></path></svg>Shuffle</button>
+          </div>
+        </div>
+        <div style="flex: 1; overflow: hidden; padding: 4px 8px 0 20px">
+          <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7">
+            <div style="display: flex; align-items: center; gap: 14px; height: 66px; border-bottom: 1px solid {{c.line}}">
+              <div style="width: 48px; height: 48px; flex: none; border-radius: 10px; background: {{c.tile}}; color: {{c.tileFg}}; display: flex; align-items: center; justify-content: center; font-family: {{lyricFont}}; font-size: 22px; font-weight: 700">{{tr.glyph}}</div>
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                <div style="font-family: {{lyricFont}}; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: {{tr.titleColor}}">{{tr.title}}</div>
+                <div style="font-size: 13px; color: {{c.muted}}; display: flex; gap: 8px; align-items: center; white-space: nowrap">
+                  <span>{{tr.artist}} · {{tr.dur}}</span>
+                  <sc-if value="{{tr.synced}}" hint-placeholder-val="{{true}}"><span style="font-size: 11px; font-weight: 700; color: {{c.accentText}}; background: {{c.soft}}; border-radius: 9px; padding: 0 7px; line-height: 18px">Synced</span></sc-if>
+                  <sc-if value="{{tr.textOnly}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: {{c.muted}}; border: 1px solid {{c.line}}; border-radius: 9px; padding: 0 7px; line-height: 16px">Text</span></sc-if>
+                </div>
+              </div>
+              <button aria-label="More options" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="19" r="1.6"></circle></svg></button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin: 0 10px; padding: 8px; background: {{c.primary}}; color: {{c.onPrimary}}; border-radius: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 18px {{c.shadow}}">
+          <div style="width: 44px; height: 44px; border-radius: 9px; background: {{c.tile}}; color: {{c.tileFg}}; box-shadow: inset 0 0 0 1px {{c.accent}}; display: flex; align-items: center; justify-content: center; font-family: {{lyricFont}}; font-size: 20px; font-weight: 700">ም</div>
+          <div style="flex: 1; min-width: 0">
+            <div style="font-family: {{lyricFont}}; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">ምሕረቱ ለዘላለም</div>
+            <div style="font-family: {{lyricFont}}; font-size: 12px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">የአማልክትን አምላክ አመስግኑ</div>
+          </div>
+          <button aria-label="Pause" style="width: 44px; height: 44px; border-radius: 22px; border: 0; background: {{c.onPrimary}}; color: {{c.primary}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></button>
+        </div>
+        <nav style="height: 76px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; font-size: 12px">
+          <sc-for list="{{navLib}}" as="n" hint-placeholder-count="4">
+            <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: {{n.color}}; font-weight: {{n.weight}}; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"></path></svg>{{n.label}}</a>
+          </sc-for>
+        </nav>
+      </div>
+    </div>
+
+    <!-- 2 Library: Favorites -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">2 · Library — Favorites</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 28px 20px 0 20px; display: flex; flex-direction: column; gap: 14px">
+          <h1 style="margin: 0; font-family: {{c.head}}; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Library</h1>
+          <div style="display: flex; gap: 8px; overflow: hidden">
+            <sc-for list="{{favTabs}}" as="tab" hint-placeholder-count="5">
+              <span style="flex: none; height: 36px; padding: 0 15px; border-radius: 18px; background: {{tab.bg}}; color: {{tab.fg}}; font-size: 14px; font-weight: {{tab.weight}}; display: flex; align-items: center">{{tab.label}}</span>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin: 18px 20px 0 20px; padding: 18px; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.line}}; display: flex; align-items: center; gap: 16px">
+          <div style="width: 64px; height: 64px; border-radius: 16px; background: {{c.primary}}; color: {{c.onPrimary}}; display: flex; align-items: center; justify-content: center">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"></path></svg>
+          </div>
+          <div style="flex: 1">
+            <div style="font-family: {{c.head}}; font-size: 20px; font-weight: 700">Favorites</div>
+            <div style="font-size: 13px; color: {{c.muted}}">42 songs · 3 h 18 min</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px 20px 6px 20px">
+          <button style="height: 46px; border-radius: 12px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>Play</button>
+          <button style="height: 46px; border-radius: 12px; border: 1px solid {{c.line}}; background: {{c.surface}}; color: {{c.text}}; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3c5 0 7 10 12 10h3M3 17h3c2 0 3-1.5 4-3M14 10c1-1.5 2-3 4-3h3M18 4l3 3-3 3M18 14l3 3-3 3"></path></svg>Shuffle</button>
+        </div>
+        <div style="flex: 1; overflow: hidden; padding: 4px 8px 0 20px">
+          <sc-for list="{{favs}}" as="tr" hint-placeholder-count="6">
+            <div style="display: flex; align-items: center; gap: 14px; height: 66px">
+              <div style="width: 48px; height: 48px; flex: none; border-radius: 10px; background: {{c.tile}}; color: {{c.tileFg}}; display: flex; align-items: center; justify-content: center; font-family: {{lyricFont}}; font-size: 22px; font-weight: 700">{{tr.glyph}}</div>
+              <div style="flex: 1; min-width: 0">
+                <div style="font-family: {{lyricFont}}; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{tr.title}}</div>
+                <div style="font-size: 13px; color: {{c.muted}}">{{tr.artist}} · {{tr.source}}</div>
+              </div>
+              <button aria-label="Remove from favorites" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.primary}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"></path></svg></button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin: 0 12px 6px 12px; padding: 12px 14px; border-radius: 12px; background: {{c.text}}; color: {{c.bg}}; font-size: 13px; display: flex; align-items: center; justify-content: space-between">
+          <span>Removed “ሃሌ ሉያ”</span>
+          <button style="border: 0; background: transparent; color: {{c.accent}}; font-weight: 700; font-size: 13px; min-height: 32px">Undo</button>
+        </div>
+        <nav style="height: 76px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; font-size: 12px">
+          <sc-for list="{{navLib}}" as="n" hint-placeholder-count="4">
+            <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: {{n.color}}; font-weight: {{n.weight}}; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"></path></svg>{{n.label}}</a>
+          </sc-for>
+        </nav>
+      </div>
+    </div>
+
+    <!-- 3 Now Playing -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">3 · Now Playing — synced lyrics</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 12px; display: flex; align-items: center; justify-content: space-between">
+          <button aria-label="Close player" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: {{c.muted}}">Playing from Local files</div>
+          <button aria-label="More options" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="19" r="1.6"></circle></svg></button>
+        </div>
+        <div style="padding: 10px 24px 0 24px; display: flex; align-items: center; gap: 14px">
+          <div style="width: 60px; height: 60px; flex: none; border-radius: 12px; background: {{c.tile}}; color: {{c.tileFg}}; display: flex; align-items: center; justify-content: center; font-family: {{lyricFont}}; font-size: 28px; font-weight: 700">ም</div>
+          <div style="flex: 1; min-width: 0">
+            <div style="font-family: {{lyricFont}}; font-size: 21px; font-weight: 700; line-height: 1.3">ምሕረቱ ለዘላለም</div>
+            <div style="font-size: 14px; color: {{c.muted}}">Sunday School Choir</div>
+          </div>
+          <button aria-label="Remove from favorites" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.primary}}; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"></path></svg></button>
+        </div>
+        <div style="margin: 18px 24px 0 24px; height: 2px; background: {{c.accent}}; opacity: 0.6"></div>
+        <div style="flex: 1; overflow: hidden; padding: 26px 28px 0 28px; display: flex; flex-direction: column; gap: 18px; font-family: {{lyricFont}}; line-height: 1.55">
+          <div style="font-size: 19px; color: {{c.faint}}">እግዚአብሔርን አመስግኑ ቸር ነውና</div>
+          <div style="font-size: 19px; color: {{c.faint}}">ምሕረቱ ለዘላለም ነውና</div>
+          <div style="padding: 6px 0 6px 16px; border-left: 3px solid {{c.accent}}">
+            <div style="font-size: 26px; font-weight: 700; color: {{c.primaryText}}; line-height: 1.45">የአማልክትን አምላክ አመስግኑ</div>
+            <div style="font-family: {{c.body}}; font-style: italic; font-size: 14px; color: {{c.muted}}">Ye'amalktin amlak amesginu</div>
+          </div>
+          <div style="font-size: 19px; color: {{c.text}}; display: flex; gap: 10px; align-items: baseline"><span style="font-family: {{c.body}}; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: {{c.accentText}}">CHORUS</span>ምሕረቱ ለዘላለም ነውና</div>
+          <div style="font-size: 19px; color: {{c.text}}">የጌቶችን ጌታ አመስግኑ</div>
+          <div style="font-size: 19px; color: {{c.muted}}">ምሕረቱ ለዘላለም ነውና</div>
+          <div style="font-size: 19px; color: {{c.muted}}">እርሱ ብቻውን ታላላቅ ተአምራትን ያደረገ</div>
+        </div>
+        <div style="padding: 14px 24px 0 24px; background: {{c.bg}}; box-shadow: 0 -18px 24px {{c.bg}}">
+          <div style="height: 4px; border-radius: 2px; background: {{c.line}}; position: relative"><div style="position: absolute; left: 0; top: 0; bottom: 0; width: 34%; border-radius: 2px; background: {{c.primary}}"></div><div style="position: absolute; left: 34%; top: -5px; width: 14px; height: 14px; margin-left: -7px; border-radius: 7px; background: {{c.primary}}"></div></div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: {{c.muted}}; margin-top: 8px; font-variant-numeric: tabular-nums"><span>1:46</span><span>5:12</span></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px">
+            <button aria-label="Shuffle" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3c5 0 7 10 12 10h3M3 17h3c2 0 3-1.5 4-3M14 10c1-1.5 2-3 4-3h3M18 4l3 3-3 3M18 14l3 3-3 3"></path></svg></button>
+            <button aria-label="Previous" style="width: 52px; height: 52px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 5v14L9 12z"></path><rect x="5" y="5" width="2" height="14" rx="1"></rect></svg></button>
+            <button aria-label="Pause" style="width: 74px; height: 74px; border-radius: 37px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px {{c.shadow}}"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></button>
+            <button aria-label="Next" style="width: 52px; height: 52px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5v14l9-7z"></path><rect x="17" y="5" width="2" height="14" rx="1"></rect></svg></button>
+            <button aria-label="Repeat" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11V9a3 3 0 013-3h12M16 3l3 3-3 3M20 13v2a3 3 0 01-3 3H5M8 21l-3-3 3-3"></path></svg></button>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 12px 0 20px 0">
+            <sc-for list="{{npActions}}" as="act" hint-placeholder-count="4">
+              <button style="border: 0; background: transparent; color: {{act.color}}; font-weight: {{act.weight}}; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 44px; font-size: 11px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{act.d}}"></path></svg>{{act.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Floating lyrics -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">4 · Floating lyrics — over a video app</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: #F2F2F2; position: relative; font-family: {{c.body}}">
+        <div aria-hidden="true" style="position: absolute; inset: 0; display: flex; flex-direction: column">
+          <div style="height: 220px; background: #3B2A2A; display: flex; align-items: center; justify-content: center; position: relative">
+            <div style="width: 56px; height: 56px; border-radius: 28px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></div>
+            <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.25)"><div style="width: 34%; height: 3px; background: #D9D9D9"></div></div>
+          </div>
+          <div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; color: #3A3A3A">
+            <div style="font-family: 'Noto Sans Ethiopic', sans-serif; font-size: 16px; font-weight: 500; line-height: 1.4">ምሕረቱ ለዘላለም - Sunday School Choir | Official Video</div>
+            <div style="font-size: 12px; color: #6A6A6A">48K views · 2 weeks ago</div>
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px"><div style="width: 36px; height: 36px; border-radius: 18px; background: #CFCFCF"></div><div style="height: 12px; width: 140px; border-radius: 6px; background: #D6D6D6"></div></div>
+            <div style="display: flex; gap: 12px; margin-top: 18px"><div style="width: 150px; height: 84px; border-radius: 8px; background: #D9D9D9"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div style="height: 12px; border-radius: 6px; background: #D6D6D6"></div><div style="height: 12px; width: 70%; border-radius: 6px; background: #E0E0E0"></div></div></div>
+            <div style="display: flex; gap: 12px"><div style="width: 150px; height: 84px; border-radius: 8px; background: #D9D9D9"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div style="height: 12px; border-radius: 6px; background: #D6D6D6"></div><div style="height: 12px; width: 60%; border-radius: 6px; background: #E0E0E0"></div></div></div>
+          </div>
+        </div>
+        <div style="position: absolute; right: 8px; top: 250px; width: 56px; height: 56px; border-radius: 28px; background: {{c.primary}}; color: {{c.onPrimary}}; box-shadow: 0 0 0 3px {{c.accent}}, 0 8px 20px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Noto Sans Ethiopic', sans-serif; font-size: 24px; font-weight: 700">ዜ</div>
+        <div style="position: absolute; left: 12px; right: 12px; bottom: 110px; background: {{c.surface}}; color: {{c.text}}; border: 1px solid {{c.line}}; border-radius: 18px; box-shadow: 0 16px 40px rgba(0,0,0,0.3); overflow: hidden">
+          <div style="height: 4px; background: {{c.accent}}"></div>
+          <div style="display: flex; align-items: center; gap: 4px; padding: 6px 6px 0 14px">
+            <div style="flex: 1; min-width: 0; font-size: 12px; color: {{c.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">ምሕረቱ ለዘላለም · detected in video app</div>
+            <button aria-label="Lock overlay" style="width: 40px; height: 40px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg></button>
+            <button aria-label="Expand" style="width: 40px; height: 40px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"></path></svg></button>
+            <button aria-label="Close" style="width: 40px; height: 40px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+          </div>
+          <div style="padding: 0 18px 16px 18px; font-family: {{lyricFont}}; line-height: 1.5">
+            <div style="font-size: 22px; font-weight: 700; color: {{c.primaryText}}">የአማልክትን አምላክ አመስግኑ</div>
+            <div style="font-size: 16px; color: {{c.muted}}">ምሕረቱ ለዘላለም ነውና</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Contribute hub -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">5 · Contribute — how it works</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="flex: 1; overflow: hidden; padding: 28px 20px 0 20px; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <div>
+              <h1 style="margin: 0; font-family: {{c.head}}; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Contribute</h1>
+              <div style="font-size: 14px; color: {{c.muted}}; margin-top: 2px">Help everyone sing along</div>
+            </div>
+            <div aria-label="Your profile" role="img" style="width: 44px; height: 44px; border-radius: 22px; background: {{c.primary}}; color: {{c.onPrimary}}; display: flex; align-items: center; justify-content: center; font-weight: 700">A</div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+            <div style="padding: 12px; border-radius: 14px; background: {{c.surface}}; border: 1px solid {{c.line}}"><div style="font-size: 22px; font-weight: 700">12</div><div style="font-size: 12px; color: {{c.muted}}">Added</div></div>
+            <div style="padding: 12px; border-radius: 14px; background: {{c.surface}}; border: 1px solid {{c.line}}"><div style="font-size: 22px; font-weight: 700">9</div><div style="font-size: 12px; color: {{c.muted}}">Approved</div></div>
+            <div style="padding: 12px; border-radius: 14px; background: {{c.surface}}; border: 1px solid {{c.line}}"><div style="font-size: 22px; font-weight: 700">2</div><div style="font-size: 12px; color: {{c.muted}}">Pending</div></div>
+          </div>
+          <div style="padding: 16px; border-radius: 18px; background: {{c.surface}}; border: 1px solid {{c.line}}; display: flex; flex-direction: column; gap: 14px">
+            <div style="font-family: {{c.head}}; font-size: 18px; font-weight: 700">How contributing works</div>
+            <sc-for list="{{steps}}" as="st" hint-placeholder-count="4">
+              <div style="display: flex; gap: 12px; align-items: flex-start">
+                <div style="width: 28px; height: 28px; flex: none; border-radius: 14px; background: {{c.soft}}; color: {{c.accentText}}; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{st.n}}</div>
+                <div>
+                  <div style="font-size: 15px; font-weight: 600">{{st.title}}</div>
+                  <div style="font-size: 13px; color: {{c.muted}}; line-height: 1.45">{{st.body}}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+            <button style="height: 50px; border-radius: 14px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-weight: 700; font-size: 15px">Add lyrics</button>
+            <button style="height: 50px; border-radius: 14px; border: 1px solid {{c.line}}; background: {{c.surface}}; color: {{c.text}}; font-weight: 600; font-size: 15px">Sync a song</button>
+          </div>
+          <div style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: {{c.muted}}">NEEDS SYNC</div>
+          <sc-for list="{{needSync}}" as="ns" hint-placeholder-count="2">
+            <div style="display: flex; align-items: center; gap: 12px">
+              <div style="width: 40px; height: 40px; border-radius: 9px; background: {{c.tile}}; color: {{c.tileFg}}; display: flex; align-items: center; justify-content: center; font-family: {{lyricFont}}; font-size: 18px; font-weight: 700">{{ns.glyph}}</div>
+              <div style="flex: 1; min-width: 0"><div style="font-family: {{lyricFont}}; font-size: 15px; font-weight: 600">{{ns.title}}</div><div style="font-size: 12px; color: {{c.muted}}">{{ns.note}}</div></div>
+              <button style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid {{c.accent}}; background: transparent; color: {{c.accentText}}; font-size: 13px; font-weight: 700">Sync</button>
+            </div>
+          </sc-for>
+        </div>
+        <nav style="height: 76px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; font-size: 12px">
+          <sc-for list="{{navContrib}}" as="n" hint-placeholder-count="4">
+            <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: {{n.color}}; font-weight: {{n.weight}}; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"></path></svg>{{n.label}}</a>
+          </sc-for>
+        </nav>
+      </div>
+    </div>
+
+    <!-- 6 Add lyrics -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">6 · Add lyrics — step 1 of 4</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 8px; display: flex; align-items: center; gap: 4px">
+          <button aria-label="Back" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div style="flex: 1; font-family: {{c.head}}; font-size: 20px; font-weight: 700">Add lyrics</div>
+          <button style="height: 36px; padding: 0 12px; border: 0; background: transparent; color: {{c.accentText}}; font-weight: 700; font-size: 14px">Save draft</button>
+        </div>
+        <div style="padding: 10px 20px 0 20px">
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px">
+            <div style="height: 4px; border-radius: 2px; background: {{c.primary}}"></div><div style="height: 4px; border-radius: 2px; background: {{c.line}}"></div><div style="height: 4px; border-radius: 2px; background: {{c.line}}"></div><div style="height: 4px; border-radius: 2px; background: {{c.line}}"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 6px; font-size: 11px; color: {{c.muted}}"><span style="color: {{c.text}}; font-weight: 700">Lyrics</span><span>Recording</span><span>Sync</span><span>Submit</span></div>
+        </div>
+        <div style="flex: 1; overflow: hidden; padding: 16px 20px 0 20px; display: flex; flex-direction: column; gap: 12px">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 600; color: {{c.muted}}">Song title
+            <input value="ምሕረቱ ለዘላለም" style="height: 46px; padding: 0 14px; border-radius: 12px; border: 1px solid {{c.line}}; background: {{c.surface}}; color: {{c.text}}; font-family: {{lyricFont}}; font-size: 16px; outline: none">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 600; color: {{c.muted}}">Artist or choir
+            <input value="Sunday School Choir" style="height: 46px; padding: 0 14px; border-radius: 12px; border: 1px solid {{c.line}}; background: {{c.surface}}; color: {{c.text}}; font-size: 15px; outline: none">
+          </label>
+          <div style="padding: 10px 12px; border-radius: 12px; background: {{c.soft}}; color: {{c.text}}; font-size: 13px; line-height: 1.45">Write the chorus <b>once</b>. Then add it to the play order every time it is sung.</div>
+          <sc-for list="{{blocks}}" as="bl" hint-placeholder-count="3">
+            <div style="border-radius: 14px; border: 1px solid {{bl.border}}; background: {{c.surface}}; overflow: hidden">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 6px 0 12px">
+                <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: {{bl.labelColor}}">{{bl.label}} ▾</span>
+                <button aria-label="Block options" style="width: 36px; height: 36px; border: 0; background: transparent; color: {{c.muted}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg></button>
+              </div>
+              <div style="padding: 0 12px 12px 12px; font-family: {{lyricFont}}; font-size: 16px; line-height: 1.6; white-space: pre-line">{{bl.text}}</div>
+            </div>
+          </sc-for>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+            <button style="height: 42px; border-radius: 12px; border: 1px dashed {{c.muted}}; background: transparent; color: {{c.text}}; font-size: 14px; font-weight: 600">+ Add block</button>
+            <button style="height: 42px; border-radius: 12px; border: 1px dashed {{c.muted}}; background: transparent; color: {{c.text}}; font-size: 14px; font-weight: 600">Paste all text</button>
+          </div>
+          <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: {{c.muted}}">PLAY ORDER</div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap">
+            <sc-for list="{{order}}" as="o" hint-placeholder-count="5">
+              <span style="height: 32px; padding: 0 12px; border-radius: 16px; background: {{o.bg}}; color: {{o.fg}}; font-size: 13px; font-weight: 600; display: flex; align-items: center">{{o.label}}</span>
+            </sc-for>
+            <button style="height: 32px; padding: 0 12px; border-radius: 16px; border: 1px solid {{c.accent}}; background: transparent; color: {{c.accentText}}; font-size: 13px; font-weight: 700">+ Chorus</button>
+          </div>
+        </div>
+        <div style="padding: 12px 20px 22px 20px">
+          <button style="width: 100%; height: 52px; border-radius: 14px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-size: 16px; font-weight: 700">Next: link a recording</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 Sync lyrics -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">7a · Sync lyrics — list with big button</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 8px; display: flex; align-items: center; gap: 4px">
+          <button aria-label="Back" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div style="flex: 1">
+            <div style="font-family: {{c.head}}; font-size: 20px; font-weight: 700">Sync lyrics</div>
+            <div style="font-size: 12px; color: {{c.muted}}">Step 3 of 4 · 3 of 8 lines timed</div>
+          </div>
+          <button style="height: 36px; padding: 0 12px; border: 0; background: transparent; color: {{c.accentText}}; font-weight: 700; font-size: 14px">Preview</button>
+        </div>
+        <div style="margin: 12px 16px 0 16px; padding: 12px 14px; border-radius: 16px; background: {{c.surface}}; border: 1px solid {{c.line}}">
+          <div style="display: flex; align-items: center; gap: 2px; height: 40px">
+            <sc-for list="{{wave}}" as="w" hint-placeholder-count="40">
+              <div style="flex: 1; height: {{w.h}}px; border-radius: 2px; background: {{w.color}}"></div>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px">
+            <span style="font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums">0:27.3 <span style="font-weight: 400; color: {{c.muted}}">/ 5:12</span></span>
+            <div style="display: flex; gap: 6px">
+              <button style="height: 34px; padding: 0 10px; border-radius: 17px; border: 1px solid {{c.line}}; background: transparent; color: {{c.text}}; font-size: 12px; font-weight: 600">−5s</button>
+              <button style="height: 34px; padding: 0 10px; border-radius: 17px; border: 1px solid {{c.line}}; background: transparent; color: {{c.text}}; font-size: 12px; font-weight: 600">0.75×</button>
+              <button aria-label="Pause" style="width: 34px; height: 34px; border-radius: 17px; border: 0; background: {{c.text}}; color: {{c.bg}}; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></button>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 1; overflow: hidden; padding: 14px 16px 0 16px; display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{syncLines}}" as="l" hint-placeholder-count="7">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: {{l.bg}}; border: 2px solid {{l.border}}">
+              <div style="flex: 1; min-width: 0">
+                <div style="font-family: {{lyricFont}}; font-size: 16px; font-weight: {{l.weight}}; color: {{l.color}}; line-height: 1.45">{{l.text}}</div>
+                <sc-if value="{{l.current}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: {{c.accentText}}; font-weight: 600">Tap when this line starts</div></sc-if>
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: {{l.timeColor}}; font-variant-numeric: tabular-nums">{{l.time}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding: 10px 16px 22px 16px; display: flex; flex-direction: column; gap: 10px; background: {{c.bg}}; box-shadow: 0 -14px 18px {{c.bg}}">
+          <div style="display: flex; justify-content: space-between; font-size: 13px">
+            <button style="height: 36px; padding: 0 4px; border: 0; background: transparent; color: {{c.text}}; font-weight: 600">↶ Undo last tap</button>
+            <span style="align-self: center; color: {{c.muted}}">Hold to nudge ±0.1s</span>
+          </div>
+          <button style="width: 100%; height: 84px; border-radius: 22px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-size: 20px; font-weight: 700; box-shadow: 0 10px 26px {{c.shadow}}">Tap — next line</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 Settings -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">8 · Settings</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 8px; display: flex; align-items: center; gap: 4px">
+          <button aria-label="Back" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <h1 style="margin: 0; font-family: {{c.head}}; font-size: 24px; font-weight: 700">Settings</h1>
+        </div>
+        <div style="flex: 1; overflow: hidden; padding: 12px 16px 0 16px; display: flex; flex-direction: column; gap: 16px">
+          <sc-for list="{{settings}}" as="g" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: {{c.muted}}; padding: 0 4px">{{g.title}}</div>
+              <div style="border-radius: 16px; background: {{c.surface}}; border: 1px solid {{c.line}}; overflow: hidden">
+                <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="2">
+                  <div style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 14px; border-top: {{r.divider}}">
+                    <div style="flex: 1; min-width: 0">
+                      <div style="font-size: 15px">{{r.label}}</div>
+                      <sc-if value="{{r.hasSub}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: {{c.muted}}">{{r.sub}}</div></sc-if>
+                    </div>
+                    <sc-if value="{{r.isToggle}}" hint-placeholder-val="{{false}}">
+                      <button role="switch" aria-checked="{{r.on}}" aria-label="{{r.label}}" style="width: 48px; height: 28px; border-radius: 14px; border: 0; padding: 3px; background: {{r.trackBg}}; display: flex; justify-content: {{r.knobSide}}"><span style="width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.3)"></span></button>
+                    </sc-if>
+                    <sc-if value="{{r.isValue}}" hint-placeholder-val="{{true}}">
+                      <span style="font-size: 14px; color: {{c.muted}}">{{r.value}} ›</span>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <!-- 7b Sync: focus -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">7b · Sync lyrics — focus, one line at a time</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 8px; display: flex; align-items: center; gap: 4px">
+          <button aria-label="Back" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div style="flex: 1">
+            <div style="font-family: {{c.head}}; font-size: 20px; font-weight: 700">Sync lyrics</div>
+            <div style="font-size: 12px; color: {{c.muted}}">Line 4 of 8</div>
+          </div>
+          <button style="height: 36px; padding: 0 12px; border: 0; background: transparent; color: {{c.accentText}}; font-weight: 700; font-size: 14px">Done</button>
+        </div>
+        <div style="display: flex; gap: 4px; padding: 12px 20px 0 20px">
+          <sc-for list="{{focusDots}}" as="fd" hint-placeholder-count="8">
+            <div style="flex: 1; height: 4px; border-radius: 2px; background: {{fd.color}}"></div>
+          </sc-for>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 0 28px; text-align: center; font-family: {{lyricFont}}; line-height: 1.5">
+          <div>
+            <div style="font-size: 17px; color: {{c.faint}}">የአማልክትን አምላክ አመስግኑ</div>
+            <div style="font-family: {{c.body}}; font-size: 12px; font-weight: 600; color: {{c.accentText}}; font-variant-numeric: tabular-nums">✓ 0:23.1</div>
+          </div>
+          <div>
+            <span style="font-family: {{c.body}}; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: {{c.accentText}}; border: 1px solid {{c.accent}}; border-radius: 10px; padding: 2px 8px">CHORUS</span>
+            <div style="font-size: 30px; font-weight: 700; color: {{c.primaryText}}; margin-top: 10px; line-height: 1.35">ምሕረቱ ለዘላለም ነውና</div>
+          </div>
+          <div style="font-size: 17px; color: {{c.muted}}">የጌቶችን ጌታ አመስግኑ</div>
+        </div>
+        <div style="padding: 0 16px">
+          <button style="width: 100%; height: 250px; border-radius: 28px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 12px 30px {{c.shadow}}">
+            <span style="font-size: 24px; font-weight: 700">Tap when you hear it</span>
+            <span style="font-size: 15px; opacity: 0.8; font-variant-numeric: tabular-nums">0:27.3 / 5:12</span>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 12px 16px 22px 16px">
+          <button style="min-height: 48px; border: 0; background: transparent; color: {{c.text}}; font-size: 14px; font-weight: 600">↶ Undo</button>
+          <button style="min-height: 48px; border: 0; background: transparent; color: {{c.text}}; font-size: 14px; font-weight: 600">❚❚ Pause</button>
+          <button style="min-height: 48px; border: 0; background: transparent; color: {{c.text}}; font-size: 14px; font-weight: 600">−5 s</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7c Sync: tap the line -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">7c · Sync lyrics — tap the line itself</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 8px; display: flex; align-items: center; gap: 4px">
+          <button aria-label="Back" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div style="flex: 1">
+            <div style="font-family: {{c.head}}; font-size: 20px; font-weight: 700">Sync lyrics</div>
+            <div style="font-size: 12px; color: {{c.muted}}">Tap each line as it starts</div>
+          </div>
+          <button style="height: 36px; padding: 0 12px; border: 0; background: transparent; color: {{c.accentText}}; font-weight: 700; font-size: 14px">Done</button>
+        </div>
+        <div style="margin: 10px 16px 0 16px; display: flex; align-items: center; gap: 12px">
+          <button aria-label="Pause" style="width: 44px; height: 44px; flex: none; border-radius: 22px; border: 0; background: {{c.text}}; color: {{c.bg}}; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></button>
+          <div style="flex: 1">
+            <div style="height: 4px; border-radius: 2px; background: {{c.line}}"><div style="width: 9%; height: 4px; border-radius: 2px; background: {{c.primary}}"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: {{c.muted}}; margin-top: 6px; font-variant-numeric: tabular-nums"><span>0:27.3</span><span>5:12</span></div>
+          </div>
+        </div>
+        <div style="flex: 1; overflow: hidden; padding: 16px 16px 0 16px; display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{tapLines}}" as="tl" hint-placeholder-count="7">
+            <button style="width: 100%; text-align: left; min-height: 58px; padding: 10px 14px; border-radius: 14px; border: 1px solid {{tl.border}}; background: {{tl.bg}}; color: {{tl.fg}}; display: flex; align-items: center; gap: 10px">
+              <span style="flex: 1; font-family: {{lyricFont}}; font-size: 16px; font-weight: {{tl.weight}}; line-height: 1.45">{{tl.text}}</span>
+              <sc-if value="{{tl.done}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 600; color: {{c.accentText}}; font-variant-numeric: tabular-nums">✓ {{tl.time}}</span></sc-if>
+              <sc-if value="{{tl.current}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; background: {{c.onPrimary}}; color: {{c.primary}}">Tap now</span></sc-if>
+            </button>
+          </sc-for>
+        </div>
+        <div style="padding: 10px 16px 22px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: {{c.muted}}">
+          <span>Missed one? Tap a timed line to redo it.</span>
+          <button style="min-height: 40px; padding: 0 12px; border-radius: 20px; border: 1px solid {{c.line}}; background: transparent; color: {{c.text}}; font-weight: 600; font-size: 13px">↶ Undo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7d Sync: we guess, you check -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 15px; font-weight: 600; color: #3A3A3A">7d · Sync lyrics — we guess, you check</div>
+      <div style="width: 390px; height: 844px; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.14); background: {{c.bg}}; color: {{c.text}}; font-family: {{c.body}}; display: flex; flex-direction: column">
+        <div style="padding: 20px 12px 0 8px; display: flex; align-items: center; gap: 4px">
+          <button aria-label="Back" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{c.text}}; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div style="flex: 1">
+            <div style="font-family: {{c.head}}; font-size: 20px; font-weight: 700">Check timings</div>
+            <div style="font-size: 12px; color: {{c.muted}}">2 lines need a look</div>
+          </div>
+        </div>
+        <div style="margin: 10px 16px 0 16px; padding: 12px 14px; border-radius: 14px; background: {{c.soft}}; font-size: 14px; line-height: 1.45">We placed each line at a pause in the song. Play a line and fix only the ones that sound off.</div>
+        <div style="flex: 1; overflow: hidden; padding: 14px 16px 0 16px; display: flex; flex-direction: column; gap: 6px">
+          <sc-for list="{{guessLines}}" as="gl" hint-placeholder-count="8">
+            <div style="border-radius: 14px; background: {{gl.bg}}; border: 1px solid {{gl.border}}">
+              <div style="display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px">
+                <button onClick="{{gl.open}}" aria-label="Play this line" style="width: 44px; height: 44px; flex: none; border: 0; background: transparent; color: {{c.accentText}}; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></button>
+                <span style="flex: 1; min-width: 0; font-family: {{lyricFont}}; font-size: 16px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{gl.text}}</span>
+                <span style="font-size: 13px; font-weight: {{gl.timeWeight}}; color: {{gl.timeColor}}; font-variant-numeric: tabular-nums">{{gl.time}}</span>
+              </div>
+              <sc-if value="{{gl.isOpen}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; align-items: center; gap: 8px; padding: 0 12px 12px 52px">
+                  <button style="height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid {{c.line}}; background: {{c.bg}}; color: {{c.text}}; font-size: 13px; font-weight: 600">−0.5 s</button>
+                  <button style="height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid {{c.line}}; background: {{c.bg}}; color: {{c.text}}; font-size: 13px; font-weight: 600">+0.5 s</button>
+                  <button style="height: 36px; padding: 0 14px; margin-left: auto; border-radius: 18px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-size: 13px; font-weight: 700">Sounds right</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding: 12px 16px 22px 16px">
+          <button style="width: 100%; height: 52px; border-radius: 14px; border: 0; background: {{c.primary}}; color: {{c.onPrimary}}; font-size: 16px; font-weight: 700">Submit for review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right sidebar: palette switcher -->
+  <aside style="width: 340px; flex: none; background: #FAFAF8; border-left: 1px solid #DEDAD3; padding: 40px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+    <div>
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #6B6B6B">ZEMA · DESIGN</div>
+      <div style="font-size: 24px; font-weight: 700; margin-top: 4px">Color palette</div>
+      <div style="font-size: 14px; color: #555555; margin-top: 4px; line-height: 1.45">Pick a palette to restyle every screen.</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{palettes}}" as="p" hint-placeholder-count="4">
+        <button onClick="{{p.pick}}" aria-pressed="{{p.active}}" style="text-align: left; padding: 14px; border-radius: 14px; background: #FFFFFF; border: {{p.ring}}; display: flex; flex-direction: column; gap: 10px; color: #1A1A1A">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+            <span style="font-size: 16px; font-weight: 700">{{p.name}}</span>
+            <sc-if value="{{p.active}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; font-weight: 700; color: #FFFFFF; background: #1A1A1A; border-radius: 9px; padding: 2px 8px">Active</span></sc-if>
+          </div>
+          <span style="font-size: 13px; color: #555555">{{p.desc}}</span>
+          <div style="display: flex; gap: 6px">
+            <sc-for list="{{p.swatches}}" as="sw" hint-placeholder-count="5">
+              <span style="width: 32px; height: 32px; border-radius: 8px; background: {{sw.color}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12)"></span>
+            </sc-for>
+          </div>
+        </button>
+      </sc-for>
+    </div>
+    <div>
+      <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px">Lyrics font</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 4px; border-radius: 12px; background: #EDEBE6">
+        <button onClick="{{pickSerif}}" style="height: 40px; border-radius: 9px; border: 0; background: {{serifBg}}; color: #1A1A1A; font-family: 'Noto Serif Ethiopic', serif; font-size: 15px; font-weight: 600">ሰሪፍ Serif</button>
+        <button onClick="{{pickSans}}" style="height: 40px; border-radius: 9px; border: 0; background: {{sansBg}}; color: #1A1A1A; font-family: 'Noto Sans Ethiopic', sans-serif; font-size: 15px; font-weight: 600">ሳንስ Sans</button>
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px">Tokens — {{c.name}}</div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <sc-for list="{{tokens}}" as="tk" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: {{tk.v}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12)"></span>
+            <span style="flex: 1; color: #333333">{{tk.k}}</span>
+            <span style="font-family: ui-monospace, Menlo, monospace; color: #555555">{{tk.v}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2180,"height":2898}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { palette: 'vigil', font: 'sans', guessOpen: 3 };
+  }
+  renderVals() {
+    const P = {
+      manuscript: { name: 'Manuscript', desc: 'Parchment, burgundy and gold. Warm and traditional.',
+        bg: '#F5EEDC', surface: '#FFFAEE', line: '#E2D5BA', text: '#2B1B14', muted: '#6E5B4C', faint: '#857261',
+        primary: '#6B1E2E', primaryText: '#6B1E2E', onPrimary: '#FFF6E6', accent: '#C9A227', accentText: '#7A560B', soft: '#F3E6C4',
+        tile: '#6B1E2E', tileFg: '#E7C76A', shadow: 'rgba(75,20,32,0.22)',
+        head: "'Source Serif 4', 'Noto Serif Ethiopic', serif", body: "Inter, 'Noto Sans Ethiopic', sans-serif" },
+      vigil: { name: 'Night Vigil', desc: 'Dark with candle gold. Easy on the eyes at night.',
+        bg: '#110D0B', surface: '#1C1613', line: '#2F2622', text: '#F2E8D7', muted: '#A39586', faint: '#7D7065',
+        primary: '#E3AE4A', primaryText: '#FFF4E0', onPrimary: '#110D0B', accent: '#E3AE4A', accentText: '#E3AE4A', soft: '#3A2B17',
+        tile: '#2A1E19', tileFg: '#E3AE4A', shadow: 'rgba(0,0,0,0.5)',
+        head: "Inter, 'Noto Sans Ethiopic', sans-serif", body: "Inter, 'Noto Sans Ethiopic', sans-serif" },
+      vigilWine: { name: 'Night Vigil · Wine', desc: 'Night Vigil with a deep burgundy night tone.',
+        bg: '#15090D', surface: '#22121A', line: '#3A2029', text: '#F4E7DD', muted: '#B3989A', faint: '#876C6F',
+        primary: '#D9A441', primaryText: '#FFF1E2', onPrimary: '#15090D', accent: '#D9A441', accentText: '#E2B45B', soft: '#3B2418',
+        tile: '#2C141C', tileFg: '#D9A441', shadow: 'rgba(0,0,0,0.5)',
+        head: "Inter, 'Noto Sans Ethiopic', sans-serif", body: "Inter, 'Noto Sans Ethiopic', sans-serif" },
+      vigilBlue: { name: 'Night Vigil · Midnight', desc: 'Night Vigil on a midnight-blue sky.',
+        bg: '#0B1020', surface: '#141B30', line: '#222B45', text: '#E9EDF7', muted: '#9AA4BE', faint: '#6C7590',
+        primary: '#E3AE4A', primaryText: '#FFF4E0', onPrimary: '#0B1020', accent: '#E3AE4A', accentText: '#E3AE4A', soft: '#2B2A22',
+        tile: '#1A2340', tileFg: '#E3AE4A', shadow: 'rgba(0,0,0,0.5)',
+        head: "Inter, 'Noto Sans Ethiopic', sans-serif", body: "Inter, 'Noto Sans Ethiopic', sans-serif" },
+      tilet: { name: 'Tilet', desc: 'Clean white with teal and saffron from woven borders.',
+        bg: '#FFFFFF', surface: '#F4F5F2', line: '#E3E5E0', text: '#121412', muted: '#5A5F58', faint: '#767B74',
+        primary: '#0E5E55', primaryText: '#0E5E55', onPrimary: '#FFFFFF', accent: '#F0A92E', accentText: '#0E5E55', soft: '#E2F0EC',
+        tile: '#F0A92E', tileFg: '#121412', shadow: 'rgba(14,94,85,0.25)',
+        head: "'DM Sans', 'Noto Sans Ethiopic', sans-serif", body: "'DM Sans', 'Noto Sans Ethiopic', sans-serif" },
+      abay: { name: 'Abay', desc: 'Cool Blue Nile blue with a warm gold accent.',
+        bg: '#F3F6FA', surface: '#FFFFFF', line: '#DCE4EE', text: '#0F1A2A', muted: '#4F5D70', faint: '#6E7B8D',
+        primary: '#1D4E89', primaryText: '#1D4E89', onPrimary: '#FFFFFF', accent: '#E0A43A', accentText: '#8A5A00', soft: '#E1EBF7',
+        tile: '#1D4E89', tileFg: '#F6D58E', shadow: 'rgba(29,78,137,0.25)',
+        head: "'DM Sans', 'Noto Sans Ethiopic', sans-serif", body: "Inter, 'Noto Sans Ethiopic', sans-serif" }
+    };
+    const id = this.state.palette;
+    const c = P[id];
+    const lyricFont = this.state.font === 'serif' ? "'Noto Serif Ethiopic', 'Source Serif 4', serif" : "'Noto Sans Ethiopic', 'DM Sans', sans-serif";
+
+    const palettes = Object.keys(P).map((k) => ({
+      name: P[k].name, desc: P[k].desc, active: k === id,
+      ring: k === id ? '2px solid #1A1A1A' : '1px solid #DEDAD3',
+      swatches: [P[k].bg, P[k].surface, P[k].primary, P[k].accent, P[k].text].map((color) => ({ color })),
+      pick: () => this.setState({ palette: k })
+    }));
+
+    const tabs = (active) => ['Tracks', 'Folders', 'Albums', 'Artists', 'Favorites', 'Playlists'].map((label) => ({
+      label, bg: label === active ? c.text : c.surface, fg: label === active ? c.bg : c.muted, weight: label === active ? 700 : 500
+    }));
+    const navItems = [
+      ['Home', 'M3 11l9-7 9 7M5 10v10h14V10'],
+      ['Search', 'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14M20 20l-3.5-3.5'],
+      ['Library', 'M5 4v16M10 4v16M15 5l4 15'],
+      ['Contribute', 'M4 20h4L19 9l-4-4L4 16v4z']
+    ];
+    const nav = (active) => navItems.map(([label, d]) => ({
+      label, d, color: label === active ? c.primaryText : c.muted, weight: label === active ? 700 : 500
+    }));
+
+    const raw = [
+      ['ምሕረቱ ለዘላለም', 'Sunday School Choir', '5:12', 's', true],
+      ['ስብሐት ለእግዚአብሔር', 'Zemari Yonas', '6:04', 's'],
+      ['ሃሌ ሉያ', 'St. Mary Choir', '4:38', 't'],
+      ['ቅድስት ድንግል ማርያም', 'Zemarit Hiwot', '7:21', 's'],
+      ['እግዚአብሔር ይመስገን', 'Zemari Yonas', '5:47', 'n'],
+      ['Kidist Dingil Mariam', 'Telegram Audio', '3:56', 't'],
+      ['ስሙ ይባረክ', 'St. Mary Choir', '6:30', 's']
+    ];
+    const tracks = raw.map(([title, artist, dur, st, playing]) => ({
+      title, artist, dur, glyph: title.charAt(0), synced: st === 's', textOnly: st === 't',
+      titleColor: playing ? c.primaryText : c.text
+    }));
+    const favs = [
+      ['ምሕረቱ ለዘላለም', 'Sunday School Choir', 'Local'],
+      ['ቅድስት ድንግል ማርያም', 'Zemarit Hiwot', 'YouTube'],
+      ['ስብሐት ለእግዚአብሔር', 'Zemari Yonas', 'Local'],
+      ['ስሙ ይባረክ', 'St. Mary Choir', 'Telegram'],
+      ['እግዚአብሔር ይመስገን', 'Zemari Yonas', 'Local'],
+      ['Kidist Dingil Mariam', 'Telegram Audio', 'Telegram']
+    ].map(([title, artist, source]) => ({ title, artist, source, glyph: title.charAt(0) }));
+
+    const npActions = [
+      ['Queue', 'M4 6h16M4 12h10M4 18h10M17 15l4 3-4 3z', false],
+      ['Sleep', 'M20 14A8 8 0 1110 4a6 6 0 0010 10z', false],
+      ['Playlist', 'M12 5v14M5 12h14', false],
+      ['Float', 'M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zM12 12h7v5h-7z', true]
+    ].map(([label, d, on]) => ({ label, d, color: on ? c.primaryText : c.muted, weight: on ? 700 : 500 }));
+
+    const steps = [
+      ['1', 'Write the lyrics', 'Type or paste the words. Mark verses and the chorus.'],
+      ['2', 'Link a recording', 'A YouTube link, a Telegram audio, or a file on your phone.'],
+      ['3', 'Sync the lines', 'Play the song and tap when each line starts.'],
+      ['4', 'Review', 'A moderator checks it, then everyone can sing along.']
+    ].map(([n, title, body]) => ({ n, title, body }));
+    const needSync = [
+      ['ሃሌ ሉያ', 'Text only · 3 recordings'],
+      ['Kidist Dingil Mariam', 'Text only · 1 recording']
+    ].map(([title, note]) => ({ title, note, glyph: title.charAt(0) }));
+
+    const blocks = [
+      ['VERSE 1', 'እግዚአብሔርን አመስግኑ ቸር ነውና', false],
+      ['CHORUS', 'ምሕረቱ ለዘላለም ነውና', true],
+      ['VERSE 2', 'የአማልክትን አምላክ አመስግኑ\nየጌቶችን ጌታ አመስግኑ', false]
+    ].map(([label, text, chorus]) => ({
+      label, text, border: chorus ? c.accent : c.line, labelColor: chorus ? c.accentText : c.muted
+    }));
+    const order = ['Verse 1', 'Chorus', 'Verse 2', 'Chorus'].map((label) => ({
+      label, bg: label === 'Chorus' ? c.soft : c.surface, fg: label === 'Chorus' ? c.accentText : c.text
+    }));
+
+    const wave = Array.from({ length: 44 }, (_, i) => ({
+      h: 8 + Math.round(Math.abs(Math.sin(i * 1.7) * 22 + Math.sin(i * 0.6) * 8)),
+      color: i < 11 ? c.primary : c.line
+    }));
+    const lines = [
+      ['እግዚአብሔርን አመስግኑ ቸር ነውና', '0:12.4', 'done'],
+      ['ምሕረቱ ለዘላለም ነውና', '0:17.9', 'done'],
+      ['የአማልክትን አምላክ አመስግኑ', '0:23.1', 'done'],
+      ['ምሕረቱ ለዘላለም ነውና', '—', 'current'],
+      ['የጌቶችን ጌታ አመስግኑ', '—', 'next'],
+      ['ምሕረቱ ለዘላለም ነውና', '—', 'next'],
+      ['እርሱ ብቻውን ታላላቅ ተአምራትን ያደረገ', '—', 'next']
+    ];
+    const syncLines = lines.map(([text, time, s]) => ({
+      text, time, current: s === 'current',
+      bg: s === 'current' ? c.surface : 'transparent',
+      border: s === 'current' ? c.accent : 'transparent',
+      color: s === 'next' ? c.muted : c.text,
+      weight: s === 'current' ? 700 : 500,
+      timeColor: s === 'done' ? c.accentText : c.muted
+    }));
+
+    const focusDots = Array.from({ length: 8 }, (_, i) => ({ color: i < 3 ? c.primary : i === 3 ? c.accent : c.line }));
+    const tapLines = lines.map(([text, time, s]) => ({
+      text, time, done: s === 'done', current: s === 'current',
+      bg: s === 'current' ? c.primary : c.surface,
+      fg: s === 'current' ? c.onPrimary : s === 'done' ? c.muted : c.text,
+      border: s === 'current' ? c.primary : c.line,
+      weight: s === 'current' ? 700 : 500
+    }));
+
+    const row = (label, opts) => Object.assign({ label, sub: '', hasSub: false, isToggle: false, isValue: false, on: false, value: '' }, opts);
+    const groups = [
+      ['GENERAL', [row('Language', { isValue: true, value: 'English' }), row('Theme', { isValue: true, value: 'System' })]],
+      ['LYRICS', [row('Text size', { isValue: true, value: 'Large' }), row('Show transliteration', { isToggle: true, on: true }), row('Default sync offset', { isValue: true, value: '0.0 s' })]],
+      ['FLOATING LYRICS', [row('Show when a song is detected', { isToggle: true, on: true, hasSub: true, sub: 'YouTube, Telegram' }), row('When to show', { isValue: true, value: 'Ask first' }), row('Appearance', { isValue: true, value: '' })]],
+      ['LIBRARY', [row('Music folders', { isValue: true, value: '3 included' }), row('Ignore short audio', { isToggle: true, on: true, hasSub: true, sub: 'Hides voice notes under 30 s' })]],
+      ['ACCOUNT', [row('Signed in with Google', { hasSub: true, sub: 'Last backup: today, 08:12', isValue: true, value: 'Manage' })]]
+    ];
+    const settings = groups.map(([title, rows]) => ({
+      title,
+      rows: rows.map((r, i) => Object.assign(r, {
+        divider: i === 0 ? '0' : '1px solid ' + c.line,
+        trackBg: r.on ? c.primary : c.line,
+        knobSide: r.on ? 'flex-end' : 'flex-start'
+      }))
+    }));
+
+    const tokens = [
+      ['Background', c.bg], ['Surface', c.surface], ['Line', c.line], ['Text', c.text],
+      ['Muted text', c.muted], ['Primary', c.primary], ['Accent', c.accent], ['Soft accent', c.soft]
+    ].map(([k, v]) => ({ k, v }));
+
+    const guessRaw = [
+      ['እግዚአብሔርን አመስግኑ ቸር ነውና', '0:12.4'], ['ምሕረቱ ለዘላለም ነውና', '0:17.9'],
+      ['የአማልክትን አምላክ አመስግኑ', '0:23.1'], ['ምሕረቱ ለዘላለም ነውና', '0:28.6'],
+      ['የጌቶችን ጌታ አመስግኑ', '0:34.0'], ['ምሕረቱ ለዘላለም ነውና', '0:39.2'],
+      ['እርሱ ብቻውን ታላላቅ ተአምራትን ያደረገ', '0:45.7'], ['ምሕረቱ ለዘላለም ነውና', '0:51.3']
+    ];
+    const unsure = { 3: true, 6: true };
+    const guessLines = guessRaw.map(([text, time], i) => {
+      const open = i === this.state.guessOpen;
+      return {
+        text, time, isOpen: open,
+        bg: open ? c.surface : 'transparent',
+        border: open ? c.accent : (unsure[i] ? c.line : 'transparent'),
+        timeColor: unsure[i] ? c.accentText : c.muted,
+        timeWeight: unsure[i] ? 700 : 500,
+        open: () => this.setState({ guessOpen: i })
+      };
+    });
+
+    return {
+      c, lyricFont, palettes, tokens, guessLines,
+      libTabs: tabs('Tracks'), favTabs: tabs('Favorites'),
+      navLib: nav('Library'), navContrib: nav('Contribute'),
+      tracks, favs, npActions, steps, needSync, blocks, order, wave, syncLines, focusDots, tapLines, settings,
+      serifBg: this.state.font === 'serif' ? '#FFFFFF' : 'transparent',
+      sansBg: this.state.font === 'sans' ? '#FFFFFF' : 'transparent',
+      pickSerif: () => this.setState({ font: 'serif' }),
+      pickSans: () => this.setState({ font: 'sans' })
+    };
+  }
+}
+</script>
+</body>
+</html>
