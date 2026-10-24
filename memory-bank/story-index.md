@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 11
-- **Generated**: 11
-- **Last updated**: 2026-10-24T19:05:00Z
+- **Total stories**: 32
+- **Generated**: 32
+- **Last updated**: 2026-10-24T20:20:00Z
 
 ---
 
@@ -26,7 +26,33 @@ Path: `memory-bank/intents/001-app-foundation/units/001-app-foundation-ui/storie
 - [x] **010-switch-language** (app-foundation-ui): Switch and remember language - Must - ✅ GENERATED
 - [x] **011-switch-theme-mode** (app-foundation-ui): Switch and remember theme mode (System / Light / Dark) - Must - ✅ GENERATED (added during construction)
 
-### 002-local-library-and-player … 008-admin-website
+### 002-local-library-and-player
+
+Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-and-player-ui/stories/`
+
+- [x] **001-library-scanner-spike** (local-library-and-player-ui): Library scanner spike and interface - Must - ✅ GENERATED
+- [x] **002-library-database** (local-library-and-player-ui): Drift library database and track identity - Must - ✅ GENERATED
+- [x] **003-audio-permission** (local-library-and-player-ui): Audio permission - Must - ✅ GENERATED
+- [x] **004-library-scan-and-sync** (local-library-and-player-ui): Library scan and sync - Must - ✅ GENERATED
+- [x] **005-library-tab-and-tracks** (local-library-and-player-ui): Library tab and Tracks - Must - ✅ GENERATED
+- [x] **006-playback-engine** (local-library-and-player-ui): Playback engine - Must - ✅ GENERATED
+- [x] **007-mini-player-and-now-playing** (local-library-and-player-ui): Mini player and Now Playing - Must - ✅ GENERATED
+- [x] **008-media-notification** (local-library-and-player-ui): Media notification, lock screen and headset - Must - ✅ GENERATED
+- [x] **009-queue-sheet** (local-library-and-player-ui): Queue sheet - Must - ✅ GENERATED
+- [x] **010-sleep-timer** (local-library-and-player-ui): Sleep timer - Must - ✅ GENERATED
+- [x] **011-folders** (local-library-and-player-ui): Folders - Must - ✅ GENERATED
+- [x] **012-albums** (local-library-and-player-ui): Albums - Must - ✅ GENERATED
+- [x] **013-artists** (local-library-and-player-ui): Artists - Should - ✅ GENERATED
+- [x] **014-favorites** (local-library-and-player-ui): Favorites - Must - ✅ GENERATED
+- [x] **015-playlists** (local-library-and-player-ui): Playlists - Must - ✅ GENERATED
+- [x] **016-add-songs-picker** (local-library-and-player-ui): Add songs picker - Must - ✅ GENERATED
+- [x] **017-song-menu-and-add-to-playlist** (local-library-and-player-ui): Song menu and add-to-playlist sheet - Must - ✅ GENERATED
+- [x] **018-track-multi-select** (local-library-and-player-ui): Track multi-select - Must - ✅ GENERATED
+- [x] **019-play-history-and-auto-playlists** (local-library-and-player-ui): Play history and auto playlists - Must - ✅ GENERATED
+- [x] **020-library-settings** (local-library-and-player-ui): Library settings - Must - ✅ GENERATED
+- [x] **021-playback-settings** (local-library-and-player-ui): Playback settings - Must - ✅ GENERATED
+
+### 003-lyrics-engine-and-display … 008-admin-website
 
 No stories yet (intents in draft).
 
@@ -35,6 +61,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 11
+- **Generated**: 32
 - **In Progress**: 0
 - **Completed**: 0

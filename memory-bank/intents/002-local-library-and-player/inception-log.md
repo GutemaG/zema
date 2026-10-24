@@ -1,8 +1,8 @@
 ---
 intent: 002-local-library-and-player
 created: 2026-10-23T22:16:40Z
-completed: null
-status: in-progress
+completed: 2026-10-24T20:30:00Z
+status: complete
 ---
 
 # Inception Log: 002-local-library-and-player
@@ -18,32 +18,39 @@ status: in-progress
 
 | Artifact | Status | File |
 |----------|--------|------|
-| Requirements | 📝 draft | requirements.md |
-| System Context | ⬜ | system-context.md |
-| Units | ⬜ | units/ |
-| Stories | ⬜ | units/*/stories/ |
-| Bolt Plan | ⬜ | memory-bank/bolts/ |
+| Requirements | ✅ approved (Checkpoint 2) | requirements.md |
+| System Context | ✅ | system-context.md |
+| Units | ✅ | units.md, units/001-local-library-and-player-ui/unit-brief.md |
+| Stories | ✅ | units/001-local-library-and-player-ui/stories/001–021 |
+| Bolt Plan | ✅ | memory-bank/bolts/004–008-local-library-and-player-ui/ |
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
-| Functional Requirements | 14 (draft) |
-| Non-Functional Requirements | see requirements.md |
-| Units | 0 |
-| Stories | 0 |
-| Bolts Planned | 0 |
+| Functional Requirements | 15 |
+| Non-Functional Requirements | 9 (performance, reliability, privacy) |
+| Units | 1 |
+| Stories | 21 |
+| Bolts Planned | 5 |
 
 ## Units Breakdown
 
 | Unit | Stories | Bolts | Priority |
 |------|---------|-------|----------|
+| 001-local-library-and-player-ui | 21 | 5 | Must |
 
 ## Decision Log
 
 | Date | Decision | Rationale | Approved |
 |------|----------|-----------|----------|
 | 2026-10-23T22:16:40Z | Intent created as draft from roadmap stage | All 8 roadmap stages created up front; elaborated in order | Yes |
+| 2026-10-24T20:00:00Z | Test on an Android emulator; iOS builds and shows a "not available on iOS yet" Library state | Library scan is Android-only (MediaStore); roadmap has iOS later | Yes |
+| 2026-10-24T20:00:00Z | Scanner: spike `on_audio_query` in bolt 1, Kotlin MediaStore channel fallback behind `LibraryScanner` | Plugin unreleased since 2023; product owner asked for the best option | Yes |
+| 2026-10-24T20:00:00Z | Track identity: Zema ID + path + fingerprint (size, duration, title); MediaStore ID only for playback | Playlists and backups (005) must survive moves and MediaStore rebuilds | Yes |
+| 2026-10-24T20:00:00Z | Album-art colors on S08 deferred to 003 | S08 gets its full design with lyrics | Yes |
+| 2026-10-24T20:05:00Z | Requirements approved (Checkpoint 2) | — | Yes |
+| 2026-10-24T20:20:00Z | Single frontend unit, 5 simple bolts (004–008); scanner spike first in bolt 004 | frontend-app project type; high uncertainty on the scanner goes first | Yes (Checkpoint 3) |
 
 ## Scope Changes
 
@@ -53,17 +60,17 @@ status: in-progress
 ## Ready for Construction
 
 **Checklist**:
-- [ ] All requirements documented
-- [ ] System context defined
-- [ ] Units decomposed
-- [ ] Stories created for all units
-- [ ] Bolts planned
-- [ ] Human review complete
+- [x] All requirements documented
+- [x] System context defined
+- [x] Units decomposed
+- [x] Stories created for all units
+- [x] Bolts planned
+- [x] Human review complete
 
 ## Next Steps
 
-1. Resolve open questions in requirements.md
-2. Run requirements skill (Checkpoints 1–2) via `/specsmd-inception-agent`
+1 - **construction**: start with bolt `004-local-library-and-player-ui`
+→ `/specsmd-construction-agent --unit="001-local-library-and-player-ui"`
 
 ## Dependencies
 
