@@ -2,11 +2,11 @@
 id: 002-app-identity
 unit: 001-app-foundation-ui
 intent: 001-app-foundation
-status: draft
+status: complete
 priority: must
 created: 2026-10-23T22:22:46Z
 assigned_bolt: 001-app-foundation-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 002-app-identity

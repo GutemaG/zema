@@ -3,23 +3,31 @@ id: 001-app-foundation-ui
 unit: 001-app-foundation-ui
 intent: 001-app-foundation
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 001-project-tooling-and-ci
   - 002-app-identity
   - 003-theme-tokens-and-palettes
   - 004-bundled-fonts
 created: 2026-10-23T22:22:46Z
-started: null
-completed: null
+started: 2026-10-24T17:58:46Z
+completed: 2026-10-24T18:16:13Z
 current_stage: null
-stages_completed: []
-
+stages_completed:
+  - name: plan
+    completed: 2026-10-24T17:59:46Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-24T18:13:00Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-24T18:16:13Z
+    artifact: test-walkthrough.md
 requires_bolts: []
-enables_bolts: [002-app-foundation-ui]
+enables_bolts:
+  - 002-app-foundation-ui
 requires_units: []
 blocks: false
-
 complexity:
   avg_complexity: 1
   avg_uncertainty: 1
@@ -35,10 +43,10 @@ Groundwork with no navigation yet: strict analysis + CI, app label and placehold
 
 ## Stories Included
 
-- [ ] **001-project-tooling-and-ci**: Strict lints, format check, GitHub Actions CI - Priority: Must
-- [ ] **002-app-identity**: Label "Zema", app ID check, placeholder icon - Priority: Must
-- [ ] **003-theme-tokens-and-palettes**: `ZemaColors` (15 tokens × 2 palettes), `ThemeData` - Priority: Must
-- [ ] **004-bundled-fonts**: Inter + Noto Sans Ethiopic bundled, fallback, licenses - Priority: Must
+- [x] **001-project-tooling-and-ci**: Strict lints, format check, GitHub Actions CI - Priority: Must
+- [x] **002-app-identity**: Label "Zema", app ID check, placeholder icon - Priority: Must
+- [x] **003-theme-tokens-and-palettes**: `ZemaColors` (15 tokens × 2 palettes), `ThemeData` - Priority: Must
+- [x] **004-bundled-fonts**: Inter + Noto Sans Ethiopic bundled, fallback, licenses - Priority: Must
 
 ## Bolt Type
 
@@ -47,9 +55,9 @@ Groundwork with no navigation yet: strict analysis + CI, app label and placehold
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -67,10 +75,10 @@ Groundwork with no navigation yet: strict analysis + CI, app label and placehold
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally and in CI
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [ ] Tests passing locally and in CI (local: yes; CI: pending a GitHub remote)
 
 ## Notes
 
