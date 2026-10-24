@@ -15,7 +15,7 @@ packages/
   zema_core/         shared pure-Dart domain logic: models, lyrics, search, matching,
                      repository interfaces
 backend/             schema, access rules, functions, seed data (backend not chosen yet)
-docs/                screens.md, design-system.md (palette, fonts, tokens),
+docs/                roadmap.md (specsmd start), screens.md, design-system.md,
                      flutter-build-notes.md
 design/              screen images (design/screens/) and design canvas source
 pubspec.yaml         Dart pub workspace root (single shared lockfile)

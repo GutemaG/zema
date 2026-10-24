@@ -1,0 +1,70 @@
+---
+intent: 003-lyrics-engine-and-display
+created: 2026-10-23T22:16:40Z
+completed: null
+status: in-progress
+---
+
+# Inception Log: 003-lyrics-engine-and-display
+
+## Overview
+
+**Intent**: Synced lyrics for local songs from bundled sample data; sync engine and Ethiopic search
+**Type**: New Feature (green-field)
+**Created**: 2026-10-23T22:16:40Z
+**Source**: `docs/roadmap.md` (see requirements.md header for screen/doc references)
+
+## Artifacts Created
+
+| Artifact | Status | File |
+|----------|--------|------|
+| Requirements | 📝 draft | requirements.md |
+| System Context | ⬜ | system-context.md |
+| Units | ⬜ | units/ |
+| Stories | ⬜ | units/*/stories/ |
+| Bolt Plan | ⬜ | memory-bank/bolts/ |
+
+## Summary
+
+| Metric | Count |
+|--------|-------|
+| Functional Requirements | 11 (draft) |
+| Non-Functional Requirements | see requirements.md |
+| Units | 0 |
+| Stories | 0 |
+| Bolts Planned | 0 |
+
+## Units Breakdown
+
+| Unit | Stories | Bolts | Priority |
+|------|---------|-------|----------|
+
+## Decision Log
+
+| Date | Decision | Rationale | Approved |
+|------|----------|-----------|----------|
+| 2026-10-23T22:16:40Z | Intent created as draft from roadmap stage | All 8 roadmap stages created up front; elaborated in order | Yes |
+
+## Scope Changes
+
+| Date | Change | Reason | Impact |
+|------|--------|--------|--------|
+
+## Ready for Construction
+
+**Checklist**:
+- [ ] All requirements documented
+- [ ] System context defined
+- [ ] Units decomposed
+- [ ] Stories created for all units
+- [ ] Bolts planned
+- [ ] Human review complete
+
+## Next Steps
+
+1. Resolve open questions in requirements.md
+2. Run requirements skill (Checkpoints 1–2) via `/specsmd-inception-agent`
+
+## Dependencies
+
+001, 002.

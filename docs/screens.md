@@ -355,28 +355,7 @@ Runs over other apps; started by background detection even when Zema is closed.
 
 ---
 
-## 10. Suggested intents (for specsmd)
+## 10. Build order
 
-Each intent maps to a group of screens; build in this order.
-
-| # | Intent | Screens | Priority |
-|---|---|---|---|
-| 001 | **Local music player & library** | S08 (local), S10–S18, C01–C05, C08, S28 (general, library, playback) | P1 |
-| 002 | **Lyrics display & cloud catalog (read-only)** | S06, S07 (lyrics/info), S08 lyrics, C06; search normalization | P1 |
-| 003 | **Background detection & floating lyrics** | S03, S05 now-detected card, S27, S27s; Kotlin detection + overlay | P1 |
-| 004 | **Onboarding & home** | S01–S05 | P1 |
-| 005 | **Accounts, backup & restore** | S24–S26, S25b | P2 |
-| 006 | **Contribution & sync editor** | S19–S23, S07 recordings tab, S09 | P2 |
-| 007 | **Moderation** | S23m, roles | P2 |
-
-Recommended first step: a short **spike** in intent 003 to prove that the Kotlin
-detection service can open the overlay while the Flutter app is closed — the riskiest
-technical part of the project.
-
-## Open decisions
-
-1. Backend: Firebase or Supabase (affects 002, 005, 006, 007).
-2. Overlay: Flutter UI (`flutter_overlay_window`) or native Kotlin view.
-3. Where cloud lyrics come from at launch: seed an initial catalog yourself, or start
-   empty and rely on contributions.
-4. Moderator selection: invited only, or promoted by reputation.
+The build order (stages and specsmd intents, simplest to most complex) and the open
+decisions are in `docs/roadmap.md`.
