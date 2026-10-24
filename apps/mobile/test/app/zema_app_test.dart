@@ -8,6 +8,7 @@ import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/zema_app.dart';
 
 import '../helpers/fake_library.dart';
+import '../helpers/fake_player.dart';
 
 Future<void> _pumpApp(
   WidgetTester tester, {
@@ -20,6 +21,7 @@ Future<void> _pumpApp(
       overrides: [
         deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
         ...libraryOverrides(),
+        ...playerOverrides(),
         paletteProvider.overrideWithValue(palette),
       ],
       child: const ZemaApp(),
@@ -46,6 +48,7 @@ void main() {
           overrides: [
             deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
             ...libraryOverrides(),
+            ...playerOverrides(),
           ],
           child: const ZemaApp(),
         ),
@@ -71,6 +74,7 @@ void main() {
           overrides: [
             deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
             ...libraryOverrides(),
+            ...playerOverrides(),
           ],
           child: const ZemaApp(),
         ),

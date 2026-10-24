@@ -4,7 +4,7 @@
 
 - **Total stories**: 32
 - **Generated**: 32
-- **Last updated**: 2026-10-24T20:02:40Z
+- **Last updated**: 2026-10-24T21:20:18Z
 
 ---
 
@@ -34,10 +34,10 @@ Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-
 - [x] **002-library-database** (local-library-and-player-ui): Drift library database and track identity - Must - ✅ COMPLETED
 - [x] **003-audio-permission** (local-library-and-player-ui): Audio permission - Must - ✅ COMPLETED
 - [x] **004-library-scan-and-sync** (local-library-and-player-ui): Library scan and sync - Must - ✅ COMPLETED
-- [x] **005-library-tab-and-tracks** (local-library-and-player-ui): Library tab and Tracks - Must - ✅ GENERATED
-- [x] **006-playback-engine** (local-library-and-player-ui): Playback engine - Must - ✅ GENERATED
-- [x] **007-mini-player-and-now-playing** (local-library-and-player-ui): Mini player and Now Playing - Must - ✅ GENERATED
-- [x] **008-media-notification** (local-library-and-player-ui): Media notification, lock screen and headset - Must - ✅ GENERATED
+- [x] **005-library-tab-and-tracks** (local-library-and-player-ui): Library tab and Tracks - Must - ✅ COMPLETED
+- [x] **006-playback-engine** (local-library-and-player-ui): Playback engine - Must - ✅ COMPLETED
+- [x] **007-mini-player-and-now-playing** (local-library-and-player-ui): Mini player and Now Playing - Must - ✅ COMPLETED
+- [x] **008-media-notification** (local-library-and-player-ui): Media notification, lock screen and headset - Must - ✅ COMPLETED
 - [x] **009-queue-sheet** (local-library-and-player-ui): Queue sheet - Must - ✅ GENERATED
 - [x] **010-sleep-timer** (local-library-and-player-ui): Sleep timer - Must - ✅ GENERATED
 - [x] **011-folders** (local-library-and-player-ui): Folders - Must - ✅ GENERATED
@@ -61,6 +61,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 17
+- **Generated**: 13
 - **In Progress**: 0
-- **Completed**: 15
+- **Completed**: 19

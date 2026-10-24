@@ -3,17 +3,26 @@ id: 005-local-library-and-player-ui
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 005-library-tab-and-tracks
   - 006-playback-engine
   - 007-mini-player-and-now-playing
   - 008-media-notification
 created: 2026-10-24T19:23:00Z
-started: null
-completed: null
+started: 2026-10-24T20:04:34Z
+completed: 2026-10-24T21:20:18Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-24T20:07:33Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-24T20:54:50Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-24T21:20:18Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 004-local-library-and-player-ui
 enables_bolts:
@@ -35,10 +44,10 @@ Play a song end to end: Library tab with Tracks (search, sort, fast-scroll), the
 
 ## Stories Included
 
-- [ ] **005-library-tab-and-tracks**: Library top tabs and Tracks (S10) - Priority: Must
-- [ ] **006-playback-engine**: just_audio + audio_service, queue logic, restore last queue - Priority: Must
-- [ ] **007-mini-player-and-now-playing**: C01 and S08 (controls only) - Priority: Must
-- [ ] **008-media-notification**: C08, headset buttons, audio focus, unplug - Priority: Must
+- [x] **005-library-tab-and-tracks**: Library top tabs and Tracks (S10) - Priority: Must
+- [x] **006-playback-engine**: just_audio + audio_service, queue logic, restore last queue - Priority: Must
+- [x] **007-mini-player-and-now-playing**: C01 and S08 (controls only) - Priority: Must
+- [x] **008-media-notification**: C08, headset buttons, audio focus, unplug - Priority: Must
 
 ## Bolt Type
 
@@ -47,9 +56,9 @@ Play a song end to end: Library tab with Tracks (search, sort, fast-scroll), the
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -69,11 +78,11 @@ Play a song end to end: Library tab with Tracks (search, sort, fast-scroll), the
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally (CI once a GitHub remote exists)
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met (real-phone scrolling and 30-min battery checks open)
+- [x] `flutter analyze` clean, `dart format` clean
+- [ ] Tests passing locally (CI once a GitHub remote exists) (local: yes; CI: pending a GitHub remote)
+- [x] Checked on the Android emulator
 
 ## Notes
 

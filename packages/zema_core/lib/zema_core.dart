@@ -8,6 +8,7 @@ export 'src/library/reconcile_tracks.dart';
 export 'src/library/scanned_audio.dart';
 export 'src/library/track.dart';
 export 'src/library/track_fingerprint.dart';
+export 'src/player/play_queue.dart';
 
 /// Name of this package, for diagnostics.
 const String packageName = 'zema_core';

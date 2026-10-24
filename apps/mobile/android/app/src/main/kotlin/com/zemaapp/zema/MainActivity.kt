@@ -1,9 +1,11 @@
 package com.zemaapp.zema
 
-import io.flutter.embedding.android.FlutterActivity
+import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 
-class MainActivity : FlutterActivity() {
+// AudioServiceActivity keeps one Flutter engine shared with the playback
+// service, so music continues when the activity closes.
+class MainActivity : AudioServiceActivity() {
     private var library: LibraryChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

@@ -111,10 +111,10 @@ detected songs (007) on top of the models and providers built here.
 | 002-library-database | Drift library database and track identity | Must | Complete |
 | 003-audio-permission | Audio permission | Must | Complete |
 | 004-library-scan-and-sync | Library scan and sync | Must | Complete |
-| 005-library-tab-and-tracks | Library tab and Tracks | Must | Planned |
-| 006-playback-engine | Playback engine | Must | Planned |
-| 007-mini-player-and-now-playing | Mini player and Now Playing | Must | Planned |
-| 008-media-notification | Media notification, lock screen and headset | Must | Planned |
+| 005-library-tab-and-tracks | Library tab and Tracks | Must | Complete |
+| 006-playback-engine | Playback engine | Must | Complete |
+| 007-mini-player-and-now-playing | Mini player and Now Playing | Must | Complete |
+| 008-media-notification | Media notification, lock screen and headset | Must | Complete |
 | 009-queue-sheet | Queue sheet | Must | Planned |
 | 010-sleep-timer | Sleep timer | Must | Planned |
 | 011-folders | Folders | Must | Planned |

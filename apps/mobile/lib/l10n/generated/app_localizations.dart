@@ -288,6 +288,240 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 song} other{{count} songs}}'**
   String librarySongCount(int count);
 
+  /// Library top tab with all songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracks'**
+  String get libraryTabTracks;
+
+  /// Library top tab with songs by folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get libraryTabFolders;
+
+  /// Library top tab with albums.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums'**
+  String get libraryTabAlbums;
+
+  /// Library top tab with artists.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists'**
+  String get libraryTabArtists;
+
+  /// Library top tab with favorite songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get libraryTabFavorites;
+
+  /// Library top tab with playlists.
+  ///
+  /// In en, this message translates to:
+  /// **'Playlists'**
+  String get libraryTabPlaylists;
+
+  /// Message on a Library top tab that is not built yet.
+  ///
+  /// In en, this message translates to:
+  /// **'This part of your library is coming soon.'**
+  String get libraryTabComingSoon;
+
+  /// Hint in the search field above the song list.
+  ///
+  /// In en, this message translates to:
+  /// **'Search songs, artists, albums'**
+  String get librarySearchHint;
+
+  /// Button that clears the search field.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get libraryClearSearch;
+
+  /// Heading when no song matches the search.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get libraryNoResultsTitle;
+
+  /// Message when no song matches the search.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different word or check the spelling.'**
+  String get libraryNoResultsMessage;
+
+  /// Button that opens the sort options for the song list.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get librarySortTooltip;
+
+  /// Sort the song list by title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get sortTitle;
+
+  /// Sort the song list by artist.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get sortArtist;
+
+  /// Sort the song list by album.
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get sortAlbum;
+
+  /// Sort the song list by when the file was added.
+  ///
+  /// In en, this message translates to:
+  /// **'Date added'**
+  String get sortDateAdded;
+
+  /// Sort the song list by length.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get sortDuration;
+
+  /// Sort from A to Z, oldest or shortest first.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get sortAscending;
+
+  /// Sort from Z to A, newest or longest first.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get sortDescending;
+
+  /// Button that plays a list of songs in order.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get actionPlay;
+
+  /// Button that plays a list of songs in random order.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle'**
+  String get actionShuffle;
+
+  /// Player button that starts playback.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get playerPlay;
+
+  /// Player button that pauses playback.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get playerPause;
+
+  /// Player button that skips to the next song.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get playerNext;
+
+  /// Player button that goes to the previous song or restarts this one.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get playerPrevious;
+
+  /// Player shuffle button when shuffle is on.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle on'**
+  String get playerShuffleOn;
+
+  /// Player shuffle button when shuffle is off.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle off'**
+  String get playerShuffleOff;
+
+  /// Player repeat button when repeat is off.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat off'**
+  String get playerRepeatOff;
+
+  /// Player repeat button when the whole queue repeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat all'**
+  String get playerRepeatAll;
+
+  /// Player repeat button when the current song repeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat one'**
+  String get playerRepeatOne;
+
+  /// Button that closes the Now Playing screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get playerClose;
+
+  /// Title of the Now Playing screen, for screen readers.
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing'**
+  String get playerNowPlaying;
+
+  /// Screen-reader hint on the mini player.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Now Playing'**
+  String get playerOpen;
+
+  /// Screen-reader label of the seek bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Song position'**
+  String get playerSeek;
+
+  /// Shown on Now Playing where lyrics will appear in a later version.
+  ///
+  /// In en, this message translates to:
+  /// **'No lyrics yet'**
+  String get playerNoLyrics;
+
+  /// Name of the Android notification channel for music playback.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback'**
+  String get playbackChannelName;
+
+  /// Snackbar when a song file can't be played and is skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t play {title}'**
+  String playerUnplayable(String title);
+
+  /// Screen-reader label of the mini player: song title and artist.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}, {artist}'**
+  String playerMiniLabel(String title, String artist);
+
+  /// Screen-reader value of the seek bar, e.g. "1:05 of 3:40".
+  ///
+  /// In en, this message translates to:
+  /// **'{position} of {duration}'**
+  String playerTrackPosition(String position, String duration);
+
   /// Title of the Settings screen.
   ///
   /// In en, this message translates to:

@@ -213,10 +213,10 @@ void main() {
       expect(find.text(_l10n.librarySongCount(3)), findsOneWidget);
       expect(find.text('Kidus Kidus'), findsOneWidget);
       expect(find.text('ቅዱስ ቅዱስ ቅዱስ'), findsOneWidget);
-      expect(find.text('ሊቀ መዘምራን ይልማ ኃይሉ'), findsOneWidget);
+      expect(find.textContaining('ሊቀ መዘምራን ይልማ ኃይሉ ·'), findsOneWidget);
       // No title tag: the file name, and no artist.
       expect(find.text('untagged_mezmur'), findsOneWidget);
-      expect(find.text(_l10n.unknownArtist), findsOneWidget);
+      expect(find.textContaining('${_l10n.unknownArtist} ·'), findsOneWidget);
       // Shorter than 30 s.
       expect(find.text('Voice 001'), findsNothing);
     });

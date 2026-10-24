@@ -2,7 +2,7 @@
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 created: 2026-10-24T19:27:01Z
-last_updated: 2026-10-24T20:02:40Z
+last_updated: 2026-10-24T21:20:18Z
 ---
 
 # Construction Log: local-library-and-player-ui
@@ -30,7 +30,7 @@ last_updated: 2026-10-24T20:02:40Z
 | Bolt ID | Stories | Status | Changed |
 |---------|---------|--------|---------|
 | 004-local-library-and-player-ui | 001, 002, 003, 004 | ✅ completed | - |
-| 005-local-library-and-player-ui | 005, 006, 007, 008 | [ ] planned | - |
+| 005-local-library-and-player-ui | 005, 006, 007, 008 | ✅ completed | - |
 | 006-local-library-and-player-ui | 009, 010, 011, 012, 013 | [ ] planned | - |
 | 007-local-library-and-player-ui | 014, 015, 016, 017 | [ ] planned | - |
 | 008-local-library-and-player-ui | 018, 019, 020, 021 | [ ] planned | - |
@@ -43,6 +43,10 @@ last_updated: 2026-10-24T20:02:40Z
 | 2026-10-24T19:30:24Z | 004-local-library-and-player-ui | stage-complete | plan → implement |
 | 2026-10-24T19:53:18Z | 004-local-library-and-player-ui | stage-complete | implement → test |
 | 2026-10-24T20:02:40Z | 004-local-library-and-player-ui | completed | All 3 stages done; 227 tests pass |
+| 2026-10-24T20:04:34Z | 005-local-library-and-player-ui | started | Stage 1: plan |
+| 2026-10-24T20:07:33Z | 005-local-library-and-player-ui | stage-complete | plan → implement |
+| 2026-10-24T20:54:50Z | 005-local-library-and-player-ui | stage-complete | implement → test |
+| 2026-10-24T21:20:18Z | 005-local-library-and-player-ui | completed | All 3 stages done; 329 tests pass |
 
 ## Notes
 
@@ -55,3 +59,6 @@ last_updated: 2026-10-24T20:02:40Z
   `LibraryScanner`, as planned. Recorded in `standards/tech-stack.md`.
 - `permission_handler` pinned to ^12.0.1: 13.x requires compile SDK 37 (Flutter 3.47
   uses 36).
+- Bolt 005: the emulator draws with SwiftShader (CPU) unless started with `-gpu host`;
+  frame-raster timings are only meaningful with the host GPU, and still vary run to run.
+  60 fps scrolling and 30-minute screen-off playback remain open for a real phone.

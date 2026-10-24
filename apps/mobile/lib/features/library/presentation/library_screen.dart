@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zema_core/zema_core.dart';
 
 import '../../../app/theme/zema_colors.dart';
-import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/tab_page.dart';
 import '../application/library_access_controller.dart';
-import '../application/library_providers.dart';
-import '../application/library_sync_controller.dart';
+import 'tracks_view.dart';
 
 /// The Library tab: audio access first, then the phone's tracks.
 class LibraryScreen extends ConsumerWidget {
@@ -22,7 +19,7 @@ class LibraryScreen extends ConsumerWidget {
     return TabPage(
       title: l10n.navLibrary,
       child: switch (access) {
-        AsyncData(value: LibraryAccess.granted) => const _LibraryContent(),
+        AsyncData(value: LibraryAccess.granted) => const _LibraryTabs(),
         AsyncData(:final value) => _AccessState(access: value),
         AsyncError() => EmptyState(
           kind: EmptyStateKind.error,
@@ -86,135 +83,53 @@ class _AccessState extends ConsumerWidget {
   }
 }
 
-/// Stored tracks, the first-scan progress, and scan failures.
-class _LibraryContent extends ConsumerWidget {
-  const _LibraryContent();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final sync = ref.watch(librarySyncProvider);
-    final tracks = ref.watch(libraryTracksProvider);
-
-    ref.listen(librarySyncProvider, (previous, next) {
-      final hasTracks = ref.read(libraryTracksProvider).value?.isNotEmpty;
-      if (next.hasFailed && previous?.hasFailed != true && hasTracks == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.libraryScanFailedSnack),
-            action: SnackBarAction(
-              label: l10n.actionTryAgain,
-              onPressed: ref.read(librarySyncProvider.notifier).sync,
-            ),
-          ),
-        );
-      }
-    });
-
-    void retry() => ref.read(librarySyncProvider.notifier).sync();
-
-    return switch (tracks) {
-      AsyncData(:final value) when value.isNotEmpty => _TrackList(
-        tracks: value,
-      ),
-      AsyncData() when sync.hasFailed => EmptyState(
-        kind: EmptyStateKind.error,
-        title: l10n.libraryScanFailedTitle,
-        message: l10n.libraryScanFailedMessage,
-        actionLabel: l10n.actionTryAgain,
-        onAction: retry,
-      ),
-      AsyncData() when sync.lastResult != null && !sync.isScanning =>
-        EmptyState(
-          kind: EmptyStateKind.empty,
-          title: l10n.libraryEmptyTitle,
-          message: l10n.libraryEmptyMessage,
-        ),
-      AsyncError() => EmptyState(
-        kind: EmptyStateKind.error,
-        title: l10n.libraryScanFailedTitle,
-        message: l10n.libraryScanFailedMessage,
-        actionLabel: l10n.actionTryAgain,
-        onAction: () => ref.invalidate(libraryTracksProvider),
-      ),
-      // Loading, or nothing stored yet while the first scan runs.
-      _ => _Scanning(label: l10n.libraryScanning),
-    };
-  }
-}
-
-class _Scanning extends StatelessWidget {
-  const _Scanning({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.zemaColors;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(ZemaSpacing.screenSide),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(color: colors.accent),
-            const SizedBox(height: 16),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium
-                  ?.copyWith(color: colors.muted),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Temporary plain list; bolt 005 replaces it with the Tracks screen (S10).
-class _TrackList extends StatelessWidget {
-  const _TrackList({required this.tracks});
-
-  final List<Track> tracks;
+/// The top tabs. Only Tracks is built; the others arrive in later bolts.
+class _LibraryTabs extends StatelessWidget {
+  const _LibraryTabs();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
-    final textTheme = Theme.of(context).textTheme;
-    return ListView.builder(
-      itemCount: tracks.length + 1,
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(
-              ZemaSpacing.screenSide,
-              8,
-              ZemaSpacing.screenSide,
-              8,
-            ),
-            child: Text(
-              l10n.librarySongCount(tracks.length),
-              style: textTheme.labelLarge?.copyWith(color: colors.muted),
-            ),
-          );
-        }
-        final track = tracks[index - 1];
-        return ListTile(
-          title: Text(
-            track.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+    final later = [
+      l10n.libraryTabFolders,
+      l10n.libraryTabAlbums,
+      l10n.libraryTabArtists,
+      l10n.libraryTabFavorites,
+      l10n.libraryTabPlaylists,
+    ];
+    return DefaultTabController(
+      length: later.length + 1,
+      child: Column(
+        children: [
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            labelColor: colors.primaryText,
+            unselectedLabelColor: colors.muted,
+            indicatorColor: colors.primary,
+            dividerColor: colors.line,
+            tabs: [
+              Tab(text: l10n.libraryTabTracks),
+              for (final name in later) Tab(text: name),
+            ],
           ),
-          subtitle: Text(
-            track.artist ?? l10n.unknownArtist,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: colors.muted),
+          Expanded(
+            child: TabBarView(
+              children: [
+                const TracksView(),
+                for (final _ in later)
+                  EmptyState(
+                    kind: EmptyStateKind.empty,
+                    title: l10n.comingSoonTitle,
+                    message: l10n.libraryTabComingSoon,
+                  ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

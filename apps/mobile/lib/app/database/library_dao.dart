@@ -15,6 +15,17 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
   Future<List<Track>> allTracks() async =>
       (await select(tracks).get()).map(_toTrack).toList();
 
+  /// The tracks with [ids] that still exist, in the order of [ids]
+  /// (missing files and unknown IDs are left out).
+  Future<List<Track>> tracksByIds(List<int> ids) async {
+    if (ids.isEmpty) return const [];
+    final rows = await (select(
+      tracks,
+    )..where((t) => t.id.isIn(ids) & t.missing.not())).get();
+    final byId = {for (final row in rows) row.id: _toTrack(row)};
+    return [for (final id in ids) ?byId[id]];
+  }
+
   /// Tracks to show in the library, sorted by title: not missing, at least
   /// [minDuration] long, and neither hidden themselves nor inside a hidden
   /// folder (or one of its subfolders).

@@ -17,6 +17,7 @@ import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema/shared/widgets/empty_state.dart';
 
 import '../helpers/fake_library.dart';
+import '../helpers/fake_player.dart';
 import '../helpers/pump_app.dart';
 
 Finder _navLabel(String label) =>
@@ -160,11 +161,14 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           // The shell starts the library sync; keep it idle here.
-          overrides: libraryOverrides(
-            permissions: FakeAudioPermissionService(
-              current: AudioAccess.unsupported,
+          overrides: [
+            ...libraryOverrides(
+              permissions: FakeAudioPermissionService(
+                current: AudioAccess.unsupported,
+              ),
             ),
-          ),
+            ...playerOverrides(),
+          ],
           child: MaterialApp.router(
             routerConfig: router,
             localizationsDelegates: AppLocalizations.localizationsDelegates,

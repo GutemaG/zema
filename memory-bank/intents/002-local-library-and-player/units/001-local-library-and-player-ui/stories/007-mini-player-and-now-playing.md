@@ -2,11 +2,11 @@
 id: 007-mini-player-and-now-playing
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
-status: draft
+status: complete
 priority: must
 created: 2026-10-24T19:22:00Z
 assigned_bolt: 005-local-library-and-player-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 007-mini-player-and-now-playing

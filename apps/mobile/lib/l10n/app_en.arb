@@ -129,6 +129,183 @@
       }
     }
   },
+  "libraryTabTracks": "Tracks",
+  "@libraryTabTracks": {
+    "description": "Library top tab with all songs."
+  },
+  "libraryTabFolders": "Folders",
+  "@libraryTabFolders": {
+    "description": "Library top tab with songs by folder."
+  },
+  "libraryTabAlbums": "Albums",
+  "@libraryTabAlbums": {
+    "description": "Library top tab with albums."
+  },
+  "libraryTabArtists": "Artists",
+  "@libraryTabArtists": {
+    "description": "Library top tab with artists."
+  },
+  "libraryTabFavorites": "Favorites",
+  "@libraryTabFavorites": {
+    "description": "Library top tab with favorite songs."
+  },
+  "libraryTabPlaylists": "Playlists",
+  "@libraryTabPlaylists": {
+    "description": "Library top tab with playlists."
+  },
+  "libraryTabComingSoon": "This part of your library is coming soon.",
+  "@libraryTabComingSoon": {
+    "description": "Message on a Library top tab that is not built yet."
+  },
+  "librarySearchHint": "Search songs, artists, albums",
+  "@librarySearchHint": {
+    "description": "Hint in the search field above the song list."
+  },
+  "libraryClearSearch": "Clear search",
+  "@libraryClearSearch": {
+    "description": "Button that clears the search field."
+  },
+  "libraryNoResultsTitle": "No matches",
+  "@libraryNoResultsTitle": {
+    "description": "Heading when no song matches the search."
+  },
+  "libraryNoResultsMessage": "Try a different word or check the spelling.",
+  "@libraryNoResultsMessage": {
+    "description": "Message when no song matches the search."
+  },
+  "librarySortTooltip": "Sort",
+  "@librarySortTooltip": {
+    "description": "Button that opens the sort options for the song list."
+  },
+  "sortTitle": "Title",
+  "@sortTitle": {
+    "description": "Sort the song list by title."
+  },
+  "sortArtist": "Artist",
+  "@sortArtist": {
+    "description": "Sort the song list by artist."
+  },
+  "sortAlbum": "Album",
+  "@sortAlbum": {
+    "description": "Sort the song list by album."
+  },
+  "sortDateAdded": "Date added",
+  "@sortDateAdded": {
+    "description": "Sort the song list by when the file was added."
+  },
+  "sortDuration": "Duration",
+  "@sortDuration": {
+    "description": "Sort the song list by length."
+  },
+  "sortAscending": "Ascending",
+  "@sortAscending": {
+    "description": "Sort from A to Z, oldest or shortest first."
+  },
+  "sortDescending": "Descending",
+  "@sortDescending": {
+    "description": "Sort from Z to A, newest or longest first."
+  },
+  "actionPlay": "Play",
+  "@actionPlay": {
+    "description": "Button that plays a list of songs in order."
+  },
+  "actionShuffle": "Shuffle",
+  "@actionShuffle": {
+    "description": "Button that plays a list of songs in random order."
+  },
+  "playerPlay": "Play",
+  "@playerPlay": {
+    "description": "Player button that starts playback."
+  },
+  "playerPause": "Pause",
+  "@playerPause": {
+    "description": "Player button that pauses playback."
+  },
+  "playerNext": "Next",
+  "@playerNext": {
+    "description": "Player button that skips to the next song."
+  },
+  "playerPrevious": "Previous",
+  "@playerPrevious": {
+    "description": "Player button that goes to the previous song or restarts this one."
+  },
+  "playerShuffleOn": "Shuffle on",
+  "@playerShuffleOn": {
+    "description": "Player shuffle button when shuffle is on."
+  },
+  "playerShuffleOff": "Shuffle off",
+  "@playerShuffleOff": {
+    "description": "Player shuffle button when shuffle is off."
+  },
+  "playerRepeatOff": "Repeat off",
+  "@playerRepeatOff": {
+    "description": "Player repeat button when repeat is off."
+  },
+  "playerRepeatAll": "Repeat all",
+  "@playerRepeatAll": {
+    "description": "Player repeat button when the whole queue repeats."
+  },
+  "playerRepeatOne": "Repeat one",
+  "@playerRepeatOne": {
+    "description": "Player repeat button when the current song repeats."
+  },
+  "playerClose": "Close",
+  "@playerClose": {
+    "description": "Button that closes the Now Playing screen."
+  },
+  "playerNowPlaying": "Now playing",
+  "@playerNowPlaying": {
+    "description": "Title of the Now Playing screen, for screen readers."
+  },
+  "playerOpen": "Open Now Playing",
+  "@playerOpen": {
+    "description": "Screen-reader hint on the mini player."
+  },
+  "playerSeek": "Song position",
+  "@playerSeek": {
+    "description": "Screen-reader label of the seek bar."
+  },
+  "playerNoLyrics": "No lyrics yet",
+  "@playerNoLyrics": {
+    "description": "Shown on Now Playing where lyrics will appear in a later version."
+  },
+  "playbackChannelName": "Playback",
+  "@playbackChannelName": {
+    "description": "Name of the Android notification channel for music playback."
+  },
+  "playerUnplayable": "Couldn't play {title}",
+  "@playerUnplayable": {
+    "description": "Snackbar when a song file can't be played and is skipped.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "playerMiniLabel": "{title}, {artist}",
+  "@playerMiniLabel": {
+    "description": "Screen-reader label of the mini player: song title and artist.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "playerTrackPosition": "{position} of {duration}",
+  "@playerTrackPosition": {
+    "description": "Screen-reader value of the seek bar, e.g. \"1:05 of 3:40\".",
+    "placeholders": {
+      "position": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
   "settingsTitle": "Settings",
   "@settingsTitle": {
     "description": "Title of the Settings screen."

@@ -10,11 +10,13 @@ import 'package:zema/app/theme/zema_theme.dart';
 import 'package:zema/app/zema_app.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/data/library_scanner.dart';
+import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/features/settings/application/app_version_provider.dart';
 import 'package:zema/features/settings/application/settings_bootstrap.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 
 import 'fake_library.dart';
+import 'fake_player.dart';
 
 /// Pumps the full app the way `main()` starts it: settings are loaded from
 /// (mocked) saved preferences before the first frame.
@@ -25,7 +27,8 @@ import 'fake_library.dart';
 /// so the System theme renders the dark palettes), start route and app
 /// version are faked. The device library is faked too: [libraryScanner]
 /// (empty by default), [permissions] (granted by default) and an in-memory
-/// database. With [settle] false only the first frame is pumped.
+/// database, and so is the player ([audioHandler], over a fake backend by
+/// default). With [settle] false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
   String location = AppRoutes.home,
@@ -36,6 +39,7 @@ Future<void> pumpZemaApp(
   Future<String> Function()? appVersion,
   LibraryScanner? libraryScanner,
   AudioPermissionService? permissions,
+  ZemaAudioHandler? audioHandler,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -50,6 +54,7 @@ Future<void> pumpZemaApp(
       overrides: [
         ...settingsOverrides,
         ...libraryOverrides(scanner: libraryScanner, permissions: permissions),
+        ...playerOverrides(handler: audioHandler),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(
           (ref) => appVersion?.call() ?? Future.value('1.0.0 (1)'),
