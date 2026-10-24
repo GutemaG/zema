@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 10
-- **Generated**: 10
-- **Last updated**: 2026-10-23T22:22:46Z
+- **Total stories**: 11
+- **Generated**: 11
+- **Last updated**: 2026-10-24T19:05:00Z
 
 ---
 
@@ -24,6 +24,7 @@ Path: `memory-bank/intents/001-app-foundation/units/001-app-foundation-ui/storie
 - [x] **008-settings-screen** (app-foundation-ui): Minimal Settings screen - Must - ✅ GENERATED
 - [x] **009-switch-palette** (app-foundation-ui): Switch and remember palette - Must - ✅ GENERATED
 - [x] **010-switch-language** (app-foundation-ui): Switch and remember language - Must - ✅ GENERATED
+- [x] **011-switch-theme-mode** (app-foundation-ui): Switch and remember theme mode (System / Light / Dark) - Must - ✅ GENERATED (added during construction)
 
 ### 002-local-library-and-player … 008-admin-website
 
@@ -34,6 +35,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 10
+- **Generated**: 11
 - **In Progress**: 0
 - **Completed**: 0

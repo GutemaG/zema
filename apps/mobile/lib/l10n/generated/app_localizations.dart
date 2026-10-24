@@ -174,11 +174,71 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
-  /// Message on the Settings screen before it is built.
+  /// Settings section heading for language and theme.
   ///
   /// In en, this message translates to:
-  /// **'Language and palette settings will be here.'**
-  String get settingsComingSoonMessage;
+  /// **'General'**
+  String get settingsSectionGeneral;
+
+  /// Settings section heading for version and licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsSectionAbout;
+
+  /// Settings row and picker title for the app's UI language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// Settings row and sheet title for light/dark mode and color palette.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearance;
+
+  /// Theme option: follow the phone's light/dark setting.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeModeSystem;
+
+  /// Theme option: always light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeModeLight;
+
+  /// Theme option: always dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeModeDark;
+
+  /// Name of the default color palette (gold on near-black, or on parchment in light mode).
+  ///
+  /// In en, this message translates to:
+  /// **'Night Vigil'**
+  String get paletteNightVigil;
+
+  /// Short name of the "Night Vigil · Wine" palette (gold on deep wine).
+  ///
+  /// In en, this message translates to:
+  /// **'Wine'**
+  String get paletteWine;
+
+  /// Settings row showing the installed app version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get settingsVersion;
+
+  /// Settings row that opens the list of open-source licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get settingsLicenses;
 
   /// Title when the app is asked to open a screen that does not exist.
   ///
@@ -197,6 +257,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go home'**
   String get actionGoHome;
+
+  /// Button that closes a sheet after making changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get actionDone;
 }
 
 class _AppLocalizationsDelegate

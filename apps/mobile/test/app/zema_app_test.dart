@@ -11,6 +11,8 @@ Future<void> _pumpApp(
   WidgetTester tester, {
   ZemaPalette palette = ZemaPalette.fallback,
 }) async {
+  tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+  addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -34,6 +36,8 @@ void main() {
     });
 
     testWidgets('uses Night Vigil by default', (tester) async {
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -53,6 +57,24 @@ void main() {
 
       final context = tester.element(find.text('Zema'));
       expect(context.zemaColors, ZemaColors.wine);
+    });
+
+    testWidgets('follows a light phone by default', (tester) async {
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
+          ],
+          child: const ZemaApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.text('Zema'));
+      expect(context.zemaColors, ZemaColors.nightVigilLight);
+      expect(Theme.of(context).brightness, Brightness.light);
     });
   });
 }

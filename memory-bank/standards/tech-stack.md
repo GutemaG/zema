@@ -32,8 +32,9 @@ site and tests. Kotlin is limited to the platform-channel boundary.
   folders derived from file paths.
 - **Localization:** `flutter_localizations` + ARB files (en, am, om, ti). English is
   complete first; the others fall back to English.
-- **Theme:** dark only. A `ZemaColors` `ThemeExtension` with two palettes, Night Vigil
-  (default) and Night Vigil · Wine, switchable in Settings. There is no light theme.
+- **Theme:** System / Light / Dark (default System). A `ZemaColors` `ThemeExtension` with
+  two palettes, Night Vigil (default) and Night Vigil · Wine, each in a dark and a light
+  version; palette and theme mode are separate settings (decided 2026-10-24).
 - **Fonts:** Inter + Noto Sans Ethiopic, bundled as assets (never fetched at runtime).
 - **Native bridge:** `MethodChannel` (permissions, open settings, show/hide overlay) and
   `EventChannel` (now-playing events). Event format: `docs/flutter-build-notes.md`.

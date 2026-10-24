@@ -1,9 +1,9 @@
 ---
 intent: 001-app-foundation
 phase: inception
-status: units-defined
+status: complete
 created: 2026-10-23T22:16:40Z
-updated: 2026-10-23T22:31:00Z
+updated: 2026-10-24T19:13:04Z
 ---
 
 # Requirements: App Foundation
@@ -49,7 +49,7 @@ component created here.
 - **Priority**: Must
 
 ### FR-3: Theme from design tokens
-- **Description**: `ZemaColors` `ThemeExtension` containing every token in `docs/design-system.md` (bg, surface, line, text, muted, faint, primary, onPrimary, primaryText, accent, accentText, soft, tile, tileFg, shadow) with two instances: Night Vigil (default) and Night Vigil · Wine. `ThemeData` built from it with `ColorScheme.dark(...)`. Dark only. Spacing/radius values from the design system available as constants.
+- **Description**: `ZemaColors` `ThemeExtension` containing every token in `docs/design-system.md` (bg, surface, line, text, muted, faint, primary, onPrimary, primaryText, accent, accentText, soft, tile, tileFg, shadow) with four instances: Night Vigil (default) and Night Vigil · Wine, each in a dark and a light version. A light and a dark `ThemeData` built from it. (Dark-only until 2026-10-24; light added by FR-12.) Spacing/radius values from the design system available as constants.
 - **Acceptance Criteria**:
   - All 15 tokens exist with the exact hex values from `docs/design-system.md` for both palettes (unit test compares values).
   - No `Color(0x...)` literals outside the theme files (checked by grep in CI or a test).
@@ -94,9 +94,9 @@ component created here.
 - **Priority**: Must
 
 ### FR-9: Settings screen (S28, minimal)
-- **Description**: Settings screen styled per the design system (grouped cards, value rows with ›), containing only: General → Language, Palette; About → version, open-source licenses.
+- **Description**: Settings screen styled per the design system (grouped cards, value rows with ›), containing only: General → Language, Appearance (palette + theme mode); About → version, open-source licenses.
 - **Acceptance Criteria**:
-  - Language and Palette rows show the current value and open a picker.
+  - Language and Appearance rows show the current value and open a picker.
   - About shows the app version from the build (e.g. `1.0.0 (1)`) and opens Flutter's license page.
   - No other S28 sections are present.
 - **Priority**: Must
@@ -116,6 +116,15 @@ component created here.
   - CI fails on unformatted code.
   - The default `widget_test.dart` counter test is replaced by real tests.
 - **Priority**: Must
+
+### FR-12: Theme mode (System / Light / Dark) with persistence
+- **Description**: Added during construction (2026-10-24). Settings offers one Appearance choice: theme mode (System, Light, Dark; default System, following the phone) and palette, set together in one sheet. Each palette has a light version with its own tokens (draft values in `docs/design-system.md`).
+- **Acceptance Criteria**:
+  - Picking Light or Dark re-themes all visible screens immediately; System follows the phone's setting live.
+  - The chosen mode applies on the first frame after a relaunch.
+  - Light tokens meet the same contrast rules as the dark ones (text ≥ 4.5:1).
+- **Priority**: Must
+- **Story**: 011-switch-theme-mode
 
 ---
 
@@ -169,7 +178,7 @@ component created here.
 | Assumption | Risk if Invalid | Mitigation |
 |------------|-----------------|------------|
 | Font licenses (SIL OFL) allow bundling | Legal issue | Both are OFL; register licenses in `LicenseRegistry` |
-| Dark-only theme is acceptable | Rework if light theme requested later | Tokens isolated in `ZemaColors`; a new palette is additive |
+| ~~Dark-only theme is acceptable~~ | Light theme requested 2026-10-24 (FR-12) | Tokens isolated in `ZemaColors`; light versions were additive |
 | Flutter's built-in localizations cover am and ti; om may not exist | Material widgets show English/crash for om | Provide fallback delegate mapping `om` Material/Cupertino strings to English |
 
 ---

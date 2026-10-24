@@ -48,9 +48,49 @@
   "@settingsTitle": {
     "description": "Title of the Settings screen."
   },
-  "settingsComingSoonMessage": "Language and palette settings will be here.",
-  "@settingsComingSoonMessage": {
-    "description": "Message on the Settings screen before it is built."
+  "settingsSectionGeneral": "General",
+  "@settingsSectionGeneral": {
+    "description": "Settings section heading for language and theme."
+  },
+  "settingsSectionAbout": "About",
+  "@settingsSectionAbout": {
+    "description": "Settings section heading for version and licenses."
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Settings row and picker title for the app's UI language."
+  },
+  "settingsAppearance": "Appearance",
+  "@settingsAppearance": {
+    "description": "Settings row and sheet title for light/dark mode and color palette."
+  },
+  "themeModeSystem": "System",
+  "@themeModeSystem": {
+    "description": "Theme option: follow the phone's light/dark setting."
+  },
+  "themeModeLight": "Light",
+  "@themeModeLight": {
+    "description": "Theme option: always light."
+  },
+  "themeModeDark": "Dark",
+  "@themeModeDark": {
+    "description": "Theme option: always dark."
+  },
+  "paletteNightVigil": "Night Vigil",
+  "@paletteNightVigil": {
+    "description": "Name of the default color palette (gold on near-black, or on parchment in light mode)."
+  },
+  "paletteWine": "Wine",
+  "@paletteWine": {
+    "description": "Short name of the \"Night Vigil · Wine\" palette (gold on deep wine)."
+  },
+  "settingsVersion": "Version",
+  "@settingsVersion": {
+    "description": "Settings row showing the installed app version."
+  },
+  "settingsLicenses": "Open-source licenses",
+  "@settingsLicenses": {
+    "description": "Settings row that opens the list of open-source licenses."
   },
   "errorNotFoundTitle": "Page not found",
   "@errorNotFoundTitle": {
@@ -63,5 +103,9 @@
   "actionGoHome": "Go home",
   "@actionGoHome": {
     "description": "Button that returns to the Home tab."
+  },
+  "actionDone": "Done",
+  "@actionDone": {
+    "description": "Button that closes a sheet after making changes."
   }
 }

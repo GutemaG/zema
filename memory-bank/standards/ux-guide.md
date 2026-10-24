@@ -10,8 +10,11 @@ disagree, `docs/design-system.md` wins.
 ## Design System / Component Library
 
 - Material 3 widgets themed from design tokens. There is no third-party component library.
-- Palettes: **Night Vigil** (default) and **Night Vigil · Wine**, both dark. The app is
-  **dark only**. The Settings "Theme" row is a palette switch (decided 2026-10-23).
+- Palettes: **Night Vigil** (default) and **Night Vigil · Wine**, each with a dark and a
+  light version. Settings has one **Appearance** row; its sheet sets the theme mode
+  (System / Light / Dark, default System, follows the phone) and the palette together,
+  with preview cards (decided 2026-10-24; replaces the dark-only decision of 2026-10-23).
+  Light tokens are a draft until a design pass.
 - Shared components (IDs from `docs/screens.md` §9): C01 mini player, C02 queue sheet,
   C03 song menu, C04 add-to-playlist, C05 sleep timer, C06 lyrics view, C07 empty/error/
   offline states, C08 media notification, C09 guest sign-in prompt. Build each once in
@@ -21,7 +24,7 @@ disagree, `docs/design-system.md` wins.
 ## Styling Approach
 
 - One `ThemeData` built from a `ZemaColors` `ThemeExtension`;
-  `ColorScheme.dark(surface: bg, primary: primary, onPrimary: onPrimary, …)`. Custom
+  `ColorScheme.dark(…)` / `ColorScheme.light(…)` (surface: bg, primary, onPrimary, …). Custom
   tokens (`faint`, `soft`, `tile`, `primaryText`, `accentText`) are read from the
   extension. Never hard-code hex values in widgets.
 - Gold (`primary`/`accent`) marks one thing per area: the main action, the current line,

@@ -41,6 +41,51 @@ const _wine = {
   'shadow': 0x80000000,
 };
 
+// Light versions: draft table in docs/design-system.md (2026-10-24).
+const _nightVigilLight = {
+  'bg': 0xFFFAF6EE,
+  'surface': 0xFFFFFDF8,
+  'line': 0xFFE6DCCB,
+  'text': 0xFF1F1712,
+  'muted': 0xFF6B5D50,
+  'faint': 0xFF958676,
+  'primary': 0xFFE3AE4A,
+  'onPrimary': 0xFF1F1712,
+  'primaryText': 0xFF120C08,
+  'accent': 0xFFA87420,
+  'accentText': 0xFF87570A,
+  'soft': 0xFFF5E6C8,
+  'tile': 0xFFF0E5D3,
+  'tileFg': 0xFF87570A,
+  'shadow': 0x1F000000,
+};
+
+const _wineLight = {
+  'bg': 0xFFFAF3F2,
+  'surface': 0xFFFFFCFB,
+  'line': 0xFFEAD9D8,
+  'text': 0xFF24141A,
+  'muted': 0xFF735C60,
+  'faint': 0xFF9C8689,
+  'primary': 0xFFD9A441,
+  'onPrimary': 0xFF24141A,
+  'primaryText': 0xFF170A0F,
+  'accent': 0xFFA06C24,
+  'accentText': 0xFF85540C,
+  'soft': 0xFFF5E3CF,
+  'tile': 0xFFF2E1E1,
+  'tileFg': 0xFF85540C,
+  'shadow': 0x1F000000,
+};
+
+/// WCAG contrast ratio between two opaque colors.
+double _contrast(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  final (hi, lo) = la > lb ? (la, lb) : (lb, la);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 Map<String, int> _tokens(ZemaColors c) => {
   'bg': c.bg.toARGB32(),
   'surface': c.surface.toARGB32(),
@@ -73,6 +118,43 @@ void main() {
     test('Wine matches the design system', () {
       expect(_tokens(ZemaColors.wine), _wine);
     });
+
+    test('Night Vigil light matches the design system', () {
+      expect(_tokens(ZemaColors.nightVigilLight), _nightVigilLight);
+    });
+
+    test('Wine light matches the design system', () {
+      expect(_tokens(ZemaColors.wineLight), _wineLight);
+    });
+
+    const all = {
+      'nightVigil': ZemaColors.nightVigil,
+      'wine': ZemaColors.wine,
+      'nightVigilLight': ZemaColors.nightVigilLight,
+      'wineLight': ZemaColors.wineLight,
+    };
+    for (final MapEntry(key: name, value: c) in all.entries) {
+      test('$name meets the contrast rules', () {
+        void check(String pair, Color fg, Color bg, double minimum) {
+          expect(
+            _contrast(fg, bg),
+            greaterThanOrEqualTo(minimum),
+            reason: '$name $pair',
+          );
+        }
+
+        for (final (label, bg) in [('bg', c.bg), ('surface', c.surface)]) {
+          check('text on $label', c.text, bg, 4.5);
+          check('muted on $label', c.muted, bg, 4.5);
+          check('primaryText on $label', c.primaryText, bg, 4.5);
+        }
+        check('onPrimary on primary', c.onPrimary, c.primary, 4.5);
+        check('accentText on soft', c.accentText, c.soft, 4.5);
+        check('tileFg on tile', c.tileFg, c.tile, 3);
+        // Dimmed sung lyrics only, at 17 px or larger.
+        check('faint on bg', c.faint, c.bg, 3);
+      });
+    }
 
     test('lerp returns the end palettes at t = 0 and t = 1', () {
       const a = ZemaColors.nightVigil;
@@ -111,12 +193,22 @@ void main() {
   group('ZemaPalette', () {
     test('falls back to Night Vigil when nothing is saved', () {
       expect(ZemaPalette.fallback, ZemaPalette.nightVigil);
-      expect(ZemaPalette.fallback.colors, same(ZemaColors.nightVigil));
+      expect(ZemaPalette.fallback.dark, same(ZemaColors.nightVigil));
     });
 
-    test('maps each palette to its colors', () {
-      expect(ZemaPalette.nightVigil.colors, same(ZemaColors.nightVigil));
-      expect(ZemaPalette.wine.colors, same(ZemaColors.wine));
+    test('maps each palette to its dark and light colors', () {
+      expect(ZemaPalette.nightVigil.dark, same(ZemaColors.nightVigil));
+      expect(ZemaPalette.wine.dark, same(ZemaColors.wine));
+      expect(ZemaPalette.nightVigil.light, same(ZemaColors.nightVigilLight));
+      expect(ZemaPalette.wine.light, same(ZemaColors.wineLight));
+      expect(
+        ZemaPalette.wine.colorsFor(Brightness.light),
+        same(ZemaColors.wineLight),
+      );
+      expect(
+        ZemaPalette.wine.colorsFor(Brightness.dark),
+        same(ZemaColors.wine),
+      );
     });
   });
 

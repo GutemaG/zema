@@ -26,8 +26,12 @@ matches the canvas.
 
 ## Colors
 
-Both palettes are dark. Names below are the token names used on the canvas and should be
-used as-is in Flutter (`ZemaColors`).
+Each palette has a dark and a light version. In Settings → Appearance the user picks the
+palette (Night Vigil or Night Vigil · Wine, shown as "Wine") and the theme mode (System,
+Light or Dark; System is the default and follows the phone) in one sheet. Names below are the token names used on the canvas and
+should be used as-is in Flutter (`ZemaColors`).
+
+### Dark (approved)
 
 | Token | Use | Night Vigil | Night Vigil · Wine |
 |---|---|---|---|
@@ -47,6 +51,33 @@ used as-is in Flutter (`ZemaColors`).
 | `tileFg` | Letter on the placeholder tile | `#E3AE4A` | `#D9A441` |
 | `shadow` | Shadows | `rgba(0,0,0,0.5)` | `rgba(0,0,0,0.5)` |
 
+### Light (draft, 2026-10-24)
+
+Drafted during construction when the light theme was added. All contrast rules are met;
+replace with designer-reviewed values after a design pass on the canvas.
+
+| Token | Night Vigil · Light | Night Vigil · Wine · Light |
+|---|---|---|
+| `bg` | `#FAF6EE` | `#FAF3F2` |
+| `surface` | `#FFFDF8` | `#FFFCFB` |
+| `line` | `#E6DCCB` | `#EAD9D8` |
+| `text` | `#1F1712` | `#24141A` |
+| `muted` | `#6B5D50` | `#735C60` |
+| `faint` | `#958676` | `#9C8689` |
+| `primary` | `#E3AE4A` | `#D9A441` |
+| `onPrimary` | `#1F1712` | `#24141A` |
+| `primaryText` | `#120C08` | `#170A0F` |
+| `accent` | `#A87420` | `#A06C24` |
+| `accentText` | `#87570A` | `#85540C` |
+| `soft` | `#F5E6C8` | `#F5E3CF` |
+| `tile` | `#F0E5D3` | `#F2E1E1` |
+| `tileFg` | `#87570A` | `#85540C` |
+| `shadow` | `rgba(0,0,0,0.12)` | `rgba(0,0,0,0.12)` |
+
+Measured contrast (Night Vigil · Light / Wine · Light): `text` on `bg` 16.4 / 16.1,
+`muted` on `bg` 5.9 / 5.6, `accentText` on `soft` 5.0 / 5.1, `onPrimary` on `primary`
+8.8 / 7.9, `faint` on `bg` 3.3 / 3.1.
+
 Rules:
 - Text on `bg`/`surface` uses `text` or `muted` (both pass 4.5:1). `faint` is only for
   dimmed lyric lines at ≥17px.
@@ -55,9 +86,9 @@ Rules:
 - Lyrics status: **Synced** = `soft` background + `accentText`; **Text only** = `line`
   border + `muted`.
 - Album art without an image: `tile` square with the first letter of the title in `tileFg`.
-
-Open: the app has no light palette yet. Settings shows "Theme" — decide whether the app is
-dark-only, or design a light variant later.
+- Light mode: bright gold `primary` on a light `bg` is only ≈ 1.9:1. Use it for filled
+  buttons (dark `onPrimary` text) but use `accent` for thin indicators such as progress
+  bars and active borders.
 
 ## Typography
 
@@ -112,9 +143,10 @@ Profile & backup, onboarding and permissions.
 
 ## Flutter mapping
 
-- One `ThemeData` built from a `ZemaColors` `ThemeExtension` holding the tokens above;
-  the palette is chosen in Settings (Night Vigil / Wine).
-- `ColorScheme.dark(surface: bg, primary: primary, onPrimary: onPrimary, ...)` for
+- A light and a dark `ThemeData`, each built from a `ZemaColors` `ThemeExtension` holding
+  the tokens above; the palette (Night Vigil / Wine) and theme mode (System / Light /
+  Dark) are chosen in Settings.
+- `ColorScheme.dark(...)` / `ColorScheme.light(...)` (surface: bg, primary, onPrimary, ...) for
   Material widgets; custom tokens (`faint`, `soft`, `tile`, `primaryText`, `accentText`)
   are read from the extension.
 - Fonts: `Inter` and `Noto Sans Ethiopic` bundled as assets (not fetched at runtime), with

@@ -63,7 +63,7 @@ calendar content, payments, social features (comments, follows), phone or email 
 | Audio | just_audio + audio_service | Background playback, notification and lock-screen controls |
 | Library scan | on_audio_query (MediaStore) | Tracks, albums, artists, folders from the device |
 | Backend | Supabase (Postgres, Auth, RLS) | Relational data, server-side Ethiopic search, row-level permissions |
-| Theme | Dark only, with Night Vigil / Wine switch | Both approved palettes are dark |
+| Theme | System / Light / Dark (default System), Night Vigil / Wine palette each in dark and light | Changed 2026-10-24 from dark-only at the product owner's request; light tokens are a draft |
 
 ### Still open
 

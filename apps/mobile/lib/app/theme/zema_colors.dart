@@ -63,6 +63,45 @@ class ZemaColors extends ThemeExtension<ZemaColors> {
     shadow: Color(0x80000000),
   );
 
+  /// Light version of Night Vigil. Draft values (2026-10-24) until a design
+  /// pass; see `docs/design-system.md`.
+  static const ZemaColors nightVigilLight = ZemaColors(
+    bg: Color(0xFFFAF6EE),
+    surface: Color(0xFFFFFDF8),
+    line: Color(0xFFE6DCCB),
+    text: Color(0xFF1F1712),
+    muted: Color(0xFF6B5D50),
+    faint: Color(0xFF958676),
+    primary: Color(0xFFE3AE4A),
+    onPrimary: Color(0xFF1F1712),
+    primaryText: Color(0xFF120C08),
+    accent: Color(0xFFA87420),
+    accentText: Color(0xFF87570A),
+    soft: Color(0xFFF5E6C8),
+    tile: Color(0xFFF0E5D3),
+    tileFg: Color(0xFF87570A),
+    shadow: Color(0x1F000000),
+  );
+
+  /// Light version of Wine. Draft values (2026-10-24) until a design pass.
+  static const ZemaColors wineLight = ZemaColors(
+    bg: Color(0xFFFAF3F2),
+    surface: Color(0xFFFFFCFB),
+    line: Color(0xFFEAD9D8),
+    text: Color(0xFF24141A),
+    muted: Color(0xFF735C60),
+    faint: Color(0xFF9C8689),
+    primary: Color(0xFFD9A441),
+    onPrimary: Color(0xFF24141A),
+    primaryText: Color(0xFF170A0F),
+    accent: Color(0xFFA06C24),
+    accentText: Color(0xFF85540C),
+    soft: Color(0xFFF5E3CF),
+    tile: Color(0xFFF2E1E1),
+    tileFg: Color(0xFF85540C),
+    shadow: Color(0x1F000000),
+  );
+
   /// Screen background.
   final Color bg;
 

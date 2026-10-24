@@ -25,46 +25,48 @@ List<TextStyle> _styles(TextTheme t) => [
 
 void main() {
   for (final palette in ZemaPalette.values) {
-    group('buildTheme(${palette.name})', () {
-      final theme = buildTheme(palette);
-      final c = palette.colors;
+    for (final brightness in Brightness.values) {
+      group('buildTheme(${palette.name}, ${brightness.name})', () {
+        final theme = buildTheme(palette, brightness);
+        final c = palette.colorsFor(brightness);
 
-      test('is dark', () {
-        expect(theme.brightness, Brightness.dark);
-        expect(theme.colorScheme.brightness, Brightness.dark);
-      });
+        test('has the requested brightness', () {
+          expect(theme.brightness, brightness);
+          expect(theme.colorScheme.brightness, brightness);
+        });
 
-      test('maps the ColorScheme from the tokens', () {
-        final scheme = theme.colorScheme;
-        expect(scheme.surface, c.bg);
-        expect(scheme.primary, c.primary);
-        expect(scheme.onPrimary, c.onPrimary);
-        expect(scheme.onSurface, c.text);
-        expect(scheme.outline, c.line);
-        expect(theme.scaffoldBackgroundColor, c.bg);
-      });
+        test('maps the ColorScheme from the tokens', () {
+          final scheme = theme.colorScheme;
+          expect(scheme.surface, c.bg);
+          expect(scheme.primary, c.primary);
+          expect(scheme.onPrimary, c.onPrimary);
+          expect(scheme.onSurface, c.text);
+          expect(scheme.outline, c.line);
+          expect(theme.scaffoldBackgroundColor, c.bg);
+        });
 
-      test('carries the palette as a ZemaColors extension', () {
-        expect(theme.extension<ZemaColors>(), same(c));
-      });
+        test('carries the palette as a ZemaColors extension', () {
+          expect(theme.extension<ZemaColors>(), same(c));
+        });
 
-      test('uses Inter with Noto Sans Ethiopic as fallback', () {
-        for (final style in _styles(theme.textTheme)) {
-          expect(style.fontFamily, ZemaTypography.latinFamily);
-          expect(
-            style.fontFamilyFallback,
-            contains(ZemaTypography.ethiopicFamily),
-          );
-        }
-      });
+        test('uses Inter with Noto Sans Ethiopic as fallback', () {
+          for (final style in _styles(theme.textTheme)) {
+            expect(style.fontFamily, ZemaTypography.latinFamily);
+            expect(
+              style.fontFamilyFallback,
+              contains(ZemaTypography.ethiopicFamily),
+            );
+          }
+        });
 
-      test('never sets line height below 1.4 (Ethiopic needs room)', () {
-        final styles = _styles(theme.textTheme);
-        expect(styles, isNotEmpty);
-        for (final style in styles) {
-          expect(style.height, greaterThanOrEqualTo(1.4), reason: '$style');
-        }
+        test('never sets line height below 1.4 (Ethiopic needs room)', () {
+          final styles = _styles(theme.textTheme);
+          expect(styles, isNotEmpty);
+          for (final style in styles) {
+            expect(style.height, greaterThanOrEqualTo(1.4), reason: '$style');
+          }
+        });
       });
-    });
+    }
   }
 }

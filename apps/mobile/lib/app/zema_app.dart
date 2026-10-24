@@ -14,11 +14,13 @@ class ZemaApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final palette = ref.watch(paletteProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
-      theme: buildTheme(ref.watch(paletteProvider)),
-      themeMode: ThemeMode.dark,
+      theme: buildTheme(palette, Brightness.light),
+      darkTheme: buildTheme(palette, Brightness.dark),
+      themeMode: ref.watch(themeModeProvider),
       locale: ref.watch(appLanguageProvider).locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [

@@ -4,9 +4,9 @@ intent: 001-app-foundation
 unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: stories-defined
+status: complete
 created: 2026-10-23T22:22:46Z
-updated: 2026-10-23T22:22:46Z
+updated: 2026-10-24T19:13:04Z
 ---
 
 # Unit Brief: App Foundation UI
@@ -23,12 +23,13 @@ features into this shell.
 ### In Scope
 - Analyzer/format config and GitHub Actions CI for the workspace
 - App label, application ID check, placeholder launcher icon
-- `ZemaColors` ThemeExtension (Night Vigil, Wine), `ThemeData`, spacing/radius constants
+- `ZemaColors` ThemeExtension (Night Vigil, Wine; each dark and light), light and dark `ThemeData`, spacing/radius constants
 - Bundled Inter + Noto Sans Ethiopic with fallback and license registration
 - ARB localization (en, am, om, ti), first-launch locale resolution, `om` fallback delegates
 - go_router stateful shell with Home/Search/Library/Contribute and `/settings`, Riverpod root
 - Shared C07 empty/error/offline component; "Coming soon" on all four tabs
-- Settings screen (General: Language, Palette; About: version, licenses)
+- Settings screen (General: Language, Appearance; About: version, licenses)
+- Theme mode System / Light / Dark (story 011, added 2026-10-24)
 - `SettingsRepository` on `shared_preferences`, preloaded before `runApp`
 
 ### Out of Scope
@@ -47,6 +48,7 @@ features into this shell.
 | FR-2 | Placeholder tab content using shared empty state (C07) | Must |
 | FR-3 | Theme from design tokens | Must |
 | FR-4 | Palette switch with persistence | Must |
+| FR-12 | Theme mode (System / Light / Dark) with persistence | Must |
 | FR-5 | Bundled fonts | Must |
 | FR-6 | Routing and state management | Must |
 | FR-7 | Localization scaffold and initial locale | Must |
@@ -65,7 +67,7 @@ features into this shell.
 | `ZemaPalette` | Which approved palette is active | `nightVigil` (default), `wine` |
 | `ZemaColors` | ThemeExtension of design tokens | 15 tokens: bg … shadow |
 | `AppLanguage` | Supported UI languages | `en`, `am`, `om`, `ti` + native display name |
-| `AppSettings` | User's persisted preferences | `palette`, `language` (nullable until chosen) |
+| `AppSettings` | User's persisted preferences | `palette`, `themeMode` (System by default), `language` (nullable until chosen) |
 | `EmptyStateKind` | C07 variant | `empty`, `error`, `offline` |
 
 ### Key Operations
@@ -74,7 +76,7 @@ features into this shell.
 | `resolveInitialLanguage` | Pick UI language on launch | saved language?, device locales | `AppLanguage` |
 | `SettingsRepository.load` | Read prefs before first frame | — | `AppSettings` (defaults on missing/invalid) |
 | `SettingsRepository.savePalette / saveLanguage` | Persist a change | value | — |
-| `buildTheme` | Build `ThemeData` from palette | `ZemaPalette` | `ThemeData` |
+| `buildTheme` | Build `ThemeData` from palette and brightness | `ZemaPalette`, `Brightness` | `ThemeData` |
 
 ---
 
@@ -82,8 +84,8 @@ features into this shell.
 
 | Metric | Count |
 |--------|-------|
-| Total Stories | 10 |
-| Must Have | 10 |
+| Total Stories | 11 |
+| Must Have | 11 |
 | Should Have | 0 |
 | Could Have | 0 |
 
@@ -101,6 +103,7 @@ features into this shell.
 | 008-settings-screen | Minimal Settings screen | Must | Planned |
 | 009-switch-palette | Switch and remember palette | Must | Planned |
 | 010-switch-language | Switch and remember language | Must | Planned |
+| 011-switch-theme-mode | Switch and remember theme mode (added during construction) | Must | Planned |
 
 ---
 
@@ -141,7 +144,7 @@ for the version row, `flutter_launcher_icons` (dev) for the placeholder icon.
 ### Data Storage
 | Data | Type | Volume | Retention |
 |------|------|--------|-----------|
-| `paletteId`, `localeCode` | Key-value (shared_preferences) | 2 keys | Until app data cleared |
+| `paletteId`, `themeMode`, `localeCode` | Key-value (shared_preferences) | 3 keys | Until app data cleared |
 
 ---
 
@@ -160,7 +163,7 @@ for the version row, `flutter_launcher_icons` (dev) for the placeholder icon.
 - [ ] App launches on emulator and a real phone; four tabs switch and keep state
 - [ ] Palette and language switches apply immediately and survive force-stop
 - [ ] Ethiopic text renders with bundled font offline
-- [ ] Settings shows Language, Palette, version, licenses — nothing else
+- [ ] Settings shows Language, Appearance, version, licenses — nothing else
 
 ### Non-Functional
 - [ ] Cold start < 2 s (release, mid-range phone)
@@ -182,7 +185,7 @@ for the version row, `flutter_launcher_icons` (dev) for the placeholder icon.
 |------|------|---------|-----------|
 | 001-app-foundation-ui | simple | 001, 002, 003, 004 | Tooling, identity, theme, fonts |
 | 002-app-foundation-ui | simple | 005, 006, 007 | Localization, shell + routing, C07 |
-| 003-app-foundation-ui | simple | 008, 009, 010 | Settings + persistence |
+| 003-app-foundation-ui | simple | 008, 009, 010, 011 | Settings + persistence + theme mode |
 
 ---
 

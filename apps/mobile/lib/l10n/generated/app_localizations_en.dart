@@ -50,8 +50,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get settingsComingSoonMessage =>
-      'Language and palette settings will be here.';
+  String get settingsSectionGeneral => 'General';
+
+  @override
+  String get settingsSectionAbout => 'About';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get themeModeSystem => 'System';
+
+  @override
+  String get themeModeLight => 'Light';
+
+  @override
+  String get themeModeDark => 'Dark';
+
+  @override
+  String get paletteNightVigil => 'Night Vigil';
+
+  @override
+  String get paletteWine => 'Wine';
+
+  @override
+  String get settingsVersion => 'Version';
+
+  @override
+  String get settingsLicenses => 'Open-source licenses';
 
   @override
   String get errorNotFoundTitle => 'Page not found';
@@ -62,4 +91,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionGoHome => 'Go home';
+
+  @override
+  String get actionDone => 'Done';
 }
