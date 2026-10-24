@@ -3,22 +3,31 @@ id: 002-app-foundation-ui
 unit: 001-app-foundation-ui
 intent: 001-app-foundation
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 005-localization-and-initial-locale
   - 006-app-shell-and-routing
   - 007-shared-empty-state-component
 created: 2026-10-23T22:22:46Z
-started: null
-completed: null
+started: 2026-10-24T18:18:52Z
+completed: 2026-10-24T18:38:37Z
 current_stage: null
-stages_completed: []
-
-requires_bolts: [001-app-foundation-ui]
-enables_bolts: [003-app-foundation-ui]
+stages_completed:
+  - name: plan
+    completed: 2026-10-24T18:25:01Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-24T18:33:43Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-24T18:38:37Z
+    artifact: test-walkthrough.md
+requires_bolts:
+  - 001-app-foundation-ui
+enables_bolts:
+  - 003-app-foundation-ui
 requires_units: []
 blocks: false
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 2
@@ -34,9 +43,9 @@ Localization with first-launch language resolution, the go_router four-tab shell
 
 ## Stories Included
 
-- [ ] **005-localization-and-initial-locale**: ARB en/am/om/ti, device-locale resolution, `om` Material fallback - Priority: Must
-- [ ] **006-app-shell-and-routing**: Stateful shell route, bottom nav, back behavior, `/settings` route - Priority: Must
-- [ ] **007-shared-empty-state-component**: C07 empty/error/offline + "Coming soon" on tabs - Priority: Must
+- [x] **005-localization-and-initial-locale**: ARB en/am/om/ti, device-locale resolution, `om` Material fallback - Priority: Must
+- [x] **006-app-shell-and-routing**: Stateful shell route, bottom nav, back behavior, `/settings` route - Priority: Must
+- [x] **007-shared-empty-state-component**: C07 empty/error/offline + "Coming soon" on tabs - Priority: Must
 
 ## Bolt Type
 
@@ -45,9 +54,9 @@ Localization with first-launch language resolution, the go_router four-tab shell
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -66,10 +75,10 @@ Localization with first-launch language resolution, the go_router four-tab shell
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally and in CI
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [ ] Tests passing locally and in CI (local: yes; CI: pending a GitHub remote)
 
 ## Notes
 

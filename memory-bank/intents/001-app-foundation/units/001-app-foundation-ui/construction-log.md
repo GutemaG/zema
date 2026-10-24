@@ -2,7 +2,7 @@
 unit: 001-app-foundation-ui
 intent: 001-app-foundation
 created: 2026-10-24T17:58:46Z
-last_updated: 2026-10-24T18:16:13Z
+last_updated: 2026-10-24T18:38:37Z
 ---
 
 # Construction Log: app-foundation-ui
@@ -28,7 +28,7 @@ last_updated: 2026-10-24T18:16:13Z
 | Bolt ID | Stories | Status | Changed |
 |---------|---------|--------|---------|
 | 001-app-foundation-ui | 001, 002, 003, 004 | ✅ completed | - |
-| 002-app-foundation-ui | 005, 006, 007 | [ ] planned | - |
+| 002-app-foundation-ui | 005, 006, 007 | ✅ completed | - |
 | 003-app-foundation-ui | 008, 009, 010 | [ ] planned | - |
 
 ## Execution History
@@ -39,6 +39,10 @@ last_updated: 2026-10-24T18:16:13Z
 | 2026-10-24T17:59:46Z | 001-app-foundation-ui | stage-complete | plan → implement |
 | 2026-10-24T18:13:00Z | 001-app-foundation-ui | stage-complete | implement → test |
 | 2026-10-24T18:16:13Z | 001-app-foundation-ui | completed | All 3 stages done |
+| 2026-10-24T18:18:52Z | 002-app-foundation-ui | started | Stage 1: plan |
+| 2026-10-24T18:25:01Z | 002-app-foundation-ui | stage-complete | plan → implement |
+| 2026-10-24T18:33:43Z | 002-app-foundation-ui | stage-complete | implement → test |
+| 2026-10-24T18:38:37Z | 002-app-foundation-ui | completed | All 3 stages done |
 
 ## Execution Summary
 
@@ -46,9 +50,9 @@ last_updated: 2026-10-24T18:16:13Z
 |--------|-------|
 | Original bolts planned | 3 |
 | Current bolt count | 3 |
-| Bolts completed | 1 |
+| Bolts completed | 2 |
 | Bolts in progress | 0 |
-| Bolts remaining | 2 |
+| Bolts remaining | 1 |
 | Replanning events | 0 |
 
 ## Notes
@@ -56,3 +60,4 @@ last_updated: 2026-10-24T18:16:13Z
 - The repo has no git remote yet, so the CI workflow can only be checked locally until it is pushed to GitHub.
 - Bolt 001 used Google Fonts for the font files instead of the upstream GitHub release zips, because those downloaded too slowly (see its implementation walkthrough).
 - `bolt-complete.cjs` needs `fs-extra` and `js-yaml`, which are not installed in the repo. They were installed in a temporary folder and passed via `NODE_PATH`.
+- Bolt 002 ships draft am/om/ti translations for the app title, nav labels and "Coming soon". They need native-speaker review before release.

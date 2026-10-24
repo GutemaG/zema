@@ -1,0 +1,67 @@
+{
+  "@@locale": "en",
+  "appTitle": "Zema",
+  "@appTitle": {
+    "description": "App name, shown in the Home header and the window title."
+  },
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom navigation label for the Home tab."
+  },
+  "navSearch": "Search",
+  "@navSearch": {
+    "description": "Bottom navigation label for the Search tab."
+  },
+  "navLibrary": "Library",
+  "@navLibrary": {
+    "description": "Bottom navigation label for the Library tab (the user's local music)."
+  },
+  "navContribute": "Contribute",
+  "@navContribute": {
+    "description": "Bottom navigation label for the Contribute tab (add lyrics and timings)."
+  },
+  "homeSettingsTooltip": "Settings",
+  "@homeSettingsTooltip": {
+    "description": "Tooltip and screen-reader label of the gear button in the Home header."
+  },
+  "comingSoonTitle": "Coming soon",
+  "@comingSoonTitle": {
+    "description": "Title on screens that are not built yet."
+  },
+  "homeComingSoonMessage": "Your recent songs and songs playing in other apps will show up here.",
+  "@homeComingSoonMessage": {
+    "description": "Message on the Home tab before it is built."
+  },
+  "searchComingSoonMessage": "Search mezmur by title, artist or a line of the lyrics.",
+  "@searchComingSoonMessage": {
+    "description": "Message on the Search tab before it is built."
+  },
+  "libraryComingSoonMessage": "The music on your phone will be listed here.",
+  "@libraryComingSoonMessage": {
+    "description": "Message on the Library tab before it is built."
+  },
+  "contributeComingSoonMessage": "Add lyrics and sync timings to help other listeners.",
+  "@contributeComingSoonMessage": {
+    "description": "Message on the Contribute tab before it is built."
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of the Settings screen."
+  },
+  "settingsComingSoonMessage": "Language and palette settings will be here.",
+  "@settingsComingSoonMessage": {
+    "description": "Message on the Settings screen before it is built."
+  },
+  "errorNotFoundTitle": "Page not found",
+  "@errorNotFoundTitle": {
+    "description": "Title when the app is asked to open a screen that does not exist."
+  },
+  "errorNotFoundMessage": "This page doesn't exist. Go back to Home to continue.",
+  "@errorNotFoundMessage": {
+    "description": "Message when the app is asked to open a screen that does not exist."
+  },
+  "actionGoHome": "Go home",
+  "@actionGoHome": {
+    "description": "Button that returns to the Home tab."
+  }
+}
