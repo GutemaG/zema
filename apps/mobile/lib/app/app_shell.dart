@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/library/application/library_sync_controller.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'zema_nav_bar.dart';
 
@@ -8,7 +10,10 @@ import 'zema_nav_bar.dart';
 ///
 /// Each tab is a branch of a stateful shell route, so switching tabs keeps
 /// their state and scroll position.
-class AppShell extends StatelessWidget {
+///
+/// The shell also keeps the library sync running from app start, so the
+/// library is refreshed in the background whichever tab is open.
+class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
@@ -24,7 +29,9 @@ class AppShell extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Listening (not watching) keeps the sync alive without rebuilding.
+    ref.listen(librarySyncProvider, (_, _) {});
     final l10n = AppLocalizations.of(context);
     final onHome = navigationShell.currentIndex == homeIndex;
     return PopScope(

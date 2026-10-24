@@ -71,6 +71,49 @@ void main() {
       expect(find.byType(FilledButton), findsNothing);
     });
 
+    testWidgets('shows a custom icon and a secondary text button', (
+      tester,
+    ) async {
+      var primary = 0;
+      var secondary = 0;
+      await pumpThemed(
+        tester,
+        EmptyState(
+          kind: EmptyStateKind.empty,
+          icon: Icons.library_music_outlined,
+          title: 'Title',
+          message: 'Message',
+          actionLabel: 'Allow',
+          onAction: () => primary++,
+          secondaryActionLabel: 'Not now',
+          onSecondaryAction: () => secondary++,
+        ),
+      );
+
+      expect(find.byIcon(Icons.library_music_outlined), findsOneWidget);
+      expect(find.byIcon(EmptyStateKind.empty.icon), findsNothing);
+      await tester.tap(find.text('Not now'));
+      expect((primary, secondary), (0, 1));
+      expect(
+        tester.getSize(find.byType(TextButton)).height,
+        greaterThanOrEqualTo(44),
+      );
+    });
+
+    testWidgets('no secondary button without its callback', (tester) async {
+      await pumpThemed(
+        tester,
+        const EmptyState(
+          kind: EmptyStateKind.empty,
+          title: 'Title',
+          message: 'Message',
+          secondaryActionLabel: 'Not now',
+        ),
+      );
+
+      expect(find.byType(TextButton), findsNothing);
+    });
+
     testWidgets('uses design tokens and a 44 px tall button', (tester) async {
       await pumpThemed(
         tester,

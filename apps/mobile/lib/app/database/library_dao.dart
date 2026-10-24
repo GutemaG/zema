@@ -1,0 +1,137 @@
+import 'package:drift/drift.dart';
+import 'package:zema_core/zema_core.dart';
+
+import 'tables.dart';
+import 'zema_database.dart';
+
+part 'library_dao.g.dart';
+
+/// Reads and writes the local library: tracks and hidden items.
+@DriftAccessor(tables: [Tracks, HiddenFolders, HiddenTracks])
+class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
+  LibraryDao(super.attachedDatabase);
+
+  /// Every stored track, missing and hidden ones included (for rescans).
+  Future<List<Track>> allTracks() async =>
+      (await select(tracks).get()).map(_toTrack).toList();
+
+  /// Tracks to show in the library, sorted by title: not missing, at least
+  /// [minDuration] long, and neither hidden themselves nor inside a hidden
+  /// folder (or one of its subfolders).
+  Stream<List<Track>> watchVisibleTracks({required Duration minDuration}) {
+    return customSelect(
+      '''
+      SELECT t.* FROM tracks t
+      WHERE t.missing = 0
+        AND t.duration_ms >= ?1
+        AND NOT EXISTS (SELECT 1 FROM hidden_tracks h WHERE h.track_id = t.id)
+        AND NOT EXISTS (
+          SELECT 1 FROM hidden_folders f
+          WHERE t.folder = f.path
+             OR substr(t.folder, 1, length(f.path) + 1) = f.path || '/'
+        )
+      ORDER BY t.title COLLATE NOCASE, t.id
+      ''',
+      variables: [Variable.withInt(minDuration.inMilliseconds)],
+      readsFrom: {tracks, hiddenTracks, hiddenFolders},
+    ).watch().map(
+      (rows) => [for (final row in rows) _toTrack(tracks.map(row.data))],
+    );
+  }
+
+  /// Applies a rescan in one transaction: either all of it lands or none.
+  Future<void> applyReconciliation(TrackReconciliation changes) {
+    return transaction(() async {
+      await batch((b) {
+        b.insertAll(tracks, [
+          for (final audio in changes.added) _insertable(audio),
+        ]);
+        for (final track in changes.updated) {
+          b.replace(tracks, _row(track));
+        }
+        if (changes.newlyMissing.isNotEmpty) {
+          b.update(
+            tracks,
+            const TracksCompanion(missing: Value(true)),
+            where: (t) => t.id.isIn(changes.newlyMissing),
+          );
+        }
+      });
+    });
+  }
+
+  Future<void> hideFolder(String path, {DateTime? at}) => into(hiddenFolders)
+      .insertOnConflictUpdate(
+        HiddenFoldersCompanion.insert(
+          path: path,
+          hiddenAt: at ?? DateTime.now(),
+        ),
+      );
+
+  Future<void> unhideFolder(String path) =>
+      (delete(hiddenFolders)..where((f) => f.path.equals(path))).go();
+
+  Future<void> hideTrack(int trackId, {DateTime? at}) =>
+      into(hiddenTracks).insertOnConflictUpdate(
+        HiddenTracksCompanion.insert(
+          trackId: Value(trackId),
+          hiddenAt: at ?? DateTime.now(),
+        ),
+      );
+
+  Future<void> unhideTrack(int trackId) =>
+      (delete(hiddenTracks)..where((h) => h.trackId.equals(trackId))).go();
+
+  TracksCompanion _insertable(ScannedAudio audio) => TracksCompanion.insert(
+    mediaStoreId: audio.mediaStoreId,
+    uri: audio.uri,
+    path: audio.path,
+    folder: folderOf(audio.path),
+    title: resolveTitle(audio),
+    artist: Value(audio.artist),
+    album: Value(audio.album),
+    albumArtist: Value(audio.albumArtist),
+    trackNumber: Value(audio.trackNumber),
+    year: Value(audio.year),
+    durationMs: audio.duration.inMilliseconds,
+    sizeBytes: audio.sizeBytes,
+    dateAdded: audio.dateAdded,
+  );
+
+  TrackRow _row(Track t) => TrackRow(
+    id: t.id,
+    mediaStoreId: t.mediaStoreId,
+    uri: t.uri,
+    path: t.path,
+    folder: t.folder,
+    title: t.title,
+    artist: t.artist,
+    album: t.album,
+    albumArtist: t.albumArtist,
+    trackNumber: t.trackNumber,
+    year: t.year,
+    durationMs: t.duration.inMilliseconds,
+    sizeBytes: t.sizeBytes,
+    dateAdded: t.dateAdded,
+    missing: t.missing,
+  );
+
+  Track _toTrack(TrackRow r) => Track(
+    id: r.id,
+    mediaStoreId: r.mediaStoreId,
+    uri: r.uri,
+    path: r.path,
+    title: r.title,
+    artist: r.artist,
+    album: r.album,
+    albumArtist: r.albumArtist,
+    trackNumber: r.trackNumber,
+    year: r.year,
+    duration: Duration(milliseconds: r.durationMs),
+    sizeBytes: r.sizeBytes,
+    // Dates are stored as UTC text and come back as UTC; toUtc() guards rows
+    // written in local time, which would never equal `Track.fromScan`.
+    dateAdded: r.dateAdded.toUtc(),
+    missing: r.missing,
+  );
+}

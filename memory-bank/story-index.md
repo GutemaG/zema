@@ -4,7 +4,7 @@
 
 - **Total stories**: 32
 - **Generated**: 32
-- **Last updated**: 2026-10-24T20:20:00Z
+- **Last updated**: 2026-10-24T20:02:40Z
 
 ---
 
@@ -14,26 +14,26 @@
 
 Path: `memory-bank/intents/001-app-foundation/units/001-app-foundation-ui/stories/`
 
-- [x] **001-project-tooling-and-ci** (app-foundation-ui): Project tooling and CI - Must - ✅ GENERATED
-- [x] **002-app-identity** (app-foundation-ui): App identity - Must - ✅ GENERATED
-- [x] **003-theme-tokens-and-palettes** (app-foundation-ui): Theme tokens and palettes - Must - ✅ GENERATED
-- [x] **004-bundled-fonts** (app-foundation-ui): Bundled Latin and Ethiopic fonts - Must - ✅ GENERATED
-- [x] **005-localization-and-initial-locale** (app-foundation-ui): Localization and first-launch language - Must - ✅ GENERATED
-- [x] **006-app-shell-and-routing** (app-foundation-ui): App shell, bottom navigation and routing - Must - ✅ GENERATED
-- [x] **007-shared-empty-state-component** (app-foundation-ui): Shared empty/error/offline state (C07) - Must - ✅ GENERATED
-- [x] **008-settings-screen** (app-foundation-ui): Minimal Settings screen - Must - ✅ GENERATED
-- [x] **009-switch-palette** (app-foundation-ui): Switch and remember palette - Must - ✅ GENERATED
-- [x] **010-switch-language** (app-foundation-ui): Switch and remember language - Must - ✅ GENERATED
-- [x] **011-switch-theme-mode** (app-foundation-ui): Switch and remember theme mode (System / Light / Dark) - Must - ✅ GENERATED (added during construction)
+- [x] **001-project-tooling-and-ci** (app-foundation-ui): Project tooling and CI - Must - ✅ COMPLETED
+- [x] **002-app-identity** (app-foundation-ui): App identity - Must - ✅ COMPLETED
+- [x] **003-theme-tokens-and-palettes** (app-foundation-ui): Theme tokens and palettes - Must - ✅ COMPLETED
+- [x] **004-bundled-fonts** (app-foundation-ui): Bundled Latin and Ethiopic fonts - Must - ✅ COMPLETED
+- [x] **005-localization-and-initial-locale** (app-foundation-ui): Localization and first-launch language - Must - ✅ COMPLETED
+- [x] **006-app-shell-and-routing** (app-foundation-ui): App shell, bottom navigation and routing - Must - ✅ COMPLETED
+- [x] **007-shared-empty-state-component** (app-foundation-ui): Shared empty/error/offline state (C07) - Must - ✅ COMPLETED
+- [x] **008-settings-screen** (app-foundation-ui): Minimal Settings screen - Must - ✅ COMPLETED
+- [x] **009-switch-palette** (app-foundation-ui): Switch and remember palette - Must - ✅ COMPLETED
+- [x] **010-switch-language** (app-foundation-ui): Switch and remember language - Must - ✅ COMPLETED
+- [x] **011-switch-theme-mode** (app-foundation-ui): Switch and remember theme mode (System / Light / Dark) - Must - ✅ COMPLETED (added during construction)
 
 ### 002-local-library-and-player
 
 Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-and-player-ui/stories/`
 
-- [x] **001-library-scanner-spike** (local-library-and-player-ui): Library scanner spike and interface - Must - ✅ GENERATED
-- [x] **002-library-database** (local-library-and-player-ui): Drift library database and track identity - Must - ✅ GENERATED
-- [x] **003-audio-permission** (local-library-and-player-ui): Audio permission - Must - ✅ GENERATED
-- [x] **004-library-scan-and-sync** (local-library-and-player-ui): Library scan and sync - Must - ✅ GENERATED
+- [x] **001-library-scanner-spike** (local-library-and-player-ui): Library scanner spike and interface - Must - ✅ COMPLETED
+- [x] **002-library-database** (local-library-and-player-ui): Drift library database and track identity - Must - ✅ COMPLETED
+- [x] **003-audio-permission** (local-library-and-player-ui): Audio permission - Must - ✅ COMPLETED
+- [x] **004-library-scan-and-sync** (local-library-and-player-ui): Library scan and sync - Must - ✅ COMPLETED
 - [x] **005-library-tab-and-tracks** (local-library-and-player-ui): Library tab and Tracks - Must - ✅ GENERATED
 - [x] **006-playback-engine** (local-library-and-player-ui): Playback engine - Must - ✅ GENERATED
 - [x] **007-mini-player-and-now-playing** (local-library-and-player-ui): Mini player and Now Playing - Must - ✅ GENERATED
@@ -61,6 +61,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 32
+- **Generated**: 17
 - **In Progress**: 0
-- **Completed**: 0
+- **Completed**: 15

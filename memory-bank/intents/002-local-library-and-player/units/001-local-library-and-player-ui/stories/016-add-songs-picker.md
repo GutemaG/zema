@@ -4,7 +4,7 @@ unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 status: draft
 priority: must
-created: 2026-10-24T20:15:00Z
+created: 2026-10-24T19:22:00Z
 assigned_bolt: 007-local-library-and-player-ui
 implemented: false
 ---

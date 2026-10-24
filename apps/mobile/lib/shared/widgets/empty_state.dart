@@ -18,7 +18,8 @@ enum EmptyStateKind {
 ///
 /// Centered on the screen, and scrolls instead of overflowing when there is
 /// not enough height. The action button only appears when both
-/// [actionLabel] and [onAction] are given; callers own retry logic.
+/// [actionLabel] and [onAction] are given, and the secondary text button
+/// likewise; callers own retry logic. [icon] replaces the kind's icon.
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
@@ -27,6 +28,9 @@ class EmptyState extends StatelessWidget {
     required this.message,
     this.actionLabel,
     this.onAction,
+    this.secondaryActionLabel,
+    this.onSecondaryAction,
+    this.icon,
   });
 
   final EmptyStateKind kind;
@@ -34,6 +38,9 @@ class EmptyState extends StatelessWidget {
   final String message;
   final String? actionLabel;
   final VoidCallback? onAction;
+  final String? secondaryActionLabel;
+  final VoidCallback? onSecondaryAction;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +48,8 @@ class EmptyState extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final label = actionLabel;
     final action = onAction;
+    final secondaryLabel = secondaryActionLabel;
+    final secondaryAction = onSecondaryAction;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -59,7 +68,7 @@ class EmptyState extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(kind.icon, size: 48, color: colors.muted),
+                  Icon(icon ?? kind.icon, size: 48, color: colors.muted),
                   const SizedBox(height: 16),
                   Text(
                     title,
@@ -86,6 +95,20 @@ class EmptyState extends StatelessWidget {
                         shape: const StadiumBorder(),
                       ),
                       child: Text(label),
+                    ),
+                  ],
+                  if (secondaryLabel != null && secondaryAction != null) ...[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: secondaryAction,
+                      style: TextButton.styleFrom(
+                        foregroundColor: colors.primaryText,
+                        minimumSize: const Size(
+                          ZemaSpacing.minTap,
+                          ZemaSpacing.minTap,
+                        ),
+                      ),
+                      child: Text(secondaryLabel),
                     ),
                   ],
                 ],

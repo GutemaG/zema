@@ -3,17 +3,26 @@ id: 004-local-library-and-player-ui
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 001-library-scanner-spike
   - 002-library-database
   - 003-audio-permission
   - 004-library-scan-and-sync
-created: 2026-10-24T20:20:00Z
-started: null
-completed: null
+created: 2026-10-24T19:23:00Z
+started: 2026-10-24T19:27:01Z
+completed: 2026-10-24T20:02:40Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-24T19:30:24Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-24T19:53:18Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-24T20:02:40Z
+    artifact: test-walkthrough.md
 requires_bolts: []
 enables_bolts:
   - 005-local-library-and-player-ui
@@ -35,10 +44,10 @@ Prove the MediaStore scanner on an Android emulator (on_audio_query or a Kotlin 
 
 ## Stories Included
 
-- [ ] **001-library-scanner-spike**: Scanner spike, `LibraryScanner` interface, emulator + test files - Priority: Must
-- [ ] **002-library-database**: Drift schema v1, `Track` + fingerprint + reconciliation in `zema_core` - Priority: Must
-- [ ] **003-audio-permission**: Explanation, request, denied / permanently denied, iOS state - Priority: Must
-- [ ] **004-library-scan-and-sync**: Sync on start and on demand, min duration, hidden items, missing files - Priority: Must
+- [x] **001-library-scanner-spike**: Scanner spike, `LibraryScanner` interface, emulator + test files - Priority: Must
+- [x] **002-library-database**: Drift schema v1, `Track` + fingerprint + reconciliation in `zema_core` - Priority: Must
+- [x] **003-audio-permission**: Explanation, request, denied / permanently denied, iOS state - Priority: Must
+- [x] **004-library-scan-and-sync**: Sync on start and on demand, min duration, hidden items, missing files - Priority: Must
 
 ## Bolt Type
 
@@ -47,9 +56,9 @@ Prove the MediaStore scanner on an Android emulator (on_audio_query or a Kotlin 
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -69,11 +78,11 @@ Prove the MediaStore scanner on an Android emulator (on_audio_query or a Kotlin 
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally (CI once a GitHub remote exists)
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met (1,000-track real-phone timing open)
+- [x] `flutter analyze` clean, `dart format` clean
+- [ ] Tests passing locally (CI once a GitHub remote exists) (local: yes; CI: pending a GitHub remote)
+- [x] Checked on the Android emulator
 
 ## Notes
 

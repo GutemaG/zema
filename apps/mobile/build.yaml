@@ -1,0 +1,13 @@
+# Drift code generation and schema tooling. See lib/app/database/.
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          databases:
+            zema: lib/app/database/zema_database.dart
+          schema_dir: drift_schemas/
+          test_dir: test/app/database/
+          # Store DateTime columns as UTC ISO-8601 text: readable in the
+          # database file and unambiguous across time zones.
+          store_date_time_values_as_text: true

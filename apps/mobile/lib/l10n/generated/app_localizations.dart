@@ -156,17 +156,137 @@ abstract class AppLocalizations {
   /// **'Search mezmur by title, artist or a line of the lyrics.'**
   String get searchComingSoonMessage;
 
-  /// Message on the Library tab before it is built.
-  ///
-  /// In en, this message translates to:
-  /// **'The music on your phone will be listed here.'**
-  String get libraryComingSoonMessage;
-
   /// Message on the Contribute tab before it is built.
   ///
   /// In en, this message translates to:
   /// **'Add lyrics and sync timings to help other listeners.'**
   String get contributeComingSoonMessage;
+
+  /// Heading of the explanation shown before asking for access to audio files.
+  ///
+  /// In en, this message translates to:
+  /// **'Play the music on your phone'**
+  String get libraryAccessTitle;
+
+  /// Explanation shown before the system asks for access to audio files.
+  ///
+  /// In en, this message translates to:
+  /// **'Zema needs access to your audio files to list and play them. It reads audio files only, nothing else.'**
+  String get libraryAccessMessage;
+
+  /// Button that shows the system dialog for access to audio files.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get libraryAccessAllow;
+
+  /// Button that skips giving access to audio files for now.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get libraryAccessNotNow;
+
+  /// Heading when the app has no access to audio files.
+  ///
+  /// In en, this message translates to:
+  /// **'Music access is off'**
+  String get libraryAccessDeniedTitle;
+
+  /// Message when the app has no access to audio files.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access to your audio files to see and play your music.'**
+  String get libraryAccessDeniedMessage;
+
+  /// Button that asks again for access to audio files.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant access'**
+  String get libraryAccessGrant;
+
+  /// Message when access to audio files can only be given in the phone's settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on music and audio access for Zema in your phone\'s settings.'**
+  String get libraryAccessSettingsMessage;
+
+  /// Button that opens Zema's page in the phone's settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get libraryAccessOpenSettings;
+
+  /// Heading on iPhone, where the music library is not supported yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on iOS yet'**
+  String get libraryUnsupportedTitle;
+
+  /// Message on iPhone, where the music library is not supported yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing the music on your phone will come to iPhone in a later version.'**
+  String get libraryUnsupportedMessage;
+
+  /// Shown while the first scan of the phone's audio files runs.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for music on your phone…'**
+  String get libraryScanning;
+
+  /// Heading when scanning the phone's audio files failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read your music'**
+  String get libraryScanFailedTitle;
+
+  /// Message when scanning the phone's audio files failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while reading your audio files.'**
+  String get libraryScanFailedMessage;
+
+  /// Snackbar when a rescan failed but the stored library is still shown.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update your library'**
+  String get libraryScanFailedSnack;
+
+  /// Heading when the phone has no audio files to show.
+  ///
+  /// In en, this message translates to:
+  /// **'No music found'**
+  String get libraryEmptyTitle;
+
+  /// Message when the phone has no audio files to show.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs saved on your phone appear here.'**
+  String get libraryEmptyMessage;
+
+  /// Shown when a song has no artist tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown artist'**
+  String get unknownArtist;
+
+  /// Shown when a song has no album tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown album'**
+  String get unknownAlbum;
+
+  /// Button that retries something that failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get actionTryAgain;
+
+  /// Number of songs in the library.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song} other{{count} songs}}'**
+  String librarySongCount(int count);
 
   /// Title of the Settings screen.
   ///

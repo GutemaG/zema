@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zema/app/app_shell.dart';
@@ -8,12 +9,14 @@ import 'package:zema/app/theme/zema_colors.dart';
 import 'package:zema/app/zema_nav_bar.dart';
 import 'package:zema/features/contribute/presentation/contribute_screen.dart';
 import 'package:zema/features/home/presentation/home_screen.dart';
+import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/presentation/library_screen.dart';
 import 'package:zema/features/search/presentation/search_screen.dart';
 import 'package:zema/features/settings/presentation/settings_screen.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema/shared/widgets/empty_state.dart';
 
+import '../helpers/fake_library.dart';
 import '../helpers/pump_app.dart';
 
 Finder _navLabel(String label) =>
@@ -75,7 +78,7 @@ void main() {
       }
     });
 
-    testWidgets('each tab shows a localized Coming soon message', (
+    testWidgets('each unbuilt tab shows a localized Coming soon message', (
       tester,
     ) async {
       await pumpZemaApp(tester);
@@ -84,7 +87,6 @@ void main() {
       final messages = {
         'Home': l10n.homeComingSoonMessage,
         'Search': l10n.searchComingSoonMessage,
-        'Library': l10n.libraryComingSoonMessage,
         'Contribute': l10n.contributeComingSoonMessage,
       };
       for (final MapEntry(key: tab, value: message) in messages.entries) {
@@ -156,11 +158,19 @@ void main() {
       );
       addTearDown(router.dispose);
       await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: router,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData(extensions: const [ZemaColors.nightVigil]),
+        ProviderScope(
+          // The shell starts the library sync; keep it idle here.
+          overrides: libraryOverrides(
+            permissions: FakeAudioPermissionService(
+              current: AudioAccess.unsupported,
+            ),
+          ),
+          child: MaterialApp.router(
+            routerConfig: router,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: ThemeData(extensions: const [ZemaColors.nightVigil]),
+          ),
         ),
       );
       await tester.pumpAndSettle();

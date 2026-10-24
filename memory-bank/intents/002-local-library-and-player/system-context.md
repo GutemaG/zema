@@ -2,7 +2,7 @@
 intent: 002-local-library-and-player
 phase: inception
 status: context-defined
-updated: 2026-10-24T20:10:00Z
+updated: 2026-10-24T19:21:00Z
 ---
 
 # Local Library and Player - System Context

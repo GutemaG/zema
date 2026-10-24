@@ -7,6 +7,8 @@ import 'package:zema/app/theme/zema_colors.dart';
 import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/zema_app.dart';
 
+import '../helpers/fake_library.dart';
+
 Future<void> _pumpApp(
   WidgetTester tester, {
   ZemaPalette palette = ZemaPalette.fallback,
@@ -17,6 +19,7 @@ Future<void> _pumpApp(
     ProviderScope(
       overrides: [
         deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
+        ...libraryOverrides(),
         paletteProvider.overrideWithValue(palette),
       ],
       child: const ZemaApp(),
@@ -42,6 +45,7 @@ void main() {
         ProviderScope(
           overrides: [
             deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
+            ...libraryOverrides(),
           ],
           child: const ZemaApp(),
         ),
@@ -66,6 +70,7 @@ void main() {
         ProviderScope(
           overrides: [
             deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
+            ...libraryOverrides(),
           ],
           child: const ZemaApp(),
         ),

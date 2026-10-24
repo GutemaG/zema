@@ -14,6 +14,7 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - lib/l10n/generated/**
+    - test/app/database/generated/**
 
 linter:
   rules:

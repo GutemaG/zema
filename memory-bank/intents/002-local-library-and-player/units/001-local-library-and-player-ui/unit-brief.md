@@ -5,8 +5,8 @@ unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
 status: stories-defined
-created: 2026-10-24T20:10:00Z
-updated: 2026-10-24T20:10:00Z
+created: 2026-10-24T19:21:00Z
+updated: 2026-10-24T19:21:00Z
 ---
 
 # Unit Brief: Local Library and Player UI
@@ -107,10 +107,10 @@ detected songs (007) on top of the models and providers built here.
 
 | Story ID | Title | Priority | Status |
 |----------|-------|----------|--------|
-| 001-library-scanner-spike | Library scanner spike and interface | Must | Planned |
-| 002-library-database | Drift library database and track identity | Must | Planned |
-| 003-audio-permission | Audio permission | Must | Planned |
-| 004-library-scan-and-sync | Library scan and sync | Must | Planned |
+| 001-library-scanner-spike | Library scanner spike and interface | Must | Complete |
+| 002-library-database | Drift library database and track identity | Must | Complete |
+| 003-audio-permission | Audio permission | Must | Complete |
+| 004-library-scan-and-sync | Library scan and sync | Must | Complete |
 | 005-library-tab-and-tracks | Library tab and Tracks | Must | Planned |
 | 006-playback-engine | Playback engine | Must | Planned |
 | 007-mini-player-and-now-playing | Mini player and Now Playing | Must | Planned |

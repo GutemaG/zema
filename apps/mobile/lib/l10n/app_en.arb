@@ -36,13 +36,98 @@
   "@searchComingSoonMessage": {
     "description": "Message on the Search tab before it is built."
   },
-  "libraryComingSoonMessage": "The music on your phone will be listed here.",
-  "@libraryComingSoonMessage": {
-    "description": "Message on the Library tab before it is built."
-  },
   "contributeComingSoonMessage": "Add lyrics and sync timings to help other listeners.",
   "@contributeComingSoonMessage": {
     "description": "Message on the Contribute tab before it is built."
+  },
+  "libraryAccessTitle": "Play the music on your phone",
+  "@libraryAccessTitle": {
+    "description": "Heading of the explanation shown before asking for access to audio files."
+  },
+  "libraryAccessMessage": "Zema needs access to your audio files to list and play them. It reads audio files only, nothing else.",
+  "@libraryAccessMessage": {
+    "description": "Explanation shown before the system asks for access to audio files."
+  },
+  "libraryAccessAllow": "Allow",
+  "@libraryAccessAllow": {
+    "description": "Button that shows the system dialog for access to audio files."
+  },
+  "libraryAccessNotNow": "Not now",
+  "@libraryAccessNotNow": {
+    "description": "Button that skips giving access to audio files for now."
+  },
+  "libraryAccessDeniedTitle": "Music access is off",
+  "@libraryAccessDeniedTitle": {
+    "description": "Heading when the app has no access to audio files."
+  },
+  "libraryAccessDeniedMessage": "Allow access to your audio files to see and play your music.",
+  "@libraryAccessDeniedMessage": {
+    "description": "Message when the app has no access to audio files."
+  },
+  "libraryAccessGrant": "Grant access",
+  "@libraryAccessGrant": {
+    "description": "Button that asks again for access to audio files."
+  },
+  "libraryAccessSettingsMessage": "Turn on music and audio access for Zema in your phone's settings.",
+  "@libraryAccessSettingsMessage": {
+    "description": "Message when access to audio files can only be given in the phone's settings."
+  },
+  "libraryAccessOpenSettings": "Open settings",
+  "@libraryAccessOpenSettings": {
+    "description": "Button that opens Zema's page in the phone's settings."
+  },
+  "libraryUnsupportedTitle": "Not available on iOS yet",
+  "@libraryUnsupportedTitle": {
+    "description": "Heading on iPhone, where the music library is not supported yet."
+  },
+  "libraryUnsupportedMessage": "Playing the music on your phone will come to iPhone in a later version.",
+  "@libraryUnsupportedMessage": {
+    "description": "Message on iPhone, where the music library is not supported yet."
+  },
+  "libraryScanning": "Looking for music on your phone…",
+  "@libraryScanning": {
+    "description": "Shown while the first scan of the phone's audio files runs."
+  },
+  "libraryScanFailedTitle": "Couldn't read your music",
+  "@libraryScanFailedTitle": {
+    "description": "Heading when scanning the phone's audio files failed."
+  },
+  "libraryScanFailedMessage": "Something went wrong while reading your audio files.",
+  "@libraryScanFailedMessage": {
+    "description": "Message when scanning the phone's audio files failed."
+  },
+  "libraryScanFailedSnack": "Couldn't update your library",
+  "@libraryScanFailedSnack": {
+    "description": "Snackbar when a rescan failed but the stored library is still shown."
+  },
+  "libraryEmptyTitle": "No music found",
+  "@libraryEmptyTitle": {
+    "description": "Heading when the phone has no audio files to show."
+  },
+  "libraryEmptyMessage": "Songs saved on your phone appear here.",
+  "@libraryEmptyMessage": {
+    "description": "Message when the phone has no audio files to show."
+  },
+  "unknownArtist": "Unknown artist",
+  "@unknownArtist": {
+    "description": "Shown when a song has no artist tag."
+  },
+  "unknownAlbum": "Unknown album",
+  "@unknownAlbum": {
+    "description": "Shown when a song has no album tag."
+  },
+  "actionTryAgain": "Try again",
+  "@actionTryAgain": {
+    "description": "Button that retries something that failed."
+  },
+  "librarySongCount": "{count, plural, =1{1 song} other{{count} songs}}",
+  "@librarySongCount": {
+    "description": "Number of songs in the library.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "settingsTitle": "Settings",
   "@settingsTitle": {

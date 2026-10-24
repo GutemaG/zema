@@ -1,7 +1,7 @@
 ---
 intent: 002-local-library-and-player
 created: 2026-10-23T22:16:40Z
-completed: 2026-10-24T20:30:00Z
+completed: 2026-10-24T19:25:00Z
 status: complete
 ---
 
@@ -45,12 +45,12 @@ status: complete
 | Date | Decision | Rationale | Approved |
 |------|----------|-----------|----------|
 | 2026-10-23T22:16:40Z | Intent created as draft from roadmap stage | All 8 roadmap stages created up front; elaborated in order | Yes |
-| 2026-10-24T20:00:00Z | Test on an Android emulator; iOS builds and shows a "not available on iOS yet" Library state | Library scan is Android-only (MediaStore); roadmap has iOS later | Yes |
-| 2026-10-24T20:00:00Z | Scanner: spike `on_audio_query` in bolt 1, Kotlin MediaStore channel fallback behind `LibraryScanner` | Plugin unreleased since 2023; product owner asked for the best option | Yes |
-| 2026-10-24T20:00:00Z | Track identity: Zema ID + path + fingerprint (size, duration, title); MediaStore ID only for playback | Playlists and backups (005) must survive moves and MediaStore rebuilds | Yes |
-| 2026-10-24T20:00:00Z | Album-art colors on S08 deferred to 003 | S08 gets its full design with lyrics | Yes |
-| 2026-10-24T20:05:00Z | Requirements approved (Checkpoint 2) | — | Yes |
-| 2026-10-24T20:20:00Z | Single frontend unit, 5 simple bolts (004–008); scanner spike first in bolt 004 | frontend-app project type; high uncertainty on the scanner goes first | Yes (Checkpoint 3) |
+| 2026-10-24T19:18:00Z | Test on an Android emulator; iOS builds and shows a "not available on iOS yet" Library state | Library scan is Android-only (MediaStore); roadmap has iOS later | Yes |
+| 2026-10-24T19:18:00Z | Scanner: spike `on_audio_query` in bolt 1, Kotlin MediaStore channel fallback behind `LibraryScanner` | Plugin unreleased since 2023; product owner asked for the best option | Yes |
+| 2026-10-24T19:18:00Z | Track identity: Zema ID + path + fingerprint (size, duration, title); MediaStore ID only for playback | Playlists and backups (005) must survive moves and MediaStore rebuilds | Yes |
+| 2026-10-24T19:18:00Z | Album-art colors on S08 deferred to 003 | S08 gets its full design with lyrics | Yes |
+| 2026-10-24T19:20:00Z | Requirements approved (Checkpoint 2) | — | Yes |
+| 2026-10-24T19:23:00Z | Single frontend unit, 5 simple bolts (004–008); scanner spike first in bolt 004 | frontend-app project type; high uncertainty on the scanner goes first | Yes (Checkpoint 3) |
 
 ## Scope Changes
 

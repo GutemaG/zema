@@ -28,8 +28,13 @@ site and tests. Kotlin is limited to the platform-channel boundary.
   Home / Search / Library / Contribute).
 - **Audio:** `just_audio` + `audio_service`. Background playback with notification and
   lock-screen controls.
-- **Library scan:** `on_audio_query` (Android MediaStore). Tracks, albums, artists;
-  folders derived from file paths.
+- **Library scan:** a small Kotlin `MethodChannel` (`com.zemaapp.zema/library`) over
+  Android MediaStore, behind the Dart `LibraryScanner` interface. Albums, artists and
+  folders are derived in Dart. (Decided 2026-10-24 by the bolt 004 spike:
+  `on_audio_query` 2.9.0 doesn't build with Android Gradle Plugin 9.1, because it has
+  no `namespace`.)
+- **Permissions:** `permission_handler` 12.x. Version 13 needs compile SDK 37, which is
+  above Flutter 3.47's default and AGP 9.1's supported maximum of 36.
 - **Localization:** `flutter_localizations` + ARB files (en, am, om, ti). English is
   complete first; the others fall back to English.
 - **Theme:** System / Light / Dark (default System). A `ZemaColors` `ThemeExtension` with
