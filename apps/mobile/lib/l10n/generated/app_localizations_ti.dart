@@ -923,4 +923,42 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get lyricsOffsetReset => 'Reset timing';
+
+  @override
+  String get songViewLyrics => 'View lyrics';
+
+  @override
+  String get searchScopeLyrics => 'Lyrics';
+
+  @override
+  String get songDetailLyricsTab => 'Lyrics';
+
+  @override
+  String get songDetailInfoTab => 'Info';
+
+  @override
+  String get songDetailNotOnPhone => 'Not on this phone';
+
+  @override
+  String get songDetailAlbum => 'Album';
+
+  @override
+  String get songDetailArtist => 'Artist';
+
+  @override
+  String get songDetailSource => 'Source';
+
+  @override
+  String get songSourceBundled => 'Bundled sample';
+
+  @override
+  String get songSourceLocal => 'Your phone';
+
+  @override
+  String get lyricsVerse => 'Verse';
+
+  @override
+  String lyricsRepeat(String section) {
+    return '↻ $section';
+  }
 }

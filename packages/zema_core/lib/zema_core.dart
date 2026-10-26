@@ -10,6 +10,7 @@ export 'src/library/scanned_audio.dart';
 export 'src/library/track.dart';
 export 'src/library/track_fingerprint.dart';
 export 'src/lyrics/lrc_import.dart';
+export 'src/lyrics/lyric_search.dart';
 export 'src/lyrics/lyrics_models.dart';
 export 'src/lyrics/lyrics_repository.dart';
 export 'src/lyrics/track_matching.dart';

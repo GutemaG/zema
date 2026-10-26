@@ -2,11 +2,11 @@
 id: 014-song-detail
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
-created: 2026-10-26T13:41:09Z
+created: 2026-10-26T13:41:09.000Z
 assigned_bolt: 016-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 014-song-detail
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** the song menu's View lyrics or a lyric search result, **When** chosen, **Then** Song detail opens with title, transliteration, artist, album and Play, favorite, add to playlist
-- [ ] **Given** the Lyrics tab, **When** shown, **Then** sections show with chorus blocks and ↻ repeat markers and A−/A+ font size
-- [ ] **Given** the Info tab, **When** shown, **Then** album, artist and source (bundled sample) show
-- [ ] **Given** a malformed link, **When** opened, **Then** C07 not found
+- [x] **Given** the song menu's View lyrics or a lyric search result, **When** chosen, **Then** Song detail opens with title, transliteration, artist, album and Play, favorite, add to playlist
+- [x] **Given** the Lyrics tab, **When** shown, **Then** sections show with chorus blocks and ↻ repeat markers and A−/A+ font size
+- [x] **Given** the Info tab, **When** shown, **Then** album, artist and source (bundled sample) show
+- [x] **Given** a malformed link, **When** opened, **Then** C07 not found
 
 ## Technical Notes
 

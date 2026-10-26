@@ -2,11 +2,11 @@
 id: 015-lyric-text-search
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
-created: 2026-10-26T13:41:09Z
+created: 2026-10-26T13:41:09.000Z
 assigned_bolt: 016-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 015-lyric-text-search
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a query, **When** searching, **Then** a Lyrics group lists songs whose lyric lines match, showing the matching line
-- [ ] **Given** the Lyrics chip, **When** chosen, **Then** only lyric matches show
-- [ ] **Given** a lyric result, **When** tapped, **Then** Song detail opens
-- [ ] **Given** search timing, **When** measured, **Then** < 100 ms per keystroke still holds
+- [x] **Given** a query, **When** searching, **Then** a Lyrics group lists songs whose lyric lines match, showing the matching line
+- [x] **Given** the Lyrics chip, **When** chosen, **Then** only lyric matches show
+- [x] **Given** a lyric result, **When** tapped, **Then** Song detail opens
+- [x] **Given** search timing, **When** measured, **Then** < 100 ms per keystroke still holds
 
 ## Technical Notes
 

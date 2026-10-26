@@ -91,7 +91,8 @@ class SongMenu extends ConsumerWidget {
     final library = ref.read(libraryRepositoryProvider);
     final favorites = ref.read(favoritesControllerProvider);
     final lyrics = ref.read(lyricsLinksControllerProvider);
-    final linked = ref.watch(trackSongProvider(track.id)).value != null;
+    final linkedSong = ref.watch(trackSongProvider(track.id)).value;
+    final linked = linkedSong != null;
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -173,6 +174,21 @@ class SongMenu extends ConsumerWidget {
                 );
               }),
             ),
+            if (linkedSong != null)
+              item(
+                Icons.article_outlined,
+                l10n.songViewLyrics,
+                close(
+                  () async => router.go(
+                    AppRoutes.song(
+                      linkedSong.id,
+                      base: AppRoutes.detailBase(
+                        router.routerDelegate.currentConfiguration.uri.path,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             item(
               Icons.lyrics_outlined,
               linked ? l10n.songChangeLyrics : l10n.songMatchLyrics,

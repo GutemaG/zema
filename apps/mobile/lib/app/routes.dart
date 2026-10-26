@@ -19,6 +19,7 @@ abstract final class AppRoutes {
   static const String folderPath = 'folder';
   static const String albumPath = 'album';
   static const String artistPath = 'artist';
+  static const String songPath = 'song';
   static const String playlistPath = 'playlist';
   static const String autoPlaylistPath = 'auto-playlist';
 
@@ -45,6 +46,10 @@ abstract final class AppRoutes {
     path: '$base/$artistPath',
     queryParameters: name == null ? {'unknown': '1'} : {'name': name},
   ).toString();
+
+  /// S07 for the lyrics song [id], inside the tab at [base], like [album].
+  static String song(String id, {String base = library}) =>
+      Uri(path: '$base/$songPath', queryParameters: {'id': id}).toString();
 
   /// The tab that album and artist pages opened from [location] belong
   /// to: Search when the user is searching, otherwise Library.

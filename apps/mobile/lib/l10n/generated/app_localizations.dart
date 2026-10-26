@@ -1577,6 +1577,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset timing'**
   String get lyricsOffsetReset;
+
+  /// Song menu item: open the song's page with its full lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'View lyrics'**
+  String get songViewLyrics;
+
+  /// Search chip and group heading: songs found by a line of their lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics'**
+  String get searchScopeLyrics;
+
+  /// Song page tab with the full lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics'**
+  String get songDetailLyricsTab;
+
+  /// Song page tab with album, artist and source.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get songDetailInfoTab;
+
+  /// Song page: no audio file on the phone is linked to these lyrics, so it can't be played.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on this phone'**
+  String get songDetailNotOnPhone;
+
+  /// Song page info row label.
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get songDetailAlbum;
+
+  /// Song page info row label.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get songDetailArtist;
+
+  /// Song page info row label: where the lyrics and recording come from.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get songDetailSource;
+
+  /// Source of lyrics shipped with the app for testing.
+  ///
+  /// In en, this message translates to:
+  /// **'Bundled sample'**
+  String get songSourceBundled;
+
+  /// Source of lyrics that came from a file on the phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone'**
+  String get songSourceLocal;
+
+  /// Name of a verse section, used in repeat markers.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse'**
+  String get lyricsVerse;
+
+  /// Marker on the song page where a section is sung again, e.g. '↻ Chorus'.
+  ///
+  /// In en, this message translates to:
+  /// **'↻ {section}'**
+  String lyricsRepeat(String section);
 }
 
 class _AppLocalizationsDelegate

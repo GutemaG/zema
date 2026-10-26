@@ -88,3 +88,24 @@ class LyricsLinksController {
   /// Marks [track] as having no lyrics; automatic matching won't link it.
   Future<void> unlink(Track track) => _links.setManual(track.id, null);
 }
+
+/// The library's tracks linked to the song [songId], in library order.
+final songTracksProvider = Provider.family<List<Track>, String>((ref, songId) {
+  final links = ref.watch(_linksProvider).value ?? const {};
+  final tracks = ref.watch(libraryTracksProvider).value ?? const <Track>[];
+  return [
+    for (final track in tracks)
+      if (links[track.id]?.songId == songId) track,
+  ];
+});
+
+/// The recordings of the song [songId].
+final songRecordingsProvider = FutureProvider.family<List<Recording>, String>(
+  (ref, songId) => ref.watch(lyricsRepositoryProvider).recordings(songId),
+);
+
+/// Finds songs by a lyric line; built once per song list.
+final lyricsSearchIndexProvider = Provider<LyricLineIndex?>((ref) {
+  final songs = ref.watch(lyricsSongsProvider).value;
+  return songs == null ? null : LyricLineIndex(songs);
+});

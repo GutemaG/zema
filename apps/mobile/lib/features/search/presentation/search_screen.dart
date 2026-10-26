@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zema_core/zema_core.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../lyrics/application/lyrics_links.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
@@ -24,7 +26,7 @@ import '../application/recent_searches.dart';
 import 'widgets/recent_searches_view.dart';
 
 /// Which results Search shows.
-enum SearchScope { all, songs, artists, albums }
+enum SearchScope { all, songs, lyrics, artists, albums }
 
 /// S06: songs, artists and albums on the phone, found while typing with
 /// any keyboard (see `normalizeSearchText` and `matchScore`).
@@ -116,8 +118,18 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
     final index = ref.watch(librarySearchIndexProvider);
     if (index == null) return const Center(child: CircularProgressIndicator());
     final results = index.search(_query);
+    final lyricMatches =
+        _scope == SearchScope.all || _scope == SearchScope.lyrics
+        ? ref.watch(lyricsSearchIndexProvider)?.search(_query) ??
+              const <LyricMatch>[]
+        : const <LyricMatch>[];
     final shown = switch (_scope) {
       SearchScope.all => results,
+      SearchScope.lyrics => const SearchResults(
+        songs: [],
+        artists: [],
+        albums: [],
+      ),
       SearchScope.songs => SearchResults(
         songs: results.songs,
         artists: const [],
@@ -134,7 +146,7 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
         albums: results.albums,
       ),
     };
-    if (shown.isEmpty) {
+    if (shown.isEmpty && lyricMatches.isEmpty) {
       return EmptyState(
         kind: EmptyStateKind.empty,
         icon: Icons.search_off,
@@ -176,6 +188,23 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
               trailing: SongMenuButton(track: track),
             ),
         ],
+        if (lyricMatches.isNotEmpty) ...[
+          _GroupHeader(
+            title: l10n.searchScopeLyrics,
+            onSeeAll: seeAll(lyricMatches.length, SearchScope.lyrics),
+          ),
+          for (final match in limit(lyricMatches))
+            _LyricMatchRow(
+              match: match,
+              query: _query,
+              onTap: () {
+                _remember();
+                context.go(
+                  AppRoutes.song(match.song.id, base: AppRoutes.search),
+                );
+              },
+            ),
+        ],
         if (shown.artists.isNotEmpty) ...[
           _GroupHeader(
             title: l10n.searchScopeArtists,
@@ -212,6 +241,7 @@ class _ScopeChips extends StatelessWidget {
     final labels = {
       SearchScope.all: l10n.searchScopeAll,
       SearchScope.songs: l10n.searchScopeSongs,
+      SearchScope.lyrics: l10n.searchScopeLyrics,
       SearchScope.artists: l10n.searchScopeArtists,
       SearchScope.albums: l10n.searchScopeAlbums,
     };
@@ -347,6 +377,63 @@ class _AlbumRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A song found by a lyric line: its title and the line, with the words
+/// that match the query in bold.
+class _LyricMatchRow extends StatelessWidget {
+  const _LyricMatchRow({
+    required this.match,
+    required this.query,
+    required this.onTap,
+  });
+
+  final LyricMatch match;
+  final String query;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.zemaColors;
+    final textTheme = Theme.of(context).textTheme;
+    final queryWords = [
+      for (final word in query.split(RegExp(r'\s+')))
+        if (SearchKey(word) case final key when !key.isEmpty) key,
+    ];
+    bool matches(String word) {
+      final key = SearchKey(word);
+      return !key.isEmpty &&
+          queryWords.any((q) => matchScore(q, key) >= matchThreshold);
+    }
+
+    final style = textTheme.bodyMedium?.copyWith(color: colors.muted);
+    return ListTile(
+      leading: Icon(Icons.lyrics_outlined, color: colors.muted),
+      title: Text(
+        match.song.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: textTheme.bodyLarge?.copyWith(color: colors.text),
+      ),
+      subtitle: Text.rich(
+        TextSpan(
+          children: [
+            for (final (i, word) in match.line.text.split(' ').indexed)
+              TextSpan(
+                text: i == 0 ? word : ' $word',
+                style: matches(word)
+                    ? TextStyle(color: colors.text, fontWeight: FontWeight.w700)
+                    : null,
+              ),
+          ],
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: style,
+      ),
+      onTap: onTap,
     );
   }
 }

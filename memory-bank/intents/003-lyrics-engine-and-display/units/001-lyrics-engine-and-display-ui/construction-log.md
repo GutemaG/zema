@@ -2,7 +2,7 @@
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 created: 2026-10-26T13:45:42Z
-last_updated: 2026-10-26T19:58:12Z
+last_updated: 2026-10-26T20:34:59Z
 ---
 
 # Construction Log: lyrics-engine-and-display-ui
@@ -40,7 +40,7 @@ last_updated: 2026-10-26T19:58:12Z
 | 013-lyrics-engine-and-display-ui | 009, 010 | ✅ completed | - |
 | 014-lyrics-engine-and-display-ui | 011 | ✅ completed | - |
 | 015-lyrics-engine-and-display-ui | 012, 013 | ✅ completed | - |
-| 016-lyrics-engine-and-display-ui | 014, 015 | [ ] planned | - |
+| 016-lyrics-engine-and-display-ui | 014, 015 | ✅ completed | - |
 | 017-lyrics-engine-and-display-ui | 016 | [ ] planned | - |
 
 ## Execution History
@@ -75,6 +75,10 @@ last_updated: 2026-10-26T19:58:12Z
 | 2026-10-26T19:50:28Z | 015-lyrics-engine-and-display-ui | stage-complete | plan → implement |
 | 2026-10-26T19:50:28Z | 015-lyrics-engine-and-display-ui | stage-complete | implement → test |
 | 2026-10-26T19:58:12Z | 015-lyrics-engine-and-display-ui | completed | All 3 stages done; 800 tests pass |
+| 2026-10-26T19:59:00Z | 016-lyrics-engine-and-display-ui | started | Stage 1: plan |
+| 2026-10-26T20:03:16Z | 016-lyrics-engine-and-display-ui | stage-complete | plan → implement |
+| 2026-10-26T20:03:16Z | 016-lyrics-engine-and-display-ui | stage-complete | implement → test |
+| 2026-10-26T20:34:59Z | 016-lyrics-engine-and-display-ui | completed | All 3 stages done; 818 tests pass |
 
 ## Notes
 
@@ -85,3 +89,4 @@ last_updated: 2026-10-26T19:58:12Z
 - **Bolt 013**: LRC import with chorus detection, `LyricsRepository`, three placeholder songs (need native review), `test_audio.sh --lyrics`.
 - Bolt 014: app tests read bundled lyrics from disk (`DiskAssetBundle`); real asset loading stalls under the widget-test clock.
 - Bolt 015: auto-scroll asks for a frame (`scheduleFrame`); while paused none comes otherwise.
+- Bolt 016: Song detail is registered under Library and Search only; View lyrics uses `detailBase`.

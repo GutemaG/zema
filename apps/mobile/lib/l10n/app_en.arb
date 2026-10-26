@@ -1192,5 +1192,58 @@
   "lyricsOffsetReset": "Reset timing",
   "@lyricsOffsetReset": {
     "description": "Button: set the lyrics timing correction back to zero."
+  },
+  "songViewLyrics": "View lyrics",
+  "@songViewLyrics": {
+    "description": "Song menu item: open the song's page with its full lyrics."
+  },
+  "searchScopeLyrics": "Lyrics",
+  "@searchScopeLyrics": {
+    "description": "Search chip and group heading: songs found by a line of their lyrics."
+  },
+  "songDetailLyricsTab": "Lyrics",
+  "@songDetailLyricsTab": {
+    "description": "Song page tab with the full lyrics."
+  },
+  "songDetailInfoTab": "Info",
+  "@songDetailInfoTab": {
+    "description": "Song page tab with album, artist and source."
+  },
+  "songDetailNotOnPhone": "Not on this phone",
+  "@songDetailNotOnPhone": {
+    "description": "Song page: no audio file on the phone is linked to these lyrics, so it can't be played."
+  },
+  "songDetailAlbum": "Album",
+  "@songDetailAlbum": {
+    "description": "Song page info row label."
+  },
+  "songDetailArtist": "Artist",
+  "@songDetailArtist": {
+    "description": "Song page info row label."
+  },
+  "songDetailSource": "Source",
+  "@songDetailSource": {
+    "description": "Song page info row label: where the lyrics and recording come from."
+  },
+  "songSourceBundled": "Bundled sample",
+  "@songSourceBundled": {
+    "description": "Source of lyrics shipped with the app for testing."
+  },
+  "songSourceLocal": "Your phone",
+  "@songSourceLocal": {
+    "description": "Source of lyrics that came from a file on the phone."
+  },
+  "lyricsVerse": "Verse",
+  "@lyricsVerse": {
+    "description": "Name of a verse section, used in repeat markers."
+  },
+  "lyricsRepeat": "↻ {section}",
+  "@lyricsRepeat": {
+    "description": "Marker on the song page where a section is sung again, e.g. '↻ Chorus'.",
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
   }
 }

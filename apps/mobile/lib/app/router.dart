@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/lyrics/presentation/song_detail_screen.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/library/application/album_grouping.dart';
@@ -152,5 +153,10 @@ List<RouteBase> _albumAndArtistRoutes() => [
       final query = state.uri.queryParameters;
       return ArtistScreen(name: query['name'], known: query['unknown'] != '1');
     },
+  ),
+  GoRoute(
+    path: AppRoutes.songPath,
+    builder: (_, state) =>
+        SongDetailScreen(songId: state.uri.queryParameters['id']),
   ),
 ];

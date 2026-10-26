@@ -135,14 +135,16 @@ void main() {
       expect(_chip(tester, _l10n.searchScopeSongs).selected, isTrue);
       expect(_rowTitles(tester), hasLength(6));
 
-      await tester.tap(
-        find.widgetWithText(ChoiceChip, _l10n.searchScopeArtists),
-      );
+      final artists = find.widgetWithText(ChoiceChip, _l10n.searchScopeArtists);
+      await tester.ensureVisible(artists);
+      await tester.tap(artists);
       await tester.pumpAndSettle();
       expect(find.byType(TrackRow), findsNothing);
       expect(find.text(_l10n.libraryNoResultsTitle), findsOneWidget);
 
-      await tester.tap(find.widgetWithText(ChoiceChip, _l10n.searchScopeAll));
+      final all = find.widgetWithText(ChoiceChip, _l10n.searchScopeAll);
+      await tester.ensureVisible(all);
+      await tester.tap(all);
       await tester.pumpAndSettle();
       expect(_rowTitles(tester), hasLength(4));
     });
