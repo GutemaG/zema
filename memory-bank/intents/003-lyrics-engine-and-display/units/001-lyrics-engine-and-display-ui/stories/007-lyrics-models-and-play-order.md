@@ -2,11 +2,11 @@
 id: 007-lyrics-models-and-play-order
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
 created: 2026-10-26T13:41:09Z
 assigned_bolt: 012-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 007-lyrics-models-and-play-order
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** `zema_core`, **When** used, **Then** Song, LyricSection (verse/chorus/bridge, lines), PlayOrder, Recording and SyncTiming exist as immutable models with JSON round trip
-- [ ] **Given** a play order with a repeated chorus, **When** expanded, **Then** a flat list of line occurrences results, each with section, line and occurrence index
-- [ ] **Given** a bridge, an empty section or a play order referencing a missing section, **When** expanded, **Then** empty sections add nothing and missing ones are reported
-- [ ] **Given** tests, **When** run, **Then** expansion and JSON are unit-tested
+- [x] **Given** `zema_core`, **When** used, **Then** Song, LyricSection (verse/chorus/bridge, lines), PlayOrder, Recording and SyncTiming exist as immutable models with JSON round trip
+- [x] **Given** a play order with a repeated chorus, **When** expanded, **Then** a flat list of line occurrences results, each with section, line and occurrence index
+- [x] **Given** a bridge, an empty section or a play order referencing a missing section, **When** expanded, **Then** empty sections add nothing and missing ones are reported
+- [x] **Given** tests, **When** run, **Then** expansion and JSON are unit-tested
 
 ## Technical Notes
 

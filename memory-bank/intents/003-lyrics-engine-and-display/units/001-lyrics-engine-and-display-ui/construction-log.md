@@ -2,7 +2,7 @@
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 created: 2026-10-26T13:45:42Z
-last_updated: 2026-10-26T17:26:56Z
+last_updated: 2026-10-26T17:35:18Z
 ---
 
 # Construction Log: lyrics-engine-and-display-ui
@@ -36,7 +36,7 @@ last_updated: 2026-10-26T17:26:56Z
 | 009-lyrics-engine-and-display-ui | 001, 002 | ✅ completed | - |
 | 010-lyrics-engine-and-display-ui | 003, 004 | ✅ completed | - |
 | 011-lyrics-engine-and-display-ui | 005, 006 | ✅ completed | - |
-| 012-lyrics-engine-and-display-ui | 007, 008 | [ ] planned | - |
+| 012-lyrics-engine-and-display-ui | 007, 008 | ✅ completed | - |
 | 013-lyrics-engine-and-display-ui | 009, 010 | [ ] planned | - |
 | 014-lyrics-engine-and-display-ui | 011 | [ ] planned | - |
 | 015-lyrics-engine-and-display-ui | 012, 013 | [ ] planned | - |
@@ -59,9 +59,14 @@ last_updated: 2026-10-26T17:26:56Z
 | 2026-10-26T15:17:00Z | 011-lyrics-engine-and-display-ui | stage-complete | plan → implement |
 | 2026-10-26T15:22:20Z | 011-lyrics-engine-and-display-ui | stage-complete | implement → test |
 | 2026-10-26T17:26:56Z | 011-lyrics-engine-and-display-ui | completed | All 3 stages done; 683 tests pass |
+| 2026-10-26T17:27:14Z | 012-lyrics-engine-and-display-ui | started | Stage 1: plan |
+| 2026-10-26T17:29:32Z | 012-lyrics-engine-and-display-ui | stage-complete | plan → implement |
+| 2026-10-26T17:30:44Z | 012-lyrics-engine-and-display-ui | stage-complete | implement → test |
+| 2026-10-26T17:35:18Z | 012-lyrics-engine-and-display-ui | completed | All 3 stages done; 722 tests pass |
 
 ## Notes
 
 - **Bolt 009**: Home replaces "Coming soon". A test found a crash when Home asked an off-screen Library for a tab (fixed by switching after the next frame). The permission states are now shared through `LibraryAccessGate`.
 - **Bolt 010**: search normalization and transliteration in `zema_core` (rules as data tables). Known limit: words with the same consonants match (amlak / malak).
 - **Bolt 011**: Search tab over the library with chips and recent searches; album and artist pages also under `/search` so Back returns to the results.
+- **Bolt 012**: lyrics models with checked JSON, play-order expansion and a stateless sync engine in `zema_core`. Offset: positive shows lines later.

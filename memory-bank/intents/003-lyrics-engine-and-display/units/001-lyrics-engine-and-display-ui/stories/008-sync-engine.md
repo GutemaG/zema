@@ -2,11 +2,11 @@
 id: 008-sync-engine
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
 created: 2026-10-26T13:41:09Z
 assigned_bolt: 012-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 008-sync-engine
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a position, offset and SyncTiming, **When** asked, **Then** the engine returns the current occurrence index and the next one
-- [ ] **Given** a position before the first line, **When** asked, **Then** no line is current and the first is next
-- [ ] **Given** a seek backwards or forwards, **When** asked, **Then** the result is correct without replaying from the start
-- [ ] **Given** timing data, **When** tested at line boundaries ±0.3 s and with offsets ±0.5/±1 s, **Then** results are correct
+- [x] **Given** a position, offset and SyncTiming, **When** asked, **Then** the engine returns the current occurrence index and the next one
+- [x] **Given** a position before the first line, **When** asked, **Then** no line is current and the first is next
+- [x] **Given** a seek backwards or forwards, **When** asked, **Then** the result is correct without replaying from the start
+- [x] **Given** timing data, **When** tested at line boundaries ±0.3 s and with offsets ±0.5/±1 s, **Then** results are correct
 
 ## Technical Notes
 

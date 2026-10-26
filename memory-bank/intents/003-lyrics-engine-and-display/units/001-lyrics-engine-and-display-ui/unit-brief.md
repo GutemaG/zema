@@ -99,8 +99,8 @@ cloud catalog (004), sync editor (006) and floating lyrics (007) reuse it.
 | 004-transliteration-matching | Transliteration matching | Must | Complete |
 | 005-search-screen | Search screen | Must | Complete |
 | 006-recent-searches | Recent searches | Must | Complete |
-| 007-lyrics-models-and-play-order | Lyrics models and play order | Must | Planned |
-| 008-sync-engine | Sync engine | Must | Planned |
+| 007-lyrics-models-and-play-order | Lyrics models and play order | Must | Complete |
+| 008-sync-engine | Sync engine | Must | Complete |
 | 009-lrc-import | LRC import | Must | Planned |
 | 010-bundled-lyrics-repository | Bundled lyrics repository and sample songs | Must | Planned |
 | 011-track-song-linking | Link local tracks to songs | Must | Planned |

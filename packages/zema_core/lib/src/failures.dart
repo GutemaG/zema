@@ -35,3 +35,8 @@ final class DatabaseFailure extends ZemaFailure {
 final class DuplicateNameFailure extends ZemaFailure {
   const DuplicateNameFailure(super.message, {super.cause});
 }
+
+/// Lyrics data (JSON, LRC or timing) is malformed or inconsistent.
+final class LyricsFormatFailure extends ZemaFailure {
+  const LyricsFormatFailure(super.message, {super.cause});
+}

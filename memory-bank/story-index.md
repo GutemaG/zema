@@ -4,7 +4,7 @@
 
 - **Total stories**: 48
 - **Generated**: 48
-- **Last updated**: 2026-10-26T17:26:56Z
+- **Last updated**: 2026-10-26T17:35:18Z
 
 ---
 
@@ -62,8 +62,8 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 - [x] **004-transliteration-matching** (lyrics-engine-and-display-ui): Transliteration matching - Must - ✅ COMPLETED
 - [x] **005-search-screen** (lyrics-engine-and-display-ui): Search screen - Must - ✅ COMPLETED
 - [x] **006-recent-searches** (lyrics-engine-and-display-ui): Recent searches - Must - ✅ COMPLETED
-- [ ] **007-lyrics-models-and-play-order** (lyrics-engine-and-display-ui): Lyrics models and play order - Must - ⬜ GENERATED
-- [ ] **008-sync-engine** (lyrics-engine-and-display-ui): Sync engine - Must - ⬜ GENERATED
+- [x] **007-lyrics-models-and-play-order** (lyrics-engine-and-display-ui): Lyrics models and play order - Must - ✅ COMPLETED
+- [x] **008-sync-engine** (lyrics-engine-and-display-ui): Sync engine - Must - ✅ COMPLETED
 - [ ] **009-lrc-import** (lyrics-engine-and-display-ui): LRC import - Must - ⬜ GENERATED
 - [ ] **010-bundled-lyrics-repository** (lyrics-engine-and-display-ui): Bundled lyrics repository and sample songs - Must - ⬜ GENERATED
 - [ ] **011-track-song-linking** (lyrics-engine-and-display-ui): Link local tracks to songs - Must - ⬜ GENERATED
@@ -82,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 10
+- **Generated**: 8
 - **In Progress**: 0
-- **Completed**: 38
+- **Completed**: 40
