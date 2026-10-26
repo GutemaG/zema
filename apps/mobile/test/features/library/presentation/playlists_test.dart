@@ -6,6 +6,7 @@ import 'package:zema/app/routes.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
 import 'package:zema/features/library/presentation/add_songs_screen.dart';
 import 'package:zema/features/library/presentation/playlist_screen.dart';
+import 'package:zema/features/library/presentation/widgets/playlist_collage.dart';
 import 'package:zema/features/library/presentation/widgets/track_row.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
@@ -107,12 +108,14 @@ String _playlistRoute(int id) => AppRoutes.playlist(id);
 
 void main() {
   group('Playlists tab and dialog', () {
-    testWidgets('with no playlists only the Create card shows', (tester) async {
+    testWidgets('with no playlists the Create card comes straight before '
+        'the auto playlists', (tester) async {
       await _pump(tester);
 
       expect(find.text(_l10n.playlistCreate), findsOneWidget);
       expect(find.text(_l10n.playlistCreateHint), findsOneWidget);
-      expect(find.text(_l10n.librarySongCount(0)), findsNothing);
+      expect(find.byType(PlaylistCollage), findsNothing);
+      expect(find.text(_l10n.autoPlaylistsHeading), findsOneWidget);
     });
 
     testWidgets('lists playlists by name with their song count', (

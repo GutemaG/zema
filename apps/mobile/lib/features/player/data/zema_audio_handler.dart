@@ -7,6 +7,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:zema_core/zema_core.dart';
 
 import 'audio_backend.dart';
+import 'play_counter.dart';
 import 'player_snapshot.dart';
 import 'sleep_timer.dart';
 
@@ -16,12 +17,18 @@ final _log = Logger('player.handler');
 /// the app ([snapshots], [positions]) and to the system (notification, lock
 /// screen, headset buttons) through `audio_service`.
 ///
-/// Plays one file at a time; [PlayQueue] decides what comes next. Also runs
-/// the sleep timer, so it keeps going while the UI is closed.
+/// Plays one file at a time; [PlayQueue] decides what comes next. With
+/// gapless on, the next file is preloaded and takes over by itself. Also
+/// runs the sleep timer, so it keeps going while the UI is closed, and
+/// reports counted plays ([playCounted]).
 class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   ZemaAudioHandler(this._backend, {PlayQueue<Track>? queue})
     : _queue = queue ?? PlayQueue<Track>() {
-    _subscriptions.add(_backend.states.listen(_onBackendState));
+    _counter = PlayCounter(onCounted: _played.add);
+    _subscriptions
+      ..add(_backend.states.listen(_onBackendState))
+      ..add(_backend.advanced.listen((_) => _onAdvanced()))
+      ..add(_backend.positions.listen((_) => _counter.tick()));
   }
 
   final AudioBackend _backend;
@@ -29,6 +36,13 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   final _subscriptions = <StreamSubscription<void>>[];
   final _snapshots = BehaviorSubject.seeded(PlayerSnapshot.empty);
   final _unplayable = StreamController<Track>.broadcast();
+  final _played = StreamController<Track>.broadcast();
+  late final PlayCounter _counter;
+  var _options = const PlaybackOptions();
+
+  /// Whether [setOptions] has run; the first call always reaches the
+  /// backend.
+  var _optionsApplied = false;
   BackendState _state = const BackendState(
     playing: false,
     processing: BackendProcessing.idle,
@@ -55,6 +69,18 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
 
   /// Tracks that could not be played (they are skipped).
   Stream<Track> get unplayable => _unplayable.stream;
+
+  /// A track each time a play of it counts (see [PlayCounter]).
+  Stream<Track> get playCounted => _played.stream;
+
+  /// Applies Settings → Playback.
+  Future<void> setOptions(PlaybackOptions options) async {
+    if (_optionsApplied && options == _options) return;
+    _optionsApplied = true;
+    _options = options;
+    await _backend.setOptions(options);
+    await _syncNext();
+  }
 
   /// Replaces the queue with [tracks] and plays from [start].
   Future<void> playTracks(
@@ -129,7 +155,7 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     _queue.setShuffle(shuffleMode != AudioServiceShuffleMode.none);
-    _publish();
+    _queueChanged();
   }
 
   @override
@@ -140,7 +166,7 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
       AudioServiceRepeatMode.all ||
       AudioServiceRepeatMode.group => QueueRepeat.all,
     };
-    _publish();
+    _queueChanged();
   }
 
   /// Moves the queue entry at [from] to [to] (indexes in play order, [to]
@@ -148,7 +174,7 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> moveQueueItem(int from, int to) async {
     if (from == to) return;
     _queue.move(from, to);
-    _publish();
+    _queueChanged();
   }
 
   /// Removes the queue entry at [index]; returns what [restoreQueueItem]
@@ -156,13 +182,13 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   /// removed).
   Future<QueueRemoval<Track>?> removeQueueEntry(int index) async {
     final removal = _queue.removeAt(index);
-    if (removal != null) _publish();
+    if (removal != null) _queueChanged();
     return removal;
   }
 
   /// Puts back an entry removed by [removeQueueEntry].
   Future<void> restoreQueueItem(QueueRemoval<Track> removal) async {
-    if (_queue.restore(removal)) _publish();
+    if (_queue.restore(removal)) _queueChanged();
   }
 
   /// Puts [tracks] right after the current track. With an empty queue they
@@ -184,14 +210,14 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     if (wasEmpty) {
       await _loadCurrent(play: false);
     } else {
-      _publish();
+      _queueChanged();
     }
   }
 
   /// Removes everything after the current track.
   Future<void> clearUpcoming() async {
     _queue.clearUpcoming();
-    _publish();
+    _queueChanged();
   }
 
   /// Pauses playback after [after], fading out over [fadeDuration]. Replaces
@@ -208,17 +234,18 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   void sleepAtEndOfTrack() {
     _cancelSleep();
     _sleep = const EndOfTrackSleep();
-    _publish();
+    _queueChanged();
   }
 
   void cancelSleepTimer() {
     _cancelSleep();
-    _publish();
+    _queueChanged();
   }
 
   @override
   Future<void> stop() async {
     _cancelSleep();
+    _counter.stop();
     await _backend.stop();
     await super.stop();
   }
@@ -227,12 +254,14 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> dispose() async {
     _sleepTimer?.cancel();
     _fadeTimer?.cancel();
+    _counter.stop();
     for (final s in _subscriptions) {
       await s.cancel();
     }
     await _backend.dispose();
     await _snapshots.close();
     await _unplayable.close();
+    await _played.close();
   }
 
   bool get _wantsToPlay =>
@@ -254,8 +283,10 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
         final duration = await _backend.load(track.uri, position: position);
         if (generation != _loadGeneration) return;
         _duration = duration ?? track.duration;
+        _counter.start(track);
         _publish();
         if (play) await _backend.play();
+        await _syncNext();
         return;
       } on UnplayableAudioException catch (e) {
         if (generation != _loadGeneration) return;
@@ -269,6 +300,7 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     // showing a song that won't play.
     _queue.load(const []);
     _duration = null;
+    _counter.stop();
     await _backend.stop();
     _publish();
   }
@@ -322,11 +354,47 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
         state.processing == BackendProcessing.completed &&
         _state.processing != BackendProcessing.completed;
     _state = state;
+    _counter.setPlaying(
+      state.playing && state.processing == BackendProcessing.ready,
+    );
     _publish();
     if (completed) unawaited(_onTrackCompleted());
   }
 
+  /// The preloaded next file took over (gapless).
+  void _onAdvanced() {
+    _counter.completed();
+    if (_queue.trackCompleted() != QueueAdvance.advanced) {
+      // The queue changed before the preload caught up: play what the
+      // queue says instead.
+      unawaited(_loadCurrent(play: _wantsToPlay));
+      return;
+    }
+    final track = _queue.current!;
+    _log.fine('Advanced without a gap');
+    _duration = track.duration;
+    _counter.start(track);
+    _publish();
+    unawaited(_syncNext());
+  }
+
+  /// Publishes a queue edit and updates the preloaded next file.
+  void _queueChanged() {
+    _publish();
+    unawaited(_syncNext());
+  }
+
+  /// Preloads what the queue plays next, or nothing when gapless is off,
+  /// the current track repeats, or playback should stop at its end.
+  Future<void> _syncNext() async {
+    final next = _options.gapless && _sleep is! EndOfTrackSleep
+        ? _queue.upcoming
+        : null;
+    await _backend.setNext(next?.uri);
+  }
+
   Future<void> _onTrackCompleted() async {
+    _counter.completed();
     final advance = _queue.trackCompleted();
     _log.fine('Track completed: $advance');
     if (_sleep is EndOfTrackSleep) {
@@ -337,17 +405,20 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
         await _loadCurrent(play: false);
       } else {
         await _backend.seek(Duration.zero);
+        _counter.start(_queue.current!);
         _publish();
       }
       return;
     }
     switch (advance) {
       case QueueAdvance.replay:
+        _counter.start(_queue.current!);
         await _backend.seek(Duration.zero);
         await _backend.play();
       case QueueAdvance.advanced:
         await _loadCurrent(play: true);
       case QueueAdvance.finished:
+        _counter.start(_queue.current!);
         await _backend.pause();
         await _backend.seek(Duration.zero);
     }

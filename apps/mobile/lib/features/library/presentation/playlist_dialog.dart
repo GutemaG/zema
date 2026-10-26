@@ -6,10 +6,16 @@ import 'package:zema_core/zema_core.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../application/playlists.dart';
 
+/// A playlist S16 saved: its ID and its name as stored (trimmed).
+typedef SavedPlaylist = ({int id, String name});
+
 /// Opens S16 to create a playlist, or to rename [editing]. Returns the
-/// saved playlist's ID, or null when cancelled.
-Future<int?> showPlaylistDialog(BuildContext context, {Playlist? editing}) {
-  return showDialog<int>(
+/// saved playlist, or null when cancelled.
+Future<SavedPlaylist?> showPlaylistDialog(
+  BuildContext context, {
+  Playlist? editing,
+}) {
+  return showDialog<SavedPlaylist>(
     context: context,
     builder: (_) => PlaylistDialog(editing: editing),
   );
@@ -73,7 +79,9 @@ class _PlaylistDialogState extends ConsumerState<PlaylistDialog> {
       } else {
         id = await controller.create(_name.text, description: description);
       }
-      if (mounted) Navigator.of(context).pop(id);
+      if (mounted) {
+        Navigator.of(context).pop((id: id, name: _name.text.trim()));
+      }
     } on DuplicateNameFailure {
       setState(() {
         _takenName = playlistNameKey(_name.text);

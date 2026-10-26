@@ -1,4 +1,5 @@
 import '../features/library/application/album_grouping.dart';
+import '../features/library/application/play_history.dart';
 
 /// Route paths. The four tabs are branches of the shell; Settings and Now
 /// Playing open above it. Library detail pages open inside the Library
@@ -19,6 +20,13 @@ abstract final class AppRoutes {
   static const String albumPath = 'album';
   static const String artistPath = 'artist';
   static const String playlistPath = 'playlist';
+  static const String autoPlaylistPath = 'auto-playlist';
+
+  /// Sub-paths of [settings].
+  static const String hiddenFoldersPath = 'hidden-folders';
+  static const String hiddenSongsPath = 'hidden-songs';
+  static const String hiddenFolders = '$settings/$hiddenFoldersPath';
+  static const String hiddenSongs = '$settings/$hiddenSongsPath';
 
   /// S11a for the folder at [path].
   static String folder(String path) => Uri(
@@ -42,6 +50,12 @@ abstract final class AppRoutes {
   static String playlist(int id) => Uri(
     path: '$library/$playlistPath',
     queryParameters: {'id': '$id'},
+  ).toString();
+
+  /// The auto playlist [kind].
+  static String autoPlaylist(AutoPlaylistKind kind) => Uri(
+    path: '$library/$autoPlaylistPath',
+    queryParameters: {'kind': kind.name},
   ).toString();
 
   /// S18, adding songs to the playlist [id].

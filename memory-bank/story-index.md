@@ -4,7 +4,7 @@
 
 - **Total stories**: 32
 - **Generated**: 32
-- **Last updated**: 2026-10-26T10:09:48Z
+- **Last updated**: 2026-10-26T12:48:29Z
 
 ---
 
@@ -47,10 +47,10 @@ Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-
 - [x] **015-playlists** (local-library-and-player-ui): Playlists - Must - ✅ COMPLETED
 - [x] **016-add-songs-picker** (local-library-and-player-ui): Add songs picker - Must - ✅ COMPLETED
 - [x] **017-song-menu-and-add-to-playlist** (local-library-and-player-ui): Song menu and add-to-playlist sheet - Must - ✅ COMPLETED
-- [x] **018-track-multi-select** (local-library-and-player-ui): Track multi-select - Must - ✅ GENERATED
-- [x] **019-play-history-and-auto-playlists** (local-library-and-player-ui): Play history and auto playlists - Must - ✅ GENERATED
-- [x] **020-library-settings** (local-library-and-player-ui): Library settings - Must - ✅ GENERATED
-- [x] **021-playback-settings** (local-library-and-player-ui): Playback settings - Must - ✅ GENERATED
+- [x] **018-track-multi-select** (local-library-and-player-ui): Track multi-select - Must - ✅ COMPLETED
+- [x] **019-play-history-and-auto-playlists** (local-library-and-player-ui): Play history and auto playlists - Must - ✅ COMPLETED
+- [x] **020-library-settings** (local-library-and-player-ui): Library settings - Must - ✅ COMPLETED
+- [x] **021-playback-settings** (local-library-and-player-ui): Playback settings - Must - ✅ COMPLETED
 
 ### 003-lyrics-engine-and-display … 008-admin-website
 
@@ -61,6 +61,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 8
+- **Generated**: 0
 - **In Progress**: 0
-- **Completed**: 24
+- **Completed**: 32

@@ -8,11 +8,22 @@ import 'package:zema/features/player/data/zema_audio_handler.dart';
 
 /// An [AudioBackend] that plays nothing. Loads succeed instantly unless the
 /// URI is in [unplayable]; [finishTrack] simulates a track playing to its
-/// end. Like `just_audio`, it delivers state events asynchronously, so tests
+/// end, and [finishIntoNext] the preloaded next file taking over. Like
+/// `just_audio`, it delivers state events asynchronously, so tests
 /// let events settle (`pumpEventQueue`) before checking the handler.
 class FakeAudioBackend implements AudioBackend {
   final _states = StreamController<BackendState>.broadcast();
   final _positions = StreamController<Duration>.broadcast();
+  final _advanced = StreamController<void>.broadcast();
+
+  /// The file preloaded with [setNext], if any.
+  String? next;
+
+  /// Every value passed to [setNext], in order.
+  final nexts = <String?>[];
+
+  /// The last options applied.
+  PlaybackOptions? options;
 
   /// URIs that fail to load.
   final unplayable = <String>{};
@@ -43,6 +54,30 @@ class FakeAudioBackend implements AudioBackend {
     _emit();
   }
 
+  /// The current track ends and the preloaded one takes over, as
+  /// `just_audio` does with a two-item playlist.
+  void finishIntoNext() {
+    final uri = next!;
+    next = null;
+    loaded.add(uri);
+    _position = Duration.zero;
+    _advanced.add(null);
+  }
+
+  @override
+  Stream<void> get advanced => _advanced.stream;
+
+  @override
+  Future<void> setNext(String? uri) async {
+    next = uri;
+    nexts.add(uri);
+  }
+
+  @override
+  Future<void> setOptions(PlaybackOptions options) async {
+    this.options = options;
+  }
+
   @override
   Stream<BackendState> get states => _states.stream;
 
@@ -61,6 +96,7 @@ class FakeAudioBackend implements AudioBackend {
     Duration position = Duration.zero,
   }) async {
     loaded.add(uri);
+    next = null;
     processing = BackendProcessing.loading;
     _emit();
     if (unplayable.contains(uri)) {
@@ -112,6 +148,7 @@ class FakeAudioBackend implements AudioBackend {
   Future<void> dispose() async {
     await _states.close();
     await _positions.close();
+    await _advanced.close();
   }
 }
 

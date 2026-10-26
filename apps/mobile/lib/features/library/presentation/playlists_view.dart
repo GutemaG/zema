@@ -9,19 +9,21 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../application/play_history.dart';
 import '../application/playlists.dart';
+import 'auto_playlist_screen.dart';
 import 'playlist_dialog.dart';
 import 'widgets/playlist_collage.dart';
 
-/// S15: a "Create playlist" card, then the user's playlists by name. The
-/// auto playlists section comes with story 019.
+/// S15: a "Create playlist" card, the user's playlists by name, then the
+/// read-only auto playlists.
 class PlaylistsView extends ConsumerWidget {
   const PlaylistsView({super.key});
 
   Future<void> _create(BuildContext context) async {
-    final id = await showPlaylistDialog(context);
-    if (id != null && context.mounted) {
-      unawaited(context.push(AppRoutes.playlist(id)));
+    final saved = await showPlaylistDialog(context);
+    if (saved != null && context.mounted) {
+      unawaited(context.push(AppRoutes.playlist(saved.id)));
     }
   }
 
@@ -32,8 +34,30 @@ class PlaylistsView extends ConsumerWidget {
     return switch (ref.watch(playlistsProvider)) {
       AsyncData(value: final playlists) => ListView.builder(
         padding: const EdgeInsets.only(top: 8),
-        itemCount: playlists.length + 1,
+        itemCount: playlists.length + 2 + AutoPlaylistKind.values.length,
         itemBuilder: (context, index) {
+          final autoIndex = index - playlists.length - 2;
+          if (autoIndex == -1) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ZemaSpacing.screenSide,
+                20,
+                ZemaSpacing.screenSide,
+                6,
+              ),
+              child: Semantics(
+                header: true,
+                child: Text(
+                  l10n.autoPlaylistsHeading,
+                  style: Theme.of(context).textTheme.titleSmall
+                      ?.copyWith(color: colors.muted),
+                ),
+              ),
+            );
+          }
+          if (autoIndex >= 0) {
+            return _AutoPlaylistTile(kind: AutoPlaylistKind.values[autoIndex]);
+          }
           if (index == 0) {
             return _PlaylistTile(
               leading: DecoratedBox(
@@ -72,6 +96,25 @@ class PlaylistsView extends ConsumerWidget {
       ),
       _ => const Center(child: CircularProgressIndicator()),
     };
+  }
+}
+
+class _AutoPlaylistTile extends ConsumerWidget {
+  const _AutoPlaylistTile({required this.kind});
+
+  final AutoPlaylistKind kind;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final count = ref.watch(autoPlaylistProvider(kind)).value?.length ?? 0;
+    return _PlaylistTile(
+      key: ValueKey(kind),
+      leading: AutoPlaylistIcon(kind: kind, size: _PlaylistTile.artSize),
+      title: autoPlaylistName(l10n, kind),
+      subtitle: l10n.librarySongCount(count),
+      onTap: () => unawaited(context.push(AppRoutes.autoPlaylist(kind))),
+    );
   }
 }
 

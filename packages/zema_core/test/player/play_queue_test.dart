@@ -127,6 +127,42 @@ void main() {
       });
     });
 
+    group('upcoming', () {
+      test('is the next item, without moving', () {
+        final queue = _queue(_abcd, start: 1);
+
+        expect(queue.upcoming, 'c');
+        expect(queue.current, 'b');
+      });
+
+      test('at the end: null, or the first item with repeat all', () {
+        expect(_queue(_abcd, start: 3).upcoming, isNull);
+        expect(_queue(_abcd, start: 3, repeat: QueueRepeat.all).upcoming, 'a');
+      });
+
+      test('is null with repeat one and for an empty queue', () {
+        expect(_queue(_abcd, repeat: QueueRepeat.one).upcoming, isNull);
+        expect(PlayQueue<String>().upcoming, isNull);
+      });
+
+      test('matches what trackCompleted moves to, shuffled too', () {
+        final queue = _queue(_abcd, shuffle: true, repeat: QueueRepeat.all);
+        for (var i = 0; i < 6; i++) {
+          final expected = queue.upcoming;
+          queue.trackCompleted();
+          expect(queue.current, expected);
+        }
+      });
+
+      test('follows edits: play next and clearing upcoming', () {
+        final queue = _queue(_abcd)..insertNext(['x']);
+        expect(queue.upcoming, 'x');
+
+        queue.clearUpcoming();
+        expect(queue.upcoming, isNull);
+      });
+    });
+
     group('shuffle', () {
       test('keeps the current track first and shuffles the rest', () {
         final items = [for (var i = 0; i < 20; i++) '$i'];

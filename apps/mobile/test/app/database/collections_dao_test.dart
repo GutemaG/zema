@@ -62,6 +62,32 @@ void main() {
     });
   });
 
+  group('batch favorites', () {
+    test('addFavorites adds all at one time and keeps existing ones', () async {
+      await dao.addFavorite(ids[0], at: DateTime.utc(2026, 1, 1));
+
+      await dao.addFavorites([
+        ids[0],
+        ids[1],
+        ids[2],
+      ], at: DateTime.utc(2026, 2));
+
+      final rows = await dao.watchFavorites().first;
+      final times = {for (final r in rows) r.trackId: r.addedAt};
+      expect(times.keys, unorderedEquals([ids[0], ids[1], ids[2]]));
+      expect(times[ids[0]], DateTime.utc(2026, 1, 1));
+      expect(times[ids[1]], DateTime.utc(2026, 2));
+    });
+
+    test('removeFavorites removes only those', () async {
+      await dao.addFavorites([ids[0], ids[1], ids[2]]);
+
+      await dao.removeFavorites([ids[0], ids[2]]);
+
+      expect(await favoriteIds(), [ids[1]]);
+    });
+  });
+
   group('playlists', () {
     test('create trims the name and drops an empty description', () async {
       final id = await dao.createPlaylist('  Kidase ', description: '  ');

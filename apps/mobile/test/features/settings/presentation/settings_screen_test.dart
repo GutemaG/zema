@@ -26,20 +26,39 @@ String? _rowValue(WidgetTester tester, String label) =>
 ZemaColors _colorsOf(WidgetTester tester, Finder finder) =>
     tester.element(finder).zemaColors;
 
+/// A screen tall enough to build every Settings row.
+void _tallScreen(WidgetTester tester, {double textScale = 1}) =>
+    useScreen(tester, size: const Size(360, 2400), textScale: textScale);
+
 void main() {
   group('Settings screen', () {
-    testWidgets('shows General and About cards with four rows', (tester) async {
+    testWidgets('shows General, Library, Playback and About in order', (
+      tester,
+    ) async {
+      _tallScreen(tester);
       await pumpZemaApp(tester);
       await _openSettings(tester);
 
       expect(find.byType(SettingsScreen), findsOneWidget);
-      expect(find.text('GENERAL'), findsOneWidget);
-      expect(find.text('ABOUT'), findsOneWidget);
-      expect(find.byType(SettingsGroup), findsNWidgets(2));
-      expect(find.byType(SettingsRow), findsNWidgets(4));
+      final headings = ['GENERAL', 'LIBRARY', 'PLAYBACK', 'ABOUT'];
+      final tops = [
+        for (final heading in headings)
+          tester.getTopLeft(find.text(heading)).dy,
+      ];
+      expect(tops, orderedEquals([...tops]..sort()));
+      expect(find.byType(SettingsGroup), findsNWidgets(4));
+      expect(find.byType(SettingsRow), findsNWidgets(12));
       for (final label in [
         'Language',
         'Appearance',
+        'Hidden folders',
+        'Hidden songs',
+        'Rescan library',
+        'Ignore audio shorter than',
+        'Sleep timer default',
+        'Pause when headphones are unplugged',
+        'When another app plays sound',
+        'Gapless playback',
         'Version',
         'Open-source licenses',
       ]) {
@@ -48,13 +67,12 @@ void main() {
     });
 
     testWidgets('has no other S28 sections', (tester) async {
+      _tallScreen(tester);
       await pumpZemaApp(tester);
       await _openSettings(tester);
 
       for (final section in [
         'LYRICS',
-        'LIBRARY',
-        'PLAYBACK',
         'ACCOUNT',
         'PRIVACY',
         'FLOATING LYRICS',
@@ -64,6 +82,7 @@ void main() {
     });
 
     testWidgets('shows current values; tappable rows have ›', (tester) async {
+      _tallScreen(tester);
       await pumpZemaApp(tester);
       await _openSettings(tester);
 
@@ -89,6 +108,7 @@ void main() {
     });
 
     testWidgets('version shows — when it cannot be read', (tester) async {
+      _tallScreen(tester);
       await pumpZemaApp(
         tester,
         appVersion: () => Future.error(Exception('no platform')),
@@ -104,6 +124,7 @@ void main() {
       LicenseRegistry.reset();
       addTearDown(LicenseRegistry.reset);
       registerFontLicenses();
+      _tallScreen(tester);
       await pumpZemaApp(tester);
       await _openSettings(tester);
 
@@ -119,6 +140,7 @@ void main() {
       tester,
     ) async {
       final semantics = tester.ensureSemantics();
+      _tallScreen(tester);
       await pumpZemaApp(tester);
       await _openSettings(tester);
 
@@ -146,7 +168,7 @@ void main() {
     testWidgets('no overflow at 1.3× on 360 dp in every language', (
       tester,
     ) async {
-      useScreen(tester, textScale: 1.3);
+      _tallScreen(tester, textScale: 1.3);
       for (final code in ['en', 'am', 'om', 'ti']) {
         // Tear down the previous app so each language starts fresh on Home.
         await tester.pumpWidget(const SizedBox());

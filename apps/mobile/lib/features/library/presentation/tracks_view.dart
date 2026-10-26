@@ -11,6 +11,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../player/application/player_providers.dart';
 import '../application/library_providers.dart';
 import '../application/library_sync_controller.dart';
+import '../application/track_selection.dart';
 import '../application/track_sort_provider.dart';
 import '../application/tracks_query.dart';
 import 'song_menu.dart';
@@ -18,9 +19,12 @@ import 'widgets/alphabet_scroller.dart';
 import 'widgets/library_search_field.dart';
 import 'widgets/play_shuffle_bar.dart';
 import 'widgets/track_row.dart';
+import 'widgets/track_selection_bar.dart';
 
 /// S10: every track, with search, sort, an alphabet strip, and Play /
 /// Shuffle. Also shows the first-scan progress and scan failures.
+///
+/// A long-press starts multi-select ([TrackSelectionBar]); back ends it.
 class TracksView extends ConsumerStatefulWidget {
   const TracksView({super.key});
 
@@ -76,8 +80,29 @@ class _TracksViewState extends ConsumerState<TracksView> {
       }
     });
 
-    void retry() => ref.read(librarySyncProvider.notifier).sync();
+    // Songs that leave the library (hidden elsewhere, a rescan) leave the
+    // selection too.
+    ref.listen(libraryTracksProvider, (_, next) {
+      if (next.value case final tracks?) {
+        ref.read(trackSelectionProvider.notifier).retain({
+          for (final t in tracks) t.id,
+        });
+      }
+    });
 
+    return BackButtonListener(
+      onBackButtonPressed: () async {
+        if (ref.read(trackSelectionProvider) == null) return false;
+        ref.read(trackSelectionProvider.notifier).end();
+        return true;
+      },
+      child: _buildBody(tracks, sync),
+    );
+  }
+
+  Widget _buildBody(AsyncValue<List<Track>> tracks, LibrarySyncState sync) {
+    final l10n = AppLocalizations.of(context);
+    void retry() => ref.read(librarySyncProvider.notifier).sync();
     return switch (tracks) {
       AsyncData(:final value) when value.isNotEmpty => _buildList(value),
       AsyncData() when sync.hasFailed => EmptyState(
@@ -110,6 +135,8 @@ class _TracksViewState extends ConsumerState<TracksView> {
     final sort = ref.watch(trackSortProvider);
     final currentId = ref.watch(currentTrackProvider.select((t) => t?.id));
     final player = ref.read(playerControllerProvider);
+    final selectedIds = ref.watch(trackSelectionProvider);
+    final selection = ref.read(trackSelectionProvider.notifier);
     final visible = sortTracks(filterTracks(all, _query), sort);
     final sections = sort.isAlphabetical
         ? sectionStarts(visible, sort)
@@ -118,29 +145,39 @@ class _TracksViewState extends ConsumerState<TracksView> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            ZemaSpacing.screenSide,
-            8,
-            ZemaSpacing.screenSide,
-            0,
-          ),
-          child: LibrarySearchField(
-            controller: _search,
-            onChanged: _setQuery,
-            onClear: _clearQuery,
-          ),
-        ),
-        PlayShuffleBar(
-          label: l10n.librarySongCount(visible.length),
-          tracks: visible,
-          actions: [
-            _SortMenu(
-              sort: sort,
-              onSort: (s) => ref.read(trackSortProvider.notifier).set(s),
+        if (selectedIds != null)
+          TrackSelectionBar(
+            selected: [
+              for (final t in sortTracks(all, sort))
+                if (selectedIds.contains(t.id)) t,
+            ],
+            visible: visible,
+          )
+        else ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              ZemaSpacing.screenSide,
+              8,
+              ZemaSpacing.screenSide,
+              0,
             ),
-          ],
-        ),
+            child: LibrarySearchField(
+              controller: _search,
+              onChanged: _setQuery,
+              onClear: _clearQuery,
+            ),
+          ),
+          PlayShuffleBar(
+            label: l10n.librarySongCount(visible.length),
+            tracks: visible,
+            actions: [
+              _SortMenu(
+                sort: sort,
+                onSort: (s) => ref.read(trackSortProvider.notifier).set(s),
+              ),
+            ],
+          ),
+        ],
         Expanded(
           child: visible.isEmpty
               ? EmptyState(
@@ -160,12 +197,27 @@ class _TracksViewState extends ConsumerState<TracksView> {
                       itemCount: visible.length,
                       itemBuilder: (context, index) {
                         final track = visible[index];
+                        if (selectedIds != null) {
+                          final selected = selectedIds.contains(track.id);
+                          return TrackRow(
+                            key: ValueKey(track.id),
+                            track: track,
+                            isCurrent: track.id == currentId,
+                            selected: selected,
+                            onTap: () => selection.toggle(track.id),
+                            trailing: Checkbox(
+                              value: selected,
+                              onChanged: (_) => selection.toggle(track.id),
+                            ),
+                          );
+                        }
                         return TrackRow(
                           key: ValueKey(track.id),
                           track: track,
                           isCurrent: track.id == currentId,
                           onTap: () =>
                               unawaited(player.playList(visible, start: index)),
+                          onLongPress: () => selection.start(track.id),
                           trailing: SongMenuButton(track: track),
                         );
                       },

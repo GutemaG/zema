@@ -43,6 +43,31 @@ class _FakeSettingsRepository implements SettingsRepository {
     }
     saves.add('language:$languageCode');
   }
+
+  void _record(String key, String save) {
+    if (fail) throw SettingsWriteException(key);
+    saves.add(save);
+  }
+
+  @override
+  Future<void> saveMinTrackSeconds(int seconds) async =>
+      _record(SettingsRepository.minTrackSecondsKey, 'minTrack:$seconds');
+
+  @override
+  Future<void> saveSleepTimerDefault(SleepTimerDefault value) async =>
+      _record(SettingsRepository.sleepTimerDefaultKey, 'sleep:${value.name}');
+
+  @override
+  Future<void> savePauseOnUnplug(bool value) async =>
+      _record(SettingsRepository.pauseOnUnplugKey, 'unplug:$value');
+
+  @override
+  Future<void> saveDuckOnInterruption(bool value) async =>
+      _record(SettingsRepository.duckOnInterruptionKey, 'duck:$value');
+
+  @override
+  Future<void> saveGapless(bool value) async =>
+      _record(SettingsRepository.gaplessKey, 'gapless:$value');
 }
 
 ProviderContainer _container(
@@ -106,6 +131,39 @@ void main() {
 
       expect(container.read(appLanguageProvider), AppLanguage.ti);
       expect(repository.saves, ['language:ti']);
+    });
+
+    test('library and playback setters update state and save', () async {
+      final repository = _FakeSettingsRepository();
+      final container = _container(repository);
+      final controller = container.read(settingsProvider.notifier);
+
+      await controller.setMinTrackSeconds(10);
+      await controller.setSleepTimerDefault(SleepTimerDefault.minutes45);
+      await controller.setPauseOnUnplug(false);
+      await controller.setDuckOnInterruption(true);
+      await controller.setGapless(false);
+      // Unchanged values are not saved again.
+      await controller.setMinTrackSeconds(10);
+      await controller.setGapless(false);
+
+      expect(
+        container.read(settingsProvider),
+        const AppSettings(
+          minTrackSeconds: 10,
+          sleepTimerDefault: SleepTimerDefault.minutes45,
+          pauseOnUnplug: false,
+          duckOnInterruption: true,
+          gapless: false,
+        ),
+      );
+      expect(repository.saves, [
+        'minTrack:10',
+        'sleep:minutes45',
+        'unplug:false',
+        'duck:true',
+        'gapless:false',
+      ]);
     });
 
     test('picking the current value does not save again', () async {

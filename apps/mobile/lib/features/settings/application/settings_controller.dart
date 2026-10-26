@@ -61,6 +61,56 @@ class SettingsController extends Notifier<AppSettings> {
     );
   }
 
+  Future<void> setMinTrackSeconds(int seconds) async {
+    if (seconds == state.minTrackSeconds) {
+      return;
+    }
+    state = state.copyWith(minTrackSeconds: seconds);
+    await _persist(
+      () => ref.read(settingsRepositoryProvider).saveMinTrackSeconds(seconds),
+    );
+  }
+
+  Future<void> setSleepTimerDefault(SleepTimerDefault value) async {
+    if (value == state.sleepTimerDefault) {
+      return;
+    }
+    state = state.copyWith(sleepTimerDefault: value);
+    await _persist(
+      () => ref.read(settingsRepositoryProvider).saveSleepTimerDefault(value),
+    );
+  }
+
+  Future<void> setPauseOnUnplug(bool value) async {
+    if (value == state.pauseOnUnplug) {
+      return;
+    }
+    state = state.copyWith(pauseOnUnplug: value);
+    await _persist(
+      () => ref.read(settingsRepositoryProvider).savePauseOnUnplug(value),
+    );
+  }
+
+  Future<void> setDuckOnInterruption(bool value) async {
+    if (value == state.duckOnInterruption) {
+      return;
+    }
+    state = state.copyWith(duckOnInterruption: value);
+    await _persist(
+      () => ref.read(settingsRepositoryProvider).saveDuckOnInterruption(value),
+    );
+  }
+
+  Future<void> setGapless(bool value) async {
+    if (value == state.gapless) {
+      return;
+    }
+    state = state.copyWith(gapless: value);
+    await _persist(
+      () => ref.read(settingsRepositoryProvider).saveGapless(value),
+    );
+  }
+
   /// A failed save keeps the new value for this session; it is only lost on
   /// the next launch.
   Future<void> _persist(Future<void> Function() save) async {

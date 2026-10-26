@@ -16,6 +16,8 @@ class TrackRow extends StatelessWidget {
     super.key,
     required this.track,
     required this.onTap,
+    this.onLongPress,
+    this.selected = false,
     this.isCurrent = false,
     this.number,
     this.trailing,
@@ -27,6 +29,10 @@ class TrackRow extends StatelessWidget {
 
   /// Null disables the row.
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  /// Picked in multi-select: the row is tinted.
+  final bool selected;
   final bool isCurrent;
 
   /// Shown instead of the art, e.g. the position in an album.
@@ -43,61 +49,66 @@ class TrackRow extends StatelessWidget {
     return Semantics(
       button: true,
       selected: isCurrent,
-      child: InkWell(
-        onTap: onTap,
-        child: SizedBox(
-          height: height,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: ZemaSpacing.screenSide,
-            ),
-            child: Row(
-              children: [
-                if (number case final number?)
-                  SizedBox(
-                    width: 32,
-                    child: Text(
-                      '$number',
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: isCurrent ? colors.primaryText : colors.muted,
+      // Ink, not a coloured box, so the tap ripple still shows on top.
+      child: Ink(
+        color: selected ? colors.soft : null,
+        child: InkWell(
+          onTap: onTap,
+          onLongPress: onLongPress,
+          child: SizedBox(
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: ZemaSpacing.screenSide,
+              ),
+              child: Row(
+                children: [
+                  if (number case final number?)
+                    SizedBox(
+                      width: 32,
+                      child: Text(
+                        '$number',
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: isCurrent ? colors.primaryText : colors.muted,
+                        ),
                       ),
+                    )
+                  else
+                    TrackArt(track: track, size: 46),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          track.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: isCurrent ? colors.primaryText : colors.text,
+                            fontWeight: isCurrent ? FontWeight.w600 : null,
+                          ),
+                        ),
+                        Text(
+                          '$artist · $duration',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.muted,
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                else
-                  TrackArt(track: track, size: 46),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        track.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: isCurrent ? colors.primaryText : colors.text,
-                          fontWeight: isCurrent ? FontWeight.w600 : null,
-                        ),
-                      ),
-                      Text(
-                        '$artist · $duration',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.muted,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-                if (isCurrent) ...[
-                  const SizedBox(width: 8),
-                  Icon(Icons.graphic_eq, size: 20, color: colors.primaryText),
+                  if (isCurrent) ...[
+                    const SizedBox(width: 8),
+                    Icon(Icons.graphic_eq, size: 20, color: colors.primaryText),
+                  ],
+                  ?trailing,
                 ],
-                ?trailing,
-              ],
+              ),
             ),
           ),
         ),

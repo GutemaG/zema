@@ -1133,6 +1133,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Already in the playlist'**
   String get playlistInPlaylist;
+
+  /// Title of the selection bar in Tracks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String selectionCount(int count);
+
+  /// Tooltip of the close button on the selection bar.
+  ///
+  /// In en, this message translates to:
+  /// **'End selection'**
+  String get selectionClose;
+
+  /// Selection bar button that selects every song in the (filtered) list.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectionSelectAll;
+
+  /// Title of the playlist sheet opened from the selection bar.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Add 1 song to a playlist} other{Add {count} songs to a playlist}}'**
+  String selectionAddToPlaylistTitle(int count);
+
+  /// Snackbar after adding selected songs to a playlist; songs already there are skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{All already in {name}} =1{Added 1 song to {name}} other{Added {count} songs to {name}}}'**
+  String selectionAddedToPlaylist(int count, String name);
+
+  /// Snackbar after queueing the selected songs.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Added 1 song to the queue} other{Added {count} songs to the queue}}'**
+  String selectionAddedToQueue(int count);
+
+  /// Snackbar after favoriting the selected songs.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Added 1 song to favorites} other{Added {count} songs to favorites}}'**
+  String selectionFavorited(int count);
+
+  /// Snackbar after unfavoriting the selected songs.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Removed 1 song from favorites} other{Removed {count} songs from favorites}}'**
+  String selectionUnfavorited(int count);
+
+  /// Snackbar after hiding the selected songs, with Undo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song hidden} other{{count} songs hidden}}'**
+  String selectionHidden(int count);
+
+  /// Heading above the read-only playlists Zema keeps by itself.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto playlists'**
+  String get autoPlaylistsHeading;
+
+  /// Auto playlist: songs added in the last 30 days.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently added'**
+  String get autoRecentlyAdded;
+
+  /// Auto playlist: the 50 songs played most.
+  ///
+  /// In en, this message translates to:
+  /// **'Most played'**
+  String get autoMostPlayed;
+
+  /// Auto playlist: the last 50 songs played.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently played'**
+  String get autoRecentlyPlayed;
+
+  /// Empty Recently added playlist, title.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new'**
+  String get autoRecentlyAddedEmptyTitle;
+
+  /// Empty Recently added playlist, message.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs added to your phone in the last 30 days show up here.'**
+  String get autoRecentlyAddedEmptyMessage;
+
+  /// Empty Most played or Recently played playlist, title.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing played yet'**
+  String get autoPlayedEmptyTitle;
+
+  /// Empty Most played playlist, message.
+  ///
+  /// In en, this message translates to:
+  /// **'The songs you play most show up here.'**
+  String get autoMostPlayedEmptyMessage;
+
+  /// Empty Recently played playlist, message.
+  ///
+  /// In en, this message translates to:
+  /// **'The songs you play show up here, latest first.'**
+  String get autoRecentlyPlayedEmptyMessage;
+
+  /// Settings section heading for hidden items, rescan and minimum duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get settingsSectionLibrary;
+
+  /// Settings row and page title listing hidden folders.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden folders'**
+  String get settingsHiddenFolders;
+
+  /// Settings row and page title listing hidden songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden songs'**
+  String get settingsHiddenSongs;
+
+  /// Settings row that scans the phone for audio again.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescan library'**
+  String get settingsRescan;
+
+  /// Value of the Rescan row while a scan runs.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning…'**
+  String get settingsRescanning;
+
+  /// Snackbar after a rescan: how many songs the library now shows.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Found 1 song} other{Found {count} songs}}'**
+  String settingsRescanDone(int count);
+
+  /// Settings row and dialog title for the minimum song length (hides voice notes).
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore audio shorter than'**
+  String get settingsMinDuration;
+
+  /// Setting value: turned off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsOff;
+
+  /// A number of seconds, e.g. 30 s.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String settingsSeconds(int seconds);
+
+  /// Button that brings a hidden folder or song back.
+  ///
+  /// In en, this message translates to:
+  /// **'Unhide'**
+  String get actionUnhide;
+
+  /// Hidden folders page when empty, title.
+  ///
+  /// In en, this message translates to:
+  /// **'No hidden folders'**
+  String get hiddenFoldersEmptyTitle;
+
+  /// Hidden folders page when empty, message.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide a folder from its menu in Library → Folders.'**
+  String get hiddenFoldersEmptyMessage;
+
+  /// Hidden songs page when empty, title.
+  ///
+  /// In en, this message translates to:
+  /// **'No hidden songs'**
+  String get hiddenSongsEmptyTitle;
+
+  /// Hidden songs page when empty, message.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide a song from its menu.'**
+  String get hiddenSongsEmptyMessage;
+
+  /// Settings section heading for playback options.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback'**
+  String get settingsSectionPlayback;
+
+  /// Settings row: the option preselected in the sleep timer.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep timer default'**
+  String get settingsSleepDefault;
+
+  /// Setting value: nothing chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get settingsNone;
+
+  /// Settings switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause when headphones are unplugged'**
+  String get settingsPauseOnUnplug;
+
+  /// Settings row and dialog title: what happens on navigation prompts, notification sounds and similar.
+  ///
+  /// In en, this message translates to:
+  /// **'When another app plays sound'**
+  String get settingsInterruptions;
+
+  /// Interruption option: pause playback.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get settingsInterruptionsPause;
+
+  /// Interruption option: keep playing more quietly.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower volume'**
+  String get settingsInterruptionsDuck;
+
+  /// Note under the interruption options.
+  ///
+  /// In en, this message translates to:
+  /// **'Calls always pause.'**
+  String get settingsInterruptionsNote;
+
+  /// Settings switch: start the next song without a pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Gapless playback'**
+  String get settingsGapless;
 }
 
 class _AppLocalizationsDelegate

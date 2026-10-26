@@ -5,14 +5,18 @@ import 'package:go_router/go_router.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/library/application/album_grouping.dart';
+import '../features/library/application/play_history.dart';
 import '../features/library/presentation/add_songs_screen.dart';
 import '../features/library/presentation/album_screen.dart';
 import '../features/library/presentation/artist_screen.dart';
+import '../features/library/presentation/auto_playlist_screen.dart';
 import '../features/library/presentation/folder_screen.dart';
 import '../features/library/presentation/library_screen.dart';
 import '../features/library/presentation/playlist_screen.dart';
 import '../features/player/presentation/now_playing_screen.dart';
 import '../features/search/presentation/search_screen.dart';
+import '../features/settings/presentation/hidden_folders_screen.dart';
+import '../features/settings/presentation/hidden_songs_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import 'app_shell.dart';
 import 'not_found_screen.dart';
@@ -85,6 +89,13 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
                       id: int.tryParse(state.uri.queryParameters['id'] ?? ''),
                     ),
                   ),
+                  GoRoute(
+                    path: AppRoutes.autoPlaylistPath,
+                    builder: (_, state) => AutoPlaylistScreen(
+                      kind: AutoPlaylistKind.values
+                          .asNameMap()[state.uri.queryParameters['kind']],
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -102,6 +113,16 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (_, _) => const SettingsScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.hiddenFoldersPath,
+            builder: (_, _) => const HiddenFoldersScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.hiddenSongsPath,
+            builder: (_, _) => const HiddenSongsScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.addSongsPath,

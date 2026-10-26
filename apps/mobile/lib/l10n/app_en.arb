@@ -824,5 +824,217 @@
   "playlistInPlaylist": "Already in the playlist",
   "@playlistInPlaylist": {
     "description": "Screen-reader value for a picker row whose song is already in the playlist."
+  },
+  "selectionCount": "{count} selected",
+  "@selectionCount": {
+    "description": "Title of the selection bar in Tracks.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionClose": "End selection",
+  "@selectionClose": {
+    "description": "Tooltip of the close button on the selection bar."
+  },
+  "selectionSelectAll": "Select all",
+  "@selectionSelectAll": {
+    "description": "Selection bar button that selects every song in the (filtered) list."
+  },
+  "selectionAddToPlaylistTitle": "{count, plural, =1{Add 1 song to a playlist} other{Add {count} songs to a playlist}}",
+  "@selectionAddToPlaylistTitle": {
+    "description": "Title of the playlist sheet opened from the selection bar.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionAddedToPlaylist": "{count, plural, =0{All already in {name}} =1{Added 1 song to {name}} other{Added {count} songs to {name}}}",
+  "@selectionAddedToPlaylist": {
+    "description": "Snackbar after adding selected songs to a playlist; songs already there are skipped.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "selectionAddedToQueue": "{count, plural, =1{Added 1 song to the queue} other{Added {count} songs to the queue}}",
+  "@selectionAddedToQueue": {
+    "description": "Snackbar after queueing the selected songs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionFavorited": "{count, plural, =1{Added 1 song to favorites} other{Added {count} songs to favorites}}",
+  "@selectionFavorited": {
+    "description": "Snackbar after favoriting the selected songs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionUnfavorited": "{count, plural, =1{Removed 1 song from favorites} other{Removed {count} songs from favorites}}",
+  "@selectionUnfavorited": {
+    "description": "Snackbar after unfavoriting the selected songs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionHidden": "{count, plural, =1{1 song hidden} other{{count} songs hidden}}",
+  "@selectionHidden": {
+    "description": "Snackbar after hiding the selected songs, with Undo.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoPlaylistsHeading": "Auto playlists",
+  "@autoPlaylistsHeading": {
+    "description": "Heading above the read-only playlists Zema keeps by itself."
+  },
+  "autoRecentlyAdded": "Recently added",
+  "@autoRecentlyAdded": {
+    "description": "Auto playlist: songs added in the last 30 days."
+  },
+  "autoMostPlayed": "Most played",
+  "@autoMostPlayed": {
+    "description": "Auto playlist: the 50 songs played most."
+  },
+  "autoRecentlyPlayed": "Recently played",
+  "@autoRecentlyPlayed": {
+    "description": "Auto playlist: the last 50 songs played."
+  },
+  "autoRecentlyAddedEmptyTitle": "Nothing new",
+  "@autoRecentlyAddedEmptyTitle": {
+    "description": "Empty Recently added playlist, title."
+  },
+  "autoRecentlyAddedEmptyMessage": "Songs added to your phone in the last 30 days show up here.",
+  "@autoRecentlyAddedEmptyMessage": {
+    "description": "Empty Recently added playlist, message."
+  },
+  "autoPlayedEmptyTitle": "Nothing played yet",
+  "@autoPlayedEmptyTitle": {
+    "description": "Empty Most played or Recently played playlist, title."
+  },
+  "autoMostPlayedEmptyMessage": "The songs you play most show up here.",
+  "@autoMostPlayedEmptyMessage": {
+    "description": "Empty Most played playlist, message."
+  },
+  "autoRecentlyPlayedEmptyMessage": "The songs you play show up here, latest first.",
+  "@autoRecentlyPlayedEmptyMessage": {
+    "description": "Empty Recently played playlist, message."
+  },
+  "settingsSectionLibrary": "Library",
+  "@settingsSectionLibrary": {
+    "description": "Settings section heading for hidden items, rescan and minimum duration."
+  },
+  "settingsHiddenFolders": "Hidden folders",
+  "@settingsHiddenFolders": {
+    "description": "Settings row and page title listing hidden folders."
+  },
+  "settingsHiddenSongs": "Hidden songs",
+  "@settingsHiddenSongs": {
+    "description": "Settings row and page title listing hidden songs."
+  },
+  "settingsRescan": "Rescan library",
+  "@settingsRescan": {
+    "description": "Settings row that scans the phone for audio again."
+  },
+  "settingsRescanning": "Scanning…",
+  "@settingsRescanning": {
+    "description": "Value of the Rescan row while a scan runs."
+  },
+  "settingsRescanDone": "{count, plural, =1{Found 1 song} other{Found {count} songs}}",
+  "@settingsRescanDone": {
+    "description": "Snackbar after a rescan: how many songs the library now shows.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsMinDuration": "Ignore audio shorter than",
+  "@settingsMinDuration": {
+    "description": "Settings row and dialog title for the minimum song length (hides voice notes)."
+  },
+  "settingsOff": "Off",
+  "@settingsOff": {
+    "description": "Setting value: turned off."
+  },
+  "settingsSeconds": "{seconds} s",
+  "@settingsSeconds": {
+    "description": "A number of seconds, e.g. 30 s.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "actionUnhide": "Unhide",
+  "@actionUnhide": {
+    "description": "Button that brings a hidden folder or song back."
+  },
+  "hiddenFoldersEmptyTitle": "No hidden folders",
+  "@hiddenFoldersEmptyTitle": {
+    "description": "Hidden folders page when empty, title."
+  },
+  "hiddenFoldersEmptyMessage": "Hide a folder from its menu in Library → Folders.",
+  "@hiddenFoldersEmptyMessage": {
+    "description": "Hidden folders page when empty, message."
+  },
+  "hiddenSongsEmptyTitle": "No hidden songs",
+  "@hiddenSongsEmptyTitle": {
+    "description": "Hidden songs page when empty, title."
+  },
+  "hiddenSongsEmptyMessage": "Hide a song from its menu.",
+  "@hiddenSongsEmptyMessage": {
+    "description": "Hidden songs page when empty, message."
+  },
+  "settingsSectionPlayback": "Playback",
+  "@settingsSectionPlayback": {
+    "description": "Settings section heading for playback options."
+  },
+  "settingsSleepDefault": "Sleep timer default",
+  "@settingsSleepDefault": {
+    "description": "Settings row: the option preselected in the sleep timer."
+  },
+  "settingsNone": "None",
+  "@settingsNone": {
+    "description": "Setting value: nothing chosen."
+  },
+  "settingsPauseOnUnplug": "Pause when headphones are unplugged",
+  "@settingsPauseOnUnplug": {
+    "description": "Settings switch."
+  },
+  "settingsInterruptions": "When another app plays sound",
+  "@settingsInterruptions": {
+    "description": "Settings row and dialog title: what happens on navigation prompts, notification sounds and similar."
+  },
+  "settingsInterruptionsPause": "Pause",
+  "@settingsInterruptionsPause": {
+    "description": "Interruption option: pause playback."
+  },
+  "settingsInterruptionsDuck": "Lower volume",
+  "@settingsInterruptionsDuck": {
+    "description": "Interruption option: keep playing more quietly."
+  },
+  "settingsInterruptionsNote": "Calls always pause.",
+  "@settingsInterruptionsNote": {
+    "description": "Note under the interruption options."
+  },
+  "settingsGapless": "Gapless playback",
+  "@settingsGapless": {
+    "description": "Settings switch: start the next song without a pause."
   }
 }

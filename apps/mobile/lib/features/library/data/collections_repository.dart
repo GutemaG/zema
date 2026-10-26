@@ -23,6 +23,12 @@ class CollectionsRepository {
 
   Future<void> addFavorite(int trackId) => _guard(_dao.addFavorite(trackId));
 
+  Future<void> addFavorites(List<int> trackIds) =>
+      _guard(_dao.addFavorites(trackIds));
+
+  Future<void> removeFavorites(List<int> trackIds) =>
+      _guard(_dao.removeFavorites(trackIds));
+
   /// Removes [trackId] from favorites. Returns a function that puts it back
   /// in the same place, or null if it wasn't a favorite.
   Future<Future<void> Function()?> removeFavorite(int trackId) async {

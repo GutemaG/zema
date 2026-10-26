@@ -48,6 +48,21 @@ class CollectionsDao extends DatabaseAccessor<ZemaDatabase>
         mode: InsertMode.insertOrIgnore,
       );
 
+  /// Favorites every track in [trackIds] at the same time; ones that
+  /// already are keep their time.
+  Future<void> addFavorites(List<int> trackIds, {DateTime? at}) {
+    final addedAt = at ?? DateTime.now();
+    return batch((b) {
+      b.insertAll(favorites, [
+        for (final id in trackIds)
+          FavoritesCompanion.insert(trackId: Value(id), addedAt: addedAt),
+      ], mode: InsertMode.insertOrIgnore);
+    });
+  }
+
+  Future<void> removeFavorites(List<int> trackIds) =>
+      (delete(favorites)..where((f) => f.trackId.isIn(trackIds))).go();
+
   /// Removes [trackId] from favorites and returns the removed row (for
   /// undo), or null if it wasn't a favorite.
   Future<FavoriteRow?> removeFavorite(int trackId) => transaction(() async {

@@ -4,7 +4,7 @@ intent: 002-local-library-and-player
 unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: stories-defined
+status: complete
 created: 2026-10-24T19:21:00Z
 updated: 2026-10-24T19:21:00Z
 ---
@@ -124,10 +124,10 @@ detected songs (007) on top of the models and providers built here.
 | 015-playlists | Playlists | Must | Complete |
 | 016-add-songs-picker | Add songs picker | Must | Complete |
 | 017-song-menu-and-add-to-playlist | Song menu and add-to-playlist sheet | Must | Complete |
-| 018-track-multi-select | Track multi-select | Must | Planned |
-| 019-play-history-and-auto-playlists | Play history and auto playlists | Must | Planned |
-| 020-library-settings | Library settings | Must | Planned |
-| 021-playback-settings | Playback settings | Must | Planned |
+| 018-track-multi-select | Track multi-select | Must | Complete |
+| 019-play-history-and-auto-playlists | Play history and auto playlists | Must | Complete |
+| 020-library-settings | Library settings | Must | Complete |
+| 021-playback-settings | Playback settings | Must | Complete |
 
 ---
 

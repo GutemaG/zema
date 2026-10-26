@@ -36,6 +36,10 @@ class LibraryRepository {
   Stream<List<Track>> watchTracks({required Duration minDuration}) =>
       _dao.watchVisibleTracks(minDuration: minDuration);
 
+  /// How many tracks [watchTracks] lists right now.
+  Future<int> countTracks({required Duration minDuration}) =>
+      _dao.countVisibleTracks(minDuration: minDuration);
+
   /// Hides the folder at [path] and everything below it from every list.
   Future<void> hideFolder(String path) => _dao.hideFolder(path);
 
@@ -45,6 +49,17 @@ class LibraryRepository {
   Future<void> hideTrack(int trackId) => _dao.hideTrack(trackId);
 
   Future<void> unhideTrack(int trackId) => _dao.unhideTrack(trackId);
+
+  /// Hides several songs at once.
+  Future<void> hideTracks(List<int> trackIds) => _dao.hideTracks(trackIds);
+
+  Future<void> unhideTracks(List<int> trackIds) => _dao.unhideTracks(trackIds);
+
+  /// Hidden folders, by path.
+  Stream<List<String>> watchHiddenFolders() => _dao.watchHiddenFolders();
+
+  /// Hidden songs whose files still exist, by title.
+  Stream<List<Track>> watchHiddenTracks() => _dao.watchHiddenTracks();
 
   /// Scans the device and applies the differences in one transaction. If
   /// anything fails, the stored library stays as it was.

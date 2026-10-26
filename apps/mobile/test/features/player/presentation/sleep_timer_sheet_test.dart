@@ -24,6 +24,7 @@ final _tracks = [
 Future<ZemaAudioHandler> _nowPlaying(
   WidgetTester tester, {
   Brightness phoneBrightness = Brightness.dark,
+  Map<String, Object> savedPrefs = const {},
 }) async {
   final handler = fakeAudioHandler();
   await pumpZemaApp(
@@ -31,7 +32,7 @@ Future<ZemaAudioHandler> _nowPlaying(
     location: AppRoutes.nowPlaying,
     audioHandler: handler,
     phoneBrightness: phoneBrightness,
-    savedPrefs: {LibraryAccessController.explainedKey: true},
+    savedPrefs: {LibraryAccessController.explainedKey: true, ...savedPrefs},
   );
   await handler.playTracks(_tracks);
   await tester.pumpAndSettle();
@@ -48,7 +49,66 @@ Future<void> _endTest(WidgetTester tester, ZemaAudioHandler handler) async {
   await tester.pumpWidget(const SizedBox());
 }
 
+/// The option tiles shown selected.
+List<String> _selected(WidgetTester tester) => [
+  for (final tile in tester.widgetList<ListTile>(
+    find.descendant(
+      of: find.byType(SleepTimerSheet),
+      matching: find.byType(ListTile),
+    ),
+  ))
+    if (tile.selected) (tile.title! as Text).data!,
+];
+
 void main() {
+  group('Sleep timer default', () {
+    testWidgets('nothing is preselected by default', (tester) async {
+      final handler = await _nowPlaying(tester);
+      await _openSheet(tester);
+
+      expect(_selected(tester), isEmpty);
+      expect(find.byIcon(Icons.check), findsNothing);
+      await _endTest(tester, handler);
+    });
+
+    testWidgets('the saved default is preselected; nothing starts', (
+      tester,
+    ) async {
+      final handler = await _nowPlaying(
+        tester,
+        savedPrefs: {'sleepTimerDefault': 'minutes30'},
+      );
+      await _openSheet(tester);
+
+      expect(_selected(tester), [_l10n.sleepMinutes(30)]);
+      expect(
+        find.descendant(
+          of: find.widgetWithText(ListTile, _l10n.sleepMinutes(30)),
+          matching: find.byIcon(Icons.check),
+        ),
+        findsOneWidget,
+      );
+      expect(handler.snapshot.sleepTimer, isNull);
+
+      // One tap starts it.
+      await tester.tap(find.text(_l10n.sleepMinutes(30)));
+      await tester.pumpAndSettle();
+      expect(handler.snapshot.sleepTimer, isA<TimedSleep>());
+      await _endTest(tester, handler);
+    });
+
+    testWidgets('end of song can be the default', (tester) async {
+      final handler = await _nowPlaying(
+        tester,
+        savedPrefs: {'sleepTimerDefault': 'endOfSong'},
+      );
+      await _openSheet(tester);
+
+      expect(_selected(tester), [_l10n.sleepEndOfSong]);
+      await _endTest(tester, handler);
+    });
+  });
+
   group('Sleep timer sheet', () {
     testWidgets('offers the presets, end of song and custom', (tester) async {
       final handler = await _nowPlaying(tester);

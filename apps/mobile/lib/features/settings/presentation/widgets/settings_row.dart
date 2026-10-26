@@ -4,16 +4,24 @@ import '../../../../app/theme/zema_colors.dart';
 
 /// A Settings row: label on the left, current [value] and › on the right.
 ///
-/// Without [onTap] the row is informational and shows no ›. Screen readers
-/// get one node per row, reading the label and value together.
+/// Without [onTap] the row is informational and shows no ›. A [trailing]
+/// widget (a switch, a spinner) replaces the ›. Screen readers get one node
+/// per row, reading the label and value together.
 class SettingsRow extends StatelessWidget {
-  const SettingsRow({super.key, required this.label, this.value, this.onTap});
+  const SettingsRow({
+    super.key,
+    required this.label,
+    this.value,
+    this.onTap,
+    this.trailing,
+  });
 
   static const double minHeight = 56;
 
   final String label;
   final String? value;
   final VoidCallback? onTap;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +62,10 @@ class SettingsRow extends StatelessWidget {
                       ),
                     ),
                   ],
-                  if (onTap != null)
+                  if (trailing case final trailing?) ...[
+                    const SizedBox(width: 12),
+                    trailing,
+                  ] else if (onTap != null)
                     Icon(Icons.chevron_right, size: 20, color: colors.muted),
                 ],
               ),

@@ -1,5 +1,7 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zema/features/player/data/audio_backend.dart';
 import 'package:zema/features/player/data/player_snapshot.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema_core/zema_core.dart';
@@ -419,5 +421,237 @@ void main() {
       expect(currentTitle(), 'Extra');
       expect(snap().playing, isFalse);
     });
+  });
+
+  group('Counting plays', () {
+    late DateTime now;
+    late List<Track> played;
+
+    /// Runs [body] with a handler built under the test clock: its stream
+    /// listeners read the clock of the zone they were created in.
+    Future<void> run(Future<void> Function() body) =>
+        withClock(Clock(() => now), () async {
+          backend = FakeAudioBackend();
+          handler = fakeAudioHandler(backend);
+          played = [];
+          handler.playCounted.listen(played.add);
+          await body();
+        });
+    Future<void> listen(int seconds) async {
+      now = now.add(Duration(seconds: seconds));
+      backend.advanceTo(backend.position + Duration(seconds: seconds));
+      await pumpEventQueue();
+    }
+
+    setUp(() => now = DateTime.utc(2026, 10, 26, 12));
+
+    test('reports a play once after 30 s of playing', () async {
+      final tracks = _tracks(2);
+      await run(() async {
+        await handler.playTracks(tracks);
+        await pumpEventQueue();
+        await listen(20);
+        expect(played, isEmpty);
+        await listen(10);
+        expect(played, [tracks[0]]);
+        await listen(60);
+      });
+      expect(played, [tracks[0]]);
+    });
+
+    test('paused time does not count', () async {
+      final tracks = _tracks(1);
+      await run(() async {
+        await handler.playTracks(tracks);
+        await pumpEventQueue();
+        await listen(20);
+        await handler.pause();
+        await pumpEventQueue();
+        now = now.add(const Duration(minutes: 10));
+        await handler.play();
+        await pumpEventQueue();
+        await listen(5);
+      });
+      expect(played, isEmpty);
+    });
+
+    test('repeat one counts each time round', () async {
+      final tracks = _tracks(1);
+      await run(() async {
+        await handler.setRepeatMode(AudioServiceRepeatMode.one);
+        await handler.playTracks(tracks);
+        await pumpEventQueue();
+        await listen(40);
+        backend.finishTrack();
+        await pumpEventQueue();
+        await listen(40);
+      });
+      expect(played, [tracks[0], tracks[0]]);
+    });
+
+    test('a short song counts when it plays to the end', () async {
+      final short = Track.fromScan(
+        1,
+        scannedAudio(1, '/m/short.mp3', durationMs: 8000),
+      );
+      await run(() async {
+        await handler.playTracks([short]);
+        await pumpEventQueue();
+        await listen(7);
+        backend.finishTrack();
+        await pumpEventQueue();
+      });
+      expect(played, [short]);
+    });
+  });
+
+  group('Playback options and gapless', () {
+    test('passes the options to the backend', () async {
+      const options = PlaybackOptions(
+        pauseOnUnplug: false,
+        duckOnInterruption: true,
+      );
+
+      await handler.setOptions(options);
+
+      expect(backend.options, options);
+    });
+
+    test('preloads the next song; it takes over without a load', () async {
+      final tracks = _tracks(3);
+      await handler.playTracks(tracks);
+      await pumpEventQueue();
+      expect(backend.next, tracks[1].uri);
+
+      backend.finishIntoNext();
+      await pumpEventQueue();
+
+      expect(currentTitle(), 'Song 2');
+      expect(snap().playing, isTrue);
+      expect(backend.loaded, [tracks[0].uri, tracks[1].uri]);
+      expect(backend.next, tracks[2].uri);
+    });
+
+    test('a play counts across a gapless change', () async {
+      final tracks = _tracks(2);
+      final played = <Track>[];
+      var now = DateTime.utc(2026, 10, 26);
+      await withClock(Clock(() => now), () async {
+        // Built under the test clock (see "Counting plays").
+        backend = FakeAudioBackend();
+        handler = fakeAudioHandler(backend)..playCounted.listen(played.add);
+        await handler.playTracks(tracks);
+        await pumpEventQueue();
+        now = now.add(const Duration(seconds: 31));
+        backend.finishIntoNext();
+        await pumpEventQueue();
+        now = now.add(const Duration(seconds: 31));
+        backend.advanceTo(const Duration(seconds: 31));
+        await pumpEventQueue();
+      });
+      expect(played, tracks);
+    });
+
+    test(
+      'nothing is preloaded after the last song, or for repeat one',
+      () async {
+        final tracks = _tracks(2);
+        await handler.playTracks(tracks, start: 1);
+        await pumpEventQueue();
+        expect(backend.next, isNull);
+
+        await handler.setRepeatMode(AudioServiceRepeatMode.all);
+        await pumpEventQueue();
+        expect(backend.next, tracks[0].uri);
+
+        await handler.setRepeatMode(AudioServiceRepeatMode.one);
+        await pumpEventQueue();
+        expect(backend.next, isNull);
+      },
+    );
+
+    test('"stop at end of song" clears the preload until cancelled', () async {
+      final tracks = _tracks(2);
+      await handler.playTracks(tracks);
+      await pumpEventQueue();
+
+      handler.sleepAtEndOfTrack();
+      await pumpEventQueue();
+      expect(backend.next, isNull);
+
+      handler.cancelSleepTimer();
+      await pumpEventQueue();
+      expect(backend.next, tracks[1].uri);
+    });
+
+    test('queue edits update the preload', () async {
+      final tracks = _tracks(3);
+      final extra = Track.fromScan(
+        9,
+        scannedAudio(9, '/m/extra.mp3', title: 'Extra'),
+      );
+      await handler.playTracks(tracks);
+      await pumpEventQueue();
+
+      await handler.playNext([extra]);
+      await pumpEventQueue();
+      expect(backend.next, extra.uri);
+
+      await handler.removeQueueEntry(1);
+      await pumpEventQueue();
+      expect(backend.next, tracks[1].uri);
+
+      await handler.moveQueueItem(2, 1);
+      await pumpEventQueue();
+      expect(backend.next, tracks[2].uri);
+
+      await handler.clearUpcoming();
+      await pumpEventQueue();
+      expect(backend.next, isNull);
+    });
+
+    test('gapless off preloads nothing and loads each song', () async {
+      final tracks = _tracks(2);
+      await handler.setOptions(const PlaybackOptions(gapless: false));
+      await handler.playTracks(tracks);
+      await pumpEventQueue();
+      expect(backend.next, isNull);
+
+      backend.finishTrack();
+      await pumpEventQueue();
+
+      expect(currentTitle(), 'Song 2');
+      expect(backend.loaded, [tracks[0].uri, tracks[1].uri]);
+    });
+
+    test('turning gapless on while playing preloads at once', () async {
+      final tracks = _tracks(2);
+      await handler.setOptions(const PlaybackOptions(gapless: false));
+      await handler.playTracks(tracks);
+      await pumpEventQueue();
+
+      await handler.setOptions(const PlaybackOptions());
+
+      expect(backend.next, tracks[1].uri);
+    });
+
+    test(
+      'if the queue ended before the takeover, it plays what the queue says',
+      () async {
+        final tracks = _tracks(2);
+        await handler.playTracks(tracks);
+        await pumpEventQueue();
+        // The preload is still Song 2, but the queue no longer goes on.
+        await handler.clearUpcoming();
+        backend.next = tracks[1].uri;
+
+        backend.finishIntoNext();
+        await pumpEventQueue();
+
+        // The queue finished: it reloads its current song.
+        expect(currentTitle(), 'Song 1');
+        expect(backend.loaded.last, tracks[0].uri);
+      },
+    );
   });
 }

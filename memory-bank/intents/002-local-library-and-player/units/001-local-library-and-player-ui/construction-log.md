@@ -55,6 +55,10 @@ last_updated: 2026-10-26T08:21:49Z
 | 2026-10-26T08:30:17Z | 007-local-library-and-player-ui | stage-complete | plan → implement |
 | 2026-10-26T08:48:47Z | 007-local-library-and-player-ui | stage-complete | implement → test |
 | 2026-10-26T10:09:48Z | 007-local-library-and-player-ui | completed | All 3 stages done; 504 tests pass |
+| 2026-10-26T10:17:06Z | 008-local-library-and-player-ui | started | Stage 1: plan |
+| 2026-10-26T10:20:31Z | 008-local-library-and-player-ui | stage-complete | plan → implement |
+| 2026-10-26T10:37:53Z | 008-local-library-and-player-ui | stage-complete | implement → test |
+| 2026-10-26T12:48:29Z | 008-local-library-and-player-ui | completed | All 3 stages done; 599 tests pass; unit complete |
 
 ## Notes
 
@@ -79,3 +83,11 @@ last_updated: 2026-10-26T08:21:49Z
   capped at 9/16 of the screen unless `isScrollControlled`; the song menu sets it so
   Hide and Share stay visible. In widget tests, await Drift streams only inside
   `tester.runAsync` (they hang under the fake clock).
+- Bolt 008: gapless preloads the next file as a second `just_audio` playlist item. The
+  takeover is detected by the player reaching index 1, not by `positionDiscontinuityStream`
+  (it reports any change of file without a seek, a new load included, as an
+  auto-advance; this skipped songs on the emulator). Play counting checks on position
+  updates (no timer, so widget tests end without pending timers). Interruption handling
+  uses `audio_session`'s `androidWillPauseWhenDucked`. Still open for a real phone:
+  headset unplug, a real interruption, gapless by ear, and the intent's performance and
+  30-minute background checks.

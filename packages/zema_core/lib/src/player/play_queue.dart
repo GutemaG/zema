@@ -123,6 +123,15 @@ class PlayQueue<T> {
     return false;
   }
 
+  /// The item [trackCompleted] would move to, without moving: null when
+  /// the current item repeats or the queue ends with it.
+  T? get upcoming {
+    if (_order.isEmpty || repeat == QueueRepeat.one) return null;
+    if (hasNext) return _order[_index + 1].item;
+    if (repeat == QueueRepeat.all) return _order.first.item;
+    return null;
+  }
+
   /// The current track played to its end.
   QueueAdvance trackCompleted() {
     if (_order.isEmpty) return QueueAdvance.finished;

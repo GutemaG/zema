@@ -54,6 +54,11 @@ class FavoritesController {
     }
   }
 
+  /// Favorites (or unfavorites) every track in [trackIds] at once.
+  Future<void> setAll(List<int> trackIds, {required bool favorite}) => favorite
+      ? _repository.addFavorites(trackIds)
+      : _repository.removeFavorites(trackIds);
+
   /// Unfavorites [trackId]. Returns a function that restores it in the
   /// same place, or null if it wasn't a favorite.
   Future<Future<void> Function()?> remove(int trackId) =>

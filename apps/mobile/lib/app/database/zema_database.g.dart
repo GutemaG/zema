@@ -2439,6 +2439,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final CollectionsDao collectionsDao = CollectionsDao(
     this as ZemaDatabase,
   );
+  late final HistoryDao historyDao = HistoryDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

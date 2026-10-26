@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
 import 'collections_dao.dart';
+import 'history_dao.dart';
 import 'library_dao.dart';
 import 'tables.dart';
 
@@ -19,7 +20,7 @@ part 'zema_database.g.dart';
     PlaylistEntries,
     PlayEvents,
   ],
-  daos: [LibraryDao, CollectionsDao],
+  daos: [LibraryDao, CollectionsDao, HistoryDao],
 )
 class ZemaDatabase extends _$ZemaDatabase {
   ZemaDatabase(super.executor);

@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/format_duration.dart';
+import '../../settings/application/settings_controller.dart';
+import '../../settings/data/app_settings.dart';
 import '../application/player_providers.dart';
 import '../data/sleep_timer.dart';
 
@@ -23,7 +25,8 @@ Future<void> showSleepTimerSheet(BuildContext context) {
 /// C05: 15 / 30 / 45 / 60 minutes, end of the current song, or a custom
 /// number of minutes. While a timer runs, shows the time left and Cancel.
 /// Picking an option starts it (replacing any running timer) and closes
-/// the sheet.
+/// the sheet. The default from Settings is shown selected, one tap away;
+/// nothing starts until an option is tapped.
 class SleepTimerSheet extends ConsumerWidget {
   const SleepTimerSheet({super.key});
 
@@ -35,6 +38,11 @@ class SleepTimerSheet extends ConsumerWidget {
     final colors = context.zemaColors;
     final textTheme = Theme.of(context).textTheme;
     final timer = ref.watch(sleepTimerProvider);
+    final preselected = ref.watch(
+      settingsProvider.select((s) => s.sleepTimerDefault),
+    );
+    Widget? check(bool selected) =>
+        selected ? Icon(Icons.check, color: colors.primaryText) : null;
     final player = ref.read(playerControllerProvider);
     final navigator = Navigator.of(context);
 
@@ -91,11 +99,15 @@ class SleepTimerSheet extends ConsumerWidget {
             for (final minutes in presets)
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                selected: preselected.minutes == minutes,
+                trailing: check(preselected.minutes == minutes),
                 title: Text(l10n.sleepMinutes(minutes)),
                 onTap: () => start(Duration(minutes: minutes)),
               ),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+              selected: preselected == SleepTimerDefault.endOfSong,
+              trailing: check(preselected == SleepTimerDefault.endOfSong),
               title: Text(l10n.sleepEndOfSong),
               onTap: () {
                 player.sleepAtEndOfTrack();

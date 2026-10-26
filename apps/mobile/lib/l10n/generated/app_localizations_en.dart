@@ -629,4 +629,192 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get playlistInPlaylist => 'Already in the playlist';
+
+  @override
+  String selectionCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get selectionClose => 'End selection';
+
+  @override
+  String get selectionSelectAll => 'Select all';
+
+  @override
+  String selectionAddToPlaylistTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count songs to a playlist',
+      one: 'Add 1 song to a playlist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String selectionAddedToPlaylist(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Added $count songs to $name',
+      one: 'Added 1 song to $name',
+      zero: 'All already in $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String selectionAddedToQueue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Added $count songs to the queue',
+      one: 'Added 1 song to the queue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String selectionFavorited(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Added $count songs to favorites',
+      one: 'Added 1 song to favorites',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String selectionUnfavorited(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Removed $count songs from favorites',
+      one: 'Removed 1 song from favorites',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String selectionHidden(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs hidden',
+      one: '1 song hidden',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoPlaylistsHeading => 'Auto playlists';
+
+  @override
+  String get autoRecentlyAdded => 'Recently added';
+
+  @override
+  String get autoMostPlayed => 'Most played';
+
+  @override
+  String get autoRecentlyPlayed => 'Recently played';
+
+  @override
+  String get autoRecentlyAddedEmptyTitle => 'Nothing new';
+
+  @override
+  String get autoRecentlyAddedEmptyMessage =>
+      'Songs added to your phone in the last 30 days show up here.';
+
+  @override
+  String get autoPlayedEmptyTitle => 'Nothing played yet';
+
+  @override
+  String get autoMostPlayedEmptyMessage =>
+      'The songs you play most show up here.';
+
+  @override
+  String get autoRecentlyPlayedEmptyMessage =>
+      'The songs you play show up here, latest first.';
+
+  @override
+  String get settingsSectionLibrary => 'Library';
+
+  @override
+  String get settingsHiddenFolders => 'Hidden folders';
+
+  @override
+  String get settingsHiddenSongs => 'Hidden songs';
+
+  @override
+  String get settingsRescan => 'Rescan library';
+
+  @override
+  String get settingsRescanning => 'Scanning…';
+
+  @override
+  String settingsRescanDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Found $count songs',
+      one: 'Found 1 song',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsMinDuration => 'Ignore audio shorter than';
+
+  @override
+  String get settingsOff => 'Off';
+
+  @override
+  String settingsSeconds(int seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get actionUnhide => 'Unhide';
+
+  @override
+  String get hiddenFoldersEmptyTitle => 'No hidden folders';
+
+  @override
+  String get hiddenFoldersEmptyMessage =>
+      'Hide a folder from its menu in Library → Folders.';
+
+  @override
+  String get hiddenSongsEmptyTitle => 'No hidden songs';
+
+  @override
+  String get hiddenSongsEmptyMessage => 'Hide a song from its menu.';
+
+  @override
+  String get settingsSectionPlayback => 'Playback';
+
+  @override
+  String get settingsSleepDefault => 'Sleep timer default';
+
+  @override
+  String get settingsNone => 'None';
+
+  @override
+  String get settingsPauseOnUnplug => 'Pause when headphones are unplugged';
+
+  @override
+  String get settingsInterruptions => 'When another app plays sound';
+
+  @override
+  String get settingsInterruptionsPause => 'Pause';
+
+  @override
+  String get settingsInterruptionsDuck => 'Lower volume';
+
+  @override
+  String get settingsInterruptionsNote => 'Calls always pause.';
+
+  @override
+  String get settingsGapless => 'Gapless playback';
 }

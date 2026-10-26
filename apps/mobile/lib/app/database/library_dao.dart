@@ -26,14 +26,11 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
     return [for (final id in ids) ?byId[id]];
   }
 
-  /// Tracks to show in the library, sorted by title: not missing, at least
-  /// [minDuration] long, and neither hidden themselves nor inside a hidden
-  /// folder (or one of its subfolders).
-  Stream<List<Track>> watchVisibleTracks({required Duration minDuration}) {
-    return customSelect(
-      '''
-      SELECT t.* FROM tracks t
-      WHERE t.missing = 0
+  /// Which tracks the library shows: not missing, at least ?1 ms long, and
+  /// neither hidden themselves nor inside a hidden folder (or one of its
+  /// subfolders).
+  static const _visibleWhere = '''
+      t.missing = 0
         AND t.duration_ms >= ?1
         AND NOT EXISTS (SELECT 1 FROM hidden_tracks h WHERE h.track_id = t.id)
         AND NOT EXISTS (
@@ -41,6 +38,16 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
           WHERE t.folder = f.path
              OR substr(t.folder, 1, length(f.path) + 1) = f.path || '/'
         )
+      ''';
+
+  /// Tracks to show in the library, sorted by title: not missing, at least
+  /// [minDuration] long, and neither hidden themselves nor inside a hidden
+  /// folder (or one of its subfolders).
+  Stream<List<Track>> watchVisibleTracks({required Duration minDuration}) {
+    return customSelect(
+      '''
+      SELECT t.* FROM tracks t
+      WHERE $_visibleWhere
       ORDER BY t.title COLLATE NOCASE, t.id
       ''',
       variables: [Variable.withInt(minDuration.inMilliseconds)],
@@ -48,6 +55,16 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
     ).watch().map(
       (rows) => [for (final row in rows) _toTrack(tracks.map(row.data))],
     );
+  }
+
+  /// How many tracks [watchVisibleTracks] lists right now.
+  Future<int> countVisibleTracks({required Duration minDuration}) async {
+    final row = await customSelect(
+      'SELECT COUNT(*) AS n FROM tracks t WHERE $_visibleWhere',
+      variables: [Variable.withInt(minDuration.inMilliseconds)],
+      readsFrom: {tracks, hiddenTracks, hiddenFolders},
+    ).getSingle();
+    return row.read<int>('n');
   }
 
   /// Applies a rescan in one transaction: either all of it lands or none.
@@ -92,6 +109,41 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
 
   Future<void> unhideTrack(int trackId) =>
       (delete(hiddenTracks)..where((h) => h.trackId.equals(trackId))).go();
+
+  /// Hides every track in [trackIds] in one transaction.
+  Future<void> hideTracks(List<int> trackIds, {DateTime? at}) {
+    final hiddenAt = at ?? DateTime.now();
+    return batch((b) {
+      b.insertAllOnConflictUpdate(hiddenTracks, [
+        for (final id in trackIds)
+          HiddenTracksCompanion.insert(trackId: Value(id), hiddenAt: hiddenAt),
+      ]);
+    });
+  }
+
+  Future<void> unhideTracks(List<int> trackIds) =>
+      (delete(hiddenTracks)..where((h) => h.trackId.isIn(trackIds))).go();
+
+  /// Hidden folders, by path.
+  Stream<List<String>> watchHiddenFolders() => (select(
+    hiddenFolders,
+  )..orderBy([(f) => OrderingTerm.asc(f.path)])).map((row) => row.path).watch();
+
+  /// Hidden songs whose files still exist, by title.
+  Stream<List<Track>> watchHiddenTracks() {
+    final query =
+        select(tracks).join([
+            innerJoin(hiddenTracks, hiddenTracks.trackId.equalsExp(tracks.id)),
+          ])
+          ..where(tracks.missing.not())
+          ..orderBy([
+            OrderingTerm.asc(tracks.title.collate(Collate.noCase)),
+            OrderingTerm.asc(tracks.id),
+          ]);
+    return query.watch().map(
+      (rows) => [for (final row in rows) _toTrack(row.readTable(tracks))],
+    );
+  }
 
   TracksCompanion _insertable(ScannedAudio audio) => TracksCompanion.insert(
     mediaStoreId: audio.mediaStoreId,

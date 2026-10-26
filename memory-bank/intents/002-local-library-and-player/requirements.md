@@ -1,7 +1,7 @@
 ---
 intent: 002-local-library-and-player
 phase: inception
-status: units-defined
+status: complete
 created: 2026-10-23T22:16:40Z
 updated: 2026-10-24T19:18:00Z
 ---

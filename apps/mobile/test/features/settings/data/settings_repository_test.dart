@@ -109,5 +109,49 @@ void main() {
       );
       expect(settings.copyWith(languageCode: 'ti').palette, settings.palette);
     });
+
+    test('library and playback values default as the stories say', () async {
+      final settings = (await _repository()).load();
+
+      expect(settings.minTrackSeconds, 30);
+      expect(settings.minTrackDuration, const Duration(seconds: 30));
+      expect(settings.sleepTimerDefault, SleepTimerDefault.none);
+      expect(settings.pauseOnUnplug, isTrue);
+      expect(settings.duckOnInterruption, isFalse);
+      expect(settings.gapless, isTrue);
+    });
+
+    test('round-trips the library and playback values', () async {
+      final repository = await _repository();
+
+      await repository.saveMinTrackSeconds(0);
+      await repository.saveSleepTimerDefault(SleepTimerDefault.endOfSong);
+      await repository.savePauseOnUnplug(false);
+      await repository.saveDuckOnInterruption(true);
+      await repository.saveGapless(false);
+
+      final prefs = await SharedPreferences.getInstance();
+      final settings = SettingsRepository(prefs).load();
+      expect(settings.minTrackSeconds, 0);
+      expect(settings.sleepTimerDefault, SleepTimerDefault.endOfSong);
+      expect(settings.pauseOnUnplug, isFalse);
+      expect(settings.duckOnInterruption, isTrue);
+      expect(settings.gapless, isFalse);
+      expect(prefs.getInt('minTrackSeconds'), 0);
+      expect(prefs.getString('sleepTimerDefault'), 'endOfSong');
+      expect(prefs.getBool('pauseOnUnplug'), isFalse);
+      expect(prefs.getBool('duckOnInterruption'), isTrue);
+      expect(prefs.getBool('gapless'), isFalse);
+    });
+
+    test('unknown saved library and playback values fall back', () async {
+      final settings = (await _repository({
+        'minTrackSeconds': 45,
+        'sleepTimerDefault': 'forever',
+      })).load();
+
+      expect(settings.minTrackSeconds, 30);
+      expect(settings.sleepTimerDefault, SleepTimerDefault.none);
+    });
   });
 }

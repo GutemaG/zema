@@ -8,6 +8,8 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/preferences_provider.dart';
+import '../../settings/application/settings_controller.dart';
+import '../data/audio_backend.dart';
 import '../data/player_persistence.dart';
 import '../data/player_snapshot.dart';
 import '../data/sleep_timer.dart';
@@ -122,6 +124,9 @@ class PlayerController {
   /// Queues [track] at the end.
   Future<void> addToQueue(Track track) => _handler.addToQueue([track]);
 
+  /// Queues [tracks] at the end, in order.
+  Future<void> addAllToQueue(List<Track> tracks) => _handler.addToQueue(tracks);
+
   void setSleepTimer(Duration after) => _handler.setSleepTimer(after);
   void sleepAtEndOfTrack() => _handler.sleepAtEndOfTrack();
   void cancelSleepTimer() => _handler.cancelSleepTimer();
@@ -203,4 +208,25 @@ final playerSessionProvider = Provider<void>((ref) {
     timer.cancel();
   });
   unawaited(restore());
+});
+
+/// Settings → Playback, as the player takes them.
+final playbackOptionsProvider = Provider<PlaybackOptions>((ref) {
+  final settings = ref.watch(settingsProvider);
+  return PlaybackOptions(
+    pauseOnUnplug: settings.pauseOnUnplug,
+    duckOnInterruption: settings.duckOnInterruption,
+    gapless: settings.gapless,
+  );
+});
+
+/// Sends [playbackOptionsProvider] to the player at start and on every
+/// change. Kept alive by the app shell.
+final playbackOptionsSyncProvider = Provider<void>((ref) {
+  final handler = ref.watch(audioHandlerProvider);
+  ref.listen(
+    playbackOptionsProvider,
+    (_, options) => unawaited(handler.setOptions(options)),
+    fireImmediately: true,
+  );
 });

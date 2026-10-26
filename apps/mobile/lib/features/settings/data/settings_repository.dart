@@ -11,6 +11,11 @@ class SettingsRepository {
   static const String paletteKey = 'paletteId';
   static const String themeModeKey = 'themeMode';
   static const String languageKey = 'localeCode';
+  static const String minTrackSecondsKey = 'minTrackSeconds';
+  static const String sleepTimerDefaultKey = 'sleepTimerDefault';
+  static const String pauseOnUnplugKey = 'pauseOnUnplug';
+  static const String duckOnInterruptionKey = 'duckOnInterruption';
+  static const String gaplessKey = 'gapless';
 
   final SharedPreferences _prefs;
 
@@ -31,6 +36,20 @@ class SettingsRepository {
         defaults.themeMode,
       ),
       languageCode: _prefs.getString(languageKey),
+      minTrackSeconds: switch (_prefs.getInt(minTrackSecondsKey)) {
+        final int seconds when AppSettings.minTrackChoices.contains(seconds) =>
+          seconds,
+        _ => defaults.minTrackSeconds,
+      },
+      sleepTimerDefault: _byName(
+        SleepTimerDefault.values,
+        _prefs.getString(sleepTimerDefaultKey),
+        defaults.sleepTimerDefault,
+      ),
+      pauseOnUnplug: _prefs.getBool(pauseOnUnplugKey) ?? defaults.pauseOnUnplug,
+      duckOnInterruption:
+          _prefs.getBool(duckOnInterruptionKey) ?? defaults.duckOnInterruption,
+      gapless: _prefs.getBool(gaplessKey) ?? defaults.gapless,
     );
   }
 
@@ -46,8 +65,33 @@ class SettingsRepository {
   Future<void> saveLanguage(String languageCode) =>
       _save(languageKey, languageCode);
 
-  Future<void> _save(String key, String value) async {
-    if (!await _prefs.setString(key, value)) {
+  /// Throws [SettingsWriteException] if the value could not be saved.
+  Future<void> saveMinTrackSeconds(int seconds) =>
+      _write(minTrackSecondsKey, _prefs.setInt(minTrackSecondsKey, seconds));
+
+  /// Throws [SettingsWriteException] if the value could not be saved.
+  Future<void> saveSleepTimerDefault(SleepTimerDefault value) =>
+      _save(sleepTimerDefaultKey, value.name);
+
+  /// Throws [SettingsWriteException] if the value could not be saved.
+  Future<void> savePauseOnUnplug(bool value) =>
+      _saveBool(pauseOnUnplugKey, value);
+
+  /// Throws [SettingsWriteException] if the value could not be saved.
+  Future<void> saveDuckOnInterruption(bool value) =>
+      _saveBool(duckOnInterruptionKey, value);
+
+  /// Throws [SettingsWriteException] if the value could not be saved.
+  Future<void> saveGapless(bool value) => _saveBool(gaplessKey, value);
+
+  Future<void> _save(String key, String value) =>
+      _write(key, _prefs.setString(key, value));
+
+  Future<void> _saveBool(String key, bool value) =>
+      _write(key, _prefs.setBool(key, value));
+
+  Future<void> _write(String key, Future<bool> write) async {
+    if (!await write) {
       throw SettingsWriteException(key);
     }
   }

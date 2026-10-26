@@ -183,4 +183,84 @@ void main() {
       await expectLater(dao.hideTrack(12345), throwsA(isA<SqliteException>()));
     });
   });
+
+  group('hidden lists and batch hide', () {
+    test(
+      'hideTracks hides several at once; unhideTracks brings them back',
+      () async {
+        final tracks = await addScan([
+          for (var i = 1; i <= 4; i++)
+            scannedAudio(i, '/m/$i.mp3', title: 'S$i'),
+        ]);
+        final ids = [for (final t in tracks) t.id];
+
+        await dao.hideTracks([ids[0], ids[2]]);
+        expect([for (final t in await visible()) t.title], ['S2', 'S4']);
+        expect(
+          [for (final t in await dao.watchHiddenTracks().first) t.title],
+          ['S1', 'S3'],
+        );
+
+        await dao.unhideTracks([ids[0], ids[2]]);
+        expect(await visible(), hasLength(4));
+        expect(await dao.watchHiddenTracks().first, isEmpty);
+      },
+    );
+
+    test('hiding an already hidden song again is fine', () async {
+      final id = (await addScan([scannedAudio(1, '/m/a.mp3')])).single.id;
+      await dao.hideTrack(id);
+
+      await dao.hideTracks([id]);
+
+      expect(await dao.watchHiddenTracks().first, hasLength(1));
+    });
+
+    test('hidden songs are listed by title, without missing files', () async {
+      final tracks = await addScan([
+        scannedAudio(1, '/m/1.mp3', title: 'beta'),
+        scannedAudio(2, '/m/2.mp3', title: 'Alpha'),
+        scannedAudio(3, '/m/3.mp3', title: 'Gamma'),
+      ]);
+      await dao.hideTracks([for (final t in tracks) t.id]);
+      // Gamma's file disappears.
+      await addScan([
+        scannedAudio(1, '/m/1.mp3', title: 'beta'),
+        scannedAudio(2, '/m/2.mp3', title: 'Alpha'),
+      ]);
+
+      expect(
+        [for (final t in await dao.watchHiddenTracks().first) t.title],
+        ['Alpha', 'beta'],
+      );
+    });
+
+    test('hidden folders are listed by path', () async {
+      await dao.hideFolder('/m/z');
+      await dao.hideFolder('/m/a');
+
+      expect(await dao.watchHiddenFolders().first, ['/m/a', '/m/z']);
+
+      await dao.unhideFolder('/m/a');
+      expect(await dao.watchHiddenFolders().first, ['/m/z']);
+    });
+
+    test('countVisibleTracks matches the visible list', () async {
+      final tracks = await addScan([
+        scannedAudio(1, '/m/a/1.mp3'),
+        scannedAudio(2, '/m/b/2.mp3'),
+        scannedAudio(3, '/m/b/3.mp3', durationMs: 5000),
+        scannedAudio(4, '/m/c/4.mp3'),
+      ]);
+      await dao.hideFolder('/m/a');
+      await dao.hideTrack(tracks[3].id);
+
+      expect(await dao.countVisibleTracks(minDuration: _min), 1);
+      expect(await dao.countVisibleTracks(minDuration: Duration.zero), 2);
+      expect(
+        (await dao.watchVisibleTracks(minDuration: Duration.zero).first).length,
+        2,
+      );
+    });
+  });
 }
