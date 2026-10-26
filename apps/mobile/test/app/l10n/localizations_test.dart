@@ -28,15 +28,9 @@ void main() {
       await pumpZemaApp(tester, deviceLocales: const [Locale('am', 'ET')]);
 
       expect(find.text('ዋና ገጽ'), findsOneWidget);
-      expect(find.text('በቅርቡ ይመጣል'), findsOneWidget);
+      expect(find.text('ፍለጋ'), findsOneWidget);
       // Not translated yet, so English.
-      expect(
-        find.text(
-          'Your recent songs and songs playing in other apps will show up '
-          'here.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.byTooltip('Search'), findsOneWidget);
     });
 
     testWidgets('UI is English when the device is set to fr', (tester) async {

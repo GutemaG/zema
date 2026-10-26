@@ -3,15 +3,24 @@ id: 009-lyrics-engine-and-display-ui
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 001-home-header-and-quick-actions
   - 002-home-continue-and-recent-rows
 created: 2026-10-26T13:41:09Z
-started: null
-completed: null
+started: 2026-10-26T13:45:42Z
+completed: 2026-10-26T14:28:23Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-26T13:47:57Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-26T13:53:06Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-26T14:28:23Z
+    artifact: test-walkthrough.md
 requires_bolts: []
 enables_bolts:
   - 010-lyrics-engine-and-display-ui
@@ -32,8 +41,8 @@ Turn the Home tab into a working screen: header, quick actions, continue listeni
 
 ## Stories Included
 
-- [ ] **001-home-header-and-quick-actions**: Home header and quick actions - Priority: Must
-- [ ] **002-home-continue-and-recent-rows**: Home continue listening and recent rows - Priority: Must
+- [x] **001-home-header-and-quick-actions**: Home header and quick actions - Priority: Must
+- [x] **002-home-continue-and-recent-rows**: Home continue listening and recent rows - Priority: Must
 
 ## Bolt Type
 
@@ -42,9 +51,9 @@ Turn the Home tab into a working screen: header, quick actions, continue listeni
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -61,11 +70,11 @@ Turn the Home tab into a working screen: header, quick actions, continue listeni
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met (Home's < 1 s start needs a release build on a phone; see test-walkthrough.md)
+- [x] `flutter analyze` clean, `dart format` clean
+- [x] Tests passing locally (CI: pending a GitHub remote)
+- [x] Checked on the Android emulator
 
 ## Notes
 

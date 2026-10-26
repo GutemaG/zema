@@ -2,11 +2,11 @@
 id: 002-home-continue-and-recent-rows
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
 created: 2026-10-26T13:41:09Z
 assigned_bolt: 009-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 002-home-continue-and-recent-rows
@@ -19,11 +19,11 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a restored last queue, **When** Home shows, **Then** a Continue listening card shows the song, its position and a resume button that continues from that position
-- [ ] **Given** play history, **When** Home shows, **Then** a Recently played row shows up to 10 latest songs; tapping one plays the row from it; See all opens the Recently played auto playlist
-- [ ] **Given** user playlists, **When** Home shows, **Then** a Your playlists row shows them with covers; tapping one opens the playlist page
-- [ ] **Given** a section with nothing to show, **When** Home shows, **Then** that section is hidden
-- [ ] **Given** a song plays or a playlist changes, **When** Home is visible, **Then** the rows update without a restart
+- [x] **Given** a restored last queue, **When** Home shows, **Then** a Continue listening card shows the song, its position and a resume button that continues from that position
+- [x] **Given** play history, **When** Home shows, **Then** a Recently played row shows up to 10 latest songs; tapping one plays the row from it; See all opens the Recently played auto playlist
+- [x] **Given** user playlists, **When** Home shows, **Then** a Your playlists row shows them with covers; tapping one opens the playlist page
+- [x] **Given** a section with nothing to show, **When** Home shows, **Then** that section is hidden
+- [x] **Given** a song plays or a playlist changes, **When** Home is visible, **Then** the rows update without a restart
 
 ## Technical Notes
 

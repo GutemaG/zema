@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/misc.dart';
@@ -33,6 +35,25 @@ class FakeLibraryScanner implements LibraryScanner {
   @override
   Future<Uint8List?> loadArtwork(int mediaStoreId, {int size = 200}) async =>
       null;
+}
+
+/// A scanner whose scans wait for [release] while [hold] is set.
+class GatedLibraryScanner extends FakeLibraryScanner {
+  GatedLibraryScanner(super.files);
+
+  var hold = false;
+  Completer<void>? _gate;
+
+  void release() => _gate?.complete();
+
+  @override
+  Future<List<ScannedAudio>> scan() async {
+    if (hold) {
+      _gate = Completer<void>();
+      await _gate!.future;
+    }
+    return super.scan();
+  }
 }
 
 /// An [AudioPermissionService] whose answers the test sets.

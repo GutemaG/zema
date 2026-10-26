@@ -31,8 +31,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get comingSoonTitle => 'Coming soon';
 
   @override
-  String get homeComingSoonMessage =>
-      'Your recent songs and songs playing in other apps will show up here.';
+  String get homeSearchTooltip => 'Search';
+
+  @override
+  String get homeShuffleAll => 'Shuffle all';
+
+  @override
+  String get homeContinueListening => 'Continue listening';
+
+  @override
+  String homeResumeFrom(String position) {
+    return 'Resume from $position';
+  }
+
+  @override
+  String get homeResume => 'Resume';
+
+  @override
+  String get homeRecentlyPlayed => 'Recently played';
+
+  @override
+  String get homeYourPlaylists => 'Your playlists';
+
+  @override
+  String get homeSeeAll => 'See all';
 
   @override
   String get searchComingSoonMessage =>

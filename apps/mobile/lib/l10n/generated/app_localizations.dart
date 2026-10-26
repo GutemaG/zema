@@ -144,11 +144,53 @@ abstract class AppLocalizations {
   /// **'Coming soon'**
   String get comingSoonTitle;
 
-  /// Message on the Home tab before it is built.
+  /// Tooltip and screen-reader label of the search button in the Home header; opens the Search tab.
   ///
   /// In en, this message translates to:
-  /// **'Your recent songs and songs playing in other apps will show up here.'**
-  String get homeComingSoonMessage;
+  /// **'Search'**
+  String get homeSearchTooltip;
+
+  /// Home quick action that plays every song in the library in random order.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle all'**
+  String get homeShuffleAll;
+
+  /// Home section heading above the song that was playing when the app was last closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue listening'**
+  String get homeContinueListening;
+
+  /// Under the song in Continue listening: where playback will continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume from {position}'**
+  String homeResumeFrom(String position);
+
+  /// Screen-reader label of the play button in Continue listening.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get homeResume;
+
+  /// Home section heading above a row of recently played songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently played'**
+  String get homeRecentlyPlayed;
+
+  /// Home section heading above a row of the user's playlists.
+  ///
+  /// In en, this message translates to:
+  /// **'Your playlists'**
+  String get homeYourPlaylists;
+
+  /// Button next to a Home section heading that opens the full list.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get homeSeeAll;
 
   /// Message on the Search tab before it is built.
   ///

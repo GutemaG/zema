@@ -4,7 +4,7 @@
 
 - **Total stories**: 48
 - **Generated**: 48
-- **Last updated**: 2026-10-26T13:41:09Z
+- **Last updated**: 2026-10-26T14:28:23Z
 
 ---
 
@@ -56,8 +56,8 @@ Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-
 
 Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine-and-display-ui/stories/`
 
-- [ ] **001-home-header-and-quick-actions** (lyrics-engine-and-display-ui): Home header and quick actions - Must - ⬜ GENERATED
-- [ ] **002-home-continue-and-recent-rows** (lyrics-engine-and-display-ui): Home continue listening and recent rows - Must - ⬜ GENERATED
+- [x] **001-home-header-and-quick-actions** (lyrics-engine-and-display-ui): Home header and quick actions - Must - ✅ COMPLETED
+- [x] **002-home-continue-and-recent-rows** (lyrics-engine-and-display-ui): Home continue listening and recent rows - Must - ✅ COMPLETED
 - [ ] **003-ethiopic-normalization** (lyrics-engine-and-display-ui): Ethiopic search normalization - Must - ⬜ GENERATED
 - [ ] **004-transliteration-matching** (lyrics-engine-and-display-ui): Transliteration matching - Must - ⬜ GENERATED
 - [ ] **005-search-screen** (lyrics-engine-and-display-ui): Search screen - Must - ⬜ GENERATED
@@ -82,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 16
+- **Generated**: 14
 - **In Progress**: 0
-- **Completed**: 32
+- **Completed**: 34

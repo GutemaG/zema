@@ -86,7 +86,6 @@ void main() {
       final l10n = lookupAppLocalizations(const Locale('en'));
 
       final messages = {
-        'Home': l10n.homeComingSoonMessage,
         'Search': l10n.searchComingSoonMessage,
         'Contribute': l10n.contributeComingSoonMessage,
       };

@@ -3,134 +3,98 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/zema_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/tab_page.dart';
-import '../application/library_access_controller.dart';
+import '../application/library_tab_request.dart';
 import 'albums_view.dart';
 import 'artists_view.dart';
 import 'favorites_view.dart';
 import 'folders_view.dart';
+import 'library_access_gate.dart';
 import 'playlists_view.dart';
 import 'tracks_view.dart';
 
 /// The Library tab: audio access first, then the phone's tracks.
-class LibraryScreen extends ConsumerWidget {
+class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final access = ref.watch(libraryAccessProvider);
+  Widget build(BuildContext context) {
     return TabPage(
-      title: l10n.navLibrary,
-      child: switch (access) {
-        AsyncData(value: LibraryAccess.granted) => const _LibraryTabs(),
-        AsyncData(:final value) => _AccessState(access: value),
-        AsyncError() => EmptyState(
-          kind: EmptyStateKind.error,
-          title: l10n.libraryScanFailedTitle,
-          message: l10n.libraryScanFailedMessage,
-          actionLabel: l10n.actionTryAgain,
-          onAction: () => ref.invalidate(libraryAccessProvider),
-        ),
-        _ => const Center(child: CircularProgressIndicator()),
-      },
+      title: AppLocalizations.of(context).navLibrary,
+      child: const LibraryAccessGate(child: _LibraryTabs()),
     );
   }
 }
 
-/// Explanation, denied, settings-only and unsupported states.
-class _AccessState extends ConsumerWidget {
-  const _AccessState({required this.access});
-
-  final LibraryAccess access;
+/// The top tabs. Opens on the tab Home asked for ([libraryTabRequestProvider]),
+/// and switches to it when asked again.
+class _LibraryTabs extends ConsumerStatefulWidget {
+  const _LibraryTabs();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final controller = ref.read(libraryAccessProvider.notifier);
-    return switch (access) {
-      LibraryAccess.needsExplanation => EmptyState(
-        kind: EmptyStateKind.empty,
-        icon: Icons.library_music_outlined,
-        title: l10n.libraryAccessTitle,
-        message: l10n.libraryAccessMessage,
-        actionLabel: l10n.libraryAccessAllow,
-        onAction: controller.allow,
-        secondaryActionLabel: l10n.libraryAccessNotNow,
-        onSecondaryAction: controller.notNow,
-      ),
-      LibraryAccess.denied => EmptyState(
-        kind: EmptyStateKind.empty,
-        icon: Icons.music_off_outlined,
-        title: l10n.libraryAccessDeniedTitle,
-        message: l10n.libraryAccessDeniedMessage,
-        actionLabel: l10n.libraryAccessGrant,
-        onAction: controller.allow,
-      ),
-      LibraryAccess.permanentlyDenied => EmptyState(
-        kind: EmptyStateKind.empty,
-        icon: Icons.music_off_outlined,
-        title: l10n.libraryAccessDeniedTitle,
-        message: l10n.libraryAccessSettingsMessage,
-        actionLabel: l10n.libraryAccessOpenSettings,
-        onAction: controller.openSettings,
-      ),
-      LibraryAccess.unsupported => EmptyState(
-        kind: EmptyStateKind.empty,
-        icon: Icons.phone_iphone,
-        title: l10n.libraryUnsupportedTitle,
-        message: l10n.libraryUnsupportedMessage,
-      ),
-      // Handled by LibraryScreen.
-      LibraryAccess.granted => const SizedBox.shrink(),
-    };
-  }
+  ConsumerState<_LibraryTabs> createState() => _LibraryTabsState();
 }
 
-/// The top tabs.
-class _LibraryTabs extends StatelessWidget {
-  const _LibraryTabs();
+class _LibraryTabsState extends ConsumerState<_LibraryTabs>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabs = TabController(
+    length: LibraryTab.values.length,
+    initialIndex: ref.read(libraryTabRequestProvider)?.tab.index ?? 0,
+    vsync: this,
+  );
+
+  @override
+  void dispose() {
+    _tabs.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
-    return DefaultTabController(
-      length: 6,
-      child: Column(
-        children: [
-          TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            labelColor: colors.primaryText,
-            unselectedLabelColor: colors.muted,
-            indicatorColor: colors.primary,
-            dividerColor: colors.line,
-            tabs: [
-              Tab(text: l10n.libraryTabTracks),
-              Tab(text: l10n.libraryTabFolders),
-              Tab(text: l10n.libraryTabAlbums),
-              Tab(text: l10n.libraryTabArtists),
-              Tab(text: l10n.libraryTabFavorites),
-              Tab(text: l10n.libraryTabPlaylists),
+    ref.listen(libraryTabRequestProvider, (_, request) {
+      if (request == null) return;
+      // The request comes while the Library tab is still off screen, where
+      // its tab bar has no size to scroll; switch once it is shown.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _tabs.index = request.tab.index;
+      });
+    });
+    return Column(
+      children: [
+        TabBar(
+          controller: _tabs,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          labelColor: colors.primaryText,
+          unselectedLabelColor: colors.muted,
+          indicatorColor: colors.primary,
+          dividerColor: colors.line,
+          tabs: [
+            Tab(text: l10n.libraryTabTracks),
+            Tab(text: l10n.libraryTabFolders),
+            Tab(text: l10n.libraryTabAlbums),
+            Tab(text: l10n.libraryTabArtists),
+            Tab(text: l10n.libraryTabFavorites),
+            Tab(text: l10n.libraryTabPlaylists),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabs,
+            children: const [
+              TracksView(),
+              FoldersView(),
+              AlbumsView(),
+              ArtistsView(),
+              FavoritesView(),
+              PlaylistsView(),
             ],
           ),
-          const Expanded(
-            child: TabBarView(
-              children: [
-                TracksView(),
-                FoldersView(),
-                AlbumsView(),
-                ArtistsView(),
-                FavoritesView(),
-                PlaylistsView(),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

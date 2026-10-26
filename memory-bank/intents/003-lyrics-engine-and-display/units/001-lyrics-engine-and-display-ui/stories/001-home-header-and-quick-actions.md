@@ -2,11 +2,11 @@
 id: 001-home-header-and-quick-actions
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
 created: 2026-10-26T13:41:09Z
 assigned_bolt: 009-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 001-home-header-and-quick-actions
@@ -19,11 +19,11 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Home, **When** shown, **Then** the header has a search shortcut that opens the Search tab and the Settings button
-- [ ] **Given** Home, **When** shown, **Then** quick actions Shuffle all, Favorites, Recently added and Playlists appear; Shuffle all plays the visible library shuffled, the others open their pages
-- [ ] **Given** no audio access, **When** Home shows, **Then** it shows the C07 permission state with the same flow as Library
-- [ ] **Given** an empty library after a scan, **When** Home shows, **Then** it shows the C07 empty state with Rescan
-- [ ] **Given** 1.3× text in light and dark, **When** Home shows, **Then** nothing overflows
+- [x] **Given** Home, **When** shown, **Then** the header has a search shortcut that opens the Search tab and the Settings button
+- [x] **Given** Home, **When** shown, **Then** quick actions Shuffle all, Favorites, Recently added and Playlists appear; Shuffle all plays the visible library shuffled, the others open their pages
+- [x] **Given** no audio access, **When** Home shows, **Then** it shows the C07 permission state with the same flow as Library
+- [x] **Given** an empty library after a scan, **When** Home shows, **Then** it shows the C07 empty state with Rescan
+- [x] **Given** 1.3× text in light and dark, **When** Home shows, **Then** nothing overflows
 
 ## Technical Notes
 

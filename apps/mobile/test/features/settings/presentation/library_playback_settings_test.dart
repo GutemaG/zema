@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -22,25 +20,6 @@ import '../../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
 
-/// A scanner whose scans wait for [release] while [hold] is set.
-class _GatedScanner extends FakeLibraryScanner {
-  _GatedScanner(super.files);
-
-  var hold = false;
-  Completer<void>? _gate;
-
-  void release() => _gate?.complete();
-
-  @override
-  Future<List<ScannedAudio>> scan() async {
-    if (hold) {
-      _gate = Completer<void>();
-      await _gate!.future;
-    }
-    return super.scan();
-  }
-}
-
 List<ScannedAudio> _files() => [
   scannedAudio(1, '/storage/emulated/0/Music/1.mp3', title: 'Amlak'),
   scannedAudio(2, '/storage/emulated/0/Music/2.mp3', title: 'Kidus'),
@@ -57,7 +36,7 @@ class _App {
 
   final ZemaDatabase db;
   final FakeAudioBackend backend;
-  final _GatedScanner scanner;
+  final GatedLibraryScanner scanner;
 }
 
 /// Opens Settings on a screen tall enough for every row.
@@ -72,7 +51,7 @@ Future<_App> _pump(
   final app = _App(
     memoryDatabase(),
     FakeAudioBackend(),
-    _GatedScanner(_files()),
+    GatedLibraryScanner(_files()),
   );
   await pumpZemaApp(
     tester,
