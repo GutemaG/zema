@@ -18,6 +18,7 @@ import 'package:zema/features/settings/application/settings_bootstrap.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 
 import 'fake_library.dart';
+import 'fake_lyrics.dart';
 import 'fake_player.dart';
 
 /// Pumps the full app the way `main()` starts it: settings are loaded from
@@ -65,6 +66,7 @@ Future<void> pumpZemaApp(
           shareService: shareService,
         ),
         ...playerOverrides(handler: audioHandler),
+        ...lyricsOverrides(),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(
           (ref) => appVersion?.call() ?? Future.value('1.0.0 (1)'),

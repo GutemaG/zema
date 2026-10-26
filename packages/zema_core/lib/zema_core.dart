@@ -12,6 +12,7 @@ export 'src/library/track_fingerprint.dart';
 export 'src/lyrics/lrc_import.dart';
 export 'src/lyrics/lyrics_models.dart';
 export 'src/lyrics/lyrics_repository.dart';
+export 'src/lyrics/track_matching.dart';
 export 'src/lyrics/play_order.dart';
 export 'src/lyrics/sync_engine.dart';
 export 'src/player/play_queue.dart';

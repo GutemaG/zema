@@ -1056,6 +1056,36 @@ abstract class AppLocalizations {
   /// **'Removed \"{title}\" from favorites'**
   String songUnfavorited(String title);
 
+  /// Song menu item, and title of the sheet, for choosing which song's lyrics this audio file shows.
+  ///
+  /// In en, this message translates to:
+  /// **'Match lyrics'**
+  String get songMatchLyrics;
+
+  /// Song menu item for a file that already shows lyrics: choose different lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Change lyrics'**
+  String get songChangeLyrics;
+
+  /// Song menu item: stop showing lyrics for this file (Zema won't link it again by itself).
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink lyrics'**
+  String get songUnlinkLyrics;
+
+  /// Snackbar after choosing lyrics for a file.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the lyrics of {title}'**
+  String songLyricsLinked(String title);
+
+  /// Snackbar after unlinking a file's lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'No lyrics for {title}'**
+  String songLyricsUnlinked(String title);
+
   /// Song menu: open the song's album.
   ///
   /// In en, this message translates to:

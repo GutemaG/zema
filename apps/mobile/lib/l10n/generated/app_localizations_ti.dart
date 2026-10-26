@@ -575,6 +575,25 @@ class AppLocalizationsTi extends AppLocalizations {
   }
 
   @override
+  String get songMatchLyrics => 'Match lyrics';
+
+  @override
+  String get songChangeLyrics => 'Change lyrics';
+
+  @override
+  String get songUnlinkLyrics => 'Unlink lyrics';
+
+  @override
+  String songLyricsLinked(String title) {
+    return 'Showing the lyrics of $title';
+  }
+
+  @override
+  String songLyricsUnlinked(String title) {
+    return 'No lyrics for $title';
+  }
+
+  @override
   String get songGoToAlbum => 'Go to album';
 
   @override

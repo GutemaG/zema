@@ -2407,6 +2407,310 @@ class PlayEventsCompanion extends UpdateCompanion<PlayEventRow> {
   }
 }
 
+class $LyricsLinksTable extends LyricsLinks
+    with TableInfo<$LyricsLinksTable, LyricsLinkRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LyricsLinksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tracks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _manualMeta = const VerificationMeta('manual');
+  @override
+  late final GeneratedColumn<bool> manual = GeneratedColumn<bool>(
+    'manual',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("manual" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _linkedAtMeta = const VerificationMeta(
+    'linkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> linkedAt = GeneratedColumn<DateTime>(
+    'linked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [trackId, songId, manual, linkedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'lyrics_links';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LyricsLinkRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    }
+    if (data.containsKey('manual')) {
+      context.handle(
+        _manualMeta,
+        manual.isAcceptableOrUnknown(data['manual']!, _manualMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_manualMeta);
+    }
+    if (data.containsKey('linked_at')) {
+      context.handle(
+        _linkedAtMeta,
+        linkedAt.isAcceptableOrUnknown(data['linked_at']!, _linkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_linkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {trackId};
+  @override
+  LyricsLinkRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LyricsLinkRow(
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      )!,
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      ),
+      manual: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}manual'],
+      )!,
+      linkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}linked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LyricsLinksTable createAlias(String alias) {
+    return $LyricsLinksTable(attachedDatabase, alias);
+  }
+}
+
+class LyricsLinkRow extends DataClass implements Insertable<LyricsLinkRow> {
+  final int trackId;
+  final String? songId;
+  final bool manual;
+  final DateTime linkedAt;
+  const LyricsLinkRow({
+    required this.trackId,
+    this.songId,
+    required this.manual,
+    required this.linkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['track_id'] = Variable<int>(trackId);
+    if (!nullToAbsent || songId != null) {
+      map['song_id'] = Variable<String>(songId);
+    }
+    map['manual'] = Variable<bool>(manual);
+    map['linked_at'] = Variable<DateTime>(linkedAt);
+    return map;
+  }
+
+  LyricsLinksCompanion toCompanion(bool nullToAbsent) {
+    return LyricsLinksCompanion(
+      trackId: Value(trackId),
+      songId: songId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(songId),
+      manual: Value(manual),
+      linkedAt: Value(linkedAt),
+    );
+  }
+
+  factory LyricsLinkRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LyricsLinkRow(
+      trackId: serializer.fromJson<int>(json['trackId']),
+      songId: serializer.fromJson<String?>(json['songId']),
+      manual: serializer.fromJson<bool>(json['manual']),
+      linkedAt: serializer.fromJson<DateTime>(json['linkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'trackId': serializer.toJson<int>(trackId),
+      'songId': serializer.toJson<String?>(songId),
+      'manual': serializer.toJson<bool>(manual),
+      'linkedAt': serializer.toJson<DateTime>(linkedAt),
+    };
+  }
+
+  LyricsLinkRow copyWith({
+    int? trackId,
+    Value<String?> songId = const Value.absent(),
+    bool? manual,
+    DateTime? linkedAt,
+  }) => LyricsLinkRow(
+    trackId: trackId ?? this.trackId,
+    songId: songId.present ? songId.value : this.songId,
+    manual: manual ?? this.manual,
+    linkedAt: linkedAt ?? this.linkedAt,
+  );
+  LyricsLinkRow copyWithCompanion(LyricsLinksCompanion data) {
+    return LyricsLinkRow(
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      songId: data.songId.present ? data.songId.value : this.songId,
+      manual: data.manual.present ? data.manual.value : this.manual,
+      linkedAt: data.linkedAt.present ? data.linkedAt.value : this.linkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LyricsLinkRow(')
+          ..write('trackId: $trackId, ')
+          ..write('songId: $songId, ')
+          ..write('manual: $manual, ')
+          ..write('linkedAt: $linkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(trackId, songId, manual, linkedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LyricsLinkRow &&
+          other.trackId == this.trackId &&
+          other.songId == this.songId &&
+          other.manual == this.manual &&
+          other.linkedAt == this.linkedAt);
+}
+
+class LyricsLinksCompanion extends UpdateCompanion<LyricsLinkRow> {
+  final Value<int> trackId;
+  final Value<String?> songId;
+  final Value<bool> manual;
+  final Value<DateTime> linkedAt;
+  const LyricsLinksCompanion({
+    this.trackId = const Value.absent(),
+    this.songId = const Value.absent(),
+    this.manual = const Value.absent(),
+    this.linkedAt = const Value.absent(),
+  });
+  LyricsLinksCompanion.insert({
+    this.trackId = const Value.absent(),
+    this.songId = const Value.absent(),
+    required bool manual,
+    required DateTime linkedAt,
+  }) : manual = Value(manual),
+       linkedAt = Value(linkedAt);
+  static Insertable<LyricsLinkRow> custom({
+    Expression<int>? trackId,
+    Expression<String>? songId,
+    Expression<bool>? manual,
+    Expression<DateTime>? linkedAt,
+  }) {
+    return RawValuesInsertable({
+      if (trackId != null) 'track_id': trackId,
+      if (songId != null) 'song_id': songId,
+      if (manual != null) 'manual': manual,
+      if (linkedAt != null) 'linked_at': linkedAt,
+    });
+  }
+
+  LyricsLinksCompanion copyWith({
+    Value<int>? trackId,
+    Value<String?>? songId,
+    Value<bool>? manual,
+    Value<DateTime>? linkedAt,
+  }) {
+    return LyricsLinksCompanion(
+      trackId: trackId ?? this.trackId,
+      songId: songId ?? this.songId,
+      manual: manual ?? this.manual,
+      linkedAt: linkedAt ?? this.linkedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    if (manual.present) {
+      map['manual'] = Variable<bool>(manual.value);
+    }
+    if (linkedAt.present) {
+      map['linked_at'] = Variable<DateTime>(linkedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LyricsLinksCompanion(')
+          ..write('trackId: $trackId, ')
+          ..write('songId: $songId, ')
+          ..write('manual: $manual, ')
+          ..write('linkedAt: $linkedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -2419,6 +2723,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     this,
   );
   late final $PlayEventsTable playEvents = $PlayEventsTable(this);
+  late final $LyricsLinksTable lyricsLinks = $LyricsLinksTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -2440,6 +2745,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     this as ZemaDatabase,
   );
   late final HistoryDao historyDao = HistoryDao(this as ZemaDatabase);
+  late final LyricsLinksDao lyricsLinksDao = LyricsLinksDao(
+    this as ZemaDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2452,6 +2760,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     playlists,
     playlistEntries,
     playEvents,
+    lyricsLinks,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -2493,6 +2802,13 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('play_events', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('lyrics_links', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -2608,6 +2924,24 @@ final class $$TracksTableReferences
     ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_playEventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$LyricsLinksTable, List<LyricsLinkRow>>
+  _lyricsLinksRefsTable(_$ZemaDatabase db) => MultiTypedResultKey.fromTable(
+    db.lyricsLinks,
+    aliasName: 'tracks__id__lyrics_links__track_id',
+  );
+
+  $$LyricsLinksTableProcessedTableManager get lyricsLinksRefs {
+    final manager = $$LyricsLinksTableTableManager(
+      $_db,
+      $_db.lyricsLinks,
+    ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_lyricsLinksRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -2789,6 +3123,31 @@ class $$TracksTableFilterComposer
           }) => $$PlayEventsTableFilterComposer(
             $db: $db,
             $table: $db.playEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> lyricsLinksRefs(
+    Expression<bool> Function($$LyricsLinksTableFilterComposer f) f,
+  ) {
+    final $$LyricsLinksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.lyricsLinks,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LyricsLinksTableFilterComposer(
+            $db: $db,
+            $table: $db.lyricsLinks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3045,6 +3404,31 @@ class $$TracksTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> lyricsLinksRefs<T extends Object>(
+    Expression<T> Function($$LyricsLinksTableAnnotationComposer a) f,
+  ) {
+    final $$LyricsLinksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.lyricsLinks,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LyricsLinksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.lyricsLinks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TracksTableTableManager
@@ -3065,6 +3449,7 @@ class $$TracksTableTableManager
             bool favoritesRefs,
             bool playlistEntriesRefs,
             bool playEventsRefs,
+            bool lyricsLinksRefs,
           })
         > {
   $$TracksTableTableManager(_$ZemaDatabase db, $TracksTable table)
@@ -3160,6 +3545,7 @@ class $$TracksTableTableManager
                 favoritesRefs = false,
                 playlistEntriesRefs = false,
                 playEventsRefs = false,
+                lyricsLinksRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -3168,6 +3554,7 @@ class $$TracksTableTableManager
                     if (favoritesRefs) db.favorites,
                     if (playlistEntriesRefs) db.playlistEntries,
                     if (playEventsRefs) db.playEvents,
+                    if (lyricsLinksRefs) db.lyricsLinks,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -3252,6 +3639,26 @@ class $$TracksTableTableManager
                           referencedColumn: 'track_id',
                           typedResults: items,
                         ),
+                      if (lyricsLinksRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TrackRow,
+                          $TracksTable,
+                          LyricsLinkRow,
+                          $LyricsLinksTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TracksTableReferences
+                              ._lyricsLinksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TracksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).lyricsLinksRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'track_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -3277,6 +3684,7 @@ typedef $$TracksTableProcessedTableManager =
         bool favoritesRefs,
         bool playlistEntriesRefs,
         bool playEventsRefs,
+        bool lyricsLinksRefs,
       })
     >;
 typedef $$HiddenFoldersTableCreateCompanionBuilder =
@@ -4885,6 +5293,296 @@ typedef $$PlayEventsTableProcessedTableManager =
       PlayEventRow,
       PrefetchHooks Function({bool trackId})
     >;
+typedef $$LyricsLinksTableCreateCompanionBuilder =
+    LyricsLinksCompanion Function({
+      Value<int> trackId,
+      Value<String?> songId,
+      required bool manual,
+      required DateTime linkedAt,
+    });
+typedef $$LyricsLinksTableUpdateCompanionBuilder =
+    LyricsLinksCompanion Function({
+      Value<int> trackId,
+      Value<String?> songId,
+      Value<bool> manual,
+      Value<DateTime> linkedAt,
+    });
+
+final class $$LyricsLinksTableReferences
+    extends BaseReferences<_$ZemaDatabase, $LyricsLinksTable, LyricsLinkRow> {
+  $$LyricsLinksTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
+      db.tracks.createAlias('lyrics_links__track_id__tracks__id');
+
+  $$TracksTableProcessedTableManager get trackId {
+    final $_column = $_itemColumn<int>('track_id')!;
+
+    final manager = $$TracksTableTableManager(
+      $_db,
+      $_db.tracks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_trackIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LyricsLinksTableFilterComposer
+    extends Composer<_$ZemaDatabase, $LyricsLinksTable> {
+  $$LyricsLinksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get manual => $composableBuilder(
+    column: $table.manual,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get linkedAt => $composableBuilder(
+    column: $table.linkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TracksTableFilterComposer get trackId {
+    final $$TracksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableFilterComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LyricsLinksTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $LyricsLinksTable> {
+  $$LyricsLinksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get manual => $composableBuilder(
+    column: $table.manual,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get linkedAt => $composableBuilder(
+    column: $table.linkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TracksTableOrderingComposer get trackId {
+    final $$TracksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LyricsLinksTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $LyricsLinksTable> {
+  $$LyricsLinksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+
+  GeneratedColumn<bool> get manual =>
+      $composableBuilder(column: $table.manual, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get linkedAt =>
+      $composableBuilder(column: $table.linkedAt, builder: (column) => column);
+
+  $$TracksTableAnnotationComposer get trackId {
+    final $$TracksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LyricsLinksTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $LyricsLinksTable,
+          LyricsLinkRow,
+          $$LyricsLinksTableFilterComposer,
+          $$LyricsLinksTableOrderingComposer,
+          $$LyricsLinksTableAnnotationComposer,
+          $$LyricsLinksTableCreateCompanionBuilder,
+          $$LyricsLinksTableUpdateCompanionBuilder,
+          (LyricsLinkRow, $$LyricsLinksTableReferences),
+          LyricsLinkRow,
+          PrefetchHooks Function({bool trackId})
+        > {
+  $$LyricsLinksTableTableManager(_$ZemaDatabase db, $LyricsLinksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LyricsLinksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LyricsLinksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LyricsLinksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+                Value<bool> manual = const Value.absent(),
+                Value<DateTime> linkedAt = const Value.absent(),
+              }) => LyricsLinksCompanion(
+                trackId: trackId,
+                songId: songId,
+                manual: manual,
+                linkedAt: linkedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+                required bool manual,
+                required DateTime linkedAt,
+              }) => LyricsLinksCompanion.insert(
+                trackId: trackId,
+                songId: songId,
+                manual: manual,
+                linkedAt: linkedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LyricsLinksTable, LyricsLinkRow>(table),
+                  $$LyricsLinksTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (trackId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.trackId,
+                        referencedTable: $$LyricsLinksTableReferences
+                            ._trackIdTable(db),
+                        referencedColumn: $$LyricsLinksTableReferences
+                            ._trackIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LyricsLinksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $LyricsLinksTable,
+      LyricsLinkRow,
+      $$LyricsLinksTableFilterComposer,
+      $$LyricsLinksTableOrderingComposer,
+      $$LyricsLinksTableAnnotationComposer,
+      $$LyricsLinksTableCreateCompanionBuilder,
+      $$LyricsLinksTableUpdateCompanionBuilder,
+      (LyricsLinkRow, $$LyricsLinksTableReferences),
+      LyricsLinkRow,
+      PrefetchHooks Function({bool trackId})
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -4903,4 +5601,6 @@ class $ZemaDatabaseManager {
       $$PlaylistEntriesTableTableManager(_db, _db.playlistEntries);
   $$PlayEventsTableTableManager get playEvents =>
       $$PlayEventsTableTableManager(_db, _db.playEvents);
+  $$LyricsLinksTableTableManager get lyricsLinks =>
+      $$LyricsLinksTableTableManager(_db, _db.lyricsLinks);
 }

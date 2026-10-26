@@ -760,6 +760,38 @@
       }
     }
   },
+  "songMatchLyrics": "Match lyrics",
+  "@songMatchLyrics": {
+    "description": "Song menu item, and title of the sheet, for choosing which song's lyrics this audio file shows."
+  },
+  "songChangeLyrics": "Change lyrics",
+  "@songChangeLyrics": {
+    "description": "Song menu item for a file that already shows lyrics: choose different lyrics."
+  },
+  "songUnlinkLyrics": "Unlink lyrics",
+  "@songUnlinkLyrics": {
+    "description": "Song menu item: stop showing lyrics for this file (Zema won't link it again by itself)."
+  },
+  "songLyricsLinked": "Showing the lyrics of {title}",
+  "@songLyricsLinked": {
+    "description": "Snackbar after choosing lyrics for a file.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "ሰላም ለኪ"
+      }
+    }
+  },
+  "songLyricsUnlinked": "No lyrics for {title}",
+  "@songLyricsUnlinked": {
+    "description": "Snackbar after unlinking a file's lyrics.",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Amlak"
+      }
+    }
+  },
   "songGoToAlbum": "Go to album",
   "@songGoToAlbum": {
     "description": "Song menu: open the song's album."

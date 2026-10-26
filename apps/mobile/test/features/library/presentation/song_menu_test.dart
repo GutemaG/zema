@@ -86,7 +86,7 @@ List<String> _rowTitles(WidgetTester tester) => [
 
 void main() {
   group('Song menu', () {
-    testWidgets('offers every action but lyrics and edit info', (tester) async {
+    testWidgets('offers every action but edit info', (tester) async {
       await _pump(tester);
 
       await _openMenu(tester, 'Amlak');
@@ -97,6 +97,7 @@ void main() {
         _l10n.songAddToQueue,
         _l10n.songAddToPlaylist,
         _l10n.songFavorite,
+        _l10n.songMatchLyrics,
         _l10n.songGoToAlbum,
         _l10n.songGoToArtist,
         _l10n.songHide,
@@ -104,7 +105,9 @@ void main() {
       ]) {
         expect(find.text(item), findsOneWidget, reason: item);
       }
-      expect(find.textContaining('yrics'), findsNothing);
+      // Not linked, so nothing to unlink or change.
+      expect(find.text(_l10n.songUnlinkLyrics), findsNothing);
+      expect(find.text(_l10n.songChangeLyrics), findsNothing);
       expect(find.textContaining('dit'), findsNothing);
     });
 

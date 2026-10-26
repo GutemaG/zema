@@ -9,6 +9,8 @@ import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../lyrics/application/lyrics_links.dart';
+import '../../lyrics/presentation/match_lyrics_sheet.dart';
 import '../../player/application/player_providers.dart';
 import '../application/album_grouping.dart';
 import '../application/favorites.dart';
@@ -88,6 +90,8 @@ class SongMenu extends ConsumerWidget {
     final player = ref.read(playerControllerProvider);
     final library = ref.read(libraryRepositoryProvider);
     final favorites = ref.read(favoritesControllerProvider);
+    final lyrics = ref.read(lyricsLinksControllerProvider);
+    final linked = ref.watch(trackSongProvider(track.id)).value != null;
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -169,6 +173,24 @@ class SongMenu extends ConsumerWidget {
                 );
               }),
             ),
+            item(
+              Icons.lyrics_outlined,
+              linked ? l10n.songChangeLyrics : l10n.songMatchLyrics,
+              close(() async {
+                if (!host.mounted) return;
+                final song = await showMatchLyricsSheet(host, track);
+                if (song != null) notify(l10n.songLyricsLinked(song.title));
+              }),
+            ),
+            if (linked)
+              item(
+                Icons.link_off,
+                l10n.songUnlinkLyrics,
+                close(() async {
+                  await lyrics.unlink(track);
+                  notify(l10n.songLyricsUnlinked(track.title));
+                }),
+              ),
             item(
               Icons.album_outlined,
               l10n.songGoToAlbum,

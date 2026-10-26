@@ -98,3 +98,18 @@ class PlayEvents extends Table {
       integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
   DateTimeColumn get playedAt => dateTime()();
 }
+
+/// Which lyrics song a track is. Automatic links are recomputed when the
+/// library or the lyrics change; manual ones (the user's choice, including
+/// "no lyrics" with [songId] null) are never overwritten.
+@DataClassName('LyricsLinkRow')
+class LyricsLinks extends Table {
+  IntColumn get trackId =>
+      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+  TextColumn get songId => text().nullable()();
+  BoolColumn get manual => boolean()();
+  DateTimeColumn get linkedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {trackId};
+}

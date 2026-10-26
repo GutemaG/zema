@@ -2,7 +2,7 @@
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 created: 2026-10-26T13:45:42Z
-last_updated: 2026-10-26T17:43:37Z
+last_updated: 2026-10-26T19:31:20Z
 ---
 
 # Construction Log: lyrics-engine-and-display-ui
@@ -38,7 +38,7 @@ last_updated: 2026-10-26T17:43:37Z
 | 011-lyrics-engine-and-display-ui | 005, 006 | ✅ completed | - |
 | 012-lyrics-engine-and-display-ui | 007, 008 | ✅ completed | - |
 | 013-lyrics-engine-and-display-ui | 009, 010 | ✅ completed | - |
-| 014-lyrics-engine-and-display-ui | 011 | [ ] planned | - |
+| 014-lyrics-engine-and-display-ui | 011 | ✅ completed | - |
 | 015-lyrics-engine-and-display-ui | 012, 013 | [ ] planned | - |
 | 016-lyrics-engine-and-display-ui | 014, 015 | [ ] planned | - |
 | 017-lyrics-engine-and-display-ui | 016 | [ ] planned | - |
@@ -67,6 +67,10 @@ last_updated: 2026-10-26T17:43:37Z
 | 2026-10-26T17:36:45Z | 013-lyrics-engine-and-display-ui | stage-complete | plan → implement |
 | 2026-10-26T17:39:38Z | 013-lyrics-engine-and-display-ui | stage-complete | implement → test |
 | 2026-10-26T17:43:37Z | 013-lyrics-engine-and-display-ui | completed | All 3 stages done; 753 tests pass |
+| 2026-10-26T17:43:44Z | 014-lyrics-engine-and-display-ui | started | Stage 1: plan |
+| 2026-10-26T17:44:38Z | 014-lyrics-engine-and-display-ui | stage-complete | plan → implement |
+| 2026-10-26T17:49:24Z | 014-lyrics-engine-and-display-ui | stage-complete | implement → test |
+| 2026-10-26T19:31:20Z | 014-lyrics-engine-and-display-ui | completed | All 3 stages done; 778 tests pass |
 
 ## Notes
 
@@ -75,3 +79,4 @@ last_updated: 2026-10-26T17:43:37Z
 - **Bolt 011**: Search tab over the library with chips and recent searches; album and artist pages also under `/search` so Back returns to the results.
 - **Bolt 012**: lyrics models with checked JSON, play-order expansion and a stateless sync engine in `zema_core`. Offset: positive shows lines later.
 - **Bolt 013**: LRC import with chorus detection, `LyricsRepository`, three placeholder songs (need native review), `test_audio.sh --lyrics`.
+- Bolt 014: app tests read bundled lyrics from disk (`DiskAssetBundle`); real asset loading stalls under the widget-test clock.
