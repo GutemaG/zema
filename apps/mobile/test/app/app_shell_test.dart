@@ -85,10 +85,7 @@ void main() {
       await pumpZemaApp(tester);
       final l10n = lookupAppLocalizations(const Locale('en'));
 
-      final messages = {
-        'Search': l10n.searchComingSoonMessage,
-        'Contribute': l10n.contributeComingSoonMessage,
-      };
+      final messages = {'Contribute': l10n.contributeComingSoonMessage};
       for (final MapEntry(key: tab, value: message) in messages.entries) {
         await tester.tap(_navLabel(tab));
         await tester.pumpAndSettle();
@@ -107,10 +104,10 @@ void main() {
       useScreen(tester, size: const Size(360, 260));
       await pumpZemaApp(tester);
 
-      await tester.tap(_navLabel('Search'));
+      await tester.tap(_navLabel('Contribute'));
       await tester.pumpAndSettle();
       final scrollable = find.descendant(
-        of: find.byType(SearchScreen),
+        of: find.byType(ContributeScreen),
         matching: find.byType(Scrollable),
       );
       await tester.drag(scrollable, const Offset(0, -60));
@@ -121,7 +118,7 @@ void main() {
 
       await tester.tap(_navLabel('Library'));
       await tester.pumpAndSettle();
-      await tester.tap(_navLabel('Search'));
+      await tester.tap(_navLabel('Contribute'));
       await tester.pumpAndSettle();
 
       expect(tester.state<ScrollableState>(scrollable).position.pixels, offset);

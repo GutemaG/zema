@@ -66,9 +66,51 @@
   "@homeSeeAll": {
     "description": "Button next to a Home section heading that opens the full list."
   },
-  "searchComingSoonMessage": "Search mezmur by title, artist or a line of the lyrics.",
-  "@searchComingSoonMessage": {
-    "description": "Message on the Search tab before it is built."
+  "searchScopeAll": "All",
+  "@searchScopeAll": {
+    "description": "Search filter chip: show songs, artists and albums together."
+  },
+  "searchScopeSongs": "Songs",
+  "@searchScopeSongs": {
+    "description": "Search filter chip and results heading for songs."
+  },
+  "searchScopeArtists": "Artists",
+  "@searchScopeArtists": {
+    "description": "Search filter chip and results heading for artists."
+  },
+  "searchScopeAlbums": "Albums",
+  "@searchScopeAlbums": {
+    "description": "Search filter chip and results heading for albums."
+  },
+  "searchSeeAll": "See all",
+  "@searchSeeAll": {
+    "description": "Button next to a search results heading that shows every result of that kind."
+  },
+  "searchRecentHeading": "Recent searches",
+  "@searchRecentHeading": {
+    "description": "Heading above the user's recent searches when the search field is empty."
+  },
+  "searchClearRecent": "Clear all",
+  "@searchClearRecent": {
+    "description": "Button that removes every recent search."
+  },
+  "searchRemoveRecent": "Remove {query}",
+  "@searchRemoveRecent": {
+    "description": "Screen-reader label of the button that removes one recent search.",
+    "placeholders": {
+      "query": {
+        "type": "String",
+        "example": "kidist"
+      }
+    }
+  },
+  "searchHintTitle": "Find a song",
+  "@searchHintTitle": {
+    "description": "Title shown on the Search tab before anything is typed, when there are no recent searches."
+  },
+  "searchHintMessage": "Search by title, artist or album. Any keyboard works: “kidist” finds “ቅድስት”.",
+  "@searchHintMessage": {
+    "description": "Message under the search hint title; the example shows Latin letters finding an Amharic title. Keep both example words as they are."
   },
   "contributeComingSoonMessage": "Add lyrics and sync timings to help other listeners.",
   "@contributeComingSoonMessage": {

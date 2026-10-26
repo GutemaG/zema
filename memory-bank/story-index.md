@@ -4,7 +4,7 @@
 
 - **Total stories**: 48
 - **Generated**: 48
-- **Last updated**: 2026-10-26T14:59:37Z
+- **Last updated**: 2026-10-26T17:26:56Z
 
 ---
 
@@ -60,8 +60,8 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 - [x] **002-home-continue-and-recent-rows** (lyrics-engine-and-display-ui): Home continue listening and recent rows - Must - ✅ COMPLETED
 - [x] **003-ethiopic-normalization** (lyrics-engine-and-display-ui): Ethiopic search normalization - Must - ✅ COMPLETED
 - [x] **004-transliteration-matching** (lyrics-engine-and-display-ui): Transliteration matching - Must - ✅ COMPLETED
-- [ ] **005-search-screen** (lyrics-engine-and-display-ui): Search screen - Must - ⬜ GENERATED
-- [ ] **006-recent-searches** (lyrics-engine-and-display-ui): Recent searches - Must - ⬜ GENERATED
+- [x] **005-search-screen** (lyrics-engine-and-display-ui): Search screen - Must - ✅ COMPLETED
+- [x] **006-recent-searches** (lyrics-engine-and-display-ui): Recent searches - Must - ✅ COMPLETED
 - [ ] **007-lyrics-models-and-play-order** (lyrics-engine-and-display-ui): Lyrics models and play order - Must - ⬜ GENERATED
 - [ ] **008-sync-engine** (lyrics-engine-and-display-ui): Sync engine - Must - ⬜ GENERATED
 - [ ] **009-lrc-import** (lyrics-engine-and-display-ui): LRC import - Must - ⬜ GENERATED
@@ -82,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 12
+- **Generated**: 10
 - **In Progress**: 0
-- **Completed**: 36
+- **Completed**: 38

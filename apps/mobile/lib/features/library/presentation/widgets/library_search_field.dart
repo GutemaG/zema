@@ -11,11 +11,15 @@ class LibrarySearchField extends StatelessWidget {
     required this.controller,
     required this.onChanged,
     required this.onClear,
+    this.onSubmitted,
   });
 
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final VoidCallback onClear;
+
+  /// The keyboard's search key.
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,7 @@ class LibrarySearchField extends StatelessWidget {
     return TextField(
       controller: controller,
       onChanged: onChanged,
+      onSubmitted: onSubmitted,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: l10n.librarySearchHint,

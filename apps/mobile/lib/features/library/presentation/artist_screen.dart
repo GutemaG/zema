@@ -143,8 +143,16 @@ class _ArtistBody extends ConsumerWidget {
                 return AlbumTile(
                   album: album,
                   width: _albumWidth,
-                  onTap: () =>
-                      unawaited(context.push(AppRoutes.album(album.id))),
+                  onTap: () => unawaited(
+                    context.push(
+                      AppRoutes.album(
+                        album.id,
+                        base: AppRoutes.detailBase(
+                          GoRouterState.of(context).uri.path,
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),

@@ -52,6 +52,7 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
               GoRoute(
                 path: AppRoutes.search,
                 builder: (_, _) => const SearchScreen(),
+                routes: _albumAndArtistRoutes(),
               ),
             ],
           ),
@@ -67,22 +68,7 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
                       path: state.uri.queryParameters['path'] ?? '/',
                     ),
                   ),
-                  GoRoute(
-                    path: AppRoutes.albumPath,
-                    builder: (_, state) => AlbumScreen(
-                      id: AlbumId.fromQuery(state.uri.queryParameters),
-                    ),
-                  ),
-                  GoRoute(
-                    path: AppRoutes.artistPath,
-                    builder: (_, state) {
-                      final query = state.uri.queryParameters;
-                      return ArtistScreen(
-                        name: query['name'],
-                        known: query['unknown'] != '1',
-                      );
-                    },
-                  ),
+                  ..._albumAndArtistRoutes(),
                   GoRoute(
                     path: AppRoutes.playlistPath,
                     builder: (_, state) => PlaylistScreen(
@@ -151,3 +137,20 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
     errorBuilder: (_, _) => const NotFoundScreen(),
   );
 }
+
+/// S12a and S13a, under Library and under Search, so pages opened from
+/// search results keep the Search tab (and its results) underneath.
+List<RouteBase> _albumAndArtistRoutes() => [
+  GoRoute(
+    path: AppRoutes.albumPath,
+    builder: (_, state) =>
+        AlbumScreen(id: AlbumId.fromQuery(state.uri.queryParameters)),
+  ),
+  GoRoute(
+    path: AppRoutes.artistPath,
+    builder: (_, state) {
+      final query = state.uri.queryParameters;
+      return ArtistScreen(name: query['name'], known: query['unknown'] != '1');
+    },
+  ),
+];

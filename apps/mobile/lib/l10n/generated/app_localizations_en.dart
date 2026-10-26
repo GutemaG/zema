@@ -57,8 +57,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSeeAll => 'See all';
 
   @override
-  String get searchComingSoonMessage =>
-      'Search mezmur by title, artist or a line of the lyrics.';
+  String get searchScopeAll => 'All';
+
+  @override
+  String get searchScopeSongs => 'Songs';
+
+  @override
+  String get searchScopeArtists => 'Artists';
+
+  @override
+  String get searchScopeAlbums => 'Albums';
+
+  @override
+  String get searchSeeAll => 'See all';
+
+  @override
+  String get searchRecentHeading => 'Recent searches';
+
+  @override
+  String get searchClearRecent => 'Clear all';
+
+  @override
+  String searchRemoveRecent(String query) {
+    return 'Remove $query';
+  }
+
+  @override
+  String get searchHintTitle => 'Find a song';
+
+  @override
+  String get searchHintMessage =>
+      'Search by title, artist or album. Any keyboard works: “kidist” finds “ቅድስት”.';
 
   @override
   String get contributeComingSoonMessage =>

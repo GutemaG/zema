@@ -2,11 +2,11 @@
 id: 005-search-screen
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
 created: 2026-10-26T13:41:09Z
 assigned_bolt: 011-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 005-search-screen
@@ -19,11 +19,11 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** the Search tab, **When** I type, **Then** results update while typing, grouped Songs, Artists, Albums, using normalization and transliteration
-- [ ] **Given** scope chips All, Songs, Artists, Albums, **When** one is chosen, **Then** only that group shows
-- [ ] **Given** a song result, **When** tapped, **Then** it plays (queue = song results); its menu is the song menu; artist and album results open their pages
-- [ ] **Given** no results, **When** shown, **Then** the C07 no-results state shows
-- [ ] **Given** 1,000 tracks, **When** typing, **Then** each keystroke's results take < 100 ms (measured in a test)
+- [x] **Given** the Search tab, **When** I type, **Then** results update while typing, grouped Songs, Artists, Albums, using normalization and transliteration
+- [x] **Given** scope chips All, Songs, Artists, Albums, **When** one is chosen, **Then** only that group shows
+- [x] **Given** a song result, **When** tapped, **Then** it plays (queue = song results); its menu is the song menu; artist and album results open their pages
+- [x] **Given** no results, **When** shown, **Then** the C07 no-results state shows
+- [x] **Given** 1,000 tracks, **When** typing, **Then** each keystroke's results take < 100 ms (measured in a test)
 
 ## Technical Notes
 

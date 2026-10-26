@@ -192,11 +192,65 @@ abstract class AppLocalizations {
   /// **'See all'**
   String get homeSeeAll;
 
-  /// Message on the Search tab before it is built.
+  /// Search filter chip: show songs, artists and albums together.
   ///
   /// In en, this message translates to:
-  /// **'Search mezmur by title, artist or a line of the lyrics.'**
-  String get searchComingSoonMessage;
+  /// **'All'**
+  String get searchScopeAll;
+
+  /// Search filter chip and results heading for songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs'**
+  String get searchScopeSongs;
+
+  /// Search filter chip and results heading for artists.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists'**
+  String get searchScopeArtists;
+
+  /// Search filter chip and results heading for albums.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums'**
+  String get searchScopeAlbums;
+
+  /// Button next to a search results heading that shows every result of that kind.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get searchSeeAll;
+
+  /// Heading above the user's recent searches when the search field is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get searchRecentHeading;
+
+  /// Button that removes every recent search.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get searchClearRecent;
+
+  /// Screen-reader label of the button that removes one recent search.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {query}'**
+  String searchRemoveRecent(String query);
+
+  /// Title shown on the Search tab before anything is typed, when there are no recent searches.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a song'**
+  String get searchHintTitle;
+
+  /// Message under the search hint title; the example shows Latin letters finding an Amharic title. Keep both example words as they are.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by title, artist or album. Any keyboard works: “kidist” finds “ቅድስት”.'**
+  String get searchHintMessage;
 
   /// Message on the Contribute tab before it is built.
   ///

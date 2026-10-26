@@ -15,7 +15,7 @@ abstract final class AppRoutes {
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 
-  /// Sub-paths of [library].
+  /// Sub-paths of [library]; [albumPath] and [artistPath] also of [search].
   static const String folderPath = 'folder';
   static const String albumPath = 'album';
   static const String artistPath = 'artist';
@@ -34,17 +34,22 @@ abstract final class AppRoutes {
     queryParameters: {'path': path},
   ).toString();
 
-  /// S12a for the album [id].
-  static String album(AlbumId id) => Uri(
-    path: '$library/$albumPath',
-    queryParameters: id.toQuery(),
-  ).toString();
+  /// S12a for the album [id], inside the tab at [base] (Library or
+  /// Search, see [detailBase]).
+  static String album(AlbumId id, {String base = library}) =>
+      Uri(path: '$base/$albumPath', queryParameters: id.toQuery()).toString();
 
-  /// S13a for the artist [name]; null is "Unknown artist".
-  static String artist(String? name) => Uri(
-    path: '$library/$artistPath',
+  /// S13a for the artist [name]; null is "Unknown artist". Inside the tab
+  /// at [base], like [album].
+  static String artist(String? name, {String base = library}) => Uri(
+    path: '$base/$artistPath',
     queryParameters: name == null ? {'unknown': '1'} : {'name': name},
   ).toString();
+
+  /// The tab that album and artist pages opened from [location] belong
+  /// to: Search when the user is searching, otherwise Library.
+  static String detailBase(String location) =>
+      location.startsWith(search) ? search : library;
 
   /// S17 for the playlist [id].
   static String playlist(int id) => Uri(
