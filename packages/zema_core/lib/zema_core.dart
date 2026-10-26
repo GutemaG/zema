@@ -10,6 +10,9 @@ export 'src/library/scanned_audio.dart';
 export 'src/library/track.dart';
 export 'src/library/track_fingerprint.dart';
 export 'src/player/play_queue.dart';
+export 'src/search/normalize.dart';
+export 'src/search/search_tables.dart';
+export 'src/search/transliteration.dart';
 
 /// Name of this package, for diagnostics.
 const String packageName = 'zema_core';

@@ -95,8 +95,8 @@ cloud catalog (004), sync editor (006) and floating lyrics (007) reuse it.
 |----------|-------|----------|--------|
 | 001-home-header-and-quick-actions | Home header and quick actions | Must | Complete |
 | 002-home-continue-and-recent-rows | Home continue listening and recent rows | Must | Complete |
-| 003-ethiopic-normalization | Ethiopic search normalization | Must | Planned |
-| 004-transliteration-matching | Transliteration matching | Must | Planned |
+| 003-ethiopic-normalization | Ethiopic search normalization | Must | Complete |
+| 004-transliteration-matching | Transliteration matching | Must | Complete |
 | 005-search-screen | Search screen | Must | Planned |
 | 006-recent-searches | Recent searches | Must | Planned |
 | 007-lyrics-models-and-play-order | Lyrics models and play order | Must | Planned |
@@ -157,5 +157,5 @@ built-in NFC only if needed. Test audio from `ffmpeg` as in intent 002.
 
 ### Functional
 - [ ] Home and Search show real content; no "Coming soon" on those tabs (Home done in bolt 009)
-- [ ] "kidist", "ቅድስት", "ቅዱስት" find the same song
+- [ ] "kidist", "ቅድስት", "ቅዱስት" find the same song (matching done in bolt 010; Search in 011)
 - [ ] A sample song plays on the emulator with lines highlighted within ±0.3 s

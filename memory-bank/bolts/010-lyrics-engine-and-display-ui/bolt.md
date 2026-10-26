@@ -3,15 +3,24 @@ id: 010-lyrics-engine-and-display-ui
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 003-ethiopic-normalization
   - 004-transliteration-matching
 created: 2026-10-26T13:41:09Z
-started: null
-completed: null
+started: 2026-10-26T14:28:52Z
+completed: 2026-10-26T14:59:37Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-26T14:50:03Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-26T14:51:32Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-26T14:59:37Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 009-lyrics-engine-and-display-ui
 enables_bolts:
@@ -33,8 +42,8 @@ Ethiopic normalization and transliteration matching in `zema_core`, as data tabl
 
 ## Stories Included
 
-- [ ] **003-ethiopic-normalization**: Ethiopic search normalization - Priority: Must
-- [ ] **004-transliteration-matching**: Transliteration matching - Priority: Must
+- [x] **003-ethiopic-normalization**: Ethiopic search normalization - Priority: Must
+- [x] **004-transliteration-matching**: Transliteration matching - Priority: Must
 
 ## Bolt Type
 
@@ -43,9 +52,9 @@ Ethiopic normalization and transliteration matching in `zema_core`, as data tabl
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -62,11 +71,11 @@ Ethiopic normalization and transliteration matching in `zema_core`, as data tabl
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [x] Tests passing locally (CI: pending a GitHub remote)
+- [x] Checked on the Android emulator (not applicable: no UI uses it until bolt 011)
 
 ## Notes
 
