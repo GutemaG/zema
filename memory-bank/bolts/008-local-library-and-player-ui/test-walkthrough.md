@@ -13,7 +13,7 @@ created: 2026-10-26T12:48:29Z
   - 67 in `packages/zema_core`, up from 62
 - **Coverage**: 93.9% of lines in `apps/mobile/lib/` excluding generated code (4276/4552), down from 94.2%; 94.9% without Drift's table declarations. The drop is the audio backend's new code, which wraps `just_audio` directly and can only run on a device. New code that tests can reach is 89–100% covered; the DAO, play counter, selection and selection bar are at 100%.
 - **CI sequence run locally**: format check, `flutter analyze`, `flutter test`, `dart analyze`, `dart test` all exit 0. The iOS simulator build compiles.
-- **Emulator**: partly checked; the emulator was in use by someone else partway through (see Notes).
+- **Emulator**: checked with the committed build (see Notes); unplug, interruptions and performance need a real phone.
 
 ### Test Files
 
@@ -116,13 +116,13 @@ Story 021: Playback settings
 - ✅ **Sleep timer default preselected in C05**: sleep sheet tests
 - ⚠️ **Pause on unplug (default on)**: setting reaches the player (tests). Unplugging a headset on a device is not checked.
 - ⚠️ **Pause / Lower volume (default Pause); calls still pause**: setting reaches the player (tests). A real interruption is not checked; behavior comes from `audio_session` and `just_audio` (checked in their sources).
-- ⚠️ **Gapless (Should, default on)**: preload and takeover tested with the fake backend. On the emulator a bug was found and fixed (see Issues); the fixed build's takeover has not been heard on a device yet.
+- ✅ **Gapless (Should, default on)**: preload and takeover tested with the fake backend. On the emulator a bug was found and fixed (see Issues); with the fixed build a load no longer advances, and at the end of a song the next one takes over without a load (log and screen; the takeover not judged by ear).
 - ✅ **Values kept after a restart**: Settings and repository tests
 
 Quality
 - ✅ **Analyze, format, all tests; 1.3× in light and dark without overflow**
 - ✅ **Still builds for iOS**
-- ⚠️ **Checked on the Android emulator**: partly (see Notes)
+- ✅ **Checked on the Android emulator** (see Notes)
 
 ### Issues Found
 
@@ -154,12 +154,13 @@ Quality
 - **Emulator:**
   - **Settings:** checked before the emulator was taken over. Library sits between General and About, Playback after Library. Values show (0 hidden, 30 s, None, Pause) and the switches are on.
   - **Rescan:** synced 1,009 files in 62 ms.
-  - **Not checked**, because the emulator was in use and taps landed on other screens:
-    - multi-select
-    - auto playlists after real plays
-    - the hidden pages
-    - minimum length Off
-    - the gapless takeover by ear with the fixed build
+  - **With the committed build** (after the emulator was free again):
+    - gapless: playing a song no longer skips to the next one; at its end (31.2 s) the log shows "Advanced without a gap" with no load, and the next song plays
+    - play history: the song played to its end tops Recently played; the next one, stopped after a few seconds, isn't counted; the auto playlists section shows the three lists with counts
+    - multi-select: long-press starts it, a tap adds a song, the count and tint show; Hide removes both with "2 songs hidden" and Undo; Back ends selection without leaving the app
+    - hidden pages: both songs listed with Unhide, which empties the list and brings them back to Tracks; empty Hidden folders page
+    - minimum length Off: the count goes from 1,007 to 1,009 with no rescan and the short files show; set back to 30 s
+    - cosmetic: the selected row's tint stops short of the alphabet strip on the right
 - **Intent "Done when":**
   - **Restart persistence:** covered by tests.
   - **Background playback:** checked on the emulator in bolt 005.
