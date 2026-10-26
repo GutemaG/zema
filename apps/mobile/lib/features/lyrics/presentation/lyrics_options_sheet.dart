@@ -68,7 +68,7 @@ class LyricsOptionsSheet extends ConsumerWidget {
               onChanged: (show) =>
                   unawaited(displayController.setTransliteration(show: show)),
             ),
-            _Stepper(
+            LyricsStepper(
               label: l10n.lyricsTextSize,
               value: '${(display.textScale * 100).round()}%',
               lessTooltip: l10n.lyricsTextSmaller,
@@ -85,7 +85,9 @@ class LyricsOptionsSheet extends ConsumerWidget {
             if (lyrics.synced != null && recording != null)
               Consumer(
                 builder: (context, ref, _) {
-                  final offset = ref.watch(lyricsOffsetProvider(recording.id));
+                  final own = ref.watch(lyricsOffsetProvider(recording.id));
+                  final offset =
+                      own ?? ref.watch(lyricsDisplayProvider).defaultOffset;
                   final controller = ref.read(
                     lyricsOffsetProvider(recording.id).notifier,
                   );
@@ -93,7 +95,7 @@ class LyricsOptionsSheet extends ConsumerWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _Stepper(
+                      LyricsStepper(
                         label: l10n.lyricsSyncOffset,
                         value: formatOffset(offset),
                         lessTooltip: l10n.lyricsOffsetEarlier,
@@ -114,7 +116,7 @@ class LyricsOptionsSheet extends ConsumerWidget {
                             horizontal: ZemaSpacing.screenSide - 8,
                           ),
                           child: TextButton(
-                            onPressed: offset == Duration.zero
+                            onPressed: own == null
                                 ? null
                                 : () => unawaited(controller.reset()),
                             child: Text(l10n.lyricsOffsetReset),
@@ -132,8 +134,10 @@ class LyricsOptionsSheet extends ConsumerWidget {
   }
 }
 
-class _Stepper extends StatelessWidget {
-  const _Stepper({
+/// A labelled − value + row.
+class LyricsStepper extends StatelessWidget {
+  const LyricsStepper({
+    super.key,
     required this.label,
     required this.value,
     required this.lessTooltip,

@@ -11,6 +11,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../library/application/library_access_controller.dart';
 import '../../library/application/library_providers.dart';
 import '../../library/application/library_sync_controller.dart';
+import '../../lyrics/presentation/lyrics_settings_group.dart';
 import '../application/app_version_provider.dart';
 import '../application/settings_controller.dart';
 import '../data/app_settings.dart';
@@ -219,6 +220,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
+          const LyricsSettingsGroup(),
           SettingsGroup(
             title: l10n.settingsSectionAbout,
             children: [

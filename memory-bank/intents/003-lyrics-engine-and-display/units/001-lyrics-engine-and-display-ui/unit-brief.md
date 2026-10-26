@@ -4,9 +4,9 @@ intent: 003-lyrics-engine-and-display
 unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: stories-defined
-created: 2026-10-26T13:41:09Z
-updated: 2026-10-26T13:41:09Z
+status: complete
+created: 2026-10-26T13:41:09.000Z
+updated: 2026-10-26T13:41:09.000Z
 ---
 
 # Unit Brief: Lyrics Engine and Display UI
@@ -108,7 +108,7 @@ cloud catalog (004), sync editor (006) and floating lyrics (007) reuse it.
 | 013-lyrics-scroll-and-offset | Lyrics auto-scroll and sync offset | Must | Complete |
 | 014-song-detail | Song detail | Must | Complete |
 | 015-lyric-text-search | Lyric text search | Must | Complete |
-| 016-lyrics-settings | Lyrics settings | Must | Planned |
+| 016-lyrics-settings | Lyrics settings | Must | Complete |
 
 ---
 
@@ -158,4 +158,4 @@ built-in NFC only if needed. Test audio from `ffmpeg` as in intent 002.
 ### Functional
 - [x] Home and Search show real content; no "Coming soon" on those tabs (bolts 009, 011)
 - [x] "kidist", "ቅድስት", "ቅዱስት" find the same song (bolts 010, 011)
-- [ ] A sample song plays on the emulator with lines highlighted within ±0.3 s
+- [x] A sample song plays on the emulator with lines highlighted within ±0.3 s

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zema/features/lyrics/application/lyrics_prefs.dart';
 import 'package:zema/app/routes.dart';
 import 'package:zema/app/theme/zema_colors.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
@@ -233,6 +235,35 @@ void main() {
       expect(find.text('0.0 s'), findsOneWidget);
       expect(_style(tester, _chorus).color, _colors(tester).primaryText);
       expect(app.handler.snapshot.playing, isFalse);
+    });
+
+    testWidgets('the default offset applies until a song has its own', (
+      tester,
+    ) async {
+      final app = await _pump(tester);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(LyricsView)),
+      );
+      await container
+          .read(lyricsDisplayProvider.notifier)
+          .nudgeDefaultOffset(2);
+      await app.at(tester, 11000);
+      // Lines show 1 s later, so 11 s is still the second line.
+      expect(_style(tester, _second).color, _colors(tester).primaryText);
+
+      await tester.tap(find.byTooltip(_l10n.lyricsOptions));
+      await _settle(tester);
+      expect(find.text('+1.0 s'), findsOneWidget);
+      await tester.tap(find.byTooltip(_l10n.lyricsOffsetEarlier));
+      await tester.tap(find.byTooltip(_l10n.lyricsOffsetEarlier));
+      await tester.pumpAndSettle();
+      // Its own offset (0.0 s) now wins over the default.
+      expect(find.text('0.0 s'), findsOneWidget);
+      expect(_style(tester, _chorus).color, _colors(tester).primaryText);
+
+      await tester.tap(find.text(_l10n.lyricsOffsetReset));
+      await tester.pumpAndSettle();
+      expect(find.text('+1.0 s'), findsOneWidget);
     });
 
     testWidgets('seeking includes the offset', (tester) async {

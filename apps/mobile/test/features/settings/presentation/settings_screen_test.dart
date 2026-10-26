@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zema/l10n/generated/app_localizations.dart';
+import 'package:zema/features/lyrics/application/lyrics_prefs.dart';
 import 'package:zema/app/licenses.dart';
 import 'package:zema/app/theme/zema_colors.dart';
 import 'package:zema/app/zema_nav_bar.dart';
@@ -32,7 +35,7 @@ void _tallScreen(WidgetTester tester, {double textScale = 1}) =>
 
 void main() {
   group('Settings screen', () {
-    testWidgets('shows General, Library, Playback and About in order', (
+    testWidgets('shows General, Library, Playback, Lyrics and About in order', (
       tester,
     ) async {
       _tallScreen(tester);
@@ -40,14 +43,14 @@ void main() {
       await _openSettings(tester);
 
       expect(find.byType(SettingsScreen), findsOneWidget);
-      final headings = ['GENERAL', 'LIBRARY', 'PLAYBACK', 'ABOUT'];
+      final headings = ['GENERAL', 'LIBRARY', 'PLAYBACK', 'LYRICS', 'ABOUT'];
       final tops = [
         for (final heading in headings)
           tester.getTopLeft(find.text(heading)).dy,
       ];
       expect(tops, orderedEquals([...tops]..sort()));
-      expect(find.byType(SettingsGroup), findsNWidgets(4));
-      expect(find.byType(SettingsRow), findsNWidgets(12));
+      expect(find.byType(SettingsGroup), findsNWidgets(5));
+      expect(find.byType(SettingsRow), findsNWidgets(13));
       for (final label in [
         'Language',
         'Appearance',
@@ -71,12 +74,7 @@ void main() {
       await pumpZemaApp(tester);
       await _openSettings(tester);
 
-      for (final section in [
-        'LYRICS',
-        'ACCOUNT',
-        'PRIVACY',
-        'FLOATING LYRICS',
-      ]) {
+      for (final section in ['ACCOUNT', 'PRIVACY', 'FLOATING LYRICS']) {
         expect(find.text(section), findsNothing, reason: section);
       }
     });
@@ -483,6 +481,40 @@ void main() {
       );
       expect(_colorsOf(tester, find.byType(HomeScreen)), ZemaColors.nightVigil);
       expect(find.text('Home'), findsOneWidget);
+    });
+
+    testWidgets('the Lyrics section changes and saves lyrics settings', (
+      tester,
+    ) async {
+      _tallScreen(tester);
+      await pumpZemaApp(tester);
+      await _openSettings(tester);
+      final l10n = lookupAppLocalizations(const Locale('en'));
+
+      await tester.tap(find.byTooltip(l10n.lyricsTextLarger));
+      await tester.pumpAndSettle();
+      expect(find.text('110%'), findsOneWidget);
+      await tester.tap(_row(l10n.lyricsShowTransliteration));
+      await tester.pumpAndSettle();
+      for (var i = 0; i < 3; i++) {
+        await tester.tap(find.byTooltip(l10n.lyricsOffsetEarlier));
+        await tester.pumpAndSettle();
+      }
+      expect(find.text('−1.5 s'), findsOneWidget);
+      expect(find.text(l10n.settingsLyricsDefaultOffsetNote), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getDouble(LyricsDisplayController.scaleKey), 1.1);
+      expect(prefs.getBool(LyricsDisplayController.transliterationKey), true);
+      expect(prefs.getInt(LyricsDisplayController.defaultOffsetKey), -1500);
+    });
+
+    testWidgets('the Lyrics section fits at 1.3× text', (tester) async {
+      _tallScreen(tester, textScale: 1.3);
+      await pumpZemaApp(tester);
+      await _openSettings(tester);
+      await tester.scrollUntilVisible(find.text('LYRICS'), 200);
+      expect(tester.takeException(), isNull);
     });
   });
 }

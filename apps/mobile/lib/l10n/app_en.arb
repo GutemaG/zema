@@ -1245,5 +1245,17 @@
         "type": "String"
       }
     }
+  },
+  "settingsSectionLyrics": "Lyrics",
+  "@settingsSectionLyrics": {
+    "description": "Settings section heading for how lyrics show."
+  },
+  "settingsLyricsDefaultOffset": "Default sync timing",
+  "@settingsLyricsDefaultOffset": {
+    "description": "Settings row: timing correction for songs without their own."
+  },
+  "settingsLyricsDefaultOffsetNote": "Songs you've adjusted in Now Playing keep their own timing.",
+  "@settingsLyricsDefaultOffsetNote": {
+    "description": "Note under the default sync timing setting."
   }
 }

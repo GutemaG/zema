@@ -86,11 +86,43 @@ void main() {
       expect(c.read(lyricsOffsetProvider('a')), const Duration(seconds: -10));
     });
 
-    test('reset goes back to zero and forgets the value', () async {
+    test('reset forgets the value, so the default applies', () async {
       final (c, prefs) = await _container({'lyricsOffset.a': 1000});
       await c.read(lyricsOffsetProvider('a').notifier).reset();
-      expect(c.read(lyricsOffsetProvider('a')), Duration.zero);
+      expect(c.read(lyricsOffsetProvider('a')), isNull);
       expect(prefs.containsKey('lyricsOffset.a'), isFalse);
+    });
+
+    test('no saved value means none of its own', () async {
+      final (c, _) = await _container();
+      expect(c.read(lyricsOffsetProvider('a')), isNull);
+    });
+
+    test('the default offset steps, is saved and clamped', () async {
+      final (c, prefs) = await _container();
+      final display = c.read(lyricsDisplayProvider.notifier);
+      await display.nudgeDefaultOffset(-3);
+      expect(c.read(lyricsDisplayProvider).defaultOffset, _ms(-1500));
+      expect(prefs.getInt(LyricsDisplayController.defaultOffsetKey), -1500);
+      await display.nudgeDefaultOffset(-100);
+      expect(
+        c.read(lyricsDisplayProvider).defaultOffset,
+        const Duration(seconds: -10),
+      );
+    });
+
+    test('nudging a recording starts from the default and keeps it', () async {
+      final (c, prefs) = await _container({
+        LyricsDisplayController.defaultOffsetKey: 1000,
+      });
+      final own = c.read(lyricsOffsetProvider('a').notifier);
+      expect(own.effective, _ms(1000));
+      await own.nudge(1);
+      expect(c.read(lyricsOffsetProvider('a')), _ms(1500));
+      await c.read(lyricsDisplayProvider.notifier).nudgeDefaultOffset(4);
+      // The recording's own offset wins over the new default.
+      expect(own.effective, _ms(1500));
+      expect(prefs.getInt('lyricsOffset.a'), 1500);
     });
 
     test('formatOffset shows the sign and one decimal', () {

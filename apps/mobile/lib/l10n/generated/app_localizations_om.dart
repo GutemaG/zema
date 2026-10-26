@@ -961,4 +961,14 @@ class AppLocalizationsOm extends AppLocalizations {
   String lyricsRepeat(String section) {
     return '↻ $section';
   }
+
+  @override
+  String get settingsSectionLyrics => 'Lyrics';
+
+  @override
+  String get settingsLyricsDefaultOffset => 'Default sync timing';
+
+  @override
+  String get settingsLyricsDefaultOffsetNote =>
+      'Songs you\'ve adjusted in Now Playing keep their own timing.';
 }

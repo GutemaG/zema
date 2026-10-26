@@ -71,14 +71,16 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
 });
 
 /// The total shift of [lyrics]' timing: the recording's own offset plus the
-/// user's correction.
+/// user's correction for it, or the default correction.
 final lyricsShiftProvider = Provider.family<Duration, TrackLyrics>((
   ref,
   lyrics,
 ) {
   final recording = lyrics.recording;
   if (recording == null) return Duration.zero;
-  return recording.offset + ref.watch(lyricsOffsetProvider(recording.id));
+  final own = ref.watch(lyricsOffsetProvider(recording.id));
+  return recording.offset +
+      (own ?? ref.watch(lyricsDisplayProvider).defaultOffset);
 });
 
 /// The index of the line being sung in track [trackId]'s lyrics, or null

@@ -4,7 +4,11 @@ import '../../../app/preferences_provider.dart';
 
 /// How the lyrics view shows lines, remembered across restarts.
 class LyricsDisplay {
-  const LyricsDisplay({this.showTransliteration = false, this.textScale = 1});
+  const LyricsDisplay({
+    this.showTransliteration = false,
+    this.textScale = 1,
+    this.defaultOffset = Duration.zero,
+  });
 
   static const double minScale = 0.8;
   static const double maxScale = 1.6;
@@ -16,23 +20,33 @@ class LyricsDisplay {
   /// Size of the lyrics text, on top of the phone's text size.
   final double textScale;
 
+  /// The timing correction for recordings without their own; positive
+  /// shows lines later.
+  final Duration defaultOffset;
+
   bool get canShrink => textScale > minScale + 0.001;
   bool get canGrow => textScale < maxScale - 0.001;
 
-  LyricsDisplay copyWith({bool? showTransliteration, double? textScale}) =>
-      LyricsDisplay(
-        showTransliteration: showTransliteration ?? this.showTransliteration,
-        textScale: textScale ?? this.textScale,
-      );
+  LyricsDisplay copyWith({
+    bool? showTransliteration,
+    double? textScale,
+    Duration? defaultOffset,
+  }) => LyricsDisplay(
+    showTransliteration: showTransliteration ?? this.showTransliteration,
+    textScale: textScale ?? this.textScale,
+    defaultOffset: defaultOffset ?? this.defaultOffset,
+  );
 
   @override
   bool operator ==(Object other) =>
       other is LyricsDisplay &&
       other.showTransliteration == showTransliteration &&
-      other.textScale == textScale;
+      other.textScale == textScale &&
+      other.defaultOffset == defaultOffset;
 
   @override
-  int get hashCode => Object.hash(showTransliteration, textScale);
+  int get hashCode =>
+      Object.hash(showTransliteration, textScale, defaultOffset);
 }
 
 final lyricsDisplayProvider =
@@ -43,6 +57,7 @@ final lyricsDisplayProvider =
 class LyricsDisplayController extends Notifier<LyricsDisplay> {
   static const transliterationKey = 'lyricsTransliteration';
   static const scaleKey = 'lyricsTextScale';
+  static const defaultOffsetKey = 'lyricsDefaultOffset';
 
   @override
   LyricsDisplay build() {
@@ -50,7 +65,22 @@ class LyricsDisplayController extends Notifier<LyricsDisplay> {
     return LyricsDisplay(
       showTransliteration: prefs.getBool(transliterationKey) ?? false,
       textScale: _clampScale(prefs.getDouble(scaleKey) ?? 1),
+      defaultOffset: clampOffset(
+        Duration(milliseconds: prefs.getInt(defaultOffsetKey) ?? 0),
+      ),
     );
+  }
+
+  /// Moves the default offset [steps] × [LyricsOffsetController.step].
+  Future<void> nudgeDefaultOffset(int steps) async {
+    final offset = clampOffset(
+      state.defaultOffset + LyricsOffsetController.step * steps,
+    );
+    if (offset == state.defaultOffset) return;
+    state = state.copyWith(defaultOffset: offset);
+    await ref
+        .read(sharedPreferencesProvider)
+        .setInt(defaultOffsetKey, offset.inMilliseconds);
   }
 
   Future<void> setTransliteration({required bool show}) async {
@@ -75,14 +105,25 @@ class LyricsDisplayController extends Notifier<LyricsDisplay> {
       10;
 }
 
-/// The user's timing correction for one recording; positive shows lines
-/// later. Saved per recording ID.
+/// Keeps a timing correction within ±[LyricsOffsetController.limit].
+Duration clampOffset(Duration offset) {
+  const limit = LyricsOffsetController.limit;
+  return offset < -limit
+      ? -limit
+      : offset > limit
+      ? limit
+      : offset;
+}
+
+/// The user's timing correction for one recording, or null when it has
+/// none and the default applies; positive shows lines later. Saved per
+/// recording ID.
 final lyricsOffsetProvider =
-    NotifierProvider.family<LyricsOffsetController, Duration, String>(
+    NotifierProvider.family<LyricsOffsetController, Duration?, String>(
       LyricsOffsetController.new,
     );
 
-class LyricsOffsetController extends Notifier<Duration> {
+class LyricsOffsetController extends Notifier<Duration?> {
   LyricsOffsetController(this.recordingId);
 
   static const step = Duration(milliseconds: 500);
@@ -93,32 +134,32 @@ class LyricsOffsetController extends Notifier<Duration> {
   String get _key => 'lyricsOffset.$recordingId';
 
   @override
-  Duration build() => _clamp(
-    Duration(
-      milliseconds: ref.read(sharedPreferencesProvider).getInt(_key) ?? 0,
-    ),
-  );
+  Duration? build() =>
+      switch (ref.read(sharedPreferencesProvider).getInt(_key)) {
+        final ms? => clampOffset(Duration(milliseconds: ms)),
+        null => null,
+      };
 
-  /// Moves the offset [steps] × [step]; kept within ±[limit].
-  Future<void> nudge(int steps) => set(state + step * steps);
+  /// The offset in effect: this recording's own, or the default.
+  Duration get effective =>
+      state ?? ref.read(lyricsDisplayProvider).defaultOffset;
 
-  Future<void> reset() => set(Duration.zero);
+  /// Moves the offset in effect [steps] × [step] and keeps it as this
+  /// recording's own; kept within ±[limit].
+  Future<void> nudge(int steps) => set(effective + step * steps);
 
-  Future<void> set(Duration offset) async {
-    final clamped = _clamp(offset);
-    if (clamped == state) return;
-    state = clamped;
-    final prefs = ref.read(sharedPreferencesProvider);
-    if (clamped == Duration.zero) {
-      await prefs.remove(_key);
-    } else {
-      await prefs.setInt(_key, clamped.inMilliseconds);
-    }
+  /// Forgets this recording's own offset, so the default applies.
+  Future<void> reset() async {
+    state = null;
+    await ref.read(sharedPreferencesProvider).remove(_key);
   }
 
-  static Duration _clamp(Duration offset) => offset < -limit
-      ? -limit
-      : offset > limit
-      ? limit
-      : offset;
+  Future<void> set(Duration offset) async {
+    final clamped = clampOffset(offset);
+    if (clamped == state) return;
+    state = clamped;
+    await ref
+        .read(sharedPreferencesProvider)
+        .setInt(_key, clamped.inMilliseconds);
+  }
 }

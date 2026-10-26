@@ -1649,6 +1649,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'↻ {section}'**
   String lyricsRepeat(String section);
+
+  /// Settings section heading for how lyrics show.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics'**
+  String get settingsSectionLyrics;
+
+  /// Settings row: timing correction for songs without their own.
+  ///
+  /// In en, this message translates to:
+  /// **'Default sync timing'**
+  String get settingsLyricsDefaultOffset;
+
+  /// Note under the default sync timing setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs you\'ve adjusted in Now Playing keep their own timing.'**
+  String get settingsLyricsDefaultOffsetNote;
 }
 
 class _AppLocalizationsDelegate

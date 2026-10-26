@@ -71,7 +71,7 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 - [x] **013-lyrics-scroll-and-offset** (lyrics-engine-and-display-ui): Lyrics auto-scroll and sync offset - Must - ✅ COMPLETED
 - [x] **014-song-detail** (lyrics-engine-and-display-ui): Song detail - Must - ✅ COMPLETED
 - [x] **015-lyric-text-search** (lyrics-engine-and-display-ui): Lyric text search - Must - ✅ COMPLETED
-- [ ] **016-lyrics-settings** (lyrics-engine-and-display-ui): Lyrics settings - Must - ⬜ GENERATED
+- [x] **016-lyrics-settings** (lyrics-engine-and-display-ui): Lyrics settings - Must - ✅ COMPLETED
 
 ### 004-cloud-lyrics-catalog … 008-admin-website
 
@@ -82,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 1
+- **Generated**: 0
 - **In Progress**: 0
-- **Completed**: 47
+- **Completed**: 48

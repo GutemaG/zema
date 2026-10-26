@@ -3,14 +3,23 @@ id: 017-lyrics-engine-and-display-ui
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 016-lyrics-settings
 created: 2026-10-26T13:41:09Z
-started: null
-completed: null
+started: 2026-10-26T20:35:39Z
+completed: 2026-10-26T20:47:00Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-26T20:42:06Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-26T20:42:06Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-26T20:47:00Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 016-lyrics-engine-and-display-ui
 enables_bolts: []
@@ -31,7 +40,7 @@ Lyrics section in Settings, then the intent's done-when checks.
 
 ## Stories Included
 
-- [ ] **016-lyrics-settings**: Lyrics settings - Priority: Must
+- [x] **016-lyrics-settings**: Lyrics settings - Priority: Must
 
 ## Bolt Type
 
@@ -40,9 +49,9 @@ Lyrics section in Settings, then the intent's done-when checks.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -59,11 +68,11 @@ Lyrics section in Settings, then the intent's done-when checks.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [x] Tests passing locally
+- [x] Checked on the Android emulator
 
 ## Notes
 

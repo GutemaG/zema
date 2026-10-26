@@ -159,4 +159,33 @@ void main() {
       );
     });
   });
+
+  test('accuracy: each line starts within 1 ms of its timing, with offset', () {
+    // The ±0.3 s target leaves room for the player's position updates
+    // (at most every 200 ms); the engine itself adds no delay.
+    final starts = [
+      for (var i = 0; i < 40; i++) Duration(milliseconds: 1500 + i * 2350),
+    ];
+    final engine = SyncEngine(starts);
+    for (final offset in const [
+      Duration.zero,
+      Duration(milliseconds: 500),
+      Duration(milliseconds: -1500),
+    ]) {
+      for (var i = 0; i < starts.length; i++) {
+        final start = starts[i] + offset;
+        expect(
+          engine
+              .at(start - const Duration(milliseconds: 1), offset: offset)
+              .current,
+          i == 0 ? null : i - 1,
+        );
+        expect(engine.at(start, offset: offset).current, i);
+        expect(
+          engine.startOf(i, offset: offset),
+          start < Duration.zero ? Duration.zero : start,
+        );
+      }
+    }
+  });
 }
