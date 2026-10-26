@@ -2,7 +2,7 @@
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 created: 2026-10-26T13:45:42Z
-last_updated: 2026-10-26T17:35:18Z
+last_updated: 2026-10-26T17:43:37Z
 ---
 
 # Construction Log: lyrics-engine-and-display-ui
@@ -37,7 +37,7 @@ last_updated: 2026-10-26T17:35:18Z
 | 010-lyrics-engine-and-display-ui | 003, 004 | ✅ completed | - |
 | 011-lyrics-engine-and-display-ui | 005, 006 | ✅ completed | - |
 | 012-lyrics-engine-and-display-ui | 007, 008 | ✅ completed | - |
-| 013-lyrics-engine-and-display-ui | 009, 010 | [ ] planned | - |
+| 013-lyrics-engine-and-display-ui | 009, 010 | ✅ completed | - |
 | 014-lyrics-engine-and-display-ui | 011 | [ ] planned | - |
 | 015-lyrics-engine-and-display-ui | 012, 013 | [ ] planned | - |
 | 016-lyrics-engine-and-display-ui | 014, 015 | [ ] planned | - |
@@ -63,6 +63,10 @@ last_updated: 2026-10-26T17:35:18Z
 | 2026-10-26T17:29:32Z | 012-lyrics-engine-and-display-ui | stage-complete | plan → implement |
 | 2026-10-26T17:30:44Z | 012-lyrics-engine-and-display-ui | stage-complete | implement → test |
 | 2026-10-26T17:35:18Z | 012-lyrics-engine-and-display-ui | completed | All 3 stages done; 722 tests pass |
+| 2026-10-26T17:35:47Z | 013-lyrics-engine-and-display-ui | started | Stage 1: plan |
+| 2026-10-26T17:36:45Z | 013-lyrics-engine-and-display-ui | stage-complete | plan → implement |
+| 2026-10-26T17:39:38Z | 013-lyrics-engine-and-display-ui | stage-complete | implement → test |
+| 2026-10-26T17:43:37Z | 013-lyrics-engine-and-display-ui | completed | All 3 stages done; 753 tests pass |
 
 ## Notes
 
@@ -70,3 +74,4 @@ last_updated: 2026-10-26T17:35:18Z
 - **Bolt 010**: search normalization and transliteration in `zema_core` (rules as data tables). Known limit: words with the same consonants match (amlak / malak).
 - **Bolt 011**: Search tab over the library with chips and recent searches; album and artist pages also under `/search` so Back returns to the results.
 - **Bolt 012**: lyrics models with checked JSON, play-order expansion and a stateless sync engine in `zema_core`. Offset: positive shows lines later.
+- **Bolt 013**: LRC import with chorus detection, `LyricsRepository`, three placeholder songs (need native review), `test_audio.sh --lyrics`.

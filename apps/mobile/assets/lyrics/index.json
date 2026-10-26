@@ -1,0 +1,22 @@
+{
+  "note": "Placeholder songs written for Zema to test synced lyrics. Not real mezmur; the text needs review by a native speaker before any release.",
+  "songs": [
+    {
+      "id": "birhan-honlin",
+      "file": "birhan-honlin.lrc",
+      "transliteration": "Birhan Honlin",
+      "durationMs": 53000
+    },
+    {
+      "id": "selam-lezih-bet",
+      "file": "selam-lezih-bet.lrc",
+      "transliteration": "Selam Lezih Bet",
+      "durationMs": 43000
+    },
+    {
+      "id": "galatoomi",
+      "file": "galatoomi.lrc",
+      "durationMs": 43000
+    }
+  ]
+}

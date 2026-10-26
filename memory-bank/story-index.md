@@ -4,7 +4,7 @@
 
 - **Total stories**: 48
 - **Generated**: 48
-- **Last updated**: 2026-10-26T17:35:18Z
+- **Last updated**: 2026-10-26T17:43:37Z
 
 ---
 
@@ -64,8 +64,8 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 - [x] **006-recent-searches** (lyrics-engine-and-display-ui): Recent searches - Must - ✅ COMPLETED
 - [x] **007-lyrics-models-and-play-order** (lyrics-engine-and-display-ui): Lyrics models and play order - Must - ✅ COMPLETED
 - [x] **008-sync-engine** (lyrics-engine-and-display-ui): Sync engine - Must - ✅ COMPLETED
-- [ ] **009-lrc-import** (lyrics-engine-and-display-ui): LRC import - Must - ⬜ GENERATED
-- [ ] **010-bundled-lyrics-repository** (lyrics-engine-and-display-ui): Bundled lyrics repository and sample songs - Must - ⬜ GENERATED
+- [x] **009-lrc-import** (lyrics-engine-and-display-ui): LRC import - Must - ✅ COMPLETED
+- [x] **010-bundled-lyrics-repository** (lyrics-engine-and-display-ui): Bundled lyrics repository and sample songs - Must - ✅ COMPLETED
 - [ ] **011-track-song-linking** (lyrics-engine-and-display-ui): Link local tracks to songs - Must - ⬜ GENERATED
 - [ ] **012-lyrics-view-now-playing** (lyrics-engine-and-display-ui): Lyrics view on Now Playing - Must - ⬜ GENERATED
 - [ ] **013-lyrics-scroll-and-offset** (lyrics-engine-and-display-ui): Lyrics auto-scroll and sync offset - Must - ⬜ GENERATED
@@ -82,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 8
+- **Generated**: 6
 - **In Progress**: 0
-- **Completed**: 40
+- **Completed**: 42

@@ -2,11 +2,11 @@
 id: 010-bundled-lyrics-repository
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
 created: 2026-10-26T13:41:09Z
 assigned_bolt: 013-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 010-bundled-lyrics-repository
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** `LyricsRepository` in `zema_core`, **When** used, **Then** it lists songs, gets a song with its recordings and timings, and searches by normalized title
-- [ ] **Given** app assets, **When** the app starts, **Then** `BundledLyricsRepository` loads 3–5 placeholder songs (original text for Zema, Amharic and Afaan Oromoo) from LRC files
-- [ ] **Given** a script, **When** run, **Then** it generates matching test audio (tone + ID3 title/artist) to push to a device
-- [ ] **Given** a malformed asset, **When** loading, **Then** it is skipped and logged at FINE, the rest load
+- [x] **Given** `LyricsRepository` in `zema_core`, **When** used, **Then** it lists songs, gets a song with its recordings and timings, and searches by normalized title
+- [x] **Given** app assets, **When** the app starts, **Then** `BundledLyricsRepository` loads 3–5 placeholder songs (original text for Zema, Amharic and Afaan Oromoo) from LRC files
+- [x] **Given** a script, **When** run, **Then** it generates matching test audio (tone + ID3 title/artist) to push to a device
+- [x] **Given** a malformed asset, **When** loading, **Then** it is skipped and logged at FINE, the rest load
 
 ## Technical Notes
 

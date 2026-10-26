@@ -101,8 +101,8 @@ cloud catalog (004), sync editor (006) and floating lyrics (007) reuse it.
 | 006-recent-searches | Recent searches | Must | Complete |
 | 007-lyrics-models-and-play-order | Lyrics models and play order | Must | Complete |
 | 008-sync-engine | Sync engine | Must | Complete |
-| 009-lrc-import | LRC import | Must | Planned |
-| 010-bundled-lyrics-repository | Bundled lyrics repository and sample songs | Must | Planned |
+| 009-lrc-import | LRC import | Must | Complete |
+| 010-bundled-lyrics-repository | Bundled lyrics repository and sample songs | Must | Complete |
 | 011-track-song-linking | Link local tracks to songs | Must | Planned |
 | 012-lyrics-view-now-playing | Lyrics view on Now Playing | Must | Planned |
 | 013-lyrics-scroll-and-offset | Lyrics auto-scroll and sync offset | Must | Planned |
