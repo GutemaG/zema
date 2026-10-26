@@ -4,7 +4,7 @@ unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 status: complete
 priority: must
-created: 2026-10-26T13:41:09.000Z
+created: 2026-10-26T13:41:09Z
 assigned_bolt: 017-lyrics-engine-and-display-ui
 implemented: true
 ---

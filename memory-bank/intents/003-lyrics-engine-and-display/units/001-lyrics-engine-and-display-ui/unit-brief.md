@@ -5,8 +5,8 @@ unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
 status: complete
-created: 2026-10-26T13:41:09.000Z
-updated: 2026-10-26T13:41:09.000Z
+created: 2026-10-26T13:41:09Z
+updated: 2026-10-26T13:41:09Z
 ---
 
 # Unit Brief: Lyrics Engine and Display UI
