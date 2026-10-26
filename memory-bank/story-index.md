@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 32
-- **Generated**: 32
-- **Last updated**: 2026-10-26T12:48:29Z
+- **Total stories**: 48
+- **Generated**: 48
+- **Last updated**: 2026-10-26T13:41:09Z
 
 ---
 
@@ -52,7 +52,28 @@ Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-
 - [x] **020-library-settings** (local-library-and-player-ui): Library settings - Must - ✅ COMPLETED
 - [x] **021-playback-settings** (local-library-and-player-ui): Playback settings - Must - ✅ COMPLETED
 
-### 003-lyrics-engine-and-display … 008-admin-website
+### 003-lyrics-engine-and-display
+
+Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine-and-display-ui/stories/`
+
+- [ ] **001-home-header-and-quick-actions** (lyrics-engine-and-display-ui): Home header and quick actions - Must - ⬜ GENERATED
+- [ ] **002-home-continue-and-recent-rows** (lyrics-engine-and-display-ui): Home continue listening and recent rows - Must - ⬜ GENERATED
+- [ ] **003-ethiopic-normalization** (lyrics-engine-and-display-ui): Ethiopic search normalization - Must - ⬜ GENERATED
+- [ ] **004-transliteration-matching** (lyrics-engine-and-display-ui): Transliteration matching - Must - ⬜ GENERATED
+- [ ] **005-search-screen** (lyrics-engine-and-display-ui): Search screen - Must - ⬜ GENERATED
+- [ ] **006-recent-searches** (lyrics-engine-and-display-ui): Recent searches - Must - ⬜ GENERATED
+- [ ] **007-lyrics-models-and-play-order** (lyrics-engine-and-display-ui): Lyrics models and play order - Must - ⬜ GENERATED
+- [ ] **008-sync-engine** (lyrics-engine-and-display-ui): Sync engine - Must - ⬜ GENERATED
+- [ ] **009-lrc-import** (lyrics-engine-and-display-ui): LRC import - Must - ⬜ GENERATED
+- [ ] **010-bundled-lyrics-repository** (lyrics-engine-and-display-ui): Bundled lyrics repository and sample songs - Must - ⬜ GENERATED
+- [ ] **011-track-song-linking** (lyrics-engine-and-display-ui): Link local tracks to songs - Must - ⬜ GENERATED
+- [ ] **012-lyrics-view-now-playing** (lyrics-engine-and-display-ui): Lyrics view on Now Playing - Must - ⬜ GENERATED
+- [ ] **013-lyrics-scroll-and-offset** (lyrics-engine-and-display-ui): Lyrics auto-scroll and sync offset - Must - ⬜ GENERATED
+- [ ] **014-song-detail** (lyrics-engine-and-display-ui): Song detail - Must - ⬜ GENERATED
+- [ ] **015-lyric-text-search** (lyrics-engine-and-display-ui): Lyric text search - Must - ⬜ GENERATED
+- [ ] **016-lyrics-settings** (lyrics-engine-and-display-ui): Lyrics settings - Must - ⬜ GENERATED
+
+### 004-cloud-lyrics-catalog … 008-admin-website
 
 No stories yet (intents in draft).
 
@@ -61,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 0
+- **Generated**: 16
 - **In Progress**: 0
 - **Completed**: 32
