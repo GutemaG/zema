@@ -2,7 +2,7 @@
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 created: 2026-10-24T19:27:01Z
-last_updated: 2026-10-24T21:20:18Z
+last_updated: 2026-10-26T08:21:49Z
 ---
 
 # Construction Log: local-library-and-player-ui
@@ -31,7 +31,7 @@ last_updated: 2026-10-24T21:20:18Z
 |---------|---------|--------|---------|
 | 004-local-library-and-player-ui | 001, 002, 003, 004 | ✅ completed | - |
 | 005-local-library-and-player-ui | 005, 006, 007, 008 | ✅ completed | - |
-| 006-local-library-and-player-ui | 009, 010, 011, 012, 013 | [ ] planned | - |
+| 006-local-library-and-player-ui | 009, 010, 011, 012, 013 | ✅ completed | - |
 | 007-local-library-and-player-ui | 014, 015, 016, 017 | [ ] planned | - |
 | 008-local-library-and-player-ui | 018, 019, 020, 021 | [ ] planned | - |
 
@@ -47,6 +47,10 @@ last_updated: 2026-10-24T21:20:18Z
 | 2026-10-24T20:07:33Z | 005-local-library-and-player-ui | stage-complete | plan → implement |
 | 2026-10-24T20:54:50Z | 005-local-library-and-player-ui | stage-complete | implement → test |
 | 2026-10-24T21:20:18Z | 005-local-library-and-player-ui | completed | All 3 stages done; 329 tests pass |
+| 2026-10-26T07:27:17Z | 006-local-library-and-player-ui | started | Stage 1: plan |
+| 2026-10-26T07:28:43Z | 006-local-library-and-player-ui | stage-complete | plan → implement |
+| 2026-10-26T08:07:29Z | 006-local-library-and-player-ui | stage-complete | implement → test |
+| 2026-10-26T08:21:49Z | 006-local-library-and-player-ui | completed | All 3 stages done; 438 tests pass |
 
 ## Notes
 
@@ -62,3 +66,7 @@ last_updated: 2026-10-24T21:20:18Z
 - Bolt 005: the emulator draws with SwiftShader (CPU) unless started with `-gpu host`;
   frame-raster timings are only meaningful with the host GPU, and still vary run to run.
   60 fps scrolling and 30-minute screen-off playback remain open for a real phone.
+- Bolt 006: the theme now sets Material's inverse colors (snackbars) and a text-button
+  color; both were left at Material defaults in intent 001, which made snackbar actions
+  invisible. Snackbars with an action persist by default in Flutter 3.47; Undo snackbars
+  set `persist: false`.

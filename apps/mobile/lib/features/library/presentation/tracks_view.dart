@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +14,7 @@ import '../application/library_sync_controller.dart';
 import '../application/track_sort_provider.dart';
 import '../application/tracks_query.dart';
 import 'widgets/alphabet_scroller.dart';
+import 'widgets/play_shuffle_bar.dart';
 import 'widgets/track_row.dart';
 
 /// S10: every track, with search, sort, an alphabet strip, and Play /
@@ -129,18 +129,15 @@ class _TracksViewState extends ConsumerState<TracksView> {
             onClear: _clearQuery,
           ),
         ),
-        _ListHeader(
-          count: visible.length,
-          sort: sort,
-          onSort: (s) => ref.read(trackSortProvider.notifier).set(s),
-          onPlay: visible.isEmpty ? null : () => player.playList(visible),
-          onShuffle: visible.isEmpty
-              ? null
-              : () => player.playList(
-                  visible,
-                  start: Random().nextInt(visible.length),
-                  shuffle: true,
-                ),
+        PlayShuffleBar(
+          label: l10n.librarySongCount(visible.length),
+          tracks: visible,
+          actions: [
+            _SortMenu(
+              sort: sort,
+              onSort: (s) => ref.read(trackSortProvider.notifier).set(s),
+            ),
+          ],
         ),
         Expanded(
           child: visible.isEmpty
@@ -233,21 +230,12 @@ class _SearchField extends StatelessWidget {
   }
 }
 
-/// Count, sort menu, Shuffle and Play.
-class _ListHeader extends StatelessWidget {
-  const _ListHeader({
-    required this.count,
-    required this.sort,
-    required this.onSort,
-    required this.onPlay,
-    required this.onShuffle,
-  });
+/// Sort field and direction.
+class _SortMenu extends StatelessWidget {
+  const _SortMenu({required this.sort, required this.onSort});
 
-  final int count;
   final TrackSort sort;
   final ValueChanged<TrackSort> onSort;
-  final VoidCallback? onPlay;
-  final VoidCallback? onShuffle;
 
   @override
   Widget build(BuildContext context) {
@@ -260,73 +248,33 @@ class _ListHeader extends StatelessWidget {
       TrackSortField.dateAdded: l10n.sortDateAdded,
       TrackSortField.duration: l10n.sortDuration,
     };
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(ZemaSpacing.screenSide, 4, 8, 4),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              l10n.librarySongCount(count),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelLarge
-                  ?.copyWith(color: colors.muted),
-            ),
+    return PopupMenuButton<Object>(
+      tooltip: l10n.librarySortTooltip,
+      icon: Icon(Icons.sort, color: colors.text),
+      onSelected: (choice) => onSort(switch (choice) {
+        TrackSortField field => TrackSort(field, descending: sort.descending),
+        final bool descending => TrackSort(sort.field, descending: descending),
+        _ => sort,
+      }),
+      itemBuilder: (context) => [
+        for (final MapEntry(key: field, value: name) in fieldNames.entries)
+          CheckedPopupMenuItem<Object>(
+            value: field,
+            checked: field == sort.field,
+            child: Text(name),
           ),
-          PopupMenuButton<Object>(
-            tooltip: l10n.librarySortTooltip,
-            icon: Icon(Icons.sort, color: colors.text),
-            onSelected: (choice) => onSort(switch (choice) {
-              TrackSortField field => TrackSort(
-                field,
-                descending: sort.descending,
-              ),
-              final bool descending => TrackSort(
-                sort.field,
-                descending: descending,
-              ),
-              _ => sort,
-            }),
-            itemBuilder: (context) => [
-              for (final MapEntry(key: field, value: name)
-                  in fieldNames.entries)
-                CheckedPopupMenuItem<Object>(
-                  value: field,
-                  checked: field == sort.field,
-                  child: Text(name),
-                ),
-              const PopupMenuDivider(),
-              CheckedPopupMenuItem<Object>(
-                value: false,
-                checked: !sort.descending,
-                child: Text(l10n.sortAscending),
-              ),
-              CheckedPopupMenuItem<Object>(
-                value: true,
-                checked: sort.descending,
-                child: Text(l10n.sortDescending),
-              ),
-            ],
-          ),
-          IconButton(
-            tooltip: l10n.actionShuffle,
-            icon: Icon(Icons.shuffle, color: colors.text),
-            onPressed: onShuffle,
-          ),
-          const SizedBox(width: 4),
-          FilledButton.icon(
-            onPressed: onPlay,
-            icon: const Icon(Icons.play_arrow),
-            label: Text(l10n.actionPlay),
-            style: FilledButton.styleFrom(
-              backgroundColor: colors.primary,
-              foregroundColor: colors.onPrimary,
-              minimumSize: const Size(ZemaSpacing.minTap, ZemaSpacing.minTap),
-              shape: const StadiumBorder(),
-            ),
-          ),
-        ],
-      ),
+        const PopupMenuDivider(),
+        CheckedPopupMenuItem<Object>(
+          value: false,
+          checked: !sort.descending,
+          child: Text(l10n.sortAscending),
+        ),
+        CheckedPopupMenuItem<Object>(
+          value: true,
+          checked: sort.descending,
+          child: Text(l10n.sortDescending),
+        ),
+      ],
     );
   }
 }

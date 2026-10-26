@@ -4,6 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/library/application/album_grouping.dart';
+import '../features/library/presentation/album_screen.dart';
+import '../features/library/presentation/artist_screen.dart';
+import '../features/library/presentation/folder_screen.dart';
 import '../features/library/presentation/library_screen.dart';
 import '../features/player/presentation/now_playing_screen.dart';
 import '../features/search/presentation/search_screen.dart';
@@ -50,6 +54,30 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
               GoRoute(
                 path: AppRoutes.library,
                 builder: (_, _) => const LibraryScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.folderPath,
+                    builder: (_, state) => FolderScreen(
+                      path: state.uri.queryParameters['path'] ?? '/',
+                    ),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.albumPath,
+                    builder: (_, state) => AlbumScreen(
+                      id: AlbumId.fromQuery(state.uri.queryParameters),
+                    ),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.artistPath,
+                    builder: (_, state) {
+                      final query = state.uri.queryParameters;
+                      return ArtistScreen(
+                        name: query['name'],
+                        known: query['unknown'] != '1',
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

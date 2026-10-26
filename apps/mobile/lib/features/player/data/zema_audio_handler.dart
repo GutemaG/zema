@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:clock/clock.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zema_core/zema_core.dart';
 
 import 'audio_backend.dart';
 import 'player_snapshot.dart';
+import 'sleep_timer.dart';
 
 final _log = Logger('player.handler');
 
@@ -14,7 +16,8 @@ final _log = Logger('player.handler');
 /// the app ([snapshots], [positions]) and to the system (notification, lock
 /// screen, headset buttons) through `audio_service`.
 ///
-/// Plays one file at a time; [PlayQueue] decides what comes next.
+/// Plays one file at a time; [PlayQueue] decides what comes next. Also runs
+/// the sleep timer, so it keeps going while the UI is closed.
 class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   ZemaAudioHandler(this._backend, {PlayQueue<Track>? queue})
     : _queue = queue ?? PlayQueue<Track>() {
@@ -31,6 +34,13 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     processing: BackendProcessing.idle,
   );
   Duration? _duration;
+  SleepTimer? _sleep;
+  Timer? _sleepTimer;
+  Timer? _fadeTimer;
+
+  /// How long the volume takes to fade out when a sleep timer ends.
+  static const fadeDuration = Duration(seconds: 5);
+  static const _fadeSteps = 20;
 
   /// Bumped on every load, so a slow load that finishes after a newer one
   /// is ignored.
@@ -82,7 +92,14 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> pause() => _backend.pause();
+  Future<void> pause() async {
+    await _backend.pause();
+    // Pausing during a sleep fade ends it early.
+    if (_fadeTimer != null) {
+      _cancelSleep();
+      _publish();
+    }
+  }
 
   @override
   Future<void> seek(Duration position) => _backend.seek(position);
@@ -126,14 +143,67 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     _publish();
   }
 
+  /// Moves the queue entry at [from] to [to] (indexes in play order, [to]
+  /// counted after removal).
+  Future<void> moveQueueItem(int from, int to) async {
+    if (from == to) return;
+    _queue.move(from, to);
+    _publish();
+  }
+
+  /// Removes the queue entry at [index]; returns what [restoreQueueItem]
+  /// needs to undo it, or null for the current track (which can't be
+  /// removed).
+  Future<QueueRemoval<Track>?> removeQueueEntry(int index) async {
+    final removal = _queue.removeAt(index);
+    if (removal != null) _publish();
+    return removal;
+  }
+
+  /// Puts back an entry removed by [removeQueueEntry].
+  Future<void> restoreQueueItem(QueueRemoval<Track> removal) async {
+    if (_queue.restore(removal)) _publish();
+  }
+
+  /// Removes everything after the current track.
+  Future<void> clearUpcoming() async {
+    _queue.clearUpcoming();
+    _publish();
+  }
+
+  /// Pauses playback after [after], fading out over [fadeDuration]. Replaces
+  /// any running timer.
+  void setSleepTimer(Duration after) {
+    _cancelSleep();
+    _sleep = TimedSleep(clock.now().add(after));
+    _sleepTimer = Timer(after, _onSleepTimerEnd);
+    _log.fine('Sleep timer set for $after');
+    _publish();
+  }
+
+  /// Stops playback when the current track ends. Replaces any running timer.
+  void sleepAtEndOfTrack() {
+    _cancelSleep();
+    _sleep = const EndOfTrackSleep();
+    _publish();
+  }
+
+  void cancelSleepTimer() {
+    _cancelSleep();
+    _publish();
+  }
+
   @override
   Future<void> stop() async {
+    _cancelSleep();
     await _backend.stop();
     await super.stop();
   }
 
   /// Releases the backend. The handler can't be used afterwards.
   Future<void> dispose() async {
+    _sleepTimer?.cancel();
+    _fadeTimer?.cancel();
     for (final s in _subscriptions) {
       await s.cancel();
     }
@@ -180,6 +250,49 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     _publish();
   }
 
+  /// Stops the timer and any fade in progress, restoring the volume.
+  void _cancelSleep() {
+    _sleepTimer?.cancel();
+    _sleepTimer = null;
+    if (_fadeTimer != null) {
+      _fadeTimer!.cancel();
+      _fadeTimer = null;
+      unawaited(_backend.setVolume(1));
+    }
+    _sleep = null;
+  }
+
+  void _onSleepTimerEnd() {
+    _sleepTimer = null;
+    if (!_wantsToPlay) {
+      _log.fine('Sleep timer ended while paused');
+      _sleep = null;
+      _publish();
+      return;
+    }
+    _log.fine('Sleep timer ended: fading out');
+    var step = 0;
+    _fadeTimer = Timer.periodic(fadeDuration ~/ _fadeSteps, (timer) {
+      step++;
+      if (step < _fadeSteps) {
+        unawaited(_backend.setVolume(1 - step / _fadeSteps));
+        return;
+      }
+      timer.cancel();
+      _fadeTimer = null;
+      _sleep = null;
+      unawaited(_pauseAfterFade());
+    });
+  }
+
+  Future<void> _pauseAfterFade() async {
+    await _backend.setVolume(0);
+    await _backend.pause();
+    // Back to full volume for the next play.
+    await _backend.setVolume(1);
+    _publish();
+  }
+
   void _onBackendState(BackendState state) {
     _log.finer('Backend: playing ${state.playing}, ${state.processing.name}');
     final completed =
@@ -193,6 +306,18 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> _onTrackCompleted() async {
     final advance = _queue.trackCompleted();
     _log.fine('Track completed: $advance');
+    if (_sleep is EndOfTrackSleep) {
+      // Stop here, with the next track ready to play.
+      _sleep = null;
+      await _backend.pause();
+      if (advance == QueueAdvance.advanced) {
+        await _loadCurrent(play: false);
+      } else {
+        await _backend.seek(Duration.zero);
+        _publish();
+      }
+      return;
+    }
     switch (advance) {
       case QueueAdvance.replay:
         await _backend.seek(Duration.zero);
@@ -218,12 +343,14 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     _snapshots.add(
       PlayerSnapshot(
         queue: tracks,
+        queueKeys: _queue.keys,
         index: _queue.index,
         playing: playing,
         buffering: buffering,
         shuffle: _queue.shuffle,
         repeat: _queue.repeat,
         duration: _duration,
+        sleepTimer: _sleep,
       ),
     );
 

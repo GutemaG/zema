@@ -9,13 +9,17 @@ import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../library/presentation/widgets/track_art.dart';
 import '../application/player_providers.dart';
+import '../../../shared/format_duration.dart';
 import '../data/player_snapshot.dart';
+import '../data/sleep_timer.dart';
 import 'mini_player.dart';
 import 'player_progress.dart';
+import 'queue_sheet.dart';
+import 'sleep_timer_sheet.dart';
 
-/// S08 (controls only): art, title, artist, seek bar and transport controls.
-/// The lyrics area says "No lyrics yet" until intent 003. Closes with the
-/// down arrow, back, or a swipe down.
+/// S08 (controls only): art, title, artist, seek bar, transport controls,
+/// and the sleep timer and queue buttons. The lyrics area says "No lyrics
+/// yet" until intent 003. Closes with the down arrow, back, or a swipe down.
 class NowPlayingScreen extends ConsumerWidget {
   const NowPlayingScreen({super.key});
 
@@ -150,8 +154,12 @@ class _Body extends ConsumerWidget {
         ),
         SeekBar(duration: snapshot.duration ?? track.duration),
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: _Controls(snapshot: snapshot),
+        ),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(12, 0, 12, 12),
+          child: _SecondaryActions(),
         ),
       ],
     );
@@ -222,6 +230,49 @@ class _Controls extends ConsumerWidget {
             color: repeatOn ? colors.primaryText : colors.muted,
           ),
           onPressed: () => unawaited(player.cycleRepeat()),
+        ),
+      ],
+    );
+  }
+}
+
+/// Sleep timer (with the time left when one runs) and queue.
+class _SecondaryActions extends ConsumerWidget {
+  const _SecondaryActions();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final timer = ref.watch(sleepTimerProvider);
+    final color = timer == null ? colors.muted : colors.primaryText;
+    final label = switch (timer) {
+      null => null,
+      final TimedSleep timed => SleepCountdown(
+        timer: timed,
+        builder: (context, left) => Text(formatDuration(left)),
+      ),
+      EndOfTrackSleep() => Text(l10n.sleepEndOfSongShort),
+    };
+    return Row(
+      children: [
+        Tooltip(
+          message: l10n.sleepTitle,
+          child: TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: color,
+              minimumSize: const Size(ZemaSpacing.minTap, ZemaSpacing.minTap),
+            ),
+            onPressed: () => unawaited(showSleepTimerSheet(context)),
+            icon: Icon(timer == null ? Icons.bedtime_outlined : Icons.bedtime),
+            label: label ?? const SizedBox.shrink(),
+          ),
+        ),
+        const Spacer(),
+        IconButton(
+          tooltip: l10n.queueTitle,
+          icon: Icon(Icons.queue_music, color: colors.muted),
+          onPressed: () => unawaited(showQueueSheet(context)),
         ),
       ],
     );

@@ -291,4 +291,193 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionDone => 'Done';
+
+  @override
+  String get actionUndo => 'Undo';
+
+  @override
+  String get actionCancel => 'Cancel';
+
+  @override
+  String get actionSave => 'Save';
+
+  @override
+  String get queueTitle => 'Queue';
+
+  @override
+  String queueUpNext(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs up next',
+      one: '1 song up next',
+      zero: 'Nothing up next',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueClear => 'Clear queue';
+
+  @override
+  String queueRemoved(String title) {
+    return 'Removed \"$title\" from the queue';
+  }
+
+  @override
+  String get queueRemove => 'Remove from queue';
+
+  @override
+  String get queueReorder => 'Drag to reorder';
+
+  @override
+  String get sleepTitle => 'Sleep timer';
+
+  @override
+  String sleepMinutes(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sleepEndOfSong => 'End of current song';
+
+  @override
+  String get sleepEndOfSongShort => 'End of song';
+
+  @override
+  String get sleepCustom => 'Custom…';
+
+  @override
+  String get sleepCustomTitle => 'Custom sleep timer';
+
+  @override
+  String get sleepCustomLabel => 'Minutes';
+
+  @override
+  String sleepCustomRange(int min, int max) {
+    return 'Enter $min to $max minutes';
+  }
+
+  @override
+  String sleepStopsIn(String time) {
+    return 'Stops in $time';
+  }
+
+  @override
+  String get sleepStopsAtEndOfSong => 'Stops at the end of this song';
+
+  @override
+  String get sleepCancel => 'Cancel timer';
+
+  @override
+  String get folderPhone => 'Phone';
+
+  @override
+  String get folderSdCard => 'SD card';
+
+  @override
+  String get folderHide => 'Hide folder';
+
+  @override
+  String folderMenu(String name) {
+    return 'More options for $name';
+  }
+
+  @override
+  String folderHidden(String name) {
+    return '\"$name\" hidden';
+  }
+
+  @override
+  String get foldersEmptyTitle => 'No folders';
+
+  @override
+  String get foldersEmptyMessage =>
+      'Folders with music on your phone will show here.';
+
+  @override
+  String get folderGoneTitle => 'Folder not found';
+
+  @override
+  String get folderGoneMessage =>
+      'This folder has no music now. It may have been hidden or emptied.';
+
+  @override
+  String albumCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count albums',
+      one: '1 album',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get variousArtists => 'Various artists';
+
+  @override
+  String get sortAlbumName => 'Name';
+
+  @override
+  String get sortYear => 'Year';
+
+  @override
+  String get albumsEmptyTitle => 'No albums';
+
+  @override
+  String get albumsEmptyMessage =>
+      'Albums from your music files will show here.';
+
+  @override
+  String get albumGoneTitle => 'Album not found';
+
+  @override
+  String get albumGoneMessage => 'This album is no longer in your library.';
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String artistCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count artists',
+      one: '1 artist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get artistAlbums => 'Albums';
+
+  @override
+  String get artistSongs => 'Songs';
+
+  @override
+  String get artistsEmptyTitle => 'No artists';
+
+  @override
+  String get artistsEmptyMessage =>
+      'Singers from your music files will show here.';
+
+  @override
+  String get artistGoneTitle => 'Artist not found';
+
+  @override
+  String get artistGoneMessage => 'This artist is no longer in your library.';
 }

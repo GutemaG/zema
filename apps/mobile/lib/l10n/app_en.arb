@@ -369,5 +369,250 @@
   "actionDone": "Done",
   "@actionDone": {
     "description": "Button that closes a sheet after making changes."
+  },
+  "actionUndo": "Undo",
+  "@actionUndo": {
+    "description": "Snackbar button that reverses the change just made."
+  },
+  "actionCancel": "Cancel",
+  "@actionCancel": {
+    "description": "Dialog button that closes without saving."
+  },
+  "actionSave": "Save",
+  "@actionSave": {
+    "description": "Dialog button that saves the entered value."
+  },
+  "queueTitle": "Queue",
+  "@queueTitle": {
+    "description": "Title of the sheet listing the songs that will play, and the Now Playing button that opens it."
+  },
+  "queueUpNext": "{count, plural, =0{Nothing up next} =1{1 song up next} other{{count} songs up next}}",
+  "@queueUpNext": {
+    "description": "Number of songs after the current one in the queue.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queueClear": "Clear queue",
+  "@queueClear": {
+    "description": "Button that removes every song after the current one from the queue."
+  },
+  "queueRemoved": "Removed \"{title}\" from the queue",
+  "@queueRemoved": {
+    "description": "Snackbar after swiping a song out of the queue.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "queueRemove": "Remove from queue",
+  "@queueRemove": {
+    "description": "Screen-reader action that removes a song from the queue."
+  },
+  "queueReorder": "Drag to reorder",
+  "@queueReorder": {
+    "description": "Label of the handle used to move a song within the queue."
+  },
+  "sleepTitle": "Sleep timer",
+  "@sleepTitle": {
+    "description": "Title of the sleep timer sheet, and the Now Playing button that opens it."
+  },
+  "sleepMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@sleepMinutes": {
+    "description": "Sleep timer option: stop playback after this many minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sleepEndOfSong": "End of current song",
+  "@sleepEndOfSong": {
+    "description": "Sleep timer option: stop playback when the song playing now ends."
+  },
+  "sleepEndOfSongShort": "End of song",
+  "@sleepEndOfSongShort": {
+    "description": "Short label on Now Playing when the sleep timer stops at the end of the song."
+  },
+  "sleepCustom": "Custom…",
+  "@sleepCustom": {
+    "description": "Sleep timer option that asks for a number of minutes."
+  },
+  "sleepCustomTitle": "Custom sleep timer",
+  "@sleepCustomTitle": {
+    "description": "Title of the dialog asking for a number of minutes."
+  },
+  "sleepCustomLabel": "Minutes",
+  "@sleepCustomLabel": {
+    "description": "Label of the field for the number of minutes."
+  },
+  "sleepCustomRange": "Enter {min} to {max} minutes",
+  "@sleepCustomRange": {
+    "description": "Allowed range for a custom sleep timer; shown as help, and as an error when the value is outside it.",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "sleepStopsIn": "Stops in {time}",
+  "@sleepStopsIn": {
+    "description": "Time left before the sleep timer stops playback, e.g. \"Stops in 12:30\".",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepStopsAtEndOfSong": "Stops at the end of this song",
+  "@sleepStopsAtEndOfSong": {
+    "description": "Shown when the sleep timer is set to stop at the end of the current song."
+  },
+  "sleepCancel": "Cancel timer",
+  "@sleepCancel": {
+    "description": "Button that turns off the running sleep timer."
+  },
+  "folderPhone": "Phone",
+  "@folderPhone": {
+    "description": "Name shown for the phone's internal storage in folder paths."
+  },
+  "folderSdCard": "SD card",
+  "@folderSdCard": {
+    "description": "Name shown for a memory card in folder paths."
+  },
+  "folderHide": "Hide folder",
+  "@folderHide": {
+    "description": "Folder menu item that hides the folder's songs from the whole library."
+  },
+  "folderMenu": "More options for {name}",
+  "@folderMenu": {
+    "description": "Label of the folder's menu button.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderHidden": "\"{name}\" hidden",
+  "@folderHidden": {
+    "description": "Snackbar after hiding a folder.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersEmptyTitle": "No folders",
+  "@foldersEmptyTitle": {
+    "description": "Title when no folder holds any music."
+  },
+  "foldersEmptyMessage": "Folders with music on your phone will show here.",
+  "@foldersEmptyMessage": {
+    "description": "Message when no folder holds any music."
+  },
+  "folderGoneTitle": "Folder not found",
+  "@folderGoneTitle": {
+    "description": "Title when an opened folder has no music any more (hidden or emptied)."
+  },
+  "folderGoneMessage": "This folder has no music now. It may have been hidden or emptied.",
+  "@folderGoneMessage": {
+    "description": "Message when an opened folder has no music any more."
+  },
+  "albumCount": "{count, plural, =1{1 album} other{{count} albums}}",
+  "@albumCount": {
+    "description": "Number of albums.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "variousArtists": "Various artists",
+  "@variousArtists": {
+    "description": "Artist shown for an album whose songs are by different artists."
+  },
+  "sortAlbumName": "Name",
+  "@sortAlbumName": {
+    "description": "Albums sort option: by album name."
+  },
+  "sortYear": "Year",
+  "@sortYear": {
+    "description": "Albums sort option: by release year."
+  },
+  "albumsEmptyTitle": "No albums",
+  "@albumsEmptyTitle": {
+    "description": "Title when the library has no albums."
+  },
+  "albumsEmptyMessage": "Albums from your music files will show here.",
+  "@albumsEmptyMessage": {
+    "description": "Message when the library has no albums."
+  },
+  "albumGoneTitle": "Album not found",
+  "@albumGoneTitle": {
+    "description": "Title when an opened album is no longer in the library."
+  },
+  "albumGoneMessage": "This album is no longer in your library.",
+  "@albumGoneMessage": {
+    "description": "Message when an opened album is no longer in the library."
+  },
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "description": "Total length under an hour, e.g. \"48 min\".",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "description": "Total length of an hour or more, e.g. \"1 h 12 min\".",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "artistCount": "{count, plural, =1{1 artist} other{{count} artists}}",
+  "@artistCount": {
+    "description": "Number of artists.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "artistAlbums": "Albums",
+  "@artistAlbums": {
+    "description": "Section title on an artist's page listing their albums."
+  },
+  "artistSongs": "Songs",
+  "@artistSongs": {
+    "description": "Section title on an artist's page listing their songs."
+  },
+  "artistsEmptyTitle": "No artists",
+  "@artistsEmptyTitle": {
+    "description": "Title when the library has no artists."
+  },
+  "artistsEmptyMessage": "Singers from your music files will show here.",
+  "@artistsEmptyMessage": {
+    "description": "Message when the library has no artists."
+  },
+  "artistGoneTitle": "Artist not found",
+  "@artistGoneTitle": {
+    "description": "Title when an opened artist is no longer in the library."
+  },
+  "artistGoneMessage": "This artist is no longer in your library.",
+  "@artistGoneMessage": {
+    "description": "Message when an opened artist is no longer in the library."
   }
 }

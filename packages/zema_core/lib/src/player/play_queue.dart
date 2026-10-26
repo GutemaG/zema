@@ -30,6 +30,10 @@ class PlayQueue<T> {
   final Random _random;
   var _nextKey = 0;
 
+  /// Bumped by [load], so a removal from an earlier queue isn't restored
+  /// into a new one.
+  var _generation = 0;
+
   /// Order as loaded and edited, ignoring shuffle.
   var _original = <_Entry<T>>[];
 
@@ -44,6 +48,10 @@ class PlayQueue<T> {
   /// Items in play order.
   List<T> get items => List.unmodifiable(_order.map((e) => e.item));
 
+  /// A stable key for each entry in [items], in the same order. An item
+  /// queued twice has two keys; a moved entry keeps its key.
+  List<int> get keys => List.unmodifiable(_order.map((e) => e.key));
+
   /// Position of [current] in [items], or -1 when empty.
   int get index => _index;
   T? get current => _index < 0 ? null : _order[_index].item;
@@ -57,6 +65,7 @@ class PlayQueue<T> {
   /// [items]). With [shuffle], that item plays first and the rest follow in
   /// random order.
   void load(List<T> items, {int start = 0, bool shuffle = false}) {
+    _generation++;
     _original = [for (final item in items) _Entry(item, _nextKey++)];
     _order = [..._original];
     _index = _order.isEmpty ? -1 : start.clamp(0, _order.length - 1);
@@ -152,14 +161,32 @@ class PlayQueue<T> {
     _original.addAll(entries);
   }
 
-  /// Removes the item at [index] in [items]. The current item cannot be
-  /// removed; returns false if asked to.
-  bool removeAt(int index) {
+  /// Removes the item at [index] in [items] and returns what [restore]
+  /// needs to put it back. The current item cannot be removed; returns null
+  /// if asked to.
+  QueueRemoval<T>? removeAt(int index) {
     RangeError.checkValidIndex(index, _order);
-    if (index == _index) return false;
+    if (index == _index) return null;
     final entry = _order.removeAt(index);
-    _original.remove(entry);
+    final originalIndex = _original.indexOf(entry);
+    _original.removeAt(originalIndex);
     if (index < _index) _index--;
+    return QueueRemoval._(entry, index, originalIndex, _generation);
+  }
+
+  /// Puts back an item taken out by [removeAt], at the same place in both
+  /// the play order and the original order (or as close as the queue now
+  /// allows). Returns false when the queue was replaced since, or the item
+  /// is already back.
+  bool restore(QueueRemoval<T> removal) {
+    final entry = removal._entry;
+    if (removal._generation != _generation || _order.contains(entry)) {
+      return false;
+    }
+    final at = removal._orderIndex.clamp(0, _order.length);
+    _order.insert(at, entry);
+    if (at <= _index) _index++;
+    _original.insert(removal._originalIndex.clamp(0, _original.length), entry);
     return true;
   }
 
@@ -182,6 +209,23 @@ class PlayQueue<T> {
     _order = _order.sublist(0, _index + 1);
     _original.removeWhere(upcoming.contains);
   }
+}
+
+/// An item taken out of a [PlayQueue], for [PlayQueue.restore].
+class QueueRemoval<T> {
+  QueueRemoval._(
+    this._entry,
+    this._orderIndex,
+    this._originalIndex,
+    this._generation,
+  );
+
+  final _Entry<T> _entry;
+  final int _orderIndex;
+  final int _originalIndex;
+  final int _generation;
+
+  T get item => _entry.item;
 }
 
 /// One appearance of an item; identity is the [key], not the item.

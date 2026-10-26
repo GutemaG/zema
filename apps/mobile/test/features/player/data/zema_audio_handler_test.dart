@@ -325,4 +325,52 @@ void main() {
       expect(backend.playing, isFalse);
     });
   });
+
+  group('Editing the queue', () {
+    setUp(() async {
+      await handler.playTracks(_tracks(4), start: 1);
+      await pumpEventQueue();
+    });
+
+    List<String> titles() => [for (final t in snap().queue) t.title];
+
+    test('every entry has its own key, even a song queued twice', () async {
+      expect(snap().queueKeys, hasLength(4));
+      expect(snap().queueKeys.toSet(), hasLength(4));
+    });
+
+    test('move changes the order and keeps the current song', () async {
+      await handler.moveQueueItem(3, 0);
+
+      expect(titles(), ['Song 4', 'Song 1', 'Song 2', 'Song 3']);
+      expect(currentTitle(), 'Song 2');
+      expect(snap().index, 2);
+      expect(backend.loaded, hasLength(1), reason: 'nothing reloads');
+    });
+
+    test('remove and restore an upcoming song', () async {
+      final keys = snap().queueKeys;
+
+      final removal = await handler.removeQueueEntry(2);
+      expect(titles(), ['Song 1', 'Song 2', 'Song 4']);
+
+      await handler.restoreQueueItem(removal!);
+      expect(titles(), ['Song 1', 'Song 2', 'Song 3', 'Song 4']);
+      expect(snap().queueKeys, keys);
+      expect(currentTitle(), 'Song 2');
+    });
+
+    test('the current song cannot be removed', () async {
+      expect(await handler.removeQueueEntry(1), isNull);
+      expect(titles(), hasLength(4));
+    });
+
+    test('clear upcoming keeps what played and the current song', () async {
+      await handler.clearUpcoming();
+
+      expect(titles(), ['Song 1', 'Song 2']);
+      expect(currentTitle(), 'Song 2');
+      expect(snap().playing, isTrue);
+    });
+  });
 }

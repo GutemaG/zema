@@ -23,6 +23,13 @@ List<TextStyle> _styles(TextTheme t) => [
   t.labelSmall,
 ].nonNulls.toList();
 
+/// WCAG contrast ratio between two opaque colors.
+double _contrast(Color a, Color b) {
+  final la = a.computeLuminance(), lb = b.computeLuminance();
+  final (hi, lo) = la > lb ? (la, lb) : (lb, la);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 void main() {
   for (final palette in ZemaPalette.values) {
     for (final brightness in Brightness.values) {
@@ -43,6 +50,31 @@ void main() {
           expect(scheme.onSurface, c.text);
           expect(scheme.outline, c.line);
           expect(theme.scaffoldBackgroundColor, c.bg);
+        });
+
+        test('snackbars use the opposite brightness, readable', () {
+          final scheme = theme.colorScheme;
+          final inverse = palette.colorsFor(
+            brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+          );
+          expect(scheme.inverseSurface, inverse.bg);
+          expect(scheme.onInverseSurface, inverse.text);
+          expect(scheme.inversePrimary, inverse.accentText);
+          expect(
+            _contrast(scheme.onInverseSurface, scheme.inverseSurface),
+            greaterThanOrEqualTo(4.5),
+          );
+          expect(
+            _contrast(scheme.inversePrimary, scheme.inverseSurface),
+            greaterThanOrEqualTo(4.5),
+            reason: 'snackbar actions such as Undo',
+          );
+        });
+
+        test('text buttons use accentText', () {
+          final style = theme.textButtonTheme.style!;
+          expect(style.foregroundColor?.resolve({}), c.accentText);
+          expect(_contrast(c.accentText, c.bg), greaterThanOrEqualTo(4.5));
         });
 
         test('carries the palette as a ZemaColors extension', () {

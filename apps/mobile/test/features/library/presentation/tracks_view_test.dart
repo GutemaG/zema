@@ -77,7 +77,8 @@ void main() {
       }
       expect(find.text(_l10n.librarySongCount(4)), findsOneWidget);
 
-      await tester.tap(find.text(_l10n.libraryTabFolders));
+      await tester.ensureVisible(find.text(_l10n.libraryTabFavorites));
+      await tester.tap(find.text(_l10n.libraryTabFavorites));
       await tester.pumpAndSettle();
       expect(find.text(_l10n.libraryTabComingSoon), findsOneWidget);
     });

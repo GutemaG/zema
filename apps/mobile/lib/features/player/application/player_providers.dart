@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import '../../../app/database/database_provider.dart';
 import '../../../app/preferences_provider.dart';
 import '../data/player_persistence.dart';
 import '../data/player_snapshot.dart';
+import '../data/sleep_timer.dart';
 import '../data/zema_audio_handler.dart';
 
 final _log = Logger('player.session');
@@ -35,6 +37,11 @@ final positionProvider = StreamProvider<Duration>(
 /// The track that is loaded (playing or paused), or null.
 final currentTrackProvider = Provider<Track?>(
   (ref) => ref.watch(playerStateProvider).value?.current,
+);
+
+/// The running sleep timer, or null.
+final sleepTimerProvider = Provider<SleepTimer?>(
+  (ref) => ref.watch(playerStateProvider).value?.sleepTimer,
 );
 
 /// A track that was skipped because it couldn't be played.
@@ -70,6 +77,16 @@ class PlayerController {
     bool shuffle = false,
   }) => _handler.playTracks(tracks, start: start, shuffle: shuffle);
 
+  /// Plays [tracks] shuffled, starting from a random one.
+  Future<void> shuffleList(List<Track> tracks) async {
+    if (tracks.isEmpty) return;
+    await playList(
+      tracks,
+      start: Random().nextInt(tracks.length),
+      shuffle: true,
+    );
+  }
+
   Future<void> togglePlay() =>
       _handler.snapshot.playing ? _handler.pause() : _handler.play();
 
@@ -82,6 +99,26 @@ class PlayerController {
         ? AudioServiceShuffleMode.none
         : AudioServiceShuffleMode.all,
   );
+
+  /// Plays the queue entry at [index] (in play order).
+  Future<void> playQueueItem(int index) => _handler.skipToQueueItem(index);
+
+  Future<void> moveInQueue(int from, int to) =>
+      _handler.moveQueueItem(from, to);
+
+  /// Removes the queue entry at [index]. Returns a function that puts it
+  /// back, or null when nothing was removed (the current track).
+  Future<Future<void> Function()?> removeFromQueue(int index) async {
+    final removal = await _handler.removeQueueEntry(index);
+    if (removal == null) return null;
+    return () => _handler.restoreQueueItem(removal);
+  }
+
+  Future<void> clearUpcoming() => _handler.clearUpcoming();
+
+  void setSleepTimer(Duration after) => _handler.setSleepTimer(after);
+  void sleepAtEndOfTrack() => _handler.sleepAtEndOfTrack();
+  void cancelSleepTimer() => _handler.cancelSleepTimer();
 
   /// Off → all → one → off.
   Future<void> cycleRepeat() =>

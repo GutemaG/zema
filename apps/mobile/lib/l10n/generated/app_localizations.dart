@@ -617,6 +617,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get actionDone;
+
+  /// Snackbar button that reverses the change just made.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get actionUndo;
+
+  /// Dialog button that closes without saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get actionCancel;
+
+  /// Dialog button that saves the entered value.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get actionSave;
+
+  /// Title of the sheet listing the songs that will play, and the Now Playing button that opens it.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue'**
+  String get queueTitle;
+
+  /// Number of songs after the current one in the queue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing up next} =1{1 song up next} other{{count} songs up next}}'**
+  String queueUpNext(int count);
+
+  /// Button that removes every song after the current one from the queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear queue'**
+  String get queueClear;
+
+  /// Snackbar after swiping a song out of the queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed \"{title}\" from the queue'**
+  String queueRemoved(String title);
+
+  /// Screen-reader action that removes a song from the queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from queue'**
+  String get queueRemove;
+
+  /// Label of the handle used to move a song within the queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get queueReorder;
+
+  /// Title of the sleep timer sheet, and the Now Playing button that opens it.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep timer'**
+  String get sleepTitle;
+
+  /// Sleep timer option: stop playback after this many minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 minute} other{{minutes} minutes}}'**
+  String sleepMinutes(int minutes);
+
+  /// Sleep timer option: stop playback when the song playing now ends.
+  ///
+  /// In en, this message translates to:
+  /// **'End of current song'**
+  String get sleepEndOfSong;
+
+  /// Short label on Now Playing when the sleep timer stops at the end of the song.
+  ///
+  /// In en, this message translates to:
+  /// **'End of song'**
+  String get sleepEndOfSongShort;
+
+  /// Sleep timer option that asks for a number of minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom…'**
+  String get sleepCustom;
+
+  /// Title of the dialog asking for a number of minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom sleep timer'**
+  String get sleepCustomTitle;
+
+  /// Label of the field for the number of minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get sleepCustomLabel;
+
+  /// Allowed range for a custom sleep timer; shown as help, and as an error when the value is outside it.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter {min} to {max} minutes'**
+  String sleepCustomRange(int min, int max);
+
+  /// Time left before the sleep timer stops playback, e.g. "Stops in 12:30".
+  ///
+  /// In en, this message translates to:
+  /// **'Stops in {time}'**
+  String sleepStopsIn(String time);
+
+  /// Shown when the sleep timer is set to stop at the end of the current song.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops at the end of this song'**
+  String get sleepStopsAtEndOfSong;
+
+  /// Button that turns off the running sleep timer.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel timer'**
+  String get sleepCancel;
+
+  /// Name shown for the phone's internal storage in folder paths.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get folderPhone;
+
+  /// Name shown for a memory card in folder paths.
+  ///
+  /// In en, this message translates to:
+  /// **'SD card'**
+  String get folderSdCard;
+
+  /// Folder menu item that hides the folder's songs from the whole library.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide folder'**
+  String get folderHide;
+
+  /// Label of the folder's menu button.
+  ///
+  /// In en, this message translates to:
+  /// **'More options for {name}'**
+  String folderMenu(String name);
+
+  /// Snackbar after hiding a folder.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" hidden'**
+  String folderHidden(String name);
+
+  /// Title when no folder holds any music.
+  ///
+  /// In en, this message translates to:
+  /// **'No folders'**
+  String get foldersEmptyTitle;
+
+  /// Message when no folder holds any music.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders with music on your phone will show here.'**
+  String get foldersEmptyMessage;
+
+  /// Title when an opened folder has no music any more (hidden or emptied).
+  ///
+  /// In en, this message translates to:
+  /// **'Folder not found'**
+  String get folderGoneTitle;
+
+  /// Message when an opened folder has no music any more.
+  ///
+  /// In en, this message translates to:
+  /// **'This folder has no music now. It may have been hidden or emptied.'**
+  String get folderGoneMessage;
+
+  /// Number of albums.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 album} other{{count} albums}}'**
+  String albumCount(int count);
+
+  /// Artist shown for an album whose songs are by different artists.
+  ///
+  /// In en, this message translates to:
+  /// **'Various artists'**
+  String get variousArtists;
+
+  /// Albums sort option: by album name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sortAlbumName;
+
+  /// Albums sort option: by release year.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get sortYear;
+
+  /// Title when the library has no albums.
+  ///
+  /// In en, this message translates to:
+  /// **'No albums'**
+  String get albumsEmptyTitle;
+
+  /// Message when the library has no albums.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums from your music files will show here.'**
+  String get albumsEmptyMessage;
+
+  /// Title when an opened album is no longer in the library.
+  ///
+  /// In en, this message translates to:
+  /// **'Album not found'**
+  String get albumGoneTitle;
+
+  /// Message when an opened album is no longer in the library.
+  ///
+  /// In en, this message translates to:
+  /// **'This album is no longer in your library.'**
+  String get albumGoneMessage;
+
+  /// Total length under an hour, e.g. "48 min".
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String durationMinutes(int minutes);
+
+  /// Total length of an hour or more, e.g. "1 h 12 min".
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h {minutes} min'**
+  String durationHoursMinutes(int hours, int minutes);
+
+  /// Number of artists.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 artist} other{{count} artists}}'**
+  String artistCount(int count);
+
+  /// Section title on an artist's page listing their albums.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums'**
+  String get artistAlbums;
+
+  /// Section title on an artist's page listing their songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs'**
+  String get artistSongs;
+
+  /// Title when the library has no artists.
+  ///
+  /// In en, this message translates to:
+  /// **'No artists'**
+  String get artistsEmptyTitle;
+
+  /// Message when the library has no artists.
+  ///
+  /// In en, this message translates to:
+  /// **'Singers from your music files will show here.'**
+  String get artistsEmptyMessage;
+
+  /// Title when an opened artist is no longer in the library.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist not found'**
+  String get artistGoneTitle;
+
+  /// Message when an opened artist is no longer in the library.
+  ///
+  /// In en, this message translates to:
+  /// **'This artist is no longer in your library.'**
+  String get artistGoneMessage;
 }
 
 class _AppLocalizationsDelegate

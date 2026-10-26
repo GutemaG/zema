@@ -191,7 +191,7 @@ void main() {
       test('the same item can be queued twice and removed separately', () {
         final queue = _queue(['a', 'b'])..add(['a']);
 
-        expect(queue.removeAt(2), isTrue);
+        expect(queue.removeAt(2), isNotNull);
         expect(queue.items, ['a', 'b']);
         expect(queue.current, 'a');
       });
@@ -199,7 +199,7 @@ void main() {
       test('removing before the current item keeps it playing', () {
         final queue = _queue(_abcd, start: 2);
 
-        expect(queue.removeAt(0), isTrue);
+        expect(queue.removeAt(0), isNotNull);
         expect(queue.items, ['b', 'c', 'd']);
         expect(queue.current, 'c');
       });
@@ -207,7 +207,7 @@ void main() {
       test('the current item cannot be removed', () {
         final queue = _queue(_abcd, start: 2);
 
-        expect(queue.removeAt(2), isFalse);
+        expect(queue.removeAt(2), isNull);
         expect(queue.items, _abcd);
       });
 
@@ -241,6 +241,85 @@ void main() {
 
         expect(queue.current, 'd');
         expect(() => queue.jumpTo(4), throwsRangeError);
+      });
+    });
+
+    group('entry keys and undo', () {
+      test('each entry has its own key, even the same item twice', () {
+        final queue = _queue(['a', 'b'])..add(['a']);
+
+        expect(queue.keys, hasLength(3));
+        expect(queue.keys.toSet(), hasLength(3));
+      });
+
+      test('a moved entry keeps its key', () {
+        final queue = _queue(_abcd);
+        final keyOfD = queue.keys[3];
+
+        queue.move(3, 0);
+
+        expect(queue.keys.first, keyOfD);
+      });
+
+      test('restore puts a removed item back where it was', () {
+        final queue = _queue(_abcd, start: 1);
+        final keys = queue.keys;
+
+        final removal = queue.removeAt(2)!;
+        expect(removal.item, 'c');
+        expect(queue.restore(removal), isTrue);
+
+        expect(queue.items, _abcd);
+        expect(queue.keys, keys);
+        expect(queue.current, 'b');
+      });
+
+      test('restoring an item before the current one keeps it playing', () {
+        final queue = _queue(_abcd, start: 2);
+
+        final removal = queue.removeAt(0)!;
+        expect(queue.index, 1);
+        queue.restore(removal);
+
+        expect(queue.items, _abcd);
+        expect(queue.current, 'c');
+        expect(queue.index, 2);
+      });
+
+      test('restore while shuffled also restores the original order', () {
+        final queue = _queue(_abcd, shuffle: true);
+        final shuffled = queue.items;
+
+        final removal = queue.removeAt(2)!;
+        queue.restore(removal);
+        expect(queue.items, shuffled);
+
+        queue.setShuffle(false);
+        expect(queue.items, _abcd);
+      });
+
+      test('restore fits the item in when the queue got shorter', () {
+        final queue = _queue(_abcd);
+
+        final removal = queue.removeAt(3)!;
+        queue.clearUpcoming();
+        queue.restore(removal);
+
+        expect(queue.items, ['a', 'd']);
+      });
+
+      test('restore does nothing twice or after a new queue loads', () {
+        final queue = _queue(_abcd);
+        final removal = queue.removeAt(1)!;
+
+        expect(queue.restore(removal), isTrue);
+        expect(queue.restore(removal), isFalse);
+        expect(queue.items, _abcd);
+
+        final again = queue.removeAt(1)!;
+        queue.load(['x', 'y']);
+        expect(queue.restore(again), isFalse);
+        expect(queue.items, ['x', 'y']);
       });
     });
   });

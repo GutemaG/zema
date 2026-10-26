@@ -6,6 +6,9 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/tab_page.dart';
 import '../application/library_access_controller.dart';
+import 'albums_view.dart';
+import 'artists_view.dart';
+import 'folders_view.dart';
 import 'tracks_view.dart';
 
 /// The Library tab: audio access first, then the phone's tracks.
@@ -83,7 +86,7 @@ class _AccessState extends ConsumerWidget {
   }
 }
 
-/// The top tabs. Only Tracks is built; the others arrive in later bolts.
+/// The top tabs. Favorites and Playlists arrive in a later bolt.
 class _LibraryTabs extends StatelessWidget {
   const _LibraryTabs();
 
@@ -91,15 +94,9 @@ class _LibraryTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
-    final later = [
-      l10n.libraryTabFolders,
-      l10n.libraryTabAlbums,
-      l10n.libraryTabArtists,
-      l10n.libraryTabFavorites,
-      l10n.libraryTabPlaylists,
-    ];
+    final later = [l10n.libraryTabFavorites, l10n.libraryTabPlaylists];
     return DefaultTabController(
-      length: later.length + 1,
+      length: later.length + 4,
       child: Column(
         children: [
           TabBar(
@@ -112,6 +109,9 @@ class _LibraryTabs extends StatelessWidget {
             dividerColor: colors.line,
             tabs: [
               Tab(text: l10n.libraryTabTracks),
+              Tab(text: l10n.libraryTabFolders),
+              Tab(text: l10n.libraryTabAlbums),
+              Tab(text: l10n.libraryTabArtists),
               for (final name in later) Tab(text: name),
             ],
           ),
@@ -119,6 +119,9 @@ class _LibraryTabs extends StatelessWidget {
             child: TabBarView(
               children: [
                 const TracksView(),
+                const FoldersView(),
+                const AlbumsView(),
+                const ArtistsView(),
                 for (final _ in later)
                   EmptyState(
                     kind: EmptyStateKind.empty,

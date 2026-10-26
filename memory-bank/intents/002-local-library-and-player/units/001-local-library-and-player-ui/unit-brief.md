@@ -115,11 +115,11 @@ detected songs (007) on top of the models and providers built here.
 | 006-playback-engine | Playback engine | Must | Complete |
 | 007-mini-player-and-now-playing | Mini player and Now Playing | Must | Complete |
 | 008-media-notification | Media notification, lock screen and headset | Must | Complete |
-| 009-queue-sheet | Queue sheet | Must | Planned |
-| 010-sleep-timer | Sleep timer | Must | Planned |
-| 011-folders | Folders | Must | Planned |
-| 012-albums | Albums | Must | Planned |
-| 013-artists | Artists | Should | Planned |
+| 009-queue-sheet | Queue sheet | Must | Complete |
+| 010-sleep-timer | Sleep timer | Must | Complete |
+| 011-folders | Folders | Must | Complete |
+| 012-albums | Albums | Must | Complete |
+| 013-artists | Artists | Should | Complete |
 | 014-favorites | Favorites | Must | Planned |
 | 015-playlists | Playlists | Must | Planned |
 | 016-add-songs-picker | Add songs picker | Must | Planned |

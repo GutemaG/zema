@@ -36,6 +36,11 @@ class LibraryRepository {
   Stream<List<Track>> watchTracks({required Duration minDuration}) =>
       _dao.watchVisibleTracks(minDuration: minDuration);
 
+  /// Hides the folder at [path] and everything below it from every list.
+  Future<void> hideFolder(String path) => _dao.hideFolder(path);
+
+  Future<void> unhideFolder(String path) => _dao.unhideFolder(path);
+
   /// Scans the device and applies the differences in one transaction. If
   /// anything fails, the stored library stays as it was.
   ///

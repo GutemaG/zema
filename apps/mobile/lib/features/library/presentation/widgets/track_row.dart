@@ -7,15 +7,18 @@ import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/format_duration.dart';
 import 'track_art.dart';
 
-/// One song in a list: art, title, artist · duration. The current song's
-/// title is highlighted. Every row has the same [height], so lists can jump
-/// to any position instantly.
+/// One song in a list: art (or a track [number]), title, artist · duration,
+/// and an optional [trailing] widget. The current song's title is
+/// highlighted. Every row has the same [height], so lists can jump to any
+/// position instantly.
 class TrackRow extends StatelessWidget {
   const TrackRow({
     super.key,
     required this.track,
     required this.onTap,
     this.isCurrent = false,
+    this.number,
+    this.trailing,
   });
 
   static const double height = ZemaSpacing.listRow;
@@ -23,6 +26,10 @@ class TrackRow extends StatelessWidget {
   final Track track;
   final VoidCallback onTap;
   final bool isCurrent;
+
+  /// Shown instead of the art, e.g. the position in an album.
+  final int? number;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,19 @@ class TrackRow extends StatelessWidget {
             ),
             child: Row(
               children: [
-                TrackArt(track: track, size: 46),
+                if (number case final number?)
+                  SizedBox(
+                    width: 32,
+                    child: Text(
+                      '$number',
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: isCurrent ? colors.primaryText : colors.muted,
+                      ),
+                    ),
+                  )
+                else
+                  TrackArt(track: track, size: 46),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -75,6 +94,7 @@ class TrackRow extends StatelessWidget {
                   const SizedBox(width: 8),
                   Icon(Icons.graphic_eq, size: 20, color: colors.primaryText),
                 ],
+                ?trailing,
               ],
             ),
           ),

@@ -11,6 +11,11 @@ import 'zema_typography.dart';
 /// the [ZemaColors] extension via `context.zemaColors`.
 ThemeData buildTheme(ZemaPalette palette, Brightness brightness) {
   final c = palette.colorsFor(brightness);
+  // Snackbars use the "inverse" slots: the same palette in the opposite
+  // brightness, so their text and action color keep the palette's contrast.
+  final inverse = palette.colorsFor(
+    brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+  );
   final scheme = brightness == Brightness.dark
       ? ColorScheme.dark
       : ColorScheme.light;
@@ -30,6 +35,9 @@ ThemeData buildTheme(ZemaPalette palette, Brightness brightness) {
     outline: c.line,
     outlineVariant: c.line,
     shadow: c.shadow,
+    inverseSurface: inverse.bg,
+    onInverseSurface: inverse.text,
+    inversePrimary: inverse.accentText,
   );
 
   return ThemeData(
@@ -50,6 +58,11 @@ ThemeData buildTheme(ZemaPalette palette, Brightness brightness) {
       foregroundColor: c.text,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
+    ),
+    // Text buttons are text: bright gold fails contrast on light
+    // backgrounds, so they use accentText (gold in dark mode).
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: c.accentText),
     ),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: c.surface,

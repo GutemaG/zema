@@ -6,18 +6,24 @@ import '../../../../app/theme/zema_colors.dart';
 import '../../application/artwork_provider.dart';
 
 /// A track's album art, loaded lazily. Until it loads, or when there is none,
-/// a `tile` square with the title's first letter in `tileFg`.
+/// a `tile` square with the first letter of [label] (the title by default)
+/// in `tileFg`.
 class TrackArt extends ConsumerWidget {
   const TrackArt({
     super.key,
     required this.track,
     required this.size,
     this.radius = 8,
+    this.label,
   });
 
   final Track track;
   final double size;
   final double radius;
+
+  /// The text whose first letter the placeholder shows, e.g. an album or
+  /// artist name.
+  final String? label;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +44,7 @@ class TrackArt extends ConsumerWidget {
                 ),
                 child: Center(
                   child: Text(
-                    _letter(track.title),
+                    _letter(label ?? track.title),
                     style: TextStyle(
                       color: colors.tileFg,
                       fontSize: size * 0.42,

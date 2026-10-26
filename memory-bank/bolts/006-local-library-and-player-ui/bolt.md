@@ -3,7 +3,7 @@ id: 006-local-library-and-player-ui
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 009-queue-sheet
   - 010-sleep-timer
@@ -11,10 +11,19 @@ stories:
   - 012-albums
   - 013-artists
 created: 2026-10-24T19:23:00Z
-started: null
-completed: null
+started: 2026-10-26T07:27:17Z
+completed: 2026-10-26T08:21:49Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-26T07:28:43Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-26T08:07:29Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-26T08:21:49Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 005-local-library-and-player-ui
 enables_bolts:
@@ -36,11 +45,11 @@ Finish the player sheets (queue and sleep timer) and add the browse tabs: Folder
 
 ## Stories Included
 
-- [ ] **009-queue-sheet**: C02: reorder, remove with undo, clear - Priority: Must
-- [ ] **010-sleep-timer**: C05: presets, end of song, custom, fade out - Priority: Must
-- [ ] **011-folders**: S11 / S11a with breadcrumb and hide - Priority: Must
-- [ ] **012-albums**: S12 / S12a - Priority: Must
-- [ ] **013-artists**: S13 / S13a (Should) - Priority: Should
+- [x] **009-queue-sheet**: C02: reorder, remove with undo, clear - Priority: Must
+- [x] **010-sleep-timer**: C05: presets, end of song, custom, fade out - Priority: Must
+- [x] **011-folders**: S11 / S11a with breadcrumb and hide - Priority: Must
+- [x] **012-albums**: S12 / S12a - Priority: Must
+- [x] **013-artists**: S13 / S13a (Should) - Priority: Should
 
 ## Bolt Type
 
@@ -49,9 +58,9 @@ Finish the player sheets (queue and sleep timer) and add the browse tabs: Folder
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -69,11 +78,11 @@ Finish the player sheets (queue and sleep timer) and add the browse tabs: Folder
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally (CI once a GitHub remote exists)
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [ ] Tests passing locally (CI once a GitHub remote exists) (local: yes; CI: pending a GitHub remote)
+- [x] Checked on the Android emulator (queue Undo, button color, short breadcrumb and Artists covered by tests only)
 
 ## Notes
 

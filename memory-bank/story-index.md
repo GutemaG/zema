@@ -4,7 +4,7 @@
 
 - **Total stories**: 32
 - **Generated**: 32
-- **Last updated**: 2026-10-24T21:20:18Z
+- **Last updated**: 2026-10-26T08:21:49Z
 
 ---
 
@@ -38,11 +38,11 @@ Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-
 - [x] **006-playback-engine** (local-library-and-player-ui): Playback engine - Must - ✅ COMPLETED
 - [x] **007-mini-player-and-now-playing** (local-library-and-player-ui): Mini player and Now Playing - Must - ✅ COMPLETED
 - [x] **008-media-notification** (local-library-and-player-ui): Media notification, lock screen and headset - Must - ✅ COMPLETED
-- [x] **009-queue-sheet** (local-library-and-player-ui): Queue sheet - Must - ✅ GENERATED
-- [x] **010-sleep-timer** (local-library-and-player-ui): Sleep timer - Must - ✅ GENERATED
-- [x] **011-folders** (local-library-and-player-ui): Folders - Must - ✅ GENERATED
-- [x] **012-albums** (local-library-and-player-ui): Albums - Must - ✅ GENERATED
-- [x] **013-artists** (local-library-and-player-ui): Artists - Should - ✅ GENERATED
+- [x] **009-queue-sheet** (local-library-and-player-ui): Queue sheet - Must - ✅ COMPLETED
+- [x] **010-sleep-timer** (local-library-and-player-ui): Sleep timer - Must - ✅ COMPLETED
+- [x] **011-folders** (local-library-and-player-ui): Folders - Must - ✅ COMPLETED
+- [x] **012-albums** (local-library-and-player-ui): Albums - Must - ✅ COMPLETED
+- [x] **013-artists** (local-library-and-player-ui): Artists - Should - ✅ COMPLETED
 - [x] **014-favorites** (local-library-and-player-ui): Favorites - Must - ✅ GENERATED
 - [x] **015-playlists** (local-library-and-player-ui): Playlists - Must - ✅ GENERATED
 - [x] **016-add-songs-picker** (local-library-and-player-ui): Add songs picker - Must - ✅ GENERATED
@@ -61,6 +61,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 13
+- **Generated**: 8
 - **In Progress**: 0
-- **Completed**: 19
+- **Completed**: 24

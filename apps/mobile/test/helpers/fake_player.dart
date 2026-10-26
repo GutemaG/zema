@@ -22,6 +22,9 @@ class FakeAudioBackend implements AudioBackend {
   var playing = false;
   var processing = BackendProcessing.idle;
   var volume = 1.0;
+
+  /// Every volume set, in order.
+  final volumes = <double>[];
   Duration _position = Duration.zero;
   Duration? duration = const Duration(seconds: 60);
 
@@ -93,7 +96,10 @@ class FakeAudioBackend implements AudioBackend {
   }
 
   @override
-  Future<void> setVolume(double volume) async => this.volume = volume;
+  Future<void> setVolume(double volume) async {
+    this.volume = volume;
+    volumes.add(volume);
+  }
 
   @override
   Future<void> stop() async {
