@@ -373,4 +373,51 @@ void main() {
       expect(snap().playing, isTrue);
     });
   });
+
+  group('Play next and add to queue', () {
+    List<String> titles() => [for (final t in snap().queue) t.title];
+    final extra = Track.fromScan(
+      9,
+      scannedAudio(109, '/m/9.mp3', title: 'Extra'),
+    );
+
+    test('play next goes right after the current song', () async {
+      await handler.playTracks(_tracks(3), start: 1);
+      await pumpEventQueue();
+
+      await handler.playNext([extra]);
+
+      expect(titles(), ['Song 1', 'Song 2', 'Extra', 'Song 3']);
+      expect(currentTitle(), 'Song 2');
+      expect(backend.loaded, hasLength(1), reason: 'nothing reloads');
+    });
+
+    test('add to queue goes to the end', () async {
+      await handler.playTracks(_tracks(3), start: 1);
+      await pumpEventQueue();
+
+      await handler.addToQueue([extra]);
+
+      expect(titles(), ['Song 1', 'Song 2', 'Song 3', 'Extra']);
+      expect(currentTitle(), 'Song 2');
+    });
+
+    test('with nothing queued, the song is loaded paused', () async {
+      await handler.addToQueue([extra]);
+      await pumpEventQueue();
+
+      expect(titles(), ['Extra']);
+      expect(currentTitle(), 'Extra');
+      expect(backend.loaded, [extra.uri]);
+      expect(snap().playing, isFalse);
+    });
+
+    test('with nothing queued, play next also loads it paused', () async {
+      await handler.playNext([extra]);
+      await pumpEventQueue();
+
+      expect(currentTitle(), 'Extra');
+      expect(snap().playing, isFalse);
+    });
+  });
 }

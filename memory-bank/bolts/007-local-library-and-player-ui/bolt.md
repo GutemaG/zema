@@ -3,17 +3,26 @@ id: 007-local-library-and-player-ui
 unit: 001-local-library-and-player-ui
 intent: 002-local-library-and-player
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 014-favorites
   - 015-playlists
   - 016-add-songs-picker
   - 017-song-menu-and-add-to-playlist
 created: 2026-10-24T19:23:00Z
-started: null
-completed: null
+started: 2026-10-26T08:28:15Z
+completed: 2026-10-26T10:09:48Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-26T08:30:17Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-26T08:48:47Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-26T10:09:48Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 006-local-library-and-player-ui
 enables_bolts:
@@ -35,10 +44,10 @@ Let listeners organize: favorites, user playlists (create, rename, delete, reord
 
 ## Stories Included
 
-- [ ] **014-favorites**: S14 and hearts everywhere - Priority: Must
-- [ ] **015-playlists**: S15–S17 - Priority: Must
-- [ ] **016-add-songs-picker**: S18 - Priority: Must
-- [ ] **017-song-menu-and-add-to-playlist**: C03 and C04 - Priority: Must
+- [x] **014-favorites**: S14 and hearts everywhere - Priority: Must
+- [x] **015-playlists**: S15–S17 - Priority: Must
+- [x] **016-add-songs-picker**: S18 - Priority: Must
+- [x] **017-song-menu-and-add-to-playlist**: C03 and C04 - Priority: Must
 
 ## Bolt Type
 
@@ -47,9 +56,9 @@ Let listeners organize: favorites, user playlists (create, rename, delete, reord
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -67,8 +76,8 @@ Let listeners organize: favorites, user playlists (create, rename, delete, reord
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally (CI once a GitHub remote exists)
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [ ] Tests passing locally (CI once a GitHub remote exists) (local: yes; CI: pending a GitHub remote)
+- [x] Checked on the Android emulator (sending a shared file to another app needs an account; left for a real phone)

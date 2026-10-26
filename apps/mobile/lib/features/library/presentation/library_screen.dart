@@ -8,7 +8,9 @@ import '../../../shared/widgets/tab_page.dart';
 import '../application/library_access_controller.dart';
 import 'albums_view.dart';
 import 'artists_view.dart';
+import 'favorites_view.dart';
 import 'folders_view.dart';
+import 'playlists_view.dart';
 import 'tracks_view.dart';
 
 /// The Library tab: audio access first, then the phone's tracks.
@@ -86,7 +88,7 @@ class _AccessState extends ConsumerWidget {
   }
 }
 
-/// The top tabs. Favorites and Playlists arrive in a later bolt.
+/// The top tabs.
 class _LibraryTabs extends StatelessWidget {
   const _LibraryTabs();
 
@@ -94,9 +96,8 @@ class _LibraryTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
-    final later = [l10n.libraryTabFavorites, l10n.libraryTabPlaylists];
     return DefaultTabController(
-      length: later.length + 4,
+      length: 6,
       child: Column(
         children: [
           TabBar(
@@ -112,22 +113,19 @@ class _LibraryTabs extends StatelessWidget {
               Tab(text: l10n.libraryTabFolders),
               Tab(text: l10n.libraryTabAlbums),
               Tab(text: l10n.libraryTabArtists),
-              for (final name in later) Tab(text: name),
+              Tab(text: l10n.libraryTabFavorites),
+              Tab(text: l10n.libraryTabPlaylists),
             ],
           ),
-          Expanded(
+          const Expanded(
             child: TabBarView(
               children: [
-                const TracksView(),
-                const FoldersView(),
-                const AlbumsView(),
-                const ArtistsView(),
-                for (final _ in later)
-                  EmptyState(
-                    kind: EmptyStateKind.empty,
-                    title: l10n.comingSoonTitle,
-                    message: l10n.libraryTabComingSoon,
-                  ),
+                TracksView(),
+                FoldersView(),
+                AlbumsView(),
+                ArtistsView(),
+                FavoritesView(),
+                PlaylistsView(),
               ],
             ),
           ),

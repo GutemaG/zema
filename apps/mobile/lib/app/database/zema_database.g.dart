@@ -2436,6 +2436,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     'CREATE INDEX play_events_time ON play_events (played_at)',
   );
   late final LibraryDao libraryDao = LibraryDao(this as ZemaDatabase);
+  late final CollectionsDao collectionsDao = CollectionsDao(
+    this as ZemaDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

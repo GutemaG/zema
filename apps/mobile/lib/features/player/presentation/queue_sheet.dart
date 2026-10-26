@@ -8,6 +8,7 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../library/presentation/widgets/swipe_remove_background.dart';
 import '../../library/presentation/widgets/track_row.dart';
 import '../application/player_providers.dart';
 import '../data/player_snapshot.dart';
@@ -259,16 +260,7 @@ class _QueueRow extends StatelessWidget {
             ? DismissDirection.none
             : DismissDirection.endToStart,
         onDismissed: (_) => onRemove?.call(),
-        background: ColoredBox(
-          color: colors.soft,
-          child: Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 24),
-              child: Icon(Icons.delete_outline, color: colors.text),
-            ),
-          ),
-        ),
+        background: const SwipeRemoveBackground(),
         child: Opacity(opacity: isPlayed ? 0.55 : 1, child: row),
       ),
     );

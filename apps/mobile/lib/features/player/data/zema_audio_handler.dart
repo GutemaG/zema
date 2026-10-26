@@ -165,6 +165,29 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     if (_queue.restore(removal)) _publish();
   }
 
+  /// Puts [tracks] right after the current track. With an empty queue they
+  /// become the queue, loaded paused.
+  Future<void> playNext(List<Track> tracks) =>
+      _enqueue(tracks, _queue.insertNext);
+
+  /// Puts [tracks] at the end of the queue. With an empty queue they become
+  /// the queue, loaded paused.
+  Future<void> addToQueue(List<Track> tracks) => _enqueue(tracks, _queue.add);
+
+  Future<void> _enqueue(
+    List<Track> tracks,
+    void Function(List<Track>) insert,
+  ) async {
+    if (tracks.isEmpty) return;
+    final wasEmpty = _queue.isEmpty;
+    insert(tracks);
+    if (wasEmpty) {
+      await _loadCurrent(play: false);
+    } else {
+      _publish();
+    }
+  }
+
   /// Removes everything after the current track.
   Future<void> clearUpcoming() async {
     _queue.clearUpcoming();

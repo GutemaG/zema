@@ -11,6 +11,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../player/application/player_providers.dart';
 import '../application/album_grouping.dart';
 import '../application/library_groups.dart';
+import 'song_menu.dart';
 import 'widgets/album_tile.dart';
 import 'widgets/play_shuffle_bar.dart';
 import 'widgets/track_art.dart';
@@ -152,6 +153,7 @@ class _AlbumBody extends ConsumerWidget {
               number: index + 1,
               isCurrent: track.id == currentId,
               onTap: () => unawaited(player.playList(tracks, start: index)),
+              trailing: SongMenuButton(track: track),
             );
           }),
         ),

@@ -13,6 +13,7 @@ import '../../player/application/player_providers.dart';
 import '../application/artist_grouping.dart';
 import '../application/library_groups.dart';
 import 'artists_view.dart';
+import 'song_menu.dart';
 import 'widgets/album_tile.dart';
 import 'widgets/play_shuffle_bar.dart';
 import 'widgets/track_art.dart';
@@ -162,6 +163,7 @@ class _ArtistBody extends ConsumerWidget {
               track: track,
               isCurrent: track.id == currentId,
               onTap: () => unawaited(player.playList(tracks, start: index)),
+              trailing: SongMenuButton(track: track),
             );
           }),
         ),

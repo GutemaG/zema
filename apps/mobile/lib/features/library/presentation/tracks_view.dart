@@ -13,7 +13,9 @@ import '../application/library_providers.dart';
 import '../application/library_sync_controller.dart';
 import '../application/track_sort_provider.dart';
 import '../application/tracks_query.dart';
+import 'song_menu.dart';
 import 'widgets/alphabet_scroller.dart';
+import 'widgets/library_search_field.dart';
 import 'widgets/play_shuffle_bar.dart';
 import 'widgets/track_row.dart';
 
@@ -123,7 +125,7 @@ class _TracksViewState extends ConsumerState<TracksView> {
             ZemaSpacing.screenSide,
             0,
           ),
-          child: _SearchField(
+          child: LibrarySearchField(
             controller: _search,
             onChanged: _setQuery,
             onClear: _clearQuery,
@@ -164,6 +166,7 @@ class _TracksViewState extends ConsumerState<TracksView> {
                           isCurrent: track.id == currentId,
                           onTap: () =>
                               unawaited(player.playList(visible, start: index)),
+                          trailing: SongMenuButton(track: track),
                         );
                       },
                     ),
@@ -181,51 +184,6 @@ class _TracksViewState extends ConsumerState<TracksView> {
                 ),
         ),
       ],
-    );
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  const _SearchField({
-    required this.controller,
-    required this.onChanged,
-    required this.onClear,
-  });
-
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = context.zemaColors;
-    return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      textInputAction: TextInputAction.search,
-      decoration: InputDecoration(
-        hintText: l10n.librarySearchHint,
-        prefixIcon: Icon(Icons.search, color: colors.muted),
-        suffixIcon: ListenableBuilder(
-          listenable: controller,
-          builder: (context, _) => controller.text.isEmpty
-              ? const SizedBox.shrink()
-              : IconButton(
-                  tooltip: l10n.libraryClearSearch,
-                  icon: Icon(Icons.close, color: colors.muted),
-                  onPressed: onClear,
-                ),
-        ),
-        filled: true,
-        fillColor: colors.surface,
-        isDense: true,
-        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(ZemaRadius.small),
-          borderSide: BorderSide.none,
-        ),
-      ),
     );
   }
 }

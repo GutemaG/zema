@@ -1,8 +1,10 @@
 package com.zemaapp.zema
 
 import android.Manifest
+import android.content.ClipData
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -29,6 +31,7 @@ import java.util.concurrent.Executors
  * - `scan` → list of maps, one per audio file (see [readRow] for the keys)
  * - `loadArtwork` {id, size} → JPEG bytes or null
  * - `sdkInt` → the Android API level (picks the right audio permission)
+ * - `share` {uri, title} → opens the share sheet for one audio file
  *
  * Errors: `permission_denied` when audio access is missing, `scan_failed` otherwise.
  * Work runs on a background thread; results are posted back on the main thread.
@@ -62,6 +65,20 @@ class LibraryChannel(private val context: Context, messenger: BinaryMessenger) :
                 }
             }
             "sdkInt" -> result.success(Build.VERSION.SDK_INT)
+            "share" -> {
+                val uri = call.argument<String>("uri")
+                if (uri == null) {
+                    result.error("bad_args", "share needs a uri", null)
+                } else {
+                    try {
+                        share(Uri.parse(uri), call.argument<String>("title"))
+                        result.success(null)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Share failed", e)
+                        result.error("share_failed", e.message, null)
+                    }
+                }
+            }
             else -> result.notImplemented()
         }
     }
@@ -201,6 +218,25 @@ class LibraryChannel(private val context: Context, messenger: BinaryMessenger) :
         } finally {
             retriever.release()
         }
+    }
+
+    /**
+     * Shares the MediaStore [uri] itself, so the file isn't copied. The receiving app gets
+     * read access to that one URI through the intent's grant flag and clip data.
+     */
+    private fun share(uri: Uri, title: String?) {
+        val send = Intent(Intent.ACTION_SEND).apply {
+            type = context.contentResolver.getType(uri) ?: "audio/*"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            title?.let { putExtra(Intent.EXTRA_TITLE, it) }
+            clipData = ClipData.newRawUri(title, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        // The channel holds the application context, so the chooser needs its own task.
+        val chooser = Intent.createChooser(send, title).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(chooser)
     }
 
     private class PermissionMissing : Exception("Audio access not granted")

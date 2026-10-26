@@ -41,6 +41,11 @@ class LibraryRepository {
 
   Future<void> unhideFolder(String path) => _dao.unhideFolder(path);
 
+  /// Hides one song from every list.
+  Future<void> hideTrack(int trackId) => _dao.hideTrack(trackId);
+
+  Future<void> unhideTrack(int trackId) => _dao.unhideTrack(trackId);
+
   /// Scans the device and applies the differences in one transaction. If
   /// anything fails, the stored library stays as it was.
   ///

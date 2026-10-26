@@ -4,7 +4,7 @@
 
 - **Total stories**: 32
 - **Generated**: 32
-- **Last updated**: 2026-10-26T08:21:49Z
+- **Last updated**: 2026-10-26T10:09:48Z
 
 ---
 
@@ -43,10 +43,10 @@ Path: `memory-bank/intents/002-local-library-and-player/units/001-local-library-
 - [x] **011-folders** (local-library-and-player-ui): Folders - Must - ✅ COMPLETED
 - [x] **012-albums** (local-library-and-player-ui): Albums - Must - ✅ COMPLETED
 - [x] **013-artists** (local-library-and-player-ui): Artists - Should - ✅ COMPLETED
-- [x] **014-favorites** (local-library-and-player-ui): Favorites - Must - ✅ GENERATED
-- [x] **015-playlists** (local-library-and-player-ui): Playlists - Must - ✅ GENERATED
-- [x] **016-add-songs-picker** (local-library-and-player-ui): Add songs picker - Must - ✅ GENERATED
-- [x] **017-song-menu-and-add-to-playlist** (local-library-and-player-ui): Song menu and add-to-playlist sheet - Must - ✅ GENERATED
+- [x] **014-favorites** (local-library-and-player-ui): Favorites - Must - ✅ COMPLETED
+- [x] **015-playlists** (local-library-and-player-ui): Playlists - Must - ✅ COMPLETED
+- [x] **016-add-songs-picker** (local-library-and-player-ui): Add songs picker - Must - ✅ COMPLETED
+- [x] **017-song-menu-and-add-to-playlist** (local-library-and-player-ui): Song menu and add-to-playlist sheet - Must - ✅ COMPLETED
 - [x] **018-track-multi-select** (local-library-and-player-ui): Track multi-select - Must - ✅ GENERATED
 - [x] **019-play-history-and-auto-playlists** (local-library-and-player-ui): Play history and auto playlists - Must - ✅ GENERATED
 - [x] **020-library-settings** (local-library-and-player-ui): Library settings - Must - ✅ GENERATED

@@ -24,7 +24,9 @@ class TrackRow extends StatelessWidget {
   static const double height = ZemaSpacing.listRow;
 
   final Track track;
-  final VoidCallback onTap;
+
+  /// Null disables the row.
+  final VoidCallback? onTap;
   final bool isCurrent;
 
   /// Shown instead of the art, e.g. the position in an album.

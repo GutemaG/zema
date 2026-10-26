@@ -4,6 +4,7 @@
 library;
 
 export 'src/failures.dart';
+export 'src/library/playlist_order.dart';
 export 'src/library/reconcile_tracks.dart';
 export 'src/library/scanned_audio.dart';
 export 'src/library/track.dart';

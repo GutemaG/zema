@@ -51,6 +51,10 @@ last_updated: 2026-10-26T08:21:49Z
 | 2026-10-26T07:28:43Z | 006-local-library-and-player-ui | stage-complete | plan → implement |
 | 2026-10-26T08:07:29Z | 006-local-library-and-player-ui | stage-complete | implement → test |
 | 2026-10-26T08:21:49Z | 006-local-library-and-player-ui | completed | All 3 stages done; 438 tests pass |
+| 2026-10-26T08:28:15Z | 007-local-library-and-player-ui | started | Stage 1: plan |
+| 2026-10-26T08:30:17Z | 007-local-library-and-player-ui | stage-complete | plan → implement |
+| 2026-10-26T08:48:47Z | 007-local-library-and-player-ui | stage-complete | implement → test |
+| 2026-10-26T10:09:48Z | 007-local-library-and-player-ui | completed | All 3 stages done; 504 tests pass |
 
 ## Notes
 
@@ -70,3 +74,8 @@ last_updated: 2026-10-26T08:21:49Z
   color; both were left at Material defaults in intent 001, which made snackbar actions
   invisible. Snackbars with an action persist by default in Flutter 3.47; Undo snackbars
   set `persist: false`.
+- Bolt 007: share sends the MediaStore content URI with a read grant through the Kotlin
+  library channel instead of `share_plus` (which copies the file). Bottom sheets are
+  capped at 9/16 of the screen unless `isScrollControlled`; the song menu sets it so
+  Hide and Share stay visible. In widget tests, await Drift streams only inside
+  `tester.runAsync` (they hang under the fake clock).

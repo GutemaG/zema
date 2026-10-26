@@ -324,12 +324,6 @@ abstract class AppLocalizations {
   /// **'Playlists'**
   String get libraryTabPlaylists;
 
-  /// Message on a Library top tab that is not built yet.
-  ///
-  /// In en, this message translates to:
-  /// **'This part of your library is coming soon.'**
-  String get libraryTabComingSoon;
-
   /// Hint in the search field above the song list.
   ///
   /// In en, this message translates to:
@@ -893,6 +887,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This artist is no longer in your library.'**
   String get artistGoneMessage;
+
+  /// Button that creates something new, e.g. a playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get actionCreate;
+
+  /// Button that confirms deleting something.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get actionDelete;
+
+  /// Label of the button that opens a song's menu.
+  ///
+  /// In en, this message translates to:
+  /// **'More options for {title}'**
+  String songMenu(String title);
+
+  /// Song menu: play this song after the current one.
+  ///
+  /// In en, this message translates to:
+  /// **'Play next'**
+  String get songPlayNext;
+
+  /// Snackbar after choosing Play next.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" will play next'**
+  String songPlayingNext(String title);
+
+  /// Song menu: add this song to the end of the queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to queue'**
+  String get songAddToQueue;
+
+  /// Snackbar after choosing Add to queue.
+  ///
+  /// In en, this message translates to:
+  /// **'Added \"{title}\" to the queue'**
+  String songAddedToQueue(String title);
+
+  /// Song menu item, Now Playing button and title of the sheet listing playlists.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to playlist'**
+  String get songAddToPlaylist;
+
+  /// Song menu item and heart button label when the song is not a favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get songFavorite;
+
+  /// Song menu item and heart button label when the song is a favorite; also the screen-reader action on Favorites rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get songUnfavorite;
+
+  /// Snackbar after favoriting a song from its menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Added \"{title}\" to favorites'**
+  String songFavorited(String title);
+
+  /// Snackbar after unfavoriting a song.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed \"{title}\" from favorites'**
+  String songUnfavorited(String title);
+
+  /// Song menu: open the song's album.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to album'**
+  String get songGoToAlbum;
+
+  /// Song menu: open the song's artist.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to artist'**
+  String get songGoToArtist;
+
+  /// Song menu: hide this song from the whole library.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide song'**
+  String get songHide;
+
+  /// Snackbar after hiding a song, with Undo.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" is hidden'**
+  String songHidden(String title);
+
+  /// Song menu: send the audio file to another app.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get songShare;
+
+  /// Snackbar when the share sheet could not be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open sharing for this song'**
+  String get songShareFailed;
+
+  /// Title when there are no favorite songs.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet'**
+  String get favoritesEmptyTitle;
+
+  /// Explains how to add a favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart on Now Playing, or choose \"Add to favorites\" in a song\'s menu.'**
+  String get favoritesEmptyMessage;
+
+  /// C04 row that creates a playlist, and the title of the create dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'New playlist'**
+  String get playlistNew;
+
+  /// Card at the top of the Playlists tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Create playlist'**
+  String get playlistCreate;
+
+  /// Second line of the Create playlist card.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep songs for a feast day or a service together'**
+  String get playlistCreateHint;
+
+  /// Playlist menu item and the title of the rename dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename playlist'**
+  String get playlistRename;
+
+  /// Label of the playlist name field.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get playlistName;
+
+  /// Label of the playlist description field.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get playlistDescription;
+
+  /// Error when the playlist name is empty or only spaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get playlistNameRequired;
+
+  /// Error when another playlist has the same name, ignoring letter case.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a playlist with this name'**
+  String get playlistNameTaken;
+
+  /// Label of the playlist page's menu button.
+  ///
+  /// In en, this message translates to:
+  /// **'More options for {name}'**
+  String playlistMenu(String name);
+
+  /// Playlist menu item.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete playlist'**
+  String get playlistDelete;
+
+  /// Title of the confirmation before deleting a playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete playlist?'**
+  String get playlistDeleteTitle;
+
+  /// Confirmation before deleting a playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" will be deleted. The songs stay on your phone.'**
+  String playlistDeleteMessage(String name);
+
+  /// Title when an opened playlist no longer exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Playlist not found'**
+  String get playlistGoneTitle;
+
+  /// Message when an opened playlist no longer exists.
+  ///
+  /// In en, this message translates to:
+  /// **'This playlist was deleted.'**
+  String get playlistGoneMessage;
+
+  /// Button on a playlist page and title of the song picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Add songs'**
+  String get playlistAddSongs;
+
+  /// Title on an empty playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs yet'**
+  String get playlistEmptyTitle;
+
+  /// Message on an empty playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Add songs\" to pick songs from your library.'**
+  String get playlistEmptyMessage;
+
+  /// Screen-reader action on a playlist's song rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from playlist'**
+  String get playlistRemove;
+
+  /// Snackbar after swiping a song out of a playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed \"{title}\" from the playlist'**
+  String playlistRemoved(String title);
+
+  /// Button at the bottom of the song picker.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Add songs} =1{Add 1 song} other{Add {count} songs}}'**
+  String playlistAddCount(int count);
+
+  /// Screen-reader value for a picker row whose song is already in the playlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in the playlist'**
+  String get playlistInPlaylist;
 }
 
 class _AppLocalizationsDelegate

@@ -11,10 +11,14 @@ abstract final class AppRoutes {
   static const String settings = '/settings';
   static const String nowPlaying = '/now-playing';
 
+  /// S18, above the shell so the mini player doesn't cover its button.
+  static const String addSongsPath = '/playlist-add';
+
   /// Sub-paths of [library].
   static const String folderPath = 'folder';
   static const String albumPath = 'album';
   static const String artistPath = 'artist';
+  static const String playlistPath = 'playlist';
 
   /// S11a for the folder at [path].
   static String folder(String path) => Uri(
@@ -33,4 +37,14 @@ abstract final class AppRoutes {
     path: '$library/$artistPath',
     queryParameters: name == null ? {'unknown': '1'} : {'name': name},
   ).toString();
+
+  /// S17 for the playlist [id].
+  static String playlist(int id) => Uri(
+    path: '$library/$playlistPath',
+    queryParameters: {'id': '$id'},
+  ).toString();
+
+  /// S18, adding songs to the playlist [id].
+  static String addSongs(int id) =>
+      Uri(path: addSongsPath, queryParameters: {'id': '$id'}).toString();
 }

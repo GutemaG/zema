@@ -120,10 +120,10 @@ detected songs (007) on top of the models and providers built here.
 | 011-folders | Folders | Must | Complete |
 | 012-albums | Albums | Must | Complete |
 | 013-artists | Artists | Should | Complete |
-| 014-favorites | Favorites | Must | Planned |
-| 015-playlists | Playlists | Must | Planned |
-| 016-add-songs-picker | Add songs picker | Must | Planned |
-| 017-song-menu-and-add-to-playlist | Song menu and add-to-playlist sheet | Must | Planned |
+| 014-favorites | Favorites | Must | Complete |
+| 015-playlists | Playlists | Must | Complete |
+| 016-add-songs-picker | Add songs picker | Must | Complete |
+| 017-song-menu-and-add-to-playlist | Song menu and add-to-playlist sheet | Must | Complete |
 | 018-track-multi-select | Track multi-select | Must | Planned |
 | 019-play-history-and-auto-playlists | Play history and auto playlists | Must | Planned |
 | 020-library-settings | Library settings | Must | Planned |

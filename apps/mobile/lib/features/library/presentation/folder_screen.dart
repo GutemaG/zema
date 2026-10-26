@@ -12,6 +12,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../player/application/player_providers.dart';
 import '../application/folder_tree.dart';
 import '../application/library_groups.dart';
+import 'song_menu.dart';
 import 'widgets/folder_row.dart';
 import 'widgets/play_shuffle_bar.dart';
 import 'widgets/track_row.dart';
@@ -99,6 +100,7 @@ class _Contents extends ConsumerWidget {
                 track: track,
                 isCurrent: track.id == currentId,
                 onTap: () => unawaited(player.playList(tracks, start: at)),
+                trailing: SongMenuButton(track: track),
               );
             },
           ),

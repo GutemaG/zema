@@ -137,10 +137,6 @@ class AppLocalizationsOm extends AppLocalizations {
   String get libraryTabPlaylists => 'Playlists';
 
   @override
-  String get libraryTabComingSoon =>
-      'This part of your library is coming soon.';
-
-  @override
   String get librarySearchHint => 'Search songs, artists, albums';
 
   @override
@@ -480,4 +476,157 @@ class AppLocalizationsOm extends AppLocalizations {
 
   @override
   String get artistGoneMessage => 'This artist is no longer in your library.';
+
+  @override
+  String get actionCreate => 'Create';
+
+  @override
+  String get actionDelete => 'Delete';
+
+  @override
+  String songMenu(String title) {
+    return 'More options for $title';
+  }
+
+  @override
+  String get songPlayNext => 'Play next';
+
+  @override
+  String songPlayingNext(String title) {
+    return '\"$title\" will play next';
+  }
+
+  @override
+  String get songAddToQueue => 'Add to queue';
+
+  @override
+  String songAddedToQueue(String title) {
+    return 'Added \"$title\" to the queue';
+  }
+
+  @override
+  String get songAddToPlaylist => 'Add to playlist';
+
+  @override
+  String get songFavorite => 'Add to favorites';
+
+  @override
+  String get songUnfavorite => 'Remove from favorites';
+
+  @override
+  String songFavorited(String title) {
+    return 'Added \"$title\" to favorites';
+  }
+
+  @override
+  String songUnfavorited(String title) {
+    return 'Removed \"$title\" from favorites';
+  }
+
+  @override
+  String get songGoToAlbum => 'Go to album';
+
+  @override
+  String get songGoToArtist => 'Go to artist';
+
+  @override
+  String get songHide => 'Hide song';
+
+  @override
+  String songHidden(String title) {
+    return '\"$title\" is hidden';
+  }
+
+  @override
+  String get songShare => 'Share';
+
+  @override
+  String get songShareFailed => 'Couldn\'t open sharing for this song';
+
+  @override
+  String get favoritesEmptyTitle => 'No favorites yet';
+
+  @override
+  String get favoritesEmptyMessage =>
+      'Tap the heart on Now Playing, or choose \"Add to favorites\" in a song\'s menu.';
+
+  @override
+  String get playlistNew => 'New playlist';
+
+  @override
+  String get playlistCreate => 'Create playlist';
+
+  @override
+  String get playlistCreateHint =>
+      'Keep songs for a feast day or a service together';
+
+  @override
+  String get playlistRename => 'Rename playlist';
+
+  @override
+  String get playlistName => 'Name';
+
+  @override
+  String get playlistDescription => 'Description (optional)';
+
+  @override
+  String get playlistNameRequired => 'Enter a name';
+
+  @override
+  String get playlistNameTaken => 'You already have a playlist with this name';
+
+  @override
+  String playlistMenu(String name) {
+    return 'More options for $name';
+  }
+
+  @override
+  String get playlistDelete => 'Delete playlist';
+
+  @override
+  String get playlistDeleteTitle => 'Delete playlist?';
+
+  @override
+  String playlistDeleteMessage(String name) {
+    return '\"$name\" will be deleted. The songs stay on your phone.';
+  }
+
+  @override
+  String get playlistGoneTitle => 'Playlist not found';
+
+  @override
+  String get playlistGoneMessage => 'This playlist was deleted.';
+
+  @override
+  String get playlistAddSongs => 'Add songs';
+
+  @override
+  String get playlistEmptyTitle => 'No songs yet';
+
+  @override
+  String get playlistEmptyMessage =>
+      'Tap \"Add songs\" to pick songs from your library.';
+
+  @override
+  String get playlistRemove => 'Remove from playlist';
+
+  @override
+  String playlistRemoved(String title) {
+    return 'Removed \"$title\" from the playlist';
+  }
+
+  @override
+  String playlistAddCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count songs',
+      one: 'Add 1 song',
+      zero: 'Add songs',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get playlistInPlaylist => 'Already in the playlist';
 }

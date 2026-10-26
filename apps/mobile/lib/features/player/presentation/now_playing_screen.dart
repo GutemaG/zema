@@ -7,6 +7,9 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../library/application/favorites.dart';
+import '../../library/presentation/add_to_playlist_sheet.dart';
+import '../../library/presentation/song_menu.dart';
 import '../../library/presentation/widgets/track_art.dart';
 import '../application/player_providers.dart';
 import '../../../shared/format_duration.dart';
@@ -18,7 +21,8 @@ import 'queue_sheet.dart';
 import 'sleep_timer_sheet.dart';
 
 /// S08 (controls only): art, title, artist, seek bar, transport controls,
-/// and the sleep timer and queue buttons. The lyrics area says "No lyrics
+/// the sleep timer, favorite, add to playlist and queue buttons, and the
+/// song menu. The lyrics area says "No lyrics
 /// yet" until intent 003. Closes with the down arrow, back, or a swipe down.
 class NowPlayingScreen extends ConsumerWidget {
   const NowPlayingScreen({super.key});
@@ -65,7 +69,10 @@ class NowPlayingScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: ZemaSpacing.minTap + 4),
+                    if (track == null)
+                      const SizedBox(width: ZemaSpacing.minTap + 4)
+                    else
+                      SongMenuButton(track: track),
                   ],
                 ),
               ),
@@ -157,9 +164,9 @@ class _Body extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: _Controls(snapshot: snapshot),
         ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: _SecondaryActions(),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          child: _SecondaryActions(track: track),
         ),
       ],
     );
@@ -236,39 +243,80 @@ class _Controls extends ConsumerWidget {
   }
 }
 
-/// Sleep timer (with the time left when one runs) and queue.
+/// Sleep timer (with the time left when one runs), favorite, add to
+/// playlist and queue.
 class _SecondaryActions extends ConsumerWidget {
-  const _SecondaryActions();
+  const _SecondaryActions({required this.track});
+
+  final Track track;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
     final timer = ref.watch(sleepTimerProvider);
+    final favorite = ref.watch(isFavoriteProvider(track.id));
     final color = timer == null ? colors.muted : colors.primaryText;
     final label = switch (timer) {
       null => null,
       final TimedSleep timed => SleepCountdown(
         timer: timed,
-        builder: (context, left) => Text(formatDuration(left)),
+        builder: (context, left) => Text(
+          formatDuration(left),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
-      EndOfTrackSleep() => Text(l10n.sleepEndOfSongShort),
+      EndOfTrackSleep() => Text(
+        l10n.sleepEndOfSongShort,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     };
     return Row(
       children: [
-        Tooltip(
-          message: l10n.sleepTitle,
-          child: TextButton.icon(
-            style: TextButton.styleFrom(
-              foregroundColor: color,
-              minimumSize: const Size(ZemaSpacing.minTap, ZemaSpacing.minTap),
+        // Takes what the buttons leave; the label shortens on narrow
+        // screens and large text.
+        Expanded(
+          child: Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Tooltip(
+              message: l10n.sleepTitle,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(
+                  foregroundColor: color,
+                  minimumSize: const Size(
+                    ZemaSpacing.minTap,
+                    ZemaSpacing.minTap,
+                  ),
+                ),
+                onPressed: () => unawaited(showSleepTimerSheet(context)),
+                icon: Icon(
+                  timer == null ? Icons.bedtime_outlined : Icons.bedtime,
+                ),
+                label: label ?? const SizedBox.shrink(),
+              ),
             ),
-            onPressed: () => unawaited(showSleepTimerSheet(context)),
-            icon: Icon(timer == null ? Icons.bedtime_outlined : Icons.bedtime),
-            label: label ?? const SizedBox.shrink(),
           ),
         ),
-        const Spacer(),
+        IconButton(
+          tooltip: favorite ? l10n.songUnfavorite : l10n.songFavorite,
+          isSelected: favorite,
+          icon: Icon(
+            favorite ? Icons.favorite : Icons.favorite_border,
+            color: favorite ? colors.primaryText : colors.muted,
+          ),
+          onPressed: () => unawaited(
+            ref
+                .read(favoritesControllerProvider)
+                .set(track.id, favorite: !favorite),
+          ),
+        ),
+        IconButton(
+          tooltip: l10n.songAddToPlaylist,
+          icon: Icon(Icons.playlist_add, color: colors.muted),
+          onPressed: () => unawaited(showAddToPlaylistSheet(context, track)),
+        ),
         IconButton(
           tooltip: l10n.queueTitle,
           icon: Icon(Icons.queue_music, color: colors.muted),

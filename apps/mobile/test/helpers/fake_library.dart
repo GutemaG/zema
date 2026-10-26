@@ -6,6 +6,7 @@ import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/features/library/application/library_providers.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
+import 'package:zema/features/library/data/audio_share_service.dart';
 import 'package:zema/features/library/data/library_scanner.dart';
 import 'package:zema_core/zema_core.dart';
 
@@ -62,6 +63,23 @@ class FakeAudioPermissionService implements AudioPermissionService {
   Future<void> openSettings() async => settingsOpened++;
 }
 
+/// An [AudioShareService] that records what was shared; [fails] makes the
+/// share sheet "fail to open".
+class FakeAudioShareService implements AudioShareService {
+  final shared = <Track>[];
+  var fails = false;
+
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<bool> share(Track track) async {
+    if (fails) return false;
+    shared.add(track);
+    return true;
+  }
+}
+
 /// An in-memory database that closes its streams synchronously, so widget
 /// tests don't end with pending timers. Closed when the test ends.
 ZemaDatabase memoryDatabase() {
@@ -80,7 +98,11 @@ List<Override> libraryOverrides({
   LibraryScanner? scanner,
   AudioPermissionService? permissions,
   ZemaDatabase? database,
+  AudioShareService? shareService,
 }) => [
+  audioShareServiceProvider.overrideWithValue(
+    shareService ?? FakeAudioShareService(),
+  ),
   libraryScannerProvider.overrideWithValue(scanner ?? FakeLibraryScanner()),
   audioPermissionServiceProvider.overrideWithValue(
     permissions ?? FakeAudioPermissionService(),

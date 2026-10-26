@@ -4,6 +4,8 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../data/audio_permission_service.dart';
+import '../data/audio_share_service.dart';
+import '../data/collections_repository.dart';
 import '../data/library_repository.dart';
 import '../data/library_scanner.dart';
 import '../data/media_store_library_scanner.dart';
@@ -24,11 +26,21 @@ final audioPermissionServiceProvider = Provider<AudioPermissionService>(
       : const UnsupportedAudioPermissionService(),
 );
 
+final audioShareServiceProvider = Provider<AudioShareService>(
+  (ref) => _isAndroid
+      ? const AndroidAudioShareService()
+      : const UnsupportedAudioShareService(),
+);
+
 final libraryRepositoryProvider = Provider<LibraryRepository>(
   (ref) => LibraryRepository(
     ref.watch(libraryScannerProvider),
     ref.watch(databaseProvider).libraryDao,
   ),
+);
+
+final collectionsRepositoryProvider = Provider<CollectionsRepository>(
+  (ref) => CollectionsRepository(ref.watch(databaseProvider).collectionsDao),
 );
 
 /// Audio shorter than this is left out of the library (voice notes, sounds).

@@ -30,3 +30,8 @@ final class ScanFailure extends ZemaFailure {
 final class DatabaseFailure extends ZemaFailure {
   const DatabaseFailure(super.message, {super.cause});
 }
+
+/// A name that must be unique is already taken (e.g. a playlist name).
+final class DuplicateNameFailure extends ZemaFailure {
+  const DuplicateNameFailure(super.message, {super.cause});
+}

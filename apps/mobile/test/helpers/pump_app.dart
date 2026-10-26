@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/l10n/language_providers.dart';
 import 'package:zema/app/router.dart';
 import 'package:zema/app/routes.dart';
@@ -9,6 +10,7 @@ import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/theme/zema_theme.dart';
 import 'package:zema/app/zema_app.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
+import 'package:zema/features/library/data/audio_share_service.dart';
 import 'package:zema/features/library/data/library_scanner.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/features/settings/application/app_version_provider.dart';
@@ -26,8 +28,9 @@ import 'fake_player.dart';
 /// list, the phone's light/dark setting ([phoneBrightness], dark by default
 /// so the System theme renders the dark palettes), start route and app
 /// version are faked. The device library is faked too: [libraryScanner]
-/// (empty by default), [permissions] (granted by default) and an in-memory
-/// database, and so is the player ([audioHandler], over a fake backend by
+/// (empty by default), [permissions] (granted by default), [database]
+/// (in-memory by default; pass one to seed or inspect it) and
+/// [shareService], and so is the player ([audioHandler], over a fake backend by
 /// default). With [settle] false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
@@ -39,6 +42,8 @@ Future<void> pumpZemaApp(
   Future<String> Function()? appVersion,
   LibraryScanner? libraryScanner,
   AudioPermissionService? permissions,
+  ZemaDatabase? database,
+  AudioShareService? shareService,
   ZemaAudioHandler? audioHandler,
   bool settle = true,
 }) async {
@@ -53,7 +58,12 @@ Future<void> pumpZemaApp(
     ProviderScope(
       overrides: [
         ...settingsOverrides,
-        ...libraryOverrides(scanner: libraryScanner, permissions: permissions),
+        ...libraryOverrides(
+          scanner: libraryScanner,
+          permissions: permissions,
+          database: database,
+          shareService: shareService,
+        ),
         ...playerOverrides(handler: audioHandler),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(

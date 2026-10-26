@@ -63,24 +63,23 @@ List<String> _visibleTitles(WidgetTester tester) => [
 
 void main() {
   group('Tracks', () {
-    testWidgets('shows top tabs with Tracks first and placeholders after', (
-      tester,
-    ) async {
+    testWidgets('shows the six top tabs with Tracks first', (tester) async {
       await _pumpTracks(tester);
 
-      for (final name in [
-        _l10n.libraryTabTracks,
-        _l10n.libraryTabFolders,
-        _l10n.libraryTabAlbums,
-      ]) {
-        expect(find.text(name), findsOneWidget);
-      }
+      final tabs = tester.widget<TabBar>(find.byType(TabBar)).tabs;
+      expect(
+        [for (final tab in tabs) (tab as Tab).text],
+        [
+          _l10n.libraryTabTracks,
+          _l10n.libraryTabFolders,
+          _l10n.libraryTabAlbums,
+          _l10n.libraryTabArtists,
+          _l10n.libraryTabFavorites,
+          _l10n.libraryTabPlaylists,
+        ],
+      );
       expect(find.text(_l10n.librarySongCount(4)), findsOneWidget);
-
-      await tester.ensureVisible(find.text(_l10n.libraryTabFavorites));
-      await tester.tap(find.text(_l10n.libraryTabFavorites));
-      await tester.pumpAndSettle();
-      expect(find.text(_l10n.libraryTabComingSoon), findsOneWidget);
+      expect(find.text(_l10n.comingSoonTitle), findsNothing);
     });
 
     testWidgets('sorts by title by default with an alphabet strip', (

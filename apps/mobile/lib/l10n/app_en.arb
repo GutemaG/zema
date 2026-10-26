@@ -153,10 +153,6 @@
   "@libraryTabPlaylists": {
     "description": "Library top tab with playlists."
   },
-  "libraryTabComingSoon": "This part of your library is coming soon.",
-  "@libraryTabComingSoon": {
-    "description": "Message on a Library top tab that is not built yet."
-  },
   "librarySearchHint": "Search songs, artists, albums",
   "@librarySearchHint": {
     "description": "Hint in the search field above the song list."
@@ -614,5 +610,219 @@
   "artistGoneMessage": "This artist is no longer in your library.",
   "@artistGoneMessage": {
     "description": "Message when an opened artist is no longer in the library."
+  },
+  "actionCreate": "Create",
+  "@actionCreate": {
+    "description": "Button that creates something new, e.g. a playlist."
+  },
+  "actionDelete": "Delete",
+  "@actionDelete": {
+    "description": "Button that confirms deleting something."
+  },
+  "songMenu": "More options for {title}",
+  "@songMenu": {
+    "description": "Label of the button that opens a song's menu.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "songPlayNext": "Play next",
+  "@songPlayNext": {
+    "description": "Song menu: play this song after the current one."
+  },
+  "songPlayingNext": "\"{title}\" will play next",
+  "@songPlayingNext": {
+    "description": "Snackbar after choosing Play next.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "songAddToQueue": "Add to queue",
+  "@songAddToQueue": {
+    "description": "Song menu: add this song to the end of the queue."
+  },
+  "songAddedToQueue": "Added \"{title}\" to the queue",
+  "@songAddedToQueue": {
+    "description": "Snackbar after choosing Add to queue.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "songAddToPlaylist": "Add to playlist",
+  "@songAddToPlaylist": {
+    "description": "Song menu item, Now Playing button and title of the sheet listing playlists."
+  },
+  "songFavorite": "Add to favorites",
+  "@songFavorite": {
+    "description": "Song menu item and heart button label when the song is not a favorite."
+  },
+  "songUnfavorite": "Remove from favorites",
+  "@songUnfavorite": {
+    "description": "Song menu item and heart button label when the song is a favorite; also the screen-reader action on Favorites rows."
+  },
+  "songFavorited": "Added \"{title}\" to favorites",
+  "@songFavorited": {
+    "description": "Snackbar after favoriting a song from its menu.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "songUnfavorited": "Removed \"{title}\" from favorites",
+  "@songUnfavorited": {
+    "description": "Snackbar after unfavoriting a song.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "songGoToAlbum": "Go to album",
+  "@songGoToAlbum": {
+    "description": "Song menu: open the song's album."
+  },
+  "songGoToArtist": "Go to artist",
+  "@songGoToArtist": {
+    "description": "Song menu: open the song's artist."
+  },
+  "songHide": "Hide song",
+  "@songHide": {
+    "description": "Song menu: hide this song from the whole library."
+  },
+  "songHidden": "\"{title}\" is hidden",
+  "@songHidden": {
+    "description": "Snackbar after hiding a song, with Undo.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "songShare": "Share",
+  "@songShare": {
+    "description": "Song menu: send the audio file to another app."
+  },
+  "songShareFailed": "Couldn't open sharing for this song",
+  "@songShareFailed": {
+    "description": "Snackbar when the share sheet could not be opened."
+  },
+  "favoritesEmptyTitle": "No favorites yet",
+  "@favoritesEmptyTitle": {
+    "description": "Title when there are no favorite songs."
+  },
+  "favoritesEmptyMessage": "Tap the heart on Now Playing, or choose \"Add to favorites\" in a song's menu.",
+  "@favoritesEmptyMessage": {
+    "description": "Explains how to add a favorite."
+  },
+  "playlistNew": "New playlist",
+  "@playlistNew": {
+    "description": "C04 row that creates a playlist, and the title of the create dialog."
+  },
+  "playlistCreate": "Create playlist",
+  "@playlistCreate": {
+    "description": "Card at the top of the Playlists tab."
+  },
+  "playlistCreateHint": "Keep songs for a feast day or a service together",
+  "@playlistCreateHint": {
+    "description": "Second line of the Create playlist card."
+  },
+  "playlistRename": "Rename playlist",
+  "@playlistRename": {
+    "description": "Playlist menu item and the title of the rename dialog."
+  },
+  "playlistName": "Name",
+  "@playlistName": {
+    "description": "Label of the playlist name field."
+  },
+  "playlistDescription": "Description (optional)",
+  "@playlistDescription": {
+    "description": "Label of the playlist description field."
+  },
+  "playlistNameRequired": "Enter a name",
+  "@playlistNameRequired": {
+    "description": "Error when the playlist name is empty or only spaces."
+  },
+  "playlistNameTaken": "You already have a playlist with this name",
+  "@playlistNameTaken": {
+    "description": "Error when another playlist has the same name, ignoring letter case."
+  },
+  "playlistMenu": "More options for {name}",
+  "@playlistMenu": {
+    "description": "Label of the playlist page's menu button.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playlistDelete": "Delete playlist",
+  "@playlistDelete": {
+    "description": "Playlist menu item."
+  },
+  "playlistDeleteTitle": "Delete playlist?",
+  "@playlistDeleteTitle": {
+    "description": "Title of the confirmation before deleting a playlist."
+  },
+  "playlistDeleteMessage": "\"{name}\" will be deleted. The songs stay on your phone.",
+  "@playlistDeleteMessage": {
+    "description": "Confirmation before deleting a playlist.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playlistGoneTitle": "Playlist not found",
+  "@playlistGoneTitle": {
+    "description": "Title when an opened playlist no longer exists."
+  },
+  "playlistGoneMessage": "This playlist was deleted.",
+  "@playlistGoneMessage": {
+    "description": "Message when an opened playlist no longer exists."
+  },
+  "playlistAddSongs": "Add songs",
+  "@playlistAddSongs": {
+    "description": "Button on a playlist page and title of the song picker."
+  },
+  "playlistEmptyTitle": "No songs yet",
+  "@playlistEmptyTitle": {
+    "description": "Title on an empty playlist."
+  },
+  "playlistEmptyMessage": "Tap \"Add songs\" to pick songs from your library.",
+  "@playlistEmptyMessage": {
+    "description": "Message on an empty playlist."
+  },
+  "playlistRemove": "Remove from playlist",
+  "@playlistRemove": {
+    "description": "Screen-reader action on a playlist's song rows."
+  },
+  "playlistRemoved": "Removed \"{title}\" from the playlist",
+  "@playlistRemoved": {
+    "description": "Snackbar after swiping a song out of a playlist.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "playlistAddCount": "{count, plural, =0{Add songs} =1{Add 1 song} other{Add {count} songs}}",
+  "@playlistAddCount": {
+    "description": "Button at the bottom of the song picker.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playlistInPlaylist": "Already in the playlist",
+  "@playlistInPlaylist": {
+    "description": "Screen-reader value for a picker row whose song is already in the playlist."
   }
 }

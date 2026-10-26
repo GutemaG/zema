@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/library/application/album_grouping.dart';
+import '../features/library/presentation/add_songs_screen.dart';
 import '../features/library/presentation/album_screen.dart';
 import '../features/library/presentation/artist_screen.dart';
 import '../features/library/presentation/folder_screen.dart';
 import '../features/library/presentation/library_screen.dart';
+import '../features/library/presentation/playlist_screen.dart';
 import '../features/player/presentation/now_playing_screen.dart';
 import '../features/search/presentation/search_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
@@ -77,6 +79,12 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
                       );
                     },
                   ),
+                  GoRoute(
+                    path: AppRoutes.playlistPath,
+                    builder: (_, state) => PlaylistScreen(
+                      id: int.tryParse(state.uri.queryParameters['id'] ?? ''),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -94,6 +102,12 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (_, _) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.addSongsPath,
+        builder: (_, state) => AddSongsScreen(
+          playlistId: int.tryParse(state.uri.queryParameters['id'] ?? ''),
+        ),
       ),
       GoRoute(
         path: AppRoutes.nowPlaying,

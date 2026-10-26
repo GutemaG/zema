@@ -116,6 +116,12 @@ class PlayerController {
 
   Future<void> clearUpcoming() => _handler.clearUpcoming();
 
+  /// Queues [track] right after the current one.
+  Future<void> playNext(Track track) => _handler.playNext([track]);
+
+  /// Queues [track] at the end.
+  Future<void> addToQueue(Track track) => _handler.addToQueue([track]);
+
   void setSleepTimer(Duration after) => _handler.setSleepTimer(after);
   void sleepAtEndOfTrack() => _handler.sleepAtEndOfTrack();
   void cancelSleepTimer() => _handler.cancelSleepTimer();
