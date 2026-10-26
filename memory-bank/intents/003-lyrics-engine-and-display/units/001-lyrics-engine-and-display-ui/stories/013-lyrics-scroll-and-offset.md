@@ -2,11 +2,11 @@
 id: 013-lyrics-scroll-and-offset
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
-created: 2026-10-26T13:41:09Z
+created: 2026-10-26T13:41:09.000Z
 assigned_bolt: 015-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 013-lyrics-scroll-and-offset
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** playback, **When** the line changes, **Then** the view scrolls to keep the current line in view
-- [ ] **Given** I scroll manually, **When** 3 s pass without touching, **Then** auto-scroll resumes
-- [ ] **Given** the overflow menu, **When** I adjust the sync offset in 0.5 s steps, **Then** the highlight moves at once and the offset is saved for that recording
-- [ ] **Given** a font size change (A−/A+), **When** applied, **Then** the view keeps the current line in view
+- [x] **Given** playback, **When** the line changes, **Then** the view scrolls to keep the current line in view
+- [x] **Given** I scroll manually, **When** 3 s pass without touching, **Then** auto-scroll resumes
+- [x] **Given** the overflow menu, **When** I adjust the sync offset in 0.5 s steps, **Then** the highlight moves at once and the offset is saved for that recording
+- [x] **Given** a font size change (A−/A+), **When** applied, **Then** the view keeps the current line in view
 
 ## Technical Notes
 

@@ -337,9 +337,9 @@
   "@playerSeek": {
     "description": "Screen-reader label of the seek bar."
   },
-  "playerNoLyrics": "No lyrics yet",
+  "playerNoLyrics": "No lyrics for this song",
   "@playerNoLyrics": {
-    "description": "Shown on Now Playing where lyrics will appear in a later version."
+    "description": "Shown on Now Playing when the song has no linked lyrics."
   },
   "playbackChannelName": "Playback",
   "@playbackChannelName": {
@@ -1144,5 +1144,53 @@
   "settingsGapless": "Gapless playback",
   "@settingsGapless": {
     "description": "Settings switch: start the next song without a pause."
+  },
+  "playerShowLyrics": "Show lyrics",
+  "@playerShowLyrics": {
+    "description": "Now Playing button: switch the artwork to the lyrics."
+  },
+  "playerShowArtwork": "Show artwork",
+  "@playerShowArtwork": {
+    "description": "Now Playing button: switch the lyrics back to the artwork."
+  },
+  "lyricsChorus": "Chorus",
+  "@lyricsChorus": {
+    "description": "Small label above the first line of each chorus in the lyrics."
+  },
+  "lyricsOptions": "Lyrics options",
+  "@lyricsOptions": {
+    "description": "Button and sheet title for how lyrics show."
+  },
+  "lyricsShowTransliteration": "Show transliteration",
+  "@lyricsShowTransliteration": {
+    "description": "Switch: show each lyric line in Latin letters below it."
+  },
+  "lyricsTextSize": "Text size",
+  "@lyricsTextSize": {
+    "description": "Lyrics options row for the size of the lyrics text."
+  },
+  "lyricsTextSmaller": "Smaller text",
+  "@lyricsTextSmaller": {
+    "description": "Button: make the lyrics text smaller."
+  },
+  "lyricsTextLarger": "Larger text",
+  "@lyricsTextLarger": {
+    "description": "Button: make the lyrics text larger."
+  },
+  "lyricsSyncOffset": "Sync timing",
+  "@lyricsSyncOffset": {
+    "description": "Lyrics options row: move the highlight earlier or later to match the audio."
+  },
+  "lyricsOffsetEarlier": "Show lines earlier",
+  "@lyricsOffsetEarlier": {
+    "description": "Button: lyrics highlight half a second earlier."
+  },
+  "lyricsOffsetLater": "Show lines later",
+  "@lyricsOffsetLater": {
+    "description": "Button: lyrics highlight half a second later."
+  },
+  "lyricsOffsetReset": "Reset timing",
+  "@lyricsOffsetReset": {
+    "description": "Button: set the lyrics timing correction back to zero."
   }
 }

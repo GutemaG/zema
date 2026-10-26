@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zema_core/zema_core.dart' show LyricsRepository;
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/l10n/language_providers.dart';
 import 'package:zema/app/router.dart';
@@ -32,7 +33,8 @@ import 'fake_player.dart';
 /// (empty by default), [permissions] (granted by default), [database]
 /// (in-memory by default; pass one to seed or inspect it) and
 /// [shareService], and so is the player ([audioHandler], over a fake backend by
-/// default). With [settle] false only the first frame is pumped.
+/// default). Lyrics come from [lyricsRepository], by default the bundled
+/// samples read from disk. With [settle] false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
   String location = AppRoutes.home,
@@ -46,6 +48,7 @@ Future<void> pumpZemaApp(
   ZemaDatabase? database,
   AudioShareService? shareService,
   ZemaAudioHandler? audioHandler,
+  LyricsRepository? lyricsRepository,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -66,7 +69,7 @@ Future<void> pumpZemaApp(
           shareService: shareService,
         ),
         ...playerOverrides(handler: audioHandler),
-        ...lyricsOverrides(),
+        ...lyricsOverrides(repository: lyricsRepository),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(
           (ref) => appVersion?.call() ?? Future.value('1.0.0 (1)'),

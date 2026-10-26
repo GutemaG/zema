@@ -582,10 +582,10 @@ abstract class AppLocalizations {
   /// **'Song position'**
   String get playerSeek;
 
-  /// Shown on Now Playing where lyrics will appear in a later version.
+  /// Shown on Now Playing when the song has no linked lyrics.
   ///
   /// In en, this message translates to:
-  /// **'No lyrics yet'**
+  /// **'No lyrics for this song'**
   String get playerNoLyrics;
 
   /// Name of the Android notification channel for music playback.
@@ -1505,6 +1505,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gapless playback'**
   String get settingsGapless;
+
+  /// Now Playing button: switch the artwork to the lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Show lyrics'**
+  String get playerShowLyrics;
+
+  /// Now Playing button: switch the lyrics back to the artwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Show artwork'**
+  String get playerShowArtwork;
+
+  /// Small label above the first line of each chorus in the lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Chorus'**
+  String get lyricsChorus;
+
+  /// Button and sheet title for how lyrics show.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics options'**
+  String get lyricsOptions;
+
+  /// Switch: show each lyric line in Latin letters below it.
+  ///
+  /// In en, this message translates to:
+  /// **'Show transliteration'**
+  String get lyricsShowTransliteration;
+
+  /// Lyrics options row for the size of the lyrics text.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get lyricsTextSize;
+
+  /// Button: make the lyrics text smaller.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller text'**
+  String get lyricsTextSmaller;
+
+  /// Button: make the lyrics text larger.
+  ///
+  /// In en, this message translates to:
+  /// **'Larger text'**
+  String get lyricsTextLarger;
+
+  /// Lyrics options row: move the highlight earlier or later to match the audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync timing'**
+  String get lyricsSyncOffset;
+
+  /// Button: lyrics highlight half a second earlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Show lines earlier'**
+  String get lyricsOffsetEarlier;
+
+  /// Button: lyrics highlight half a second later.
+  ///
+  /// In en, this message translates to:
+  /// **'Show lines later'**
+  String get lyricsOffsetLater;
+
+  /// Button: set the lyrics timing correction back to zero.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset timing'**
+  String get lyricsOffsetReset;
 }
 
 class _AppLocalizationsDelegate

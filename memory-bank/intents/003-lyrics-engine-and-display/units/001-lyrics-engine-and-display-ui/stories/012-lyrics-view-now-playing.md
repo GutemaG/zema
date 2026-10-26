@@ -2,11 +2,11 @@
 id: 012-lyrics-view-now-playing
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
-status: draft
+status: complete
 priority: must
-created: 2026-10-26T13:41:09Z
+created: 2026-10-26T13:41:09.000Z
 assigned_bolt: 015-lyrics-engine-and-display-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 012-lyrics-view-now-playing
@@ -19,12 +19,12 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a linked song with timings, **When** Now Playing shows lyrics, **Then** the current line is highlighted (`primaryText`), past lines dimmed (`faint`), chorus lines marked
-- [ ] **Given** a line, **When** tapped, **Then** playback seeks to it
-- [ ] **Given** a song without timings, **When** shown, **Then** plain lyrics show without highlight
-- [ ] **Given** no linked song, **When** shown, **Then** a No lyrics state with Match lyrics shows
-- [ ] **Given** the transliteration toggle, **When** on, **Then** each line shows its transliteration below
-- [ ] **Given** 1.3× text in light and dark, **When** shown, **Then** nothing overflows
+- [x] **Given** a linked song with timings, **When** Now Playing shows lyrics, **Then** the current line is highlighted (`primaryText`), past lines dimmed (`faint`), chorus lines marked
+- [x] **Given** a line, **When** tapped, **Then** playback seeks to it
+- [x] **Given** a song without timings, **When** shown, **Then** plain lyrics show without highlight
+- [x] **Given** no linked song, **When** shown, **Then** a No lyrics state with Match lyrics shows
+- [x] **Given** the transliteration toggle, **When** on, **Then** each line shows its transliteration below
+- [x] **Given** 1.3× text in light and dark, **When** shown, **Then** nothing overflows
 
 ## Technical Notes
 

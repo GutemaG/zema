@@ -11,6 +11,7 @@ import '../../library/application/favorites.dart';
 import '../../library/presentation/add_to_playlist_sheet.dart';
 import '../../library/presentation/song_menu.dart';
 import '../../library/presentation/widgets/track_art.dart';
+import '../../lyrics/presentation/lyrics_view.dart';
 import '../application/player_providers.dart';
 import '../../../shared/format_duration.dart';
 import '../data/player_snapshot.dart';
@@ -20,10 +21,22 @@ import 'player_progress.dart';
 import 'queue_sheet.dart';
 import 'sleep_timer_sheet.dart';
 
-/// S08 (controls only): art, title, artist, seek bar, transport controls,
-/// the sleep timer, favorite, add to playlist and queue buttons, and the
-/// song menu. The lyrics area says "No lyrics
-/// yet" until intent 003. Closes with the down arrow, back, or a swipe down.
+/// Whether Now Playing shows the lyrics instead of the artwork; lasts for
+/// the session.
+final nowPlayingLyricsModeProvider =
+    NotifierProvider<NowPlayingLyricsMode, bool>(NowPlayingLyricsMode.new);
+
+class NowPlayingLyricsMode extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set({required bool lyrics}) => state = lyrics;
+}
+
+/// S08: art (or the lyrics view), title, artist, seek bar, transport
+/// controls, the sleep timer, lyrics, favorite, add to playlist and queue
+/// buttons, and the song menu. Under the art, the line being sung opens the
+/// lyrics. Closes with the down arrow, back, or a swipe down.
 class NowPlayingScreen extends ConsumerWidget {
   const NowPlayingScreen({super.key});
 
@@ -100,65 +113,69 @@ class _Body extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
     final textTheme = Theme.of(context).textTheme;
+    final lyricsMode = ref.watch(nowPlayingLyricsModeProvider);
+    final titles = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        children: [
+          Text(
+            track.title,
+            maxLines: lyricsMode ? 1 : 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: textTheme.headlineSmall?.copyWith(color: colors.text),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            track.artist ?? l10n.unknownArtist,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyLarge?.copyWith(color: colors.muted),
+          ),
+        ],
+      ),
+    );
     return Column(
       children: [
-        Expanded(
-          flex: 5,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(32, 12, 32, 16),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final side = constraints.biggest.shortestSide;
-                return Center(
-                  child: Hero(
-                    tag: playerArtHeroTag,
-                    child: TrackArt(track: track, size: side, radius: 20),
-                  ),
-                );
-              },
-            ),
+        if (lyricsMode) ...[
+          titles,
+          Expanded(
+            // A new view per track, so it starts at the top.
+            child: LyricsView(key: ValueKey(track.id), track: track),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              Text(
-                track.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: textTheme.headlineSmall?.copyWith(color: colors.text),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                track.artist ?? l10n.unknownArtist,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: textTheme.bodyLarge?.copyWith(color: colors.muted),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.surface,
-                borderRadius: BorderRadius.circular(ZemaRadius.medium),
-              ),
-              child: Center(
-                child: Text(
-                  l10n.playerNoLyrics,
-                  style: textTheme.bodyMedium?.copyWith(color: colors.muted),
-                ),
+        ] else ...[
+          Expanded(
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(32, 12, 32, 16),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final side = constraints.biggest.shortestSide;
+                  return Center(
+                    child: Hero(
+                      tag: playerArtHeroTag,
+                      child: TrackArt(track: track, size: side, radius: 20),
+                    ),
+                  );
+                },
               ),
             ),
           ),
-        ),
+          titles,
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+              child: LyricsPreview(
+                track: track,
+                onTap: () => ref
+                    .read(nowPlayingLyricsModeProvider.notifier)
+                    .set(lyrics: true),
+              ),
+            ),
+          ),
+        ],
         SeekBar(duration: snapshot.duration ?? track.duration),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
@@ -256,6 +273,7 @@ class _SecondaryActions extends ConsumerWidget {
     final colors = context.zemaColors;
     final timer = ref.watch(sleepTimerProvider);
     final favorite = ref.watch(isFavoriteProvider(track.id));
+    final lyricsMode = ref.watch(nowPlayingLyricsModeProvider);
     final color = timer == null ? colors.muted : colors.primaryText;
     final label = switch (timer) {
       null => null,
@@ -298,6 +316,17 @@ class _SecondaryActions extends ConsumerWidget {
               ),
             ),
           ),
+        ),
+        IconButton(
+          tooltip: lyricsMode ? l10n.playerShowArtwork : l10n.playerShowLyrics,
+          isSelected: lyricsMode,
+          icon: Icon(
+            lyricsMode ? Icons.lyrics : Icons.lyrics_outlined,
+            color: lyricsMode ? colors.primaryText : colors.muted,
+          ),
+          onPressed: () => ref
+              .read(nowPlayingLyricsModeProvider.notifier)
+              .set(lyrics: !lyricsMode),
         ),
         IconButton(
           tooltip: favorite ? l10n.songUnfavorite : l10n.songFavorite,

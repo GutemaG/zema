@@ -3,15 +3,24 @@ id: 015-lyrics-engine-and-display-ui
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 012-lyrics-view-now-playing
   - 013-lyrics-scroll-and-offset
 created: 2026-10-26T13:41:09Z
-started: null
-completed: null
+started: 2026-10-26T19:32:18Z
+completed: 2026-10-26T19:58:12Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: 2026-10-26T19:50:28Z
+    artifact: implementation-plan.md
+  - name: implement
+    completed: 2026-10-26T19:50:28Z
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-26T19:58:12Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 014-lyrics-engine-and-display-ui
 enables_bolts:
@@ -33,8 +42,8 @@ The lyrics view (C06) on Now Playing with highlight, seek, auto-scroll and sync 
 
 ## Stories Included
 
-- [ ] **012-lyrics-view-now-playing**: Lyrics view on Now Playing - Priority: Must
-- [ ] **013-lyrics-scroll-and-offset**: Lyrics auto-scroll and sync offset - Priority: Must
+- [x] **012-lyrics-view-now-playing**: Lyrics view on Now Playing - Priority: Must
+- [x] **013-lyrics-scroll-and-offset**: Lyrics auto-scroll and sync offset - Priority: Must
 
 ## Bolt Type
 
@@ -43,9 +52,9 @@ The lyrics view (C06) on Now Playing with highlight, seek, auto-scroll and sync 
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Expected Outputs
 
@@ -62,11 +71,11 @@ The lyrics view (C06) on Now Playing with highlight, seek, auto-scroll and sync 
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] `flutter analyze` clean, `dart format` clean
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] `flutter analyze` clean, `dart format` clean
+- [x] Tests passing locally
+- [x] Checked on the Android emulator
 
 ## Notes
 

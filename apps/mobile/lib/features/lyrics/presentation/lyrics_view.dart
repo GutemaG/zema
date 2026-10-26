@@ -1,0 +1,382 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zema_core/zema_core.dart';
+
+import '../../../app/theme/zema_colors.dart';
+import '../../../app/theme/zema_spacing.dart';
+import '../../../l10n/generated/app_localizations.dart';
+import '../../player/application/player_providers.dart';
+import '../application/lyrics_prefs.dart';
+import '../application/track_lyrics.dart';
+import 'lyrics_options_sheet.dart';
+import 'match_lyrics_sheet.dart';
+
+/// The lyrics of [track] (C06): the line being sung highlighted and kept in
+/// view, past lines faint, choruses marked; tapping a line seeks to it.
+/// Plain lyrics show without highlight; an unlinked track offers Match
+/// lyrics.
+class LyricsView extends ConsumerWidget {
+  const LyricsView({super.key, required this.track});
+
+  final Track track;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return switch (ref.watch(trackLyricsProvider(track.id))) {
+      AsyncData(value: final lyrics?) when lyrics.lines.isNotEmpty => Stack(
+        children: [
+          Positioned.fill(
+            child: _Lines(track: track, lyrics: lyrics),
+          ),
+          PositionedDirectional(
+            top: 0,
+            end: 0,
+            child: _OptionsButton(lyrics: lyrics),
+          ),
+        ],
+      ),
+      AsyncData() => NoLyrics(track: track),
+      _ => const SizedBox.shrink(),
+    };
+  }
+}
+
+/// The "No lyrics" state with a Match lyrics button.
+class NoLyrics extends StatelessWidget {
+  const NoLyrics({super.key, required this.track});
+
+  final Track track;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(ZemaSpacing.screenSide),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.lyrics_outlined, size: 40, color: colors.faint),
+            const SizedBox(height: 12),
+            Text(
+              l10n.playerNoLyrics,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge
+                  ?.copyWith(color: colors.muted),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.link),
+              label: Text(l10n.songMatchLyrics),
+              onPressed: () => unawaited(showMatchLyricsSheet(context, track)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OptionsButton extends StatelessWidget {
+  const _OptionsButton({required this.lyrics});
+
+  final TrackLyrics lyrics;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: AppLocalizations.of(context).lyricsOptions,
+      icon: Icon(Icons.tune, color: context.zemaColors.muted),
+      onPressed: () => unawaited(showLyricsOptionsSheet(context, lyrics)),
+    );
+  }
+}
+
+class _Lines extends ConsumerStatefulWidget {
+  const _Lines({required this.track, required this.lyrics});
+
+  final Track track;
+  final TrackLyrics lyrics;
+
+  @override
+  ConsumerState<_Lines> createState() => _LinesState();
+}
+
+class _LinesState extends ConsumerState<_Lines> {
+  /// How long auto-scroll waits after the user last scrolled.
+  static const resumeAfter = Duration(seconds: 3);
+
+  /// Where the current line is kept: a third of the way down.
+  static const alignment = 0.33;
+
+  /// Height of the fade at the top.
+  static const fadeHeight = 48.0;
+
+  final _scroll = ScrollController();
+  late List<GlobalKey> _keys = _newKeys();
+  Timer? _resume;
+  var _userScrolling = false;
+
+  List<GlobalKey> _newKeys() => [
+    for (var i = 0; i < widget.lyrics.lines.length; i++) GlobalKey(),
+  ];
+
+  @override
+  void didUpdateWidget(_Lines old) {
+    super.didUpdateWidget(old);
+    if (old.lyrics.lines.length != widget.lyrics.lines.length) {
+      _keys = _newKeys();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _followSoon(animate: false);
+  }
+
+  @override
+  void dispose() {
+    _resume?.cancel();
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Scrolls the current line into place after this frame, unless the user
+  /// is scrolling.
+  void _followSoon({bool animate = true}) {
+    // A frame may not be coming (e.g. paused after a manual scroll).
+    WidgetsBinding.instance
+      ..scheduleFrame()
+      ..addPostFrameCallback((_) {
+        if (!mounted || _userScrolling) return;
+        final index = ref.read(currentLineProvider(widget.track.id));
+        if (index == null || index >= _keys.length) return;
+        final line = _keys[index].currentContext;
+        if (line == null) return;
+        unawaited(
+          Scrollable.ensureVisible(
+            line,
+            alignment: alignment,
+            duration: animate
+                ? const Duration(milliseconds: 300)
+                : Duration.zero,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+      });
+  }
+
+  bool _onScroll(UserScrollNotification n) {
+    if (n.direction == ScrollDirection.idle) {
+      _resume?.cancel();
+      _resume = Timer(resumeAfter, () {
+        _userScrolling = false;
+        _followSoon();
+      });
+    } else {
+      _resume?.cancel();
+      _userScrolling = true;
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref
+      ..listen(currentLineProvider(widget.track.id), (_, _) => _followSoon())
+      ..listen(
+        lyricsDisplayProvider.select((d) => d.textScale),
+        (_, _) => _followSoon(animate: false),
+      );
+    final lyrics = widget.lyrics;
+    final synced = lyrics.synced;
+    final current = ref.watch(currentLineProvider(widget.track.id));
+    final display = ref.watch(lyricsDisplayProvider);
+    final shift = ref.watch(lyricsShiftProvider(lyrics));
+    return LayoutBuilder(
+      builder: (context, constraints) =>
+          NotificationListener<UserScrollNotification>(
+            onNotification: _onScroll,
+            // Lines fade out at the top, under the title and options button.
+            child: ShaderMask(
+              blendMode: BlendMode.dstIn,
+              shaderCallback: (bounds) => LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: const [Colors.transparent, Colors.black],
+                stops: [0, (fadeHeight / bounds.height).clamp(0, 1)],
+              ).createShader(bounds),
+              child: SingleChildScrollView(
+                controller: _scroll,
+                // Room above the first and below the last line so either can sit
+                // where the current line is kept.
+                padding: EdgeInsets.fromLTRB(
+                  24,
+                  constraints.maxHeight * alignment,
+                  24,
+                  constraints.maxHeight * (1 - alignment),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final (i, line) in lyrics.lines.indexed)
+                      _Line(
+                        key: _keys[i],
+                        line: line,
+                        state: synced == null || current == null
+                            ? (synced == null
+                                  ? _LineState.plain
+                                  : _LineState.ahead)
+                            : i == current
+                            ? _LineState.current
+                            : i < current
+                            ? _LineState.past
+                            : _LineState.ahead,
+                        display: display,
+                        onTap: synced == null
+                            ? null
+                            : () => unawaited(
+                                ref
+                                    .read(playerControllerProvider)
+                                    .seek(
+                                      synced.engine.startOf(i, offset: shift),
+                                    ),
+                              ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+    );
+  }
+}
+
+enum _LineState { plain, past, current, ahead }
+
+class _Line extends StatelessWidget {
+  const _Line({
+    super.key,
+    required this.line,
+    required this.state,
+    required this.display,
+    required this.onTap,
+  });
+
+  final LineOccurrence line;
+  final _LineState state;
+  final LyricsDisplay display;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final textTheme = Theme.of(context).textTheme;
+    final base = textTheme.titleLarge!;
+    final color = switch (state) {
+      _LineState.plain => colors.text,
+      _LineState.past => colors.faint,
+      _LineState.current => colors.primaryText,
+      _LineState.ahead => colors.muted,
+    };
+    final transliteration = line.line.transliteration;
+    final chorusStart =
+        line.sectionKind == SectionKind.chorus && line.startsSection;
+    return Semantics(
+      selected: state == _LineState.current,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(ZemaRadius.small),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (chorusStart)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    l10n.lyricsChorus,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: colors.muted,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: base.copyWith(
+                  color: color,
+                  fontSize: base.fontSize! * display.textScale,
+                  fontWeight: state == _LineState.current
+                      ? FontWeight.w700
+                      : FontWeight.w500,
+                ),
+                child: Text(line.line.text),
+              ),
+              if (display.showTransliteration && transliteration != null)
+                Text(
+                  transliteration,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: color,
+                    fontSize:
+                        textTheme.bodyMedium!.fontSize! * display.textScale,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The line being sung, or the first line, for the small panel under the
+/// artwork; "No lyrics" when there are none. Tapping it calls [onTap].
+class LyricsPreview extends ConsumerWidget {
+  const LyricsPreview({super.key, required this.track, required this.onTap});
+
+  final Track track;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final lyrics = ref.watch(trackLyricsProvider(track.id)).value;
+    final current = ref.watch(currentLineProvider(track.id));
+    final line = switch (lyrics) {
+      final TrackLyrics l when l.lines.isNotEmpty =>
+        l.lines[current ?? 0].line.text,
+      _ => null,
+    };
+    return Material(
+      color: colors.surface,
+      borderRadius: BorderRadius.circular(ZemaRadius.medium),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(ZemaRadius.medium),
+        onTap: onTap,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              line ?? l10n.playerNoLyrics,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: line == null ? colors.muted : colors.primaryText,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

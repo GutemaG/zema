@@ -2,7 +2,7 @@
 unit: 001-lyrics-engine-and-display-ui
 intent: 003-lyrics-engine-and-display
 created: 2026-10-26T13:45:42Z
-last_updated: 2026-10-26T19:31:20Z
+last_updated: 2026-10-26T19:58:12Z
 ---
 
 # Construction Log: lyrics-engine-and-display-ui
@@ -39,7 +39,7 @@ last_updated: 2026-10-26T19:31:20Z
 | 012-lyrics-engine-and-display-ui | 007, 008 | ✅ completed | - |
 | 013-lyrics-engine-and-display-ui | 009, 010 | ✅ completed | - |
 | 014-lyrics-engine-and-display-ui | 011 | ✅ completed | - |
-| 015-lyrics-engine-and-display-ui | 012, 013 | [ ] planned | - |
+| 015-lyrics-engine-and-display-ui | 012, 013 | ✅ completed | - |
 | 016-lyrics-engine-and-display-ui | 014, 015 | [ ] planned | - |
 | 017-lyrics-engine-and-display-ui | 016 | [ ] planned | - |
 
@@ -71,6 +71,10 @@ last_updated: 2026-10-26T19:31:20Z
 | 2026-10-26T17:44:38Z | 014-lyrics-engine-and-display-ui | stage-complete | plan → implement |
 | 2026-10-26T17:49:24Z | 014-lyrics-engine-and-display-ui | stage-complete | implement → test |
 | 2026-10-26T19:31:20Z | 014-lyrics-engine-and-display-ui | completed | All 3 stages done; 778 tests pass |
+| 2026-10-26T19:32:18Z | 015-lyrics-engine-and-display-ui | started | Stage 1: plan |
+| 2026-10-26T19:50:28Z | 015-lyrics-engine-and-display-ui | stage-complete | plan → implement |
+| 2026-10-26T19:50:28Z | 015-lyrics-engine-and-display-ui | stage-complete | implement → test |
+| 2026-10-26T19:58:12Z | 015-lyrics-engine-and-display-ui | completed | All 3 stages done; 800 tests pass |
 
 ## Notes
 
@@ -80,3 +84,4 @@ last_updated: 2026-10-26T19:31:20Z
 - **Bolt 012**: lyrics models with checked JSON, play-order expansion and a stateless sync engine in `zema_core`. Offset: positive shows lines later.
 - **Bolt 013**: LRC import with chorus detection, `LyricsRepository`, three placeholder songs (need native review), `test_audio.sh --lyrics`.
 - Bolt 014: app tests read bundled lyrics from disk (`DiskAssetBundle`); real asset loading stalls under the widget-test clock.
+- Bolt 015: auto-scroll asks for a frame (`scheduleFrame`); while paused none comes otherwise.

@@ -67,8 +67,8 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 - [x] **009-lrc-import** (lyrics-engine-and-display-ui): LRC import - Must - ✅ COMPLETED
 - [x] **010-bundled-lyrics-repository** (lyrics-engine-and-display-ui): Bundled lyrics repository and sample songs - Must - ✅ COMPLETED
 - [x] **011-track-song-linking** (lyrics-engine-and-display-ui): Link local tracks to songs - Must - ✅ COMPLETED
-- [ ] **012-lyrics-view-now-playing** (lyrics-engine-and-display-ui): Lyrics view on Now Playing - Must - ⬜ GENERATED
-- [ ] **013-lyrics-scroll-and-offset** (lyrics-engine-and-display-ui): Lyrics auto-scroll and sync offset - Must - ⬜ GENERATED
+- [x] **012-lyrics-view-now-playing** (lyrics-engine-and-display-ui): Lyrics view on Now Playing - Must - ✅ COMPLETED
+- [x] **013-lyrics-scroll-and-offset** (lyrics-engine-and-display-ui): Lyrics auto-scroll and sync offset - Must - ✅ COMPLETED
 - [ ] **014-song-detail** (lyrics-engine-and-display-ui): Song detail - Must - ⬜ GENERATED
 - [ ] **015-lyric-text-search** (lyrics-engine-and-display-ui): Lyric text search - Must - ⬜ GENERATED
 - [ ] **016-lyrics-settings** (lyrics-engine-and-display-ui): Lyrics settings - Must - ⬜ GENERATED
@@ -82,6 +82,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 5
+- **Generated**: 3
 - **In Progress**: 0
-- **Completed**: 43
+- **Completed**: 45

@@ -270,7 +270,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get playerSeek => 'Song position';
 
   @override
-  String get playerNoLyrics => 'No lyrics yet';
+  String get playerNoLyrics => 'No lyrics for this song';
 
   @override
   String get playbackChannelName => 'Playback';
@@ -887,4 +887,40 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get settingsGapless => 'Gapless playback';
+
+  @override
+  String get playerShowLyrics => 'Show lyrics';
+
+  @override
+  String get playerShowArtwork => 'Show artwork';
+
+  @override
+  String get lyricsChorus => 'Chorus';
+
+  @override
+  String get lyricsOptions => 'Lyrics options';
+
+  @override
+  String get lyricsShowTransliteration => 'Show transliteration';
+
+  @override
+  String get lyricsTextSize => 'Text size';
+
+  @override
+  String get lyricsTextSmaller => 'Smaller text';
+
+  @override
+  String get lyricsTextLarger => 'Larger text';
+
+  @override
+  String get lyricsSyncOffset => 'Sync timing';
+
+  @override
+  String get lyricsOffsetEarlier => 'Show lines earlier';
+
+  @override
+  String get lyricsOffsetLater => 'Show lines later';
+
+  @override
+  String get lyricsOffsetReset => 'Reset timing';
 }
