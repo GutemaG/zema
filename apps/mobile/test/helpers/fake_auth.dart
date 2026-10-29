@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/misc.dart';
 import 'package:zema/features/account/application/account_providers.dart';
+import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema_core/zema_core.dart';
 
 /// A test user, as Google sign-in would give them.
@@ -119,21 +120,56 @@ class FakeProfileRepository implements ProfileRepository {
   }
 }
 
+/// The Google account picker, answering with [tokens] until told otherwise.
+class FakeGoogleAccountPicker implements GoogleAccountPicker {
+  /// What the next [pick] gives; null is a cancel.
+  GoogleTokens? tokens = const GoogleTokens(idToken: 'google-id-token');
+
+  /// Thrown by the next [pick] when set (then cleared).
+  Object? failure;
+
+  /// When set, [pick] waits for it before answering.
+  Completer<void>? gate;
+
+  var picks = 0;
+  var signOutCalls = 0;
+
+  @override
+  Future<GoogleTokens?> pick() async {
+    picks++;
+    await gate?.future;
+    final failure = this.failure;
+    if (failure != null) {
+      this.failure = null;
+      throw failure;
+    }
+    return tokens;
+  }
+
+  @override
+  Future<void> signOut() async => signOutCalls++;
+}
+
 /// Overrides for the account repositories: [auth] (a guest by default) and
-/// [profiles] over it, or none when [backendConfigured] is false.
+/// [profiles] over it, or none when [backendConfigured] is false. Sign-in is
+/// offered only with a [picker] (none by default, as in a build without
+/// Google client IDs), so the account choice (S04) stays away.
 List<Override> accountOverrides({
   AuthRepository? auth,
   ProfileRepository? profiles,
+  GoogleAccountPicker? picker,
   bool backendConfigured = true,
 }) {
   if (!backendConfigured) {
     return [
       authRepositoryProvider.overrideWithValue(null),
       profileRepositoryProvider.overrideWithValue(null),
+      googleAccountPickerProvider.overrideWithValue(picker),
     ];
   }
   final authRepository = auth ?? FakeAuthRepository();
   return [
+    googleAccountPickerProvider.overrideWithValue(picker),
     authRepositoryProvider.overrideWithValue(authRepository),
     profileRepositoryProvider.overrideWithValue(
       profiles ?? FakeProfileRepository(authRepository),

@@ -77,3 +77,5 @@ firebase-debug.log
 
 # Local backend settings with keys (apps/mobile/tool/backend_env.sh)
 apps/mobile/config/*.local.json
+# The reversed iOS Google client ID (apps/mobile/tool/google_env.sh)
+apps/mobile/ios/Flutter/*.local.xcconfig

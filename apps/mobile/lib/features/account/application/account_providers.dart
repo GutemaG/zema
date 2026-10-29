@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
 import 'package:zema_data/zema_data.dart';
 
 import '../../../app/backend/backend_providers.dart';
+import '../data/google_account_picker.dart';
+import '../data/google_config.dart';
 import '../data/secure_session_store.dart';
 
 /// Where the signed-in session is kept between runs. Tests override it.
@@ -42,6 +45,27 @@ final profileRepositoryProvider = Provider<ProfileRepository?>((ref) {
 /// Whether this build offers accounts at all.
 final accountsAvailableProvider = Provider<bool>(
   (ref) => ref.watch(authRepositoryProvider) != null,
+);
+
+/// The Google client IDs this build was given. Tests override it.
+final googleConfigProvider = Provider<GoogleConfig>(
+  (ref) => const GoogleConfig.fromEnvironment(),
+);
+
+/// The Google account picker, or null when this build has no Google client
+/// IDs for this platform. Tests override it.
+final googleAccountPickerProvider = Provider<GoogleAccountPicker?>((ref) {
+  final config = ref.watch(googleConfigProvider);
+  if (!config.isConfiguredFor(defaultTargetPlatform)) return null;
+  return PluginGoogleAccountPicker(config);
+});
+
+/// Whether this build can sign in: a backend and Google client IDs. Every
+/// sign-in button and the account choice (S04) hide without it.
+final signInAvailableProvider = Provider<bool>(
+  (ref) =>
+      ref.watch(accountsAvailableProvider) &&
+      ref.watch(googleAccountPickerProvider) != null,
 );
 
 /// The signed-in user, or null for a guest. Restores the saved session the

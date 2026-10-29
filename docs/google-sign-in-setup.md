@@ -56,8 +56,8 @@ each certificate: debug now, and release when there is one.
 
 1. **Create credentials → OAuth client ID → iOS**, with bundle ID `com.zemaapp.zema`.
 2. Copy the **client ID**. The **reversed client ID**
-   (`com.googleusercontent.apps.…`) becomes a URL scheme in the iOS app. Bolt 032 adds
-   it to `Info.plist` from the config.
+   (`com.googleusercontent.apps.…`) is the URL scheme Google returns to in the iOS
+   app. `tool/google_env.sh` works it out from the client ID (step 5).
 
 ## 5. Put the values in place
 
@@ -83,6 +83,16 @@ listed IDs.
 The app asks Google for a token meant for the web client, which is what Supabase
 checks. On iOS it also needs its own client ID.
 
+Then, from `apps/mobile/`, write the iOS URL scheme (gitignored
+`ios/Flutter/Google.local.xcconfig`, read by `Info.plist`):
+
+```text
+tool/google_env.sh
+```
+
+A build without `google.local.json` (or, on iOS, without the iOS ID) offers no
+sign-in at all: no account choice at the first start and no sign-in buttons.
+
 ## 6. Restart and check
 
 From `backend/`:
@@ -98,13 +108,21 @@ flutter run --dart-define-from-file=config/backend.local.json \
             --dart-define-from-file=config/google.local.json
 ```
 
+On Android, Google shows the account picker. **A picker that closes with no
+message** after you pick an account usually means the package name or SHA-1 doesn't
+match the Android client: Android reports that as a cancel. The app logs the code
+(`account.google`).
+
+**An "access blocked" page** means the account isn't a test user on the consent
+screen (**Audience → Test users**) while the app is in testing.
+
 **Without `.env`**, the provider is still listed as enabled, but its client ID is the
 unresolved `env(…)` text, so every Google token is refused. That's harmless, but sign-in
 only works once `.env` is filled in.
 
 ## 7. Never commit these values
 
-- `.env` and `config/*.local.json` are gitignored. Check `git status` before every
+- `.env`, `config/*.local.json` and `ios/Flutter/*.local.xcconfig` are gitignored. Check `git status` before every
   commit.
 - The client IDs aren't secret in the strict sense, because they ship inside the app,
   but they're kept out of the repo like the keys.

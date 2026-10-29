@@ -12,6 +12,12 @@ abstract final class AppRoutes {
   static const String settings = '/settings';
   static const String nowPlaying = '/now-playing';
 
+  /// S04, the one-time account choice, shown instead of Home until made.
+  static const String accountChoice = '/welcome';
+
+  /// S24, above everything; it returns to the screen it was opened from.
+  static const String signIn = '/sign-in';
+
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 

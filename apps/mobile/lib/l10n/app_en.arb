@@ -1470,5 +1470,67 @@
   "homeNewLyrics": "New lyrics from the community",
   "@homeNewLyrics": {
     "description": "Home row of the songs most recently added to the shared lyrics catalog."
+  },
+  "accountChoiceTitle": "Welcome to Zema",
+  "@accountChoiceTitle": {
+    "description": "Title of the one-time account choice (S04) shown before Home."
+  },
+  "accountChoiceMessage": "Everything works without an account. Sign in with Google to get more:",
+  "@accountChoiceMessage": {
+    "description": "S04 text above the list of what an account adds."
+  },
+  "accountBenefitContribute": "Add and fix lyrics for everyone",
+  "@accountBenefitContribute": {
+    "description": "What an account adds: contributing to the shared lyrics."
+  },
+  "accountBenefitBackup": "Back up your favorites, playlists and settings",
+  "@accountBenefitBackup": {
+    "description": "What an account adds: backup."
+  },
+  "accountBenefitRestore": "Get them back on a new phone",
+  "@accountBenefitRestore": {
+    "description": "What an account adds: restore on another phone."
+  },
+  "accountContinueAsGuest": "Continue as guest",
+  "@accountContinueAsGuest": {
+    "description": "Button that keeps using the app without an account."
+  },
+  "accountSignIn": "Sign in",
+  "@accountSignIn": {
+    "description": "Button that opens the sign-in screen."
+  },
+  "signInTitle": "Sign in",
+  "@signInTitle": {
+    "description": "Title of the sign-in screen (S24)."
+  },
+  "signInHeading": "Sign in to Zema",
+  "@signInHeading": {
+    "description": "Heading on the sign-in screen."
+  },
+  "signInWithGoogle": "Continue with Google",
+  "@signInWithGoogle": {
+    "description": "Button that opens the Google account picker."
+  },
+  "signInGoogleNote": "Your Google name and photo are used for your profile. You can change the name later.",
+  "@signInGoogleNote": {
+    "description": "Small note under the sign-in buttons."
+  },
+  "signInOffline": "No connection. Try again when you're online.",
+  "@signInOffline": {
+    "description": "Snackbar when sign-in fails because the phone is offline."
+  },
+  "signInFailed": "Couldn't sign in. Try again.",
+  "@signInFailed": {
+    "description": "Snackbar when Google or the server refuses the sign-in."
+  },
+  "signInDone": "Signed in as {name}",
+  "@signInDone": {
+    "description": "Snackbar after a successful sign-in, with the account's name or email.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Abebe Bikila"
+      }
+    }
   }
 }

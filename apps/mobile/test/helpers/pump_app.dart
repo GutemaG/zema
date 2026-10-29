@@ -11,6 +11,7 @@ import 'package:zema/app/routes.dart';
 import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/theme/zema_theme.dart';
 import 'package:zema/app/zema_app.dart';
+import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/data/audio_share_service.dart';
 import 'package:zema/features/library/data/library_scanner.dart';
@@ -37,7 +38,8 @@ import 'fake_player.dart';
 /// [shareService], and so is the player ([audioHandler], over a fake backend by
 /// default). Lyrics come from [catalog], by default a fake one serving
 /// [lyricsRepository] (the sample fixtures unless given). Accounts use [auth]
-/// and [profiles], by default a fake where the user is a guest. With [settle]
+/// and [profiles], by default a fake where the user is a guest; sign-in (and
+/// so the account choice) is offered only with a [googlePicker]. With [settle]
 /// false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
@@ -57,6 +59,7 @@ Future<void> pumpZemaApp(
   bool backendConfigured = true,
   AuthRepository? auth,
   ProfileRepository? profiles,
+  GoogleAccountPicker? googlePicker,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -85,6 +88,7 @@ Future<void> pumpZemaApp(
         ...accountOverrides(
           auth: auth,
           profiles: profiles,
+          picker: googlePicker,
           backendConfigured: backendConfigured,
         ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
@@ -92,7 +96,7 @@ Future<void> pumpZemaApp(
           (ref) => appVersion?.call() ?? Future.value('1.0.0 (1)'),
         ),
         routerProvider.overrideWith((ref) {
-          final router = buildRouter(initialLocation: location);
+          final router = buildRouter(ref, initialLocation: location);
           ref.onDispose(router.dispose);
           return router;
         }),

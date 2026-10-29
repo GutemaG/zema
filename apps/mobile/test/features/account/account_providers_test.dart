@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zema/app/backend/backend_config.dart';
 import 'package:zema/app/backend/backend_providers.dart';
 import 'package:zema/features/account/application/account_providers.dart';
+import 'package:zema/features/account/data/google_account_picker.dart';
+import 'package:zema/features/account/data/google_config.dart';
 import 'package:zema/features/account/data/secure_session_store.dart';
 import 'package:zema_core/zema_core.dart';
 import 'package:zema_data/zema_data.dart';
@@ -159,6 +161,45 @@ void main() {
       final store = SecureSessionStore(storage);
       expect(await store.read(), isNull);
       expect(storage.deleted, [SecureSessionStore.key]);
+    });
+  });
+
+  group('sign-in availability', () {
+    const backend = BackendConfig(url: 'http://backend.test', key: 'anon-key');
+
+    test('a build without Google client IDs has no picker', () {
+      final container = _container([
+        backendConfigProvider.overrideWithValue(backend),
+      ]);
+      expect(container.read(googleAccountPickerProvider), isNull);
+      expect(container.read(accountsAvailableProvider), isTrue);
+      expect(container.read(signInAvailableProvider), isFalse);
+    });
+
+    test('with client IDs, the plugin picker and sign-in', () {
+      final container = _container([
+        backendConfigProvider.overrideWithValue(backend),
+        googleConfigProvider.overrideWithValue(
+          const GoogleConfig(webClientId: 'web', iosClientId: 'ios'),
+        ),
+      ]);
+      expect(
+        container.read(googleAccountPickerProvider),
+        isA<PluginGoogleAccountPicker>(),
+      );
+      expect(container.read(signInAvailableProvider), isTrue);
+    });
+
+    test('client IDs without a backend: no sign-in', () {
+      final container = _container([
+        backendConfigProvider.overrideWithValue(
+          const BackendConfig(url: BackendConfig.localUrl, key: ''),
+        ),
+        googleConfigProvider.overrideWithValue(
+          const GoogleConfig(webClientId: 'web', iosClientId: 'ios'),
+        ),
+      ]);
+      expect(container.read(signInAvailableProvider), isFalse);
     });
   });
 }

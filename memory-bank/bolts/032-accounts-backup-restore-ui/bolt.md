@@ -3,15 +3,24 @@ id: 032-accounts-backup-restore-ui
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 002-account-choice
   - 003-google-sign-in
 created: '2026-10-29T19:05:45Z'
-started: null
-completed: null
+started: '2026-10-29T20:20:00Z'
+completed: '2026-10-29T20:51:19Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T20:21:31Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T20:31:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-29T20:51:19Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 031-accounts-backup-restore-ui
 enables_bolts:
@@ -43,9 +52,9 @@ The one-time account choice and Google sign-in, hidden without client IDs.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 

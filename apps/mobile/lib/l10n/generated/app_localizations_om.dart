@@ -1124,4 +1124,51 @@ class AppLocalizationsOm extends AppLocalizations {
 
   @override
   String get homeNewLyrics => 'New lyrics from the community';
+
+  @override
+  String get accountChoiceTitle => 'Welcome to Zema';
+
+  @override
+  String get accountChoiceMessage =>
+      'Everything works without an account. Sign in with Google to get more:';
+
+  @override
+  String get accountBenefitContribute => 'Add and fix lyrics for everyone';
+
+  @override
+  String get accountBenefitBackup =>
+      'Back up your favorites, playlists and settings';
+
+  @override
+  String get accountBenefitRestore => 'Get them back on a new phone';
+
+  @override
+  String get accountContinueAsGuest => 'Continue as guest';
+
+  @override
+  String get accountSignIn => 'Sign in';
+
+  @override
+  String get signInTitle => 'Sign in';
+
+  @override
+  String get signInHeading => 'Sign in to Zema';
+
+  @override
+  String get signInWithGoogle => 'Continue with Google';
+
+  @override
+  String get signInGoogleNote =>
+      'Your Google name and photo are used for your profile. You can change the name later.';
+
+  @override
+  String get signInOffline => 'No connection. Try again when you\'re online.';
+
+  @override
+  String get signInFailed => 'Couldn\'t sign in. Try again.';
+
+  @override
+  String signInDone(String name) {
+    return 'Signed in as $name';
+  }
 }

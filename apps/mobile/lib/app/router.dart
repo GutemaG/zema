@@ -2,6 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/account/application/sign_in.dart';
+import '../features/account/presentation/account_choice_screen.dart';
+import '../features/account/presentation/sign_in_screen.dart';
 import '../features/lyrics/presentation/song_detail_screen.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -25,15 +28,22 @@ import 'routes.dart';
 
 /// The app's router, created once per [ProviderScope].
 final routerProvider = Provider<GoRouter>((ref) {
-  final router = buildRouter();
+  final router = buildRouter(ref);
   ref.onDispose(router.dispose);
   return router;
 });
 
 /// Builds the route tree. [initialLocation] is overridable for tests.
-GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
+///
+/// Home shows the account choice (S04) instead until it has been made.
+GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
   return GoRouter(
     initialLocation: initialLocation,
+    redirect: (_, state) =>
+        state.uri.path == AppRoutes.home &&
+            ref.read(accountChoicePendingProvider)
+        ? AppRoutes.accountChoice
+        : null,
     routes: [
       GoRoute(path: '/', redirect: (_, _) => AppRoutes.home),
       StatefulShellRoute.indexedStack(
@@ -112,6 +122,11 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
           ),
         ],
       ),
+      GoRoute(
+        path: AppRoutes.accountChoice,
+        builder: (_, _) => const AccountChoiceScreen(),
+      ),
+      GoRoute(path: AppRoutes.signIn, builder: (_, _) => const SignInScreen()),
       GoRoute(
         path: AppRoutes.addSongsPath,
         builder: (_, state) => AddSongsScreen(

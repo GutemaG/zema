@@ -1925,6 +1925,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New lyrics from the community'**
   String get homeNewLyrics;
+
+  /// Title of the one-time account choice (S04) shown before Home.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Zema'**
+  String get accountChoiceTitle;
+
+  /// S04 text above the list of what an account adds.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything works without an account. Sign in with Google to get more:'**
+  String get accountChoiceMessage;
+
+  /// What an account adds: contributing to the shared lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and fix lyrics for everyone'**
+  String get accountBenefitContribute;
+
+  /// What an account adds: backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up your favorites, playlists and settings'**
+  String get accountBenefitBackup;
+
+  /// What an account adds: restore on another phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Get them back on a new phone'**
+  String get accountBenefitRestore;
+
+  /// Button that keeps using the app without an account.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as guest'**
+  String get accountContinueAsGuest;
+
+  /// Button that opens the sign-in screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get accountSignIn;
+
+  /// Title of the sign-in screen (S24).
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInTitle;
+
+  /// Heading on the sign-in screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to Zema'**
+  String get signInHeading;
+
+  /// Button that opens the Google account picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get signInWithGoogle;
+
+  /// Small note under the sign-in buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Google name and photo are used for your profile. You can change the name later.'**
+  String get signInGoogleNote;
+
+  /// Snackbar when sign-in fails because the phone is offline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Try again when you\'re online.'**
+  String get signInOffline;
+
+  /// Snackbar when Google or the server refuses the sign-in.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t sign in. Try again.'**
+  String get signInFailed;
+
+  /// Snackbar after a successful sign-in, with the account's name or email.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {name}'**
+  String signInDone(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -33,7 +33,7 @@ last_updated: 2026-10-29T19:59:26Z
 | Bolt ID | Stories | Status | Changed |
 |---------|---------|--------|---------|
 | 031-accounts-backup-restore-ui | 001 | ✅ completed | - |
-| 032-accounts-backup-restore-ui | 002, 003 | planned | - |
+| 032-accounts-backup-restore-ui | 002, 003 | ✅ completed | - |
 | 033-accounts-backup-restore-ui | 004, 005 | planned | - |
 | 034-accounts-backup-restore-ui | 006, 007 | planned | - |
 | 035-accounts-backup-restore-ui | 008 | planned | - |
@@ -49,6 +49,11 @@ last_updated: 2026-10-29T19:59:26Z
 | 2026-10-29T19:39:26Z | 031-accounts-backup-restore-ui | stage-complete | plan → implement |
 | 2026-10-29T19:59:26Z | 031-accounts-backup-restore-ui | stage-complete | implement → test |
 | 2026-10-29T19:59:26Z | 031-accounts-backup-restore-ui | completed | All 3 stages done; app 820, core 209, data 47 pass; 13/14 planted bugs caught (1 equivalent) |
+| 2026-10-29T20:20:00Z | 032-accounts-backup-restore-ui | started | Stage 1: plan |
+| 2026-10-29T20:21:31Z | 032-accounts-backup-restore-ui | stage-complete | plan → implement |
+| 2026-10-29T20:31:00Z | 032-accounts-backup-restore-ui | stage-complete | implement → test |
+| 2026-10-29T20:51:19Z | 032-accounts-backup-restore-ui | completed | All 3 stages done; app 861 pass; real Google sign-in on the emulator creates the profile; 16/16 planted bugs caught (1 after a new test) |
 
 ## Notes
 - Bolt 031: restore() signs the saved user in at once and confirms in the background (gotrue retries ~10 s offline). Avoid postgrest maybeSingle(): it loses server error codes. Expired test sessions need a stand-in access token (expiry is read from the JWT).
+- Bolt 032: the Google picker is a seam (FakeGoogleAccountPicker); tests have no picker by default, so S04 stays away. Android reports a SHA-1/package mismatch as a cancel. The iOS URL scheme comes from the gitignored ios/Flutter/Google.local.xcconfig (tool/google_env.sh).

@@ -46,6 +46,11 @@ flutter run --dart-define-from-file=config/backend.local.json
 
 For a real phone, pass your computer's address: `tool/backend_env.sh http://192.168.1.20:54321`.
 
+With Google sign-in set up (`config/google.local.json`, see
+[docs/google-sign-in-setup.md](../docs/google-sign-in-setup.md)), add
+`--dart-define-from-file=config/google.local.json`, and run `tool/google_env.sh` once
+for iOS.
+
 Only Postgres, the API, auth and Studio run locally; realtime, storage, edge functions,
 analytics and the mail catcher are turned off in `config.toml` until they are needed.
 
