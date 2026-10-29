@@ -106,6 +106,8 @@ Full list in `docs/flutter-build-notes.md` → "Core domain model".
 | 8 | `008-admin-website` | Yes | No | ★★★☆☆ |
 | 9 | `009-audio-fingerprint-library` | Yes | Maybe (spike decides) | ★★★★☆ |
 | 10 | `010-listen-to-identify` | Yes | Yes (microphone service) | ★★★★★ |
+| 11 | `011-share-lyrics-clips` | No | Maybe (spike decides) | ★★★★☆ |
+| 12 | `012-ai-lyrics-from-audio` | Yes | No | ★★★★☆ |
 
 Every stage ends with a working, installable app. Stages 1–3 need no backend at all.
 
@@ -353,6 +355,56 @@ sync.
 **Done when**
 - A catalog recording played from a speaker 2 m away is identified within 10 s and its
   lyrics show at the right line.
+
+---
+
+### Stage 11 — `011-share-lyrics-clips` ★★★★☆
+
+**Goal:** share part of a song, up to 1–2 minutes, as a video with synced lyrics to
+TikTok, YouTube Shorts, Snapchat and other apps.
+
+**Key requirements**
+- A clip editor picks the start and end (60 s default, 2 min allowed), snapping to lyric
+  lines, with a preview.
+- The phone makes a 1080×1920 MP4: cover art, the lyrics highlighted in time, and the
+  audio cut from the user's own file. Offline, with progress and cancel; nothing is
+  uploaded.
+- The video goes to the system share menu or the gallery. A short note says platforms
+  may mute copyrighted music.
+
+**Done when**
+- A 60 s clip from Now Playing renders on a mid-range Android phone and on iOS, plays in
+  TikTok, YouTube Shorts and Snapchat, and its lyrics stay within ±0.2 s of the audio.
+
+**Spike first:** a maintained FFmpeg build or native encoding (AVFoundation,
+MediaCodec); measure render time, app size and licence.
+
+Needs only 002 and 003, so it can be built at any point after them.
+
+---
+
+### Stage 12 — `012-ai-lyrics-from-audio` ★★★★☆
+
+**Goal:** write a first draft of a song's lyrics from its audio with a speech-to-text
+service, for a person to check and submit.
+
+**Key requirements**
+- "Write lyrics with AI" on a track with no lyrics: consent each time, then the audio
+  goes through a backend function (the provider key stays on the server) and is deleted
+  after.
+- The text, and timings if any, open as an "AI draft" in the contribution editor (006);
+  nothing generated is published without review.
+- Daily limits and a spend cap; the provider is swappable behind an interface.
+
+**Done when**
+- A mezmur with no lyrics gets a draft in the editor, and checking it is clearly faster
+  than typing the lyrics from scratch.
+
+**Spike first:** compare speech-to-text services (and an on-phone model) on real sung
+Amharic, Afaan Oromoo and Tigrinya, with and without vocal separation; choose one.
+
+Note: this is the only feature that uploads audio, an exception to the "No audio
+uploaded" rule below, and only with the user's consent.
 
 ---
 
