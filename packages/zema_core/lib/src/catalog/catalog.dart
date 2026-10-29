@@ -3,7 +3,7 @@ import '../lyrics/lyrics_models.dart';
 
 /// One approved song in the catalog's index: enough to link tracks and find
 /// songs by title, without the lyrics.
-class CatalogEntry {
+class CatalogEntry implements SongIdentity {
   const CatalogEntry({
     required this.id,
     required this.title,
@@ -15,9 +15,13 @@ class CatalogEntry {
     this.album,
   });
 
+  @override
   final String id;
+  @override
   final String title;
+  @override
   final String? transliteration;
+  @override
   final String? artist;
   final String? album;
 

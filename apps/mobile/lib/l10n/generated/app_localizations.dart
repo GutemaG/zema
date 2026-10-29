@@ -1667,6 +1667,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Songs you\'ve adjusted in Now Playing keep their own timing.'**
   String get settingsLyricsDefaultOffsetNote;
+
+  /// Snackbar when pulling to refresh the catalog's song list fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update the song list. Check your connection.'**
+  String get catalogRefreshFailed;
+
+  /// Snackbar when pulling to refresh in a build without a backend.
+  ///
+  /// In en, this message translates to:
+  /// **'The song list isn\'t available in this build.'**
+  String get catalogNotConfigured;
 }
 
 class _AppLocalizationsDelegate

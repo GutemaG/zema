@@ -8,12 +8,13 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../library/presentation/widgets/library_search_field.dart';
+import '../../catalog/application/catalog_index.dart';
 import '../application/lyrics_links.dart';
 
 /// Opens the lyrics picker for [track]. Picking a song links it by hand and
 /// closes the sheet; returns the song picked, if any.
-Future<Song?> showMatchLyricsSheet(BuildContext context, Track track) {
-  return showModalBottomSheet<Song>(
+Future<SongIdentity?> showMatchLyricsSheet(BuildContext context, Track track) {
+  return showModalBottomSheet<SongIdentity>(
     context: context,
     isScrollControlled: true,
     builder: (_) => MatchLyricsSheet(track: track),
@@ -44,7 +45,7 @@ class _MatchLyricsSheetState extends ConsumerState<MatchLyricsSheet> {
     super.dispose();
   }
 
-  Future<void> _pick(Song song) async {
+  Future<void> _pick(SongIdentity song) async {
     await ref.read(lyricsLinksControllerProvider).link(widget.track, song);
     if (mounted) Navigator.of(context).pop(song);
   }
@@ -54,7 +55,8 @@ class _MatchLyricsSheetState extends ConsumerState<MatchLyricsSheet> {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
     final textTheme = Theme.of(context).textTheme;
-    final all = ref.watch(lyricsSongsProvider).value ?? const <Song>[];
+    final all =
+        ref.watch(catalogEntriesProvider).value ?? const <CatalogEntry>[];
     final linkedId = ref.watch(trackSongProvider(widget.track.id)).value?.id;
     final songs = _query.trim().isEmpty ? all : searchSongs(all, _query);
     return Padding(

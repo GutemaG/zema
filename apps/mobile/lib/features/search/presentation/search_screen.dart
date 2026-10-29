@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../catalog/application/catalog_index.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
@@ -73,6 +74,28 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
     _setQuery(query);
   }
 
+  /// Pull to refresh: fetches the catalog's song index now.
+  Future<void> _refreshCatalog() async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    String? message;
+    try {
+      final result = await ref
+          .read(catalogIndexRefresherProvider)
+          .refresh(force: true);
+      if (result == IndexRefresh.notConfigured) {
+        message = l10n.catalogNotConfigured;
+      }
+    } on ZemaFailure {
+      message = l10n.catalogRefreshFailed;
+    }
+    if (message != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
   void _remember() =>
       unawaited(ref.read(recentSearchesProvider.notifier).add(_query));
 
@@ -105,9 +128,22 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
             onSelected: (scope) => setState(() => _scope = scope),
           ),
         Expanded(
-          child: searching
-              ? _buildResults(context)
-              : RecentSearchesView(onPick: _pickRecent),
+          child: RefreshIndicator(
+            onRefresh: _refreshCatalog,
+            // Pullable even when the content fits on screen. Keeps the
+            // platform's physics underneath, so the list springs back.
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                physics: AlwaysScrollableScrollPhysics(
+                  parent: ScrollConfiguration.of(context)
+                      .getScrollPhysics(context),
+                ),
+              ),
+              child: searching
+                  ? _buildResults(context)
+                  : RecentSearchesView(onPick: _pickRecent),
+            ),
+          ),
         ),
       ],
     );

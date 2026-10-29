@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/library/application/library_sync_controller.dart';
 import '../features/library/application/play_history.dart';
+import '../features/catalog/application/catalog_index.dart';
 import '../features/lyrics/application/lyrics_links.dart';
 import '../features/player/application/player_providers.dart';
 import '../features/player/presentation/mini_player.dart';
@@ -40,6 +41,7 @@ class AppShell extends ConsumerWidget {
     ref.listen(playerSessionProvider, (_, _) {});
     ref.listen(playbackOptionsSyncProvider, (_, _) {});
     ref.listen(playHistoryProvider, (_, _) {});
+    ref.listen(catalogStartupRefreshProvider, (_, _) {});
     ref.listen(lyricsLinkSyncProvider, (_, _) {});
     final l10n = AppLocalizations.of(context);
     ref.listen(unplayableTrackProvider, (_, next) {

@@ -17,6 +17,7 @@ import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema/shared/widgets/empty_state.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../helpers/fake_catalog.dart';
 import '../../../helpers/fake_library.dart';
 import '../../../helpers/fake_player.dart';
 import '../../../helpers/pump_app.dart';
@@ -50,6 +51,8 @@ Future<_Search> _pump(
   FakeAudioPermissionService? permissions,
   bool explained = true,
   Brightness phoneBrightness = Brightness.dark,
+  CatalogRepository? catalog,
+  bool backendConfigured = true,
 }) async {
   useScreen(tester, size: const Size(360, 1400));
   final db = memoryDatabase();
@@ -62,6 +65,8 @@ Future<_Search> _pump(
     database: db,
     audioHandler: handler,
     phoneBrightness: phoneBrightness,
+    catalog: catalog,
+    backendConfigured: backendConfigured,
     savedPrefs: {
       LibraryAccessController.explainedKey: explained,
       RecentSearches.key: ?recent,
@@ -313,6 +318,83 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('amlak'), findsNothing);
       expect(find.text(_l10n.searchHintTitle), findsOneWidget);
+    });
+  });
+
+  group('Pull to refresh', () {
+    Future<void> pull(WidgetTester tester, Finder from) async {
+      await tester.fling(from, const Offset(0, 400), 1000);
+      await tester.pumpAndSettle();
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('refreshes the song list from the recent searches', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(
+        entries: [catalogEntry(const Song(id: 'a', title: 'A', sections: []))],
+      );
+      final search = await _pump(tester, catalog: catalog);
+      expect(catalog.indexCalls, 1, reason: 'the start-up refresh');
+      catalog.entries = [
+        ...catalog.entries,
+        catalogEntry(const Song(id: 'b', title: 'B', sections: [])),
+      ];
+
+      await pull(tester, find.byType(EmptyState));
+
+      expect(catalog.indexCalls, 2, reason: 'forced, though recent');
+      expect((await tester.runAsync(search.db.catalogDao.count))!, 2);
+      expect(find.byType(SnackBar), findsNothing);
+    });
+
+    testWidgets('refreshes from the results too', (tester) async {
+      final catalog = FakeCatalogRepository();
+      await _pump(tester, catalog: catalog);
+      await tester.enterText(find.byType(TextField), 'amlak');
+      await tester.pumpAndSettle();
+
+      await pull(tester, find.byType(TrackRow).first);
+
+      expect(catalog.indexCalls, 2);
+    });
+
+    testWidgets('a failure shows a short message and keeps the list', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(
+        entries: [catalogEntry(const Song(id: 'a', title: 'A', sections: []))],
+      );
+      final search = await _pump(tester, catalog: catalog);
+      catalog.failure = const NetworkFailure('offline');
+
+      await pull(tester, find.byType(EmptyState));
+
+      expect(find.text(_l10n.catalogRefreshFailed), findsOneWidget);
+      expect((await tester.runAsync(search.db.catalogDao.count))!, 1);
+    });
+
+    testWidgets('the list springs back to the top after a pull', (
+      tester,
+    ) async {
+      await _pump(tester, recent: ['amlak']);
+      final header = find.text(_l10n.searchRecentHeading);
+      final before = tester.getTopLeft(header);
+
+      await pull(tester, header);
+
+      expect(tester.getTopLeft(header), before);
+    });
+
+    testWidgets('a build without a backend says so', (tester) async {
+      await _pump(tester, backendConfigured: false);
+
+      await pull(tester, find.byType(EmptyState));
+
+      expect(find.text(_l10n.catalogNotConfigured), findsOneWidget);
     });
   });
 }

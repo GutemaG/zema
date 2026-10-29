@@ -8,9 +8,9 @@ import 'lyrics_models.dart';
 const double autoLinkThreshold = 0.9;
 
 /// Songs prepared for matching against many tracks; build once per lyrics
-/// change.
-class SongMatcher {
-  SongMatcher(List<Song> songs)
+/// change. Works on full songs or catalog index entries.
+class SongMatcher<S extends SongIdentity> {
+  SongMatcher(List<S> songs)
     : _songs = [
         for (final song in songs)
           (
@@ -23,7 +23,7 @@ class SongMatcher {
           ),
       ];
 
-  final List<(Song, List<SearchKey>, SearchKey?)> _songs;
+  final List<(S, List<SearchKey>, SearchKey?)> _songs;
 
   /// The song [track] is, or null when none matches well enough or two
   /// match equally well.
@@ -31,11 +31,11 @@ class SongMatcher {
   /// The song's title (or transliteration) must be found in the track's
   /// title, so noise around it ("… - Official Video") doesn't matter. The
   /// artist only breaks ties between equal titles.
-  Song? match(Track track) {
+  S? match(Track track) {
     final title = SearchKey(track.title);
     if (title.isEmpty) return null;
     final artist = track.artist == null ? null : SearchKey(track.artist!);
-    Song? best;
+    S? best;
     var bestScore = 0.0;
     var tie = false;
     for (final (song, keys, songArtist) in _songs) {

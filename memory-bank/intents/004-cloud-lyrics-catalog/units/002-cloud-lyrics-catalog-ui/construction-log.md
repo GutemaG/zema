@@ -2,7 +2,7 @@
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
 created: 2026-10-29T08:32:46Z
-last_updated: 2026-10-29T08:48:08Z
+last_updated: 2026-10-29T09:42:06Z
 ---
 
 # Construction Log: cloud-lyrics-catalog-ui
@@ -32,7 +32,7 @@ last_updated: 2026-10-29T08:48:08Z
 | Bolt ID | Stories | Status | Changed |
 |---------|---------|--------|---------|
 | 022-cloud-lyrics-catalog-ui | 001 | ✅ completed | - |
-| 023-cloud-lyrics-catalog-ui | 002 | [ ] planned | - |
+| 023-cloud-lyrics-catalog-ui | 002 | ✅ completed | - |
 | 024-cloud-lyrics-catalog-ui | 003 | [ ] planned | - |
 | 025-cloud-lyrics-catalog-ui | 004 | [ ] planned | - |
 | 026-cloud-lyrics-catalog-ui | 005 | [ ] planned | - |
@@ -47,6 +47,11 @@ last_updated: 2026-10-29T08:48:08Z
 | 2026-10-29T08:34:38Z | 022-cloud-lyrics-catalog-ui | stage-complete | plan → implement |
 | 2026-10-29T08:42:54Z | 022-cloud-lyrics-catalog-ui | stage-complete | implement → test |
 | 2026-10-29T08:48:08Z | 022-cloud-lyrics-catalog-ui | completed | All 3 stages done; 288 pgTAP + 199 core + 28 zema_data + 650 app tests pass |
+| 2026-10-29T08:49:53Z | 023-cloud-lyrics-catalog-ui | started | Stage 1: plan |
+| 2026-10-29T08:50:56Z | 023-cloud-lyrics-catalog-ui | stage-complete | plan → implement |
+| 2026-10-29T09:10:29Z | 023-cloud-lyrics-catalog-ui | stage-complete | implement → test |
+| 2026-10-29T09:42:06Z | 023-cloud-lyrics-catalog-ui | completed | All 3 stages done; 201 core + 28 zema_data + 675 app tests pass; checked on the emulator |
 
 ## Notes
 - Bolt 022: zema_data (SupabaseCatalogRepository, no dart:io) with typed failures; song_index() added to the backend (scope addition for FR-6); app reads ZEMA_BACKEND_URL/KEY from --dart-define, no key committed (tool/backend_env.sh writes a gitignored file); emulator check deferred to 023/024.
+- Bolt 023: song index in Drift v3 (catalog_songs; v4/v5 for cache and reports); CatalogIndexRefresher (6 h, force, shared runs); linking and the picker use the index via SongIdentity; pull to refresh in Search; emulator found and fixed a scroll-physics bug; failing widget tests can hang a run (not investigated).

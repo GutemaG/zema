@@ -82,7 +82,18 @@ class LyricSection {
 }
 
 /// A song's canonical text: its sections and the order they are sung in.
-class Song {
+/// What a song is known by: enough to match tracks and find it by title.
+/// Both a full [Song] and a catalog index entry have it.
+abstract interface class SongIdentity {
+  String get id;
+  String get title;
+
+  /// The title in Latin letters, when known.
+  String? get transliteration;
+  String? get artist;
+}
+
+class Song implements SongIdentity {
   const Song({
     required this.id,
     required this.title,
@@ -115,11 +126,13 @@ class Song {
     );
   }
 
+  @override
   final String id;
+  @override
   final String title;
-
-  /// The title in Latin letters, when known.
+  @override
   final String? transliteration;
+  @override
   final String? artist;
   final String? album;
   final List<LyricSection> sections;

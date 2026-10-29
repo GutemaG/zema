@@ -5,12 +5,17 @@ import 'package:zema/app/database/zema_database.dart' show ZemaDatabase;
 import 'package:zema/app/routes.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
 import 'package:zema/features/library/application/library_sync_controller.dart';
+import 'package:zema/features/catalog/application/catalog_index.dart';
 import 'package:zema/features/library/presentation/library_screen.dart';
+import 'package:zema/features/lyrics/application/lyrics_links.dart';
+import 'package:zema/features/lyrics/data/bundled_lyrics_repository.dart';
 import 'package:zema/features/lyrics/presentation/match_lyrics_sheet.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../helpers/fake_catalog.dart';
 import '../../../helpers/fake_library.dart';
+import '../../../helpers/fake_lyrics.dart';
 import '../../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
@@ -34,15 +39,24 @@ class _App {
   final Map<String, int> ids;
 }
 
-Future<_App> _pump(WidgetTester tester, {double textScale = 1}) async {
+Future<_App> _pump(
+  WidgetTester tester, {
+  double textScale = 1,
+  CatalogRepository? catalog,
+  List<CatalogEntry>? savedIndex,
+}) async {
   useScreen(tester, size: const Size(360, 1000), textScale: textScale);
   final db = memoryDatabase();
+  if (savedIndex != null) {
+    await tester.runAsync(() => db.catalogDao.replaceAll(savedIndex));
+  }
   final scanner = FakeLibraryScanner(_files());
   await pumpZemaApp(
     tester,
     location: AppRoutes.library,
     libraryScanner: scanner,
     database: db,
+    catalog: catalog,
     savedPrefs: {LibraryAccessController.explainedKey: true},
   );
   // Asset loading and the database run outside the fake clock.
@@ -240,5 +254,134 @@ void main() {
       expect(tester.takeException(), isNull, reason: '$brightness');
       await tester.pumpWidget(const SizedBox());
     }
+  });
+
+  group('The song index', () {
+    /// The bundled sample songs as index entries.
+    Future<List<CatalogEntry>> samples(WidgetTester tester) async => [
+      for (final song in (await tester.runAsync(
+        BundledLyricsRepository(DiskAssetBundle()).songs,
+      ))!)
+        catalogEntry(song),
+    ];
+
+    testWidgets('the start-up refresh fills it from the catalog', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(entries: await samples(tester));
+      final app = await _pump(tester, catalog: catalog);
+
+      expect(catalog.indexCalls, 1);
+      expect(
+        (await tester.runAsync(app.db.catalogDao.count))!,
+        catalog.entries.length,
+      );
+      expect(await _linked(tester, app, 'ብርሃን ሆንልን'), 'birhan-honlin');
+    });
+
+    testWidgets('offline, tracks link from the saved index', (tester) async {
+      final catalog = FakeCatalogRepository()
+        ..failure = const NetworkFailure('offline');
+      final app = await _pump(
+        tester,
+        catalog: catalog,
+        savedIndex: await samples(tester),
+      );
+
+      expect(catalog.indexCalls, 1);
+      expect(tester.takeException(), isNull);
+      expect(await _linked(tester, app, 'ብርሃን ሆንልን'), 'birhan-honlin');
+      expect(
+        await _linked(tester, app, 'Galatoomi - Official Video 2020'),
+        'galatoomi',
+      );
+    });
+
+    testWidgets('first launch offline: no links, no error', (tester) async {
+      final catalog = FakeCatalogRepository()
+        ..failure = const NetworkFailure('offline');
+      final app = await _pump(tester, catalog: catalog);
+
+      expect(tester.takeException(), isNull);
+      expect(await _rows(tester, app), isEmpty);
+      await tester.tap(find.byTooltip(_l10n.songMenu('ብርሃን ሆንልን')));
+      await _settle(tester);
+      expect(find.text(_l10n.songMatchLyrics), findsOneWidget);
+    });
+
+    testWidgets('a song removed from the catalog unlinks its tracks', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(entries: await samples(tester));
+      final app = await _pump(tester, catalog: catalog);
+      // A manual link to the song that will be removed.
+      await _menu(tester, 'Amlak', _l10n.songMatchLyrics);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(MatchLyricsSheet),
+          matching: find.text('Galatoomi'),
+        ),
+      );
+      await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+      await _settle(tester);
+      final container = _container(tester);
+      final amlak = app.ids['Amlak']!;
+      final galatoomi = app.ids['Galatoomi - Official Video 2020']!;
+      expect(container.read(trackSongProvider(amlak)).value?.id, 'galatoomi');
+
+      catalog.entries = [
+        for (final e in catalog.entries)
+          if (e.id != 'galatoomi') e,
+      ];
+      await tester.runAsync(
+        () =>
+            container.read(catalogIndexRefresherProvider).refresh(force: true),
+      );
+      await _settle(tester);
+
+      // The automatic link is gone; the manual one stays but shows no song.
+      expect((await _rows(tester, app))[galatoomi], isNull);
+      expect((await _rows(tester, app))[amlak], ('galatoomi', true));
+      expect(
+        container.read(trackSongProvider(amlak)),
+        const AsyncData<Song?>(null),
+      );
+      expect(
+        container.read(trackSongProvider(galatoomi)),
+        const AsyncData<Song?>(null),
+      );
+      expect(await _linked(tester, app, 'ብርሃን ሆንልን'), 'birhan-honlin');
+    });
+
+    testWidgets('the picker lists the index, not only bundled songs', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(
+        entries: [
+          ...await samples(tester),
+          catalogEntry(
+            const Song(
+              id: 'kidus',
+              title: 'ቅዱስ',
+              transliteration: 'Kidus',
+              sections: [],
+            ),
+          ),
+        ],
+      );
+      await _pump(tester, catalog: catalog);
+
+      await _menu(tester, 'Amlak', _l10n.songMatchLyrics);
+      final sheet = find.byType(MatchLyricsSheet);
+      await tester.enterText(
+        find.descendant(of: sheet, matching: find.byType(TextField)),
+        'kidus',
+      );
+      await _settle(tester);
+      expect(
+        find.descendant(of: sheet, matching: find.text('ቅዱስ')),
+        findsOneWidget,
+      );
+    });
   });
 }

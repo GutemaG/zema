@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import 'catalog_dao.dart';
 import 'collections_dao.dart';
 import 'history_dao.dart';
 import 'library_dao.dart';
@@ -22,8 +23,9 @@ part 'zema_database.g.dart';
     PlaylistEntries,
     PlayEvents,
     LyricsLinks,
+    CatalogSongs,
   ],
-  daos: [LibraryDao, CollectionsDao, HistoryDao, LyricsLinksDao],
+  daos: [LibraryDao, CollectionsDao, HistoryDao, LyricsLinksDao, CatalogDao],
 )
 class ZemaDatabase extends _$ZemaDatabase {
   ZemaDatabase(super.executor);
@@ -32,7 +34,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -40,6 +42,8 @@ class ZemaDatabase extends _$ZemaDatabase {
     onUpgrade: stepByStep(
       // v2: links from tracks to lyrics songs.
       from1To2: (m, schema) => m.createTable(schema.lyricsLinks),
+      // v3: the catalog's song index.
+      from2To3: (m, schema) => m.createTable(schema.catalogSongs),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

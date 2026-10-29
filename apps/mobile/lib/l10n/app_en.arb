@@ -1257,5 +1257,13 @@
   "settingsLyricsDefaultOffsetNote": "Songs you've adjusted in Now Playing keep their own timing.",
   "@settingsLyricsDefaultOffsetNote": {
     "description": "Note under the default sync timing setting."
+  },
+  "catalogRefreshFailed": "Couldn't update the song list. Check your connection.",
+  "@catalogRefreshFailed": {
+    "description": "Snackbar when pulling to refresh the catalog's song list fails."
+  },
+  "catalogNotConfigured": "The song list isn't available in this build.",
+  "@catalogNotConfigured": {
+    "description": "Snackbar when pulling to refresh in a build without a backend."
   }
 }

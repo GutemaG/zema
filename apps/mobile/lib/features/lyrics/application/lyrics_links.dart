@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
+import '../../catalog/application/catalog_index.dart';
 import '../../library/application/library_providers.dart';
 import '../data/bundled_lyrics_repository.dart';
 import '../data/lyrics_links_repository.dart';
@@ -24,12 +25,12 @@ final _linksProvider = StreamProvider<Map<int, LyricsLink>>(
   (ref) => ref.watch(lyricsLinksRepositoryProvider).watchLinks(),
 );
 
-/// Links every track without a manual choice to the song its title
-/// matches (see [SongMatcher]), whenever the library or the lyrics change.
-/// Kept alive by the app shell.
+/// Links every track without a manual choice to the catalog song its title
+/// matches (see [SongMatcher]), whenever the library or the song index
+/// change. Works offline from the saved index. Kept alive by the app shell.
 final lyricsLinkSyncProvider = Provider<void>((ref) {
   final tracks = ref.watch(libraryTracksProvider).value;
-  final songs = ref.watch(lyricsSongsProvider).value;
+  final songs = ref.watch(catalogEntriesProvider).value;
   if (tracks == null || songs == null) return;
   final matcher = SongMatcher(songs);
   final links = <int, String>{
@@ -48,22 +49,30 @@ final lyricsLinkSyncProvider = Provider<void>((ref) {
 });
 
 /// The lyrics song [trackId] is linked to, or null. A link to a song that
-/// no longer exists counts as none.
+/// is no longer in the catalog's index (or has no lyrics here) counts as
+/// none.
 final trackSongProvider = Provider.family<AsyncValue<Song?>, int>((
   ref,
   trackId,
 ) {
   final links = ref.watch(_linksProvider);
+  final index = ref.watch(catalogEntriesProvider);
   final songs = ref.watch(lyricsSongsProvider);
-  return switch ((links, songs)) {
-    (AsyncData(value: final links), AsyncData(value: final songs)) => AsyncData(
-      switch (links[trackId]?.songId) {
-        final id? => songs.where((s) => s.id == id).firstOrNull,
-        null => null,
-      },
-    ),
-    (AsyncError(:final error, :final stackTrace), _) ||
+  return switch ((links, index, songs)) {
     (
+      AsyncData(value: final links),
+      AsyncData(value: final index),
+      AsyncData(value: final songs),
+    ) =>
+      AsyncData(switch (links[trackId]?.songId) {
+        final id? when index.any((e) => e.id == id) =>
+          songs.where((s) => s.id == id).firstOrNull,
+        _ => null,
+      }),
+    (AsyncError(:final error, :final stackTrace), _, _) ||
+    (_, AsyncError(:final error, :final stackTrace), _) ||
+    (
+      _,
       _,
       AsyncError(:final error, :final stackTrace),
     ) => AsyncError(error, stackTrace),
@@ -82,7 +91,7 @@ class LyricsLinksController {
   final LyricsLinksRepository _links;
 
   /// Links [track] to [song]; automatic matching won't change it.
-  Future<void> link(Track track, Song song) =>
+  Future<void> link(Track track, SongIdentity song) =>
       _links.setManual(track.id, song.id);
 
   /// Marks [track] as having no lyrics; automatic matching won't link it.

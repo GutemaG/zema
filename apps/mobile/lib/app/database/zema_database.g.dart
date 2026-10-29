@@ -2711,6 +2711,525 @@ class LyricsLinksCompanion extends UpdateCompanion<LyricsLinkRow> {
   }
 }
 
+class $CatalogSongsTable extends CatalogSongs
+    with TableInfo<$CatalogSongsTable, CatalogSongRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CatalogSongsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _transliterationMeta = const VerificationMeta(
+    'transliteration',
+  );
+  @override
+  late final GeneratedColumn<String> transliteration = GeneratedColumn<String>(
+    'transliteration',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _artistMeta = const VerificationMeta('artist');
+  @override
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+    'artist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _albumMeta = const VerificationMeta('album');
+  @override
+  late final GeneratedColumn<String> album = GeneratedColumn<String>(
+    'album',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _approvedAtMeta = const VerificationMeta(
+    'approvedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> approvedAt = GeneratedColumn<DateTime>(
+    'approved_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    transliteration,
+    artist,
+    album,
+    synced,
+    version,
+    approvedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'catalog_songs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CatalogSongRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('transliteration')) {
+      context.handle(
+        _transliterationMeta,
+        transliteration.isAcceptableOrUnknown(
+          data['transliteration']!,
+          _transliterationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('artist')) {
+      context.handle(
+        _artistMeta,
+        artist.isAcceptableOrUnknown(data['artist']!, _artistMeta),
+      );
+    }
+    if (data.containsKey('album')) {
+      context.handle(
+        _albumMeta,
+        album.isAcceptableOrUnknown(data['album']!, _albumMeta),
+      );
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_syncedMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('approved_at')) {
+      context.handle(
+        _approvedAtMeta,
+        approvedAt.isAcceptableOrUnknown(data['approved_at']!, _approvedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_approvedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CatalogSongRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CatalogSongRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      transliteration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transliteration'],
+      ),
+      artist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}artist'],
+      ),
+      album: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}album'],
+      ),
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      approvedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}approved_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CatalogSongsTable createAlias(String alias) {
+    return $CatalogSongsTable(attachedDatabase, alias);
+  }
+}
+
+class CatalogSongRow extends DataClass implements Insertable<CatalogSongRow> {
+  final String id;
+  final String title;
+  final String? transliteration;
+  final String? artist;
+  final String? album;
+  final bool synced;
+  final int version;
+  final DateTime approvedAt;
+  const CatalogSongRow({
+    required this.id,
+    required this.title,
+    this.transliteration,
+    this.artist,
+    this.album,
+    required this.synced,
+    required this.version,
+    required this.approvedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || transliteration != null) {
+      map['transliteration'] = Variable<String>(transliteration);
+    }
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
+    if (!nullToAbsent || album != null) {
+      map['album'] = Variable<String>(album);
+    }
+    map['synced'] = Variable<bool>(synced);
+    map['version'] = Variable<int>(version);
+    map['approved_at'] = Variable<DateTime>(approvedAt);
+    return map;
+  }
+
+  CatalogSongsCompanion toCompanion(bool nullToAbsent) {
+    return CatalogSongsCompanion(
+      id: Value(id),
+      title: Value(title),
+      transliteration: transliteration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transliteration),
+      artist: artist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(artist),
+      album: album == null && nullToAbsent
+          ? const Value.absent()
+          : Value(album),
+      synced: Value(synced),
+      version: Value(version),
+      approvedAt: Value(approvedAt),
+    );
+  }
+
+  factory CatalogSongRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CatalogSongRow(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      transliteration: serializer.fromJson<String?>(json['transliteration']),
+      artist: serializer.fromJson<String?>(json['artist']),
+      album: serializer.fromJson<String?>(json['album']),
+      synced: serializer.fromJson<bool>(json['synced']),
+      version: serializer.fromJson<int>(json['version']),
+      approvedAt: serializer.fromJson<DateTime>(json['approvedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'transliteration': serializer.toJson<String?>(transliteration),
+      'artist': serializer.toJson<String?>(artist),
+      'album': serializer.toJson<String?>(album),
+      'synced': serializer.toJson<bool>(synced),
+      'version': serializer.toJson<int>(version),
+      'approvedAt': serializer.toJson<DateTime>(approvedAt),
+    };
+  }
+
+  CatalogSongRow copyWith({
+    String? id,
+    String? title,
+    Value<String?> transliteration = const Value.absent(),
+    Value<String?> artist = const Value.absent(),
+    Value<String?> album = const Value.absent(),
+    bool? synced,
+    int? version,
+    DateTime? approvedAt,
+  }) => CatalogSongRow(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    transliteration: transliteration.present
+        ? transliteration.value
+        : this.transliteration,
+    artist: artist.present ? artist.value : this.artist,
+    album: album.present ? album.value : this.album,
+    synced: synced ?? this.synced,
+    version: version ?? this.version,
+    approvedAt: approvedAt ?? this.approvedAt,
+  );
+  CatalogSongRow copyWithCompanion(CatalogSongsCompanion data) {
+    return CatalogSongRow(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      transliteration: data.transliteration.present
+          ? data.transliteration.value
+          : this.transliteration,
+      artist: data.artist.present ? data.artist.value : this.artist,
+      album: data.album.present ? data.album.value : this.album,
+      synced: data.synced.present ? data.synced.value : this.synced,
+      version: data.version.present ? data.version.value : this.version,
+      approvedAt: data.approvedAt.present
+          ? data.approvedAt.value
+          : this.approvedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogSongRow(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('transliteration: $transliteration, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('synced: $synced, ')
+          ..write('version: $version, ')
+          ..write('approvedAt: $approvedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    transliteration,
+    artist,
+    album,
+    synced,
+    version,
+    approvedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CatalogSongRow &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.transliteration == this.transliteration &&
+          other.artist == this.artist &&
+          other.album == this.album &&
+          other.synced == this.synced &&
+          other.version == this.version &&
+          other.approvedAt == this.approvedAt);
+}
+
+class CatalogSongsCompanion extends UpdateCompanion<CatalogSongRow> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String?> transliteration;
+  final Value<String?> artist;
+  final Value<String?> album;
+  final Value<bool> synced;
+  final Value<int> version;
+  final Value<DateTime> approvedAt;
+  final Value<int> rowid;
+  const CatalogSongsCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.transliteration = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.version = const Value.absent(),
+    this.approvedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CatalogSongsCompanion.insert({
+    required String id,
+    required String title,
+    this.transliteration = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    required bool synced,
+    required int version,
+    required DateTime approvedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       title = Value(title),
+       synced = Value(synced),
+       version = Value(version),
+       approvedAt = Value(approvedAt);
+  static Insertable<CatalogSongRow> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? transliteration,
+    Expression<String>? artist,
+    Expression<String>? album,
+    Expression<bool>? synced,
+    Expression<int>? version,
+    Expression<DateTime>? approvedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (transliteration != null) 'transliteration': transliteration,
+      if (artist != null) 'artist': artist,
+      if (album != null) 'album': album,
+      if (synced != null) 'synced': synced,
+      if (version != null) 'version': version,
+      if (approvedAt != null) 'approved_at': approvedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CatalogSongsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<String?>? transliteration,
+    Value<String?>? artist,
+    Value<String?>? album,
+    Value<bool>? synced,
+    Value<int>? version,
+    Value<DateTime>? approvedAt,
+    Value<int>? rowid,
+  }) {
+    return CatalogSongsCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      transliteration: transliteration ?? this.transliteration,
+      artist: artist ?? this.artist,
+      album: album ?? this.album,
+      synced: synced ?? this.synced,
+      version: version ?? this.version,
+      approvedAt: approvedAt ?? this.approvedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (transliteration.present) {
+      map['transliteration'] = Variable<String>(transliteration.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
+    if (album.present) {
+      map['album'] = Variable<String>(album.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (approvedAt.present) {
+      map['approved_at'] = Variable<DateTime>(approvedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogSongsCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('transliteration: $transliteration, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('synced: $synced, ')
+          ..write('version: $version, ')
+          ..write('approvedAt: $approvedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -2724,6 +3243,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   );
   late final $PlayEventsTable playEvents = $PlayEventsTable(this);
   late final $LyricsLinksTable lyricsLinks = $LyricsLinksTable(this);
+  late final $CatalogSongsTable catalogSongs = $CatalogSongsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -2748,6 +3268,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final LyricsLinksDao lyricsLinksDao = LyricsLinksDao(
     this as ZemaDatabase,
   );
+  late final CatalogDao catalogDao = CatalogDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2761,6 +3282,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     playlistEntries,
     playEvents,
     lyricsLinks,
+    catalogSongs,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -5583,6 +6105,276 @@ typedef $$LyricsLinksTableProcessedTableManager =
       LyricsLinkRow,
       PrefetchHooks Function({bool trackId})
     >;
+typedef $$CatalogSongsTableCreateCompanionBuilder =
+    CatalogSongsCompanion Function({
+      required String id,
+      required String title,
+      Value<String?> transliteration,
+      Value<String?> artist,
+      Value<String?> album,
+      required bool synced,
+      required int version,
+      required DateTime approvedAt,
+      Value<int> rowid,
+    });
+typedef $$CatalogSongsTableUpdateCompanionBuilder =
+    CatalogSongsCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<String?> transliteration,
+      Value<String?> artist,
+      Value<String?> album,
+      Value<bool> synced,
+      Value<int> version,
+      Value<DateTime> approvedAt,
+      Value<int> rowid,
+    });
+
+class $$CatalogSongsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $CatalogSongsTable> {
+  $$CatalogSongsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get transliteration => $composableBuilder(
+    column: $table.transliteration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get artist => $composableBuilder(
+    column: $table.artist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get album => $composableBuilder(
+    column: $table.album,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get approvedAt => $composableBuilder(
+    column: $table.approvedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CatalogSongsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $CatalogSongsTable> {
+  $$CatalogSongsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get transliteration => $composableBuilder(
+    column: $table.transliteration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get artist => $composableBuilder(
+    column: $table.artist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get album => $composableBuilder(
+    column: $table.album,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get approvedAt => $composableBuilder(
+    column: $table.approvedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CatalogSongsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $CatalogSongsTable> {
+  $$CatalogSongsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get transliteration => $composableBuilder(
+    column: $table.transliteration,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get artist =>
+      $composableBuilder(column: $table.artist, builder: (column) => column);
+
+  GeneratedColumn<String> get album =>
+      $composableBuilder(column: $table.album, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get approvedAt => $composableBuilder(
+    column: $table.approvedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$CatalogSongsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $CatalogSongsTable,
+          CatalogSongRow,
+          $$CatalogSongsTableFilterComposer,
+          $$CatalogSongsTableOrderingComposer,
+          $$CatalogSongsTableAnnotationComposer,
+          $$CatalogSongsTableCreateCompanionBuilder,
+          $$CatalogSongsTableUpdateCompanionBuilder,
+          (
+            CatalogSongRow,
+            BaseReferences<_$ZemaDatabase, $CatalogSongsTable, CatalogSongRow>,
+          ),
+          CatalogSongRow,
+          PrefetchHooks Function()
+        > {
+  $$CatalogSongsTableTableManager(_$ZemaDatabase db, $CatalogSongsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CatalogSongsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CatalogSongsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CatalogSongsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> transliteration = const Value.absent(),
+                Value<String?> artist = const Value.absent(),
+                Value<String?> album = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<DateTime> approvedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CatalogSongsCompanion(
+                id: id,
+                title: title,
+                transliteration: transliteration,
+                artist: artist,
+                album: album,
+                synced: synced,
+                version: version,
+                approvedAt: approvedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String title,
+                Value<String?> transliteration = const Value.absent(),
+                Value<String?> artist = const Value.absent(),
+                Value<String?> album = const Value.absent(),
+                required bool synced,
+                required int version,
+                required DateTime approvedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CatalogSongsCompanion.insert(
+                id: id,
+                title: title,
+                transliteration: transliteration,
+                artist: artist,
+                album: album,
+                synced: synced,
+                version: version,
+                approvedAt: approvedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CatalogSongsTable, CatalogSongRow>(table),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $CatalogSongsTable,
+                    CatalogSongRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CatalogSongsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $CatalogSongsTable,
+      CatalogSongRow,
+      $$CatalogSongsTableFilterComposer,
+      $$CatalogSongsTableOrderingComposer,
+      $$CatalogSongsTableAnnotationComposer,
+      $$CatalogSongsTableCreateCompanionBuilder,
+      $$CatalogSongsTableUpdateCompanionBuilder,
+      (
+        CatalogSongRow,
+        BaseReferences<_$ZemaDatabase, $CatalogSongsTable, CatalogSongRow>,
+      ),
+      CatalogSongRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -5603,4 +6395,6 @@ class $ZemaDatabaseManager {
       $$PlayEventsTableTableManager(_db, _db.playEvents);
   $$LyricsLinksTableTableManager get lyricsLinks =>
       $$LyricsLinksTableTableManager(_db, _db.lyricsLinks);
+  $$CatalogSongsTableTableManager get catalogSongs =>
+      $$CatalogSongsTableTableManager(_db, _db.catalogSongs);
 }

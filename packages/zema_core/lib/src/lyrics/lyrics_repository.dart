@@ -25,11 +25,11 @@ abstract interface class LyricsRepository {
 }
 
 /// The text a song is found by in [LyricsRepository.search].
-SearchKey songSearchKey(Song song) =>
+SearchKey songSearchKey(SongIdentity song) =>
     SearchKey([song.title, ?song.transliteration, ?song.artist].join(' '));
 
 /// [songs] matching [query], best first, then in their given order.
-List<Song> searchSongs(List<Song> songs, String query) {
+List<S> searchSongs<S extends SongIdentity>(List<S> songs, String query) {
   final key = SearchKey(query);
   if (key.isEmpty) return const [];
   final scored =

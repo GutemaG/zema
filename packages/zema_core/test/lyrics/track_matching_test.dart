@@ -34,13 +34,14 @@ Song _song(
 );
 
 void main() {
-  final matcher = SongMatcher([
+  final songs = [
     _song('tselot', 'ጸሎት', transliteration: 'Tselot'),
     _song('selam', 'ሰላም ለዚህ ቤት', transliteration: 'Selam Lezih Bet'),
     _song('amlak', 'Amlak', artist: 'Zerfe Kebede'),
     _song('kidus-a', 'ቅዱስ', artist: 'Choir A'),
     _song('kidus-b', 'ቅዱስ', artist: 'Choir B'),
-  ]);
+  ];
+  final matcher = SongMatcher(songs);
 
   String? match(String title, {String? artist}) =>
       matcher.match(_track(title, artist: artist))?.id;
@@ -96,7 +97,33 @@ void main() {
     });
 
     test('no songs, no links', () {
-      expect(SongMatcher(const []).match(_track('ጸሎት')), isNull);
+      expect(SongMatcher<Song>(const []).match(_track('ጸሎት')), isNull);
     });
+  });
+
+  test('catalog index entries match exactly like full songs', () {
+    final entries = SongMatcher([
+      for (final s in songs)
+        CatalogEntry(
+          id: s.id,
+          title: s.title,
+          transliteration: s.transliteration,
+          artist: s.artist,
+          synced: true,
+          version: 1,
+          approvedAt: DateTime.utc(2026),
+        ),
+    ]);
+    for (final (title, artist) in [
+      ('ጸሎት', null),
+      ('Selam Lezih Bet - Official Video', null),
+      ('amlak', 'Zerfe'),
+      ('ቅዱስ', 'Choir B'),
+      ('ቅዱስ', null),
+      ('Official Video', null),
+    ]) {
+      final track = _track(title, artist: artist);
+      expect(entries.match(track)?.id, matcher.match(track)?.id, reason: title);
+    }
   });
 }

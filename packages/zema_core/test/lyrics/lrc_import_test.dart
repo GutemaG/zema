@@ -261,5 +261,27 @@ just words
       expect(ids(''), isEmpty);
       expect(ids('qqqzzz'), isEmpty);
     });
+
+    test('works on catalog index entries too', () {
+      final entries = [
+        for (final s in songs)
+          CatalogEntry(
+            id: s.id,
+            title: s.title,
+            transliteration: s.transliteration,
+            artist: s.artist,
+            synced: false,
+            version: 1,
+            approvedAt: DateTime.utc(2026),
+          ),
+      ];
+      for (final q in ['birhan', 'ብርሃን', 'selam', 'zema samples', 'qqqzzz']) {
+        expect(
+          [for (final e in searchSongs(entries, q)) e.id],
+          ids(q),
+          reason: q,
+        );
+      }
+    });
   });
 }

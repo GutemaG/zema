@@ -971,4 +971,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsLyricsDefaultOffsetNote =>
       'Songs you\'ve adjusted in Now Playing keep their own timing.';
+
+  @override
+  String get catalogRefreshFailed =>
+      'Couldn\'t update the song list. Check your connection.';
+
+  @override
+  String get catalogNotConfigured =>
+      'The song list isn\'t available in this build.';
 }

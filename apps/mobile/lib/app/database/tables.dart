@@ -113,3 +113,20 @@ class LyricsLinks extends Table {
   @override
   Set<Column<Object>> get primaryKey => {trackId};
 }
+
+/// The catalog's song index (no lyrics), refreshed from the backend and kept
+/// for offline linking and title search. Replaced whole on each refresh.
+@DataClassName('CatalogSongRow')
+class CatalogSongs extends Table {
+  TextColumn get id => text()();
+  TextColumn get title => text()();
+  TextColumn get transliteration => text().nullable()();
+  TextColumn get artist => text().nullable()();
+  TextColumn get album => text().nullable()();
+  BoolColumn get synced => boolean()();
+  IntColumn get version => integer()();
+  DateTimeColumn get approvedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}

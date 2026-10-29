@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zema_core/zema_core.dart' show LyricsRepository;
+import 'package:zema_core/zema_core.dart'
+    show CatalogRepository, LyricsRepository;
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/l10n/language_providers.dart';
 import 'package:zema/app/router.dart';
@@ -49,6 +50,8 @@ Future<void> pumpZemaApp(
   AudioShareService? shareService,
   ZemaAudioHandler? audioHandler,
   LyricsRepository? lyricsRepository,
+  CatalogRepository? catalog,
+  bool backendConfigured = true,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -69,7 +72,11 @@ Future<void> pumpZemaApp(
           shareService: shareService,
         ),
         ...playerOverrides(handler: audioHandler),
-        ...lyricsOverrides(repository: lyricsRepository),
+        ...lyricsOverrides(
+          repository: lyricsRepository,
+          catalog: catalog,
+          backendConfigured: backendConfigured,
+        ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(
           (ref) => appVersion?.call() ?? Future.value('1.0.0 (1)'),
