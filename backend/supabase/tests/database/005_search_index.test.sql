@@ -3,6 +3,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
+-- Start from an empty catalog (the seed songs come back on rollback).
+delete from public.songs;
+
 select plan(14);
 
 insert into public.songs (id, title, transliteration, status)

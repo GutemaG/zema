@@ -4,6 +4,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
+-- Start from an empty catalog (the seed songs come back on rollback).
+delete from public.songs;
+
 select plan(170);
 
 insert into public.songs (id, title, transliteration, artist, status) values ('birhan-honlin', 'ብርሃን ሆንልን', 'Birhan Honlin', 'Zema Samples', 'approved');

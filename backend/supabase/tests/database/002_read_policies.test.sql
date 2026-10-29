@@ -2,6 +2,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
+-- Start from an empty catalog (the seed songs come back on rollback).
+delete from public.songs;
+
 select plan(31);
 
 -- Fixtures, as the table owner: one song per status, each with every part.

@@ -4,9 +4,9 @@ intent: 004-cloud-lyrics-catalog
 unit_type: backend
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: stories-defined
-created: 2026-10-29T05:59:04Z
-updated: 2026-10-29T05:59:04Z
+status: complete
+created: '2026-10-29T05:59:04Z'
+updated: '2026-10-29T05:59:04Z'
 ---
 
 # Unit Brief: Cloud Lyrics Catalog Backend
@@ -60,7 +60,7 @@ The first backend: a local Supabase project holding the shared lyrics catalog, w
 | 003-report-function | Rate-limited report function | Should | Complete |
 | 004-search-rules-to-sql | Search rules generated into SQL | Must | Complete |
 | 005-server-search | Server search function | Must | Complete |
-| 006-seed-script | Seed script and placeholder songs | Must | Planned |
+| 006-seed-script | Seed script and placeholder songs | Must | Complete |
 
 ---
 

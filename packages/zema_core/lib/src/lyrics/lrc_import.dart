@@ -1,5 +1,6 @@
 import '../failures.dart';
 import 'lyrics_models.dart';
+import 'sync_engine.dart';
 
 /// A line of LRC text the importer couldn't use.
 class LrcSkippedLine {
@@ -218,4 +219,72 @@ bool _blockAt(List<LyricLine> lines, int at, List<LyricLine> block) {
     if (lines[at + j].text != block[j].text) return false;
   }
   return true;
+}
+
+/// A song as the catalog stores it: the song, one recording and its timing.
+class CatalogSong {
+  const CatalogSong({
+    required this.song,
+    required this.recording,
+    required this.timing,
+    this.skipped = const [],
+  });
+
+  final Song song;
+  final Recording recording;
+  final SyncTiming timing;
+
+  /// LRC lines the importer couldn't use.
+  final List<LrcSkippedLine> skipped;
+
+  /// The catalog's document for this song (the backend's `get_song`).
+  Map<String, Object?> toDocument() => {
+    'song': song.toJson(),
+    'recordings': [recording.toJson()],
+    'timings': [timing.toJson()],
+  };
+}
+
+/// One entry of a lyrics index (`{"id", "file", "transliteration"?,
+/// "durationMs"?}`) with the LRC text of its file: the song, recorded once,
+/// with the recording's ID equal to the song's.
+///
+/// Throws [LyricsFormatFailure] when the entry lacks an ID or file, the LRC
+/// has no timed lines, or the timing doesn't fit the sung lines.
+CatalogSong importIndexedLrc(
+  Map<String, Object?> entry,
+  String lrc, {
+  RecordingSource source = RecordingSource.bundled,
+}) {
+  final id = switch (entry) {
+    {'id': final String id, 'file': String _} => id,
+    _ => throw const LyricsFormatFailure('An index entry needs id and file'),
+  };
+  final imported = importLrc(lrc, songId: id, recordingId: id, source: source);
+  // Throws when the timing doesn't fit the lines.
+  SyncedLyrics.of(imported.song, imported.timing);
+  final song = imported.song;
+  final recording = imported.recording;
+  final durationMs = entry['durationMs'];
+  return CatalogSong(
+    song: Song(
+      id: song.id,
+      title: song.title,
+      transliteration: entry['transliteration'] as String?,
+      artist: song.artist,
+      album: song.album,
+      sections: song.sections,
+      playOrder: song.playOrder,
+    ),
+    recording: Recording(
+      id: recording.id,
+      songId: recording.songId,
+      source: recording.source,
+      artist: recording.artist,
+      duration: durationMs is int ? Duration(milliseconds: durationMs) : null,
+      offset: recording.offset,
+    ),
+    timing: imported.timing,
+    skipped: imported.skipped,
+  );
 }

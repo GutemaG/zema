@@ -3,14 +3,23 @@ id: 021-cloud-lyrics-catalog-backend
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 006-seed-script
-created: 2026-10-29T05:59:04Z
-started: null
-completed: null
+created: '2026-10-29T05:59:04Z'
+started: '2026-10-29T08:08:00Z'
+completed: 2026-10-29T08:18:17Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T08:12:35Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T08:12:35Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-29T08:18:17Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 020-cloud-lyrics-catalog-backend
 enables_bolts:
@@ -32,7 +41,7 @@ Seed script; the placeholder songs move to the backend.
 
 ## Stories Included
 
-- [ ] **006-seed-script**: Seed script and placeholder songs - Priority: Must
+- [x] **006-seed-script**: Seed script and placeholder songs - Priority: Must
 
 ## Bolt Type
 
@@ -41,9 +50,9 @@ Seed script; the placeholder songs move to the backend.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -55,11 +64,11 @@ Seed script; the placeholder songs move to the backend.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
 
 ## Notes
 

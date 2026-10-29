@@ -82,7 +82,7 @@ Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/001-cloud-lyrics-catal
 - [x] **003-report-function** (cloud-lyrics-catalog-backend): Rate-limited report function - Should - ✅ COMPLETED
 - [x] **004-search-rules-to-sql** (cloud-lyrics-catalog-backend): Search rules generated into SQL - Must - ✅ COMPLETED
 - [x] **005-server-search** (cloud-lyrics-catalog-backend): Server search function - Must - ✅ COMPLETED
-- [ ] **006-seed-script** (cloud-lyrics-catalog-backend): Seed script and placeholder songs - Must - ⬜ GENERATED
+- [x] **006-seed-script** (cloud-lyrics-catalog-backend): Seed script and placeholder songs - Must - ✅ COMPLETED
 
 Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/002-cloud-lyrics-catalog-ui/stories/`
 
@@ -104,6 +104,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 9
+- **Generated**: 8
 - **In Progress**: 0
-- **Completed**: 53
+- **Completed**: 54

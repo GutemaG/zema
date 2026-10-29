@@ -1,0 +1,22 @@
+{
+  "note": "Songs loaded into the catalog by packages/zema_core/tool/generate_seed_sql.dart. The three placeholder songs were written for Zema to test synced lyrics; they are not real mezmur and need review by a native speaker before any release. Add a song: put its LRC file here, add an entry (id, file, optional transliteration, durationMs, status), run the generator, then npx supabase db reset.",
+  "songs": [
+    {
+      "id": "birhan-honlin",
+      "file": "birhan-honlin.lrc",
+      "transliteration": "Birhan Honlin",
+      "durationMs": 53000
+    },
+    {
+      "id": "selam-lezih-bet",
+      "file": "selam-lezih-bet.lrc",
+      "transliteration": "Selam Lezih Bet",
+      "durationMs": 43000
+    },
+    {
+      "id": "galatoomi",
+      "file": "galatoomi.lrc",
+      "durationMs": 43000
+    }
+  ]
+}

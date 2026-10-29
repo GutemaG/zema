@@ -532,6 +532,11 @@ String parityTestSql() {
   final b = StringBuffer(_header)
     ..writeln('begin;')
     ..writeln('create extension if not exists pgtap with schema extensions;')
+    ..writeln()
+    ..writeln(
+      '-- Start from an empty catalog (the seed songs come back on rollback).',
+    )
+    ..writeln('delete from public.songs;')
     ..writeln();
   final checks = <String>[];
   for (final text in parityTexts) {

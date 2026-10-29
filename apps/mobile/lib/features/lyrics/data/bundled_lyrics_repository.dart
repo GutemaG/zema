@@ -63,36 +63,15 @@ class BundledLyricsRepository implements LyricsRepository {
     if (bundle.songs.containsKey(id)) {
       throw LyricsFormatFailure('Song $id is listed twice');
     }
-    final imported = importLrc(
+    final imported = importIndexedLrc(
+      entry,
       await _assets.loadString('$folder/$file'),
-      songId: id,
-      recordingId: id,
     );
     if (imported.skipped.isNotEmpty) {
       _log.fine('$file: skipped ${imported.skipped.join('; ')}');
     }
-    final song = imported.song;
-    final durationMs = entry['durationMs'];
-    // Throws when the timing doesn't fit the lines.
-    SyncedLyrics.of(song, imported.timing);
-    bundle.songs[id] = Song(
-      id: song.id,
-      title: song.title,
-      transliteration: entry['transliteration'] as String?,
-      artist: song.artist,
-      album: song.album,
-      sections: song.sections,
-      playOrder: song.playOrder,
-    );
-    final recording = imported.recording;
-    bundle.recordings[id] = Recording(
-      id: recording.id,
-      songId: recording.songId,
-      source: recording.source,
-      artist: recording.artist,
-      duration: durationMs is int ? Duration(milliseconds: durationMs) : null,
-      offset: recording.offset,
-    );
+    bundle.songs[id] = imported.song;
+    bundle.recordings[id] = imported.recording;
     bundle.timings[id] = imported.timing;
   }
 

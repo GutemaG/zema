@@ -9,6 +9,8 @@ backend/
     config.toml        local project settings (project ID "zema")
     migrations/        the schema, applied in order; the only source of truth
     tests/database/    pgTAP tests, run with `supabase test db`
+    seed.sql           GENERATED from seed/ (see Seed)
+  seed/                songs to load: index.json + LRC files
   bench/               timing scripts, run by hand
 ```
 
@@ -58,6 +60,26 @@ analytics and the mail catcher are turned off in `config.toml` until they are ne
 | `sync_timings` | One start time per sung line, per recording |
 | `reports` | "Wrong lyrics" reports for moderators |
 | `user_roles`, `contributions` | For accounts and contributions (later intents) |
+
+## Seed
+
+`npx supabase db reset` loads `supabase/seed.sql`: the songs in `seed/` (an
+`index.json` plus one LRC file per song), approved. To add a song:
+
+1. Put its LRC file in `seed/` and add an entry to `seed/index.json`:
+   `{"id": "slug-id", "file": "slug-id.lrc", "transliteration": "…", "durationMs": 43000}`
+   (optional `"status"`: `approved`, the default, `draft` or `rejected`).
+2. Regenerate: `cd packages/zema_core && dart run tool/generate_seed_sql.dart`
+   (bad entries are skipped and listed).
+3. `npx supabase db reset`.
+
+`seed.sql` calls `seed_song(document)`, which leaves an identical song untouched, so the
+same file can be run again on a hosted project (`psql` or
+`npx supabase db push --include-seed`). Only the service role may call it. The app reads
+a song with `get_song(id)`, in the JSON shape `zema_core` uses.
+
+The three songs there now are placeholders written for Zema to test synced lyrics; they
+need review by a native speaker before any release.
 
 ## Search
 
