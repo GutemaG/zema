@@ -74,3 +74,6 @@ firebase-debug.log
 # Tooling
 .fvm/
 .claude/settings.local.json
+
+# Local backend settings with keys (apps/mobile/tool/backend_env.sh)
+apps/mobile/config/*.local.json

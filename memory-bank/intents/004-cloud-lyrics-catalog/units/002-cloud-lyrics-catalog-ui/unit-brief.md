@@ -6,7 +6,7 @@ default_bolt_type: simple-construction-bolt
 phase: inception
 status: stories-defined
 created: 2026-10-29T05:59:04Z
-updated: 2026-10-29T05:59:04Z
+updated: 2026-10-29T08:32:46Z
 ---
 
 # Unit Brief: Cloud Lyrics Catalog UI
@@ -58,7 +58,7 @@ Switch the app from bundled sample lyrics to the cloud catalog without losing of
 
 | Story ID | Title | Priority | Status |
 |----------|-------|----------|--------|
-| 001-zema-data-package | zema_data Supabase repository | Must | Planned |
+| 001-zema-data-package | zema_data Supabase repository | Must | Complete |
 | 002-song-index | Song index on the phone | Must | Planned |
 | 003-lyrics-cache | Lyrics cache; the app reads the catalog | Must | Planned |
 | 004-search-merge | Search merges the phone and the catalog | Must | Planned |

@@ -86,7 +86,7 @@ Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/001-cloud-lyrics-catal
 
 Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/002-cloud-lyrics-catalog-ui/stories/`
 
-- [ ] **001-zema-data-package** (cloud-lyrics-catalog-ui): zema_data Supabase repository - Must - ⬜ GENERATED
+- [x] **001-zema-data-package** (cloud-lyrics-catalog-ui): zema_data Supabase repository - Must - ✅ COMPLETED
 - [ ] **002-song-index** (cloud-lyrics-catalog-ui): Song index on the phone - Must - ⬜ GENERATED
 - [ ] **003-lyrics-cache** (cloud-lyrics-catalog-ui): Lyrics cache; the app reads the catalog - Must - ⬜ GENERATED
 - [ ] **004-search-merge** (cloud-lyrics-catalog-ui): Search merges the phone and the catalog - Must - ⬜ GENERATED
@@ -104,6 +104,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 8
+- **Generated**: 7
 - **In Progress**: 0
-- **Completed**: 54
+- **Completed**: 55

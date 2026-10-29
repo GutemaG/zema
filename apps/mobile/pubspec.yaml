@@ -28,6 +28,8 @@ dependencies:
 
   zema_core:
     path: ../../packages/zema_core
+  zema_data:
+    path: ../../packages/zema_data
   permission_handler: ^12.0.1
   drift: ^2.35.3
   drift_flutter: ^0.3.1

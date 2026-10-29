@@ -5,7 +5,8 @@ environment:
   sdk: ^3.13.5
 
 # Dart pub workspace: one shared lockfile and dependency resolution for all members.
-# Add apps/admin and packages/zema_data here when they are created.
+# Add apps/admin here when it is created.
 workspace:
   - apps/mobile
   - packages/zema_core
+  - packages/zema_data

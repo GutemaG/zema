@@ -1,0 +1,5 @@
+tags:
+  # Runs against the local backend (npx supabase start in backend/); skipped
+  # with a message when it isn't running.
+  backend:
+    timeout: 60s

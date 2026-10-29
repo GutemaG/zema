@@ -3,6 +3,7 @@
 /// Must stay pure Dart: no Flutter imports and no backend (Firebase/Supabase) code.
 library;
 
+export 'src/catalog/catalog.dart';
 export 'src/failures.dart';
 export 'src/library/playlist_order.dart';
 export 'src/library/reconcile_tracks.dart';

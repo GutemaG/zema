@@ -40,3 +40,21 @@ final class DuplicateNameFailure extends ZemaFailure {
 final class LyricsFormatFailure extends ZemaFailure {
   const LyricsFormatFailure(super.message, {super.cause});
 }
+
+/// The backend could not be reached: no connection, a timeout, or the server
+/// is down.
+final class NetworkFailure extends ZemaFailure {
+  const NetworkFailure(super.message, {super.cause});
+}
+
+/// The backend refused the request because too many were sent (e.g. the
+/// daily report limit).
+final class RateLimitFailure extends ZemaFailure {
+  const RateLimitFailure(super.message, {super.cause});
+}
+
+/// The backend answered with an error: a refused key, rejected input or a
+/// server fault.
+final class BackendFailure extends ZemaFailure {
+  const BackendFailure(super.message, {super.cause});
+}

@@ -3,12 +3,12 @@ id: 022-cloud-lyrics-catalog-ui
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 001-zema-data-package
-created: 2026-10-29T05:59:04Z
-started: null
-completed: null
+created: '2026-10-29T05:59:04Z'
+started: '2026-10-29T08:32:46Z'
+completed: 2026-10-29T08:48:08Z
 current_stage: null
 stages_completed: []
 requires_bolts:
@@ -32,7 +32,7 @@ The zema_data package talking to the local backend.
 
 ## Stories Included
 
-- [ ] **001-zema-data-package**: zema_data Supabase repository - Priority: Must
+- [x] **001-zema-data-package**: zema_data Supabase repository - Priority: Must
 
 ## Bolt Type
 
@@ -41,9 +41,9 @@ The zema_data package talking to the local backend.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Pending → implementation-plan.md
+- [x] **2. implement**: Pending → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -55,11 +55,11 @@ The zema_data package talking to the local backend.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
 
 ## Notes
 

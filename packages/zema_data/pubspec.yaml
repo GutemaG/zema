@@ -1,0 +1,19 @@
+name: zema_data
+description: Zema's backend access — the Supabase implementation of zema_core's catalog repository. Pure Dart; no Flutter.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.5
+
+resolution: workspace
+
+dependencies:
+  http: ^1.6.0
+  supabase: ^2.16.5
+  zema_core:
+    path: ../zema_core
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

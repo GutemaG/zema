@@ -37,6 +37,15 @@ Local addresses: API `http://127.0.0.1:54321`, Studio `http://127.0.0.1:54323`,
 database `postgresql://postgres:postgres@127.0.0.1:54322/postgres`. The Android
 emulator reaches the API at `http://10.0.2.2:54321`.
 
+To run the app against the local backend, from `apps/mobile/`:
+
+```text
+tool/backend_env.sh          # writes config/backend.local.json (anon key, gitignored)
+flutter run --dart-define-from-file=config/backend.local.json
+```
+
+For a real phone, pass your computer's address: `tool/backend_env.sh http://192.168.1.20:54321`.
+
 Only Postgres, the API, auth and Studio run locally; realtime, storage, edge functions,
 analytics and the mail catcher are turned off in `config.toml` until they are needed.
 
@@ -76,7 +85,8 @@ analytics and the mail catcher are turned off in `config.toml` until they are ne
 `seed.sql` calls `seed_song(document)`, which leaves an identical song untouched, so the
 same file can be run again on a hosted project (`psql` or
 `npx supabase db push --include-seed`). Only the service role may call it. The app reads
-a song with `get_song(id)`, in the JSON shape `zema_core` uses.
+a song with `get_song(id)`, in the JSON shape `zema_core` uses, and the list of
+approved songs (without lyrics) with `song_index()`.
 
 The three songs there now are placeholders written for Zema to test synced lyrics; they
 need review by a native speaker before any release.
