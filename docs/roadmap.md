@@ -104,6 +104,8 @@ Full list in `docs/flutter-build-notes.md` → "Core domain model".
 | 6 | `006-contribution-and-sync-editor` | Yes | Small (share intent) | ★★★★☆ |
 | 7 | `007-background-detection-floating-lyrics` | No | **Yes** | ★★★★★ |
 | 8 | `008-admin-website` | Yes | No | ★★★☆☆ |
+| 9 | `009-audio-fingerprint-library` | Yes | Maybe (spike decides) | ★★★★☆ |
+| 10 | `010-listen-to-identify` | Yes | Yes (microphone service) | ★★★★★ |
 
 Every stage ends with a working, installable app. Stages 1–3 need no backend at all.
 
@@ -310,6 +312,47 @@ Deployed as static files (Vercel or similar) via GitHub Actions.
 
 **Done when**
 - A moderator can approve a submission from the website and it appears in the app.
+
+---
+
+### Stage 9 — `009-audio-fingerprint-library` ★★★★☆
+
+**Goal:** identify library songs by their sound, not only by their tags.
+
+**Key requirements**
+- Every catalog recording has an audio fingerprint; only fingerprints are stored and
+  sent, never audio (a fingerprint can't be turned back into sound).
+- Fingerprinting and matching in pure Dart in `zema_core`, shared by the app, the seed
+  tool and the backend lookup.
+- The app fingerprints library files in the background (charging by default) and asks
+  the backend which recording each is and where its audio starts; manual link >
+  fingerprint match > title match.
+- Contributors (006) fingerprint their file on the phone and submit the fingerprint.
+
+**Done when**
+- A catalog recording with no tags, named "Track 01", links to its song and uses that
+  recording's timing, in sync within ±0.5 s.
+
+**Spike first:** compare a whole-file (Chromaprint-style) and a peak-pair (Shazam-style)
+method on real mezmur files; decide whether one serves both 009 and 010.
+
+---
+
+### Stage 10 — `010-listen-to-identify` ★★★★★
+
+**Goal:** identify a song playing nearby through the microphone and show its lyrics in
+sync.
+
+**Key requirements**
+- "Listen" records ~10 s, fingerprints on the phone (noise-tolerant method from 009),
+  and looks it up; the match's position starts the lyrics at the right line.
+- "Keep listening": started by the user, listens in bursts with a visible notification,
+  stops by itself (default 1 hour). No always-on listening; iOS only while Zema is open.
+- Audio is never uploaded or saved.
+
+**Done when**
+- A catalog recording played from a speaker 2 m away is identified within 10 s and its
+  lyrics show at the right line.
 
 ---
 
