@@ -55,7 +55,7 @@ The first backend: a local Supabase project holding the shared lyrics catalog, w
 
 | Story ID | Title | Priority | Status |
 |----------|-------|----------|--------|
-| 001-local-supabase-and-schema | Local Supabase and catalog schema | Must | Planned |
+| 001-local-supabase-and-schema | Local Supabase and catalog schema | Must | Complete |
 | 002-row-level-security | Row Level Security | Must | Planned |
 | 003-report-function | Rate-limited report function | Should | Planned |
 | 004-search-rules-to-sql | Search rules generated into SQL | Must | Planned |

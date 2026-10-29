@@ -2,11 +2,11 @@
 id: 001-local-supabase-and-schema
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: must
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 018-cloud-lyrics-catalog-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 001-local-supabase-and-schema
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Docker, **When** I run `supabase start` and `supabase db reset` in `backend/`, **Then** the database builds from migrations with no errors
-- [ ] **Given** the schema, **When** inspected, **Then** it has songs (slug ID, title, transliteration, artist, album, status, version, approved_at), sections, lines, play order, recordings, sync timings, reports, contributions and user roles
-- [ ] **Given** a song, **When** its sections or timings change, **Then** its version increases (so phones know to refresh their cache)
-- [ ] **Given** pgTAP, **When** `supabase test db` runs, **Then** a schema test lists the expected tables and key constraints
+- [x] **Given** Docker, **When** I run `supabase start` and `supabase db reset` in `backend/`, **Then** the database builds from migrations with no errors
+- [x] **Given** the schema, **When** inspected, **Then** it has songs (slug ID, title, transliteration, artist, album, status, version, approved_at), sections, lines, play order, recordings, sync timings, reports, contributions and user roles
+- [x] **Given** a song, **When** its sections or timings change, **Then** its version increases (so phones know to refresh their cache)
+- [x] **Given** pgTAP, **When** `supabase test db` runs, **Then** a schema test lists the expected tables and key constraints
 
 ## Technical Notes
 

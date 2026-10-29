@@ -1,13 +1,62 @@
 # backend
 
-Backend configuration, kept in version control. The backend (Supabase or Firebase) is
-not chosen yet.
+The Zema lyrics catalog: a [Supabase](https://supabase.com) project (Postgres, API and
+Row Level Security), kept in version control and run locally during development.
 
-Planned contents once chosen:
+```text
+backend/
+  supabase/
+    config.toml        local project settings (project ID "zema")
+    migrations/        the schema, applied in order; the only source of truth
+    tests/database/    pgTAP tests, run with `supabase test db`
+```
 
-- Database schema / migrations (songs, recordings, lyric sections, sync timings,
-  contributions, user backups)
-- Access rules (Supabase Row Level Security or Firebase security rules), e.g. only
-  moderators can approve, edit or delete lyrics
-- Server functions (e.g. search indexing, moderation actions)
-- Seed lyrics catalog
+## Requirements
+
+- Docker, running
+- Node.js (for `npx`); the Supabase CLI is run with `npx supabase`, nothing to install
+
+The first `start` downloads the Docker images (about 1–2 GB).
+
+## Commands
+
+Run these from `backend/`:
+
+| Command | What it does |
+|---------|--------------|
+| `npx supabase start` | Starts the local backend and applies the migrations |
+| `npx supabase db reset` | Rebuilds the database from the migrations (loses local data) |
+| `npx supabase test db` | Runs the pgTAP tests |
+| `npx supabase status` | Shows the local URLs and keys |
+| `npx supabase stop` | Stops the containers |
+
+Local addresses: API `http://127.0.0.1:54321`, Studio `http://127.0.0.1:54323`,
+database `postgresql://postgres:postgres@127.0.0.1:54322/postgres`. The Android
+emulator reaches the API at `http://10.0.2.2:54321`.
+
+Only Postgres, the API, auth and Studio run locally; realtime, storage, edge functions,
+analytics and the mail catcher are turned off in `config.toml` until they are needed.
+
+## Rules
+
+- Change the schema only with a new migration file; never edit the database by hand
+  in Studio.
+- Keys: the app uses only the public anon key. The service (secret) key is for local
+  scripts such as the seed, read from `npx supabase status`; never commit any key.
+- Every table has Row Level Security on. Listeners can read approved songs only;
+  writes go through checked functions (see the migrations).
+
+## Schema
+
+| Table | Holds |
+|-------|-------|
+| `songs` | Title, transliteration, artist, album, status (draft / approved / rejected), version |
+| `sections`, `lines` | A song's verses and choruses, and their lines |
+| `play_order` | The sung order of sections (repeats included) |
+| `recordings` | Performances of a song: source, artist, duration, offset |
+| `sync_timings` | One start time per sung line, per recording |
+| `reports` | "Wrong lyrics" reports for moderators |
+| `user_roles`, `contributions` | For accounts and contributions (later intents) |
+
+A song's `version` increases whenever its text, sections, recordings or timings change,
+so phones know when their cached copy is out of date.
