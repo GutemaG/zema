@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:supabase/supabase.dart';
 import 'package:zema_core/zema_core.dart';
 
+import 'backend_errors.dart';
+
 /// The catalog served by a Supabase backend (see `backend/`), through its
 /// RPC functions `song_index`, `get_song`, `search_songs` and
 /// `submit_report`.
@@ -20,7 +22,7 @@ class SupabaseCatalogRepository implements CatalogRepository {
   }) : _client = SupabaseClient(
          url,
          key,
-         httpClient: _TimeoutClient(httpClient ?? http.Client(), timeout),
+         httpClient: TimeoutClient(httpClient ?? http.Client(), timeout),
          authOptions: const AuthClientOptions(autoRefreshToken: false),
        );
 
@@ -72,7 +74,7 @@ class SupabaseCatalogRepository implements CatalogRepository {
     try {
       return await _client.rpc<Object?>(function, params: params);
     } on Object catch (e) {
-      throw _failure(function, e);
+      throw backendFailure(function, e);
     }
   }
 }
@@ -82,34 +84,6 @@ const _reasonNames = {
   ReportReason.wrongTiming: 'wrong_timing',
   ReportReason.wrongSong: 'wrong_song',
   ReportReason.other: 'other',
-};
-
-/// The [ZemaFailure] for error [e] from calling [function].
-ZemaFailure _failure(String function, Object e) => switch (e) {
-  ZemaFailure() => e,
-  PostgrestException(code: 'PT429') => RateLimitFailure(
-    '$function: ${e.message}',
-    cause: e,
-  ),
-  // PostgREST's JWT errors, or the gateway's 401/403 for an unknown key.
-  PostgrestException(code: 'PGRST301' || 'PGRST302' || '401' || '403') =>
-    BackendFailure("$function: the backend refused the app's key", cause: e),
-  // The gateway is up but the API behind it isn't.
-  PostgrestException(code: '502' || '503' || '504') => NetworkFailure(
-    '$function: backend unavailable (${e.code})',
-    cause: e,
-  ),
-  PostgrestException() => BackendFailure(
-    '$function: ${e.code} ${e.message}',
-    cause: e,
-  ),
-  FormatException() => BackendFailure(
-    '$function: unreadable answer: $e',
-    cause: e,
-  ),
-  // No answer from the server: offline, refused, TLS or timed out
-  // (http.ClientException, TimeoutException, ...).
-  _ => NetworkFailure('$function: $e', cause: e),
 };
 
 T _parse<T>(T Function() parse) {
@@ -152,18 +126,3 @@ CatalogSearchHit _hit(Map<String, Object?> row) => CatalogSearchHit(
   line: row['line_text'] as String?,
   lineTransliteration: row['line_transliteration'] as String?,
 );
-
-/// Gives up on any request that takes longer than [timeout].
-class _TimeoutClient extends http.BaseClient {
-  _TimeoutClient(this._inner, this.timeout);
-
-  final http.Client _inner;
-  final Duration timeout;
-
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) =>
-      _inner.send(request).timeout(timeout);
-
-  @override
-  void close() => _inner.close();
-}

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema_core/zema_core.dart'
-    show CatalogRepository, LyricsRepository;
+    show AuthRepository, CatalogRepository, LyricsRepository, ProfileRepository;
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/l10n/language_providers.dart';
 import 'package:zema/app/router.dart';
@@ -19,6 +19,7 @@ import 'package:zema/features/settings/application/app_version_provider.dart';
 import 'package:zema/features/settings/application/settings_bootstrap.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 
+import 'fake_auth.dart';
 import 'fake_library.dart';
 import 'fake_lyrics.dart';
 import 'fake_player.dart';
@@ -35,7 +36,9 @@ import 'fake_player.dart';
 /// (in-memory by default; pass one to seed or inspect it) and
 /// [shareService], and so is the player ([audioHandler], over a fake backend by
 /// default). Lyrics come from [catalog], by default a fake one serving
-/// [lyricsRepository] (the sample fixtures unless given). With [settle] false only the first frame is pumped.
+/// [lyricsRepository] (the sample fixtures unless given). Accounts use [auth]
+/// and [profiles], by default a fake where the user is a guest. With [settle]
+/// false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
   String location = AppRoutes.home,
@@ -52,6 +55,8 @@ Future<void> pumpZemaApp(
   LyricsRepository? lyricsRepository,
   CatalogRepository? catalog,
   bool backendConfigured = true,
+  AuthRepository? auth,
+  ProfileRepository? profiles,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -75,6 +80,11 @@ Future<void> pumpZemaApp(
         ...lyricsOverrides(
           repository: lyricsRepository,
           catalog: catalog,
+          backendConfigured: backendConfigured,
+        ),
+        ...accountOverrides(
+          auth: auth,
+          profiles: profiles,
           backendConfigured: backendConfigured,
         ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),

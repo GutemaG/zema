@@ -58,3 +58,14 @@ final class RateLimitFailure extends ZemaFailure {
 final class BackendFailure extends ZemaFailure {
   const BackendFailure(super.message, {super.cause});
 }
+
+/// Not signed in, or the sign-in or session was refused (e.g. an expired
+/// or revoked session, or a token the server does not accept).
+final class AuthFailure extends ZemaFailure {
+  const AuthFailure(super.message, {super.cause});
+}
+
+/// Input the user can correct, such as a name that is too long.
+final class ValidationFailure extends ZemaFailure {
+  const ValidationFailure(super.message, {super.cause});
+}

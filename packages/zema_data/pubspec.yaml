@@ -1,5 +1,5 @@
 name: zema_data
-description: Zema's backend access — the Supabase implementation of zema_core's catalog repository. Pure Dart; no Flutter.
+description: Zema's backend access — the Supabase implementations of zema_core's catalog, auth and profile repositories. Pure Dart; no Flutter.
 version: 0.1.0
 publish_to: none
 

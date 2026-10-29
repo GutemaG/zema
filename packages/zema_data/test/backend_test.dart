@@ -9,19 +9,16 @@ import 'package:test/test.dart';
 import 'package:zema_core/zema_core.dart';
 import 'package:zema_data/zema_data.dart';
 
+import 'support/local_backend.dart';
+
 /// Against the local backend and its seed (`backend/seed/`).
-const _localUrl = 'http://127.0.0.1:54321';
 
 void main() {
-  final backendDir = Directory('../../backend');
-  final key = _localAnonKey(backendDir);
-  final skip = key == null
-      ? "Local backend not running: start it with 'npx supabase start' in "
-            'backend/'
-      : null;
+  final key = localAnonKey();
+  final skip = key == null ? backendNotRunning : null;
   final repositories = <SupabaseCatalogRepository>[];
 
-  SupabaseCatalogRepository connect({String url = _localUrl, String? withKey}) {
+  SupabaseCatalogRepository connect({String url = localUrl, String? withKey}) {
     final repository = SupabaseCatalogRepository(
       url: url,
       key: withKey ?? key!,
@@ -129,22 +126,6 @@ void main() {
 }
 
 /// The local backend's anon key, or null when it isn't running.
-String? _localAnonKey(Directory backendDir) {
-  try {
-    final result = Process.runSync('npx', [
-      'supabase',
-      'status',
-      '-o',
-      'json',
-    ], workingDirectory: backendDir.path);
-    if (result.exitCode != 0) return null;
-    final status = jsonDecode(result.stdout as String) as Map<String, Object?>;
-    return status['ANON_KEY'] as String?;
-  } on Object {
-    return null;
-  }
-}
-
 /// The seeded songs, as zema_core imports them from `backend/seed/`.
 List<CatalogSong> _seedSongs(Directory backendDir) {
   final seedDir = Directory('${backendDir.path}/seed');

@@ -16,6 +16,25 @@ Every request gives up after 10 s. Errors are always `ZemaFailure`s:
 `NetworkFailure` (offline, timeout, server down), `RateLimitFailure`, `BackendFailure`
 (refused key, rejected input) or `LyricsFormatFailure` (malformed answer).
 
+The catalog stays anonymous (the anon key only), even when the user is signed in.
+
+## Accounts
+
+`SupabaseAuthRepository` signs in with a Google ID token (`signInWithIdToken`) and
+keeps the session in a `SessionStore` (secure storage in the app; `MemorySessionStore`
+in tests). `restore()` signs the saved user in at once and checks the session in the
+background (`confirmed`):
+
+- **Refused by the server** (revoked, or the account was deleted): it is cleared, and
+  `userChanges` gives null.
+- **Server out of reach**: the user stays signed in, and the check runs again before
+  the next call.
+
+`SupabaseProfileRepository` reads the user's `profiles` row and `user_roles`, and
+renames. It validates the name first (`validateDisplayName`), and the server's check
+becomes a `ValidationFailure`. Calls as the user go through `SupabaseAuthRepository.run`,
+which turns a refused session into `AuthFailure`.
+
 ## Tests
 
 ```text
