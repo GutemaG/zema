@@ -1,27 +1,35 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
 final _log = Logger('lyrics.bundled');
 
-/// The lyrics the app reads: the bundled samples until the cloud catalog
-/// (intent 004) replaces them.
-final lyricsRepositoryProvider = Provider<LyricsRepository>(
-  (ref) => BundledLyricsRepository(rootBundle),
-);
+/// Reads files straight from the project folder, so the fixtures load
+/// without real asset I/O, which stalls under the test clock.
+class DiskAssetBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) async =>
+      ByteData.sublistView(File(key).readAsBytesSync());
 
-/// Lyrics shipped with the app in `assets/lyrics/`: an `index.json` listing
-/// LRC files, one recording each. Read once, on first use.
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async =>
+      File(key).readAsStringSync();
+}
+
+/// The sample lyrics in `test/fixtures/lyrics/` (the songs the local
+/// catalog is seeded with): an `index.json` listing LRC files, one
+/// recording each. Read once, on first use. Tests serve them through a fake
+/// catalog.
 ///
 /// A file that is missing, malformed or repeats an ID is skipped (and
 /// logged); the others still load.
 class BundledLyricsRepository implements LyricsRepository {
   BundledLyricsRepository(this._assets);
 
-  static const folder = 'assets/lyrics';
+  static const folder = 'test/fixtures/lyrics';
 
   final AssetBundle _assets;
   Future<_Bundle>? _bundle;
@@ -33,12 +41,12 @@ class BundledLyricsRepository implements LyricsRepository {
     try {
       index = jsonDecode(await _assets.loadString('$folder/index.json'));
     } on Object catch (e) {
-      throw LyricsFormatFailure('Could not read the bundled lyrics', cause: e);
+      throw LyricsFormatFailure('Could not read the sample lyrics', cause: e);
     }
     final entries = switch (index) {
       {'songs': final List<Object?> songs} => songs,
       _ => throw const LyricsFormatFailure(
-        'The bundled lyrics index has no "songs" list',
+        'The sample lyrics index has no "songs" list',
       ),
     };
     final bundle = _Bundle();

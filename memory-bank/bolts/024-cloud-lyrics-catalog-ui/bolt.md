@@ -3,14 +3,23 @@ id: 024-cloud-lyrics-catalog-ui
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 003-lyrics-cache
-created: 2026-10-29T05:59:04Z
-started: null
-completed: null
+created: '2026-10-29T05:59:04Z'
+started: '2026-10-29T09:46:13Z'
+completed: 2026-10-29T11:19:05Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T09:47:09Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T10:56:31Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-29T11:19:05Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 023-cloud-lyrics-catalog-ui
 enables_bolts:
@@ -32,7 +41,7 @@ Lyrics cache; the app reads the catalog instead of bundled assets.
 
 ## Stories Included
 
-- [ ] **003-lyrics-cache**: Lyrics cache; the app reads the catalog - Priority: Must
+- [x] **003-lyrics-cache**: Lyrics cache; the app reads the catalog - Priority: Must
 
 ## Bolt Type
 
@@ -41,9 +50,9 @@ Lyrics cache; the app reads the catalog instead of bundled assets.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Pending → implementation-plan.md
+- [x] **2. implement**: Pending → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -55,11 +64,11 @@ Lyrics cache; the app reads the catalog instead of bundled assets.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
 
 ## Notes
 

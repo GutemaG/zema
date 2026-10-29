@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zema/app/database/zema_database.dart' show ZemaDatabase;
+import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/app/routes.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
 import 'package:zema/features/library/application/library_sync_controller.dart';
 import 'package:zema/features/catalog/application/catalog_index.dart';
 import 'package:zema/features/library/presentation/library_screen.dart';
 import 'package:zema/features/lyrics/application/lyrics_links.dart';
-import 'package:zema/features/lyrics/data/bundled_lyrics_repository.dart';
 import 'package:zema/features/lyrics/presentation/match_lyrics_sheet.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../helpers/fake_catalog.dart';
 import '../../../helpers/fake_library.dart';
-import '../../../helpers/fake_lyrics.dart';
+import '../../../helpers/bundled_lyrics_repository.dart';
 import '../../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
@@ -312,7 +312,10 @@ void main() {
     testWidgets('a song removed from the catalog unlinks its tracks', (
       tester,
     ) async {
-      final catalog = FakeCatalogRepository(entries: await samples(tester));
+      final catalog = FakeCatalogRepository(
+        entries: await samples(tester),
+        lyrics: BundledLyricsRepository(DiskAssetBundle()),
+      );
       final app = await _pump(tester, catalog: catalog);
       // A manual link to the song that will be removed.
       await _menu(tester, 'Amlak', _l10n.songMatchLyrics);
@@ -327,7 +330,13 @@ void main() {
       final container = _container(tester);
       final amlak = app.ids['Amlak']!;
       final galatoomi = app.ids['Galatoomi - Official Video 2020']!;
-      expect(container.read(trackSongProvider(amlak)).value?.id, 'galatoomi');
+      // Listened to like a screen would, so they follow the index.
+      final amlakSong = container.listen(trackSongProvider(amlak), (_, _) {});
+      final galatoomiSong = container.listen(
+        trackSongProvider(galatoomi),
+        (_, _) {},
+      );
+      expect(amlakSong.read().value?.id, 'galatoomi');
 
       catalog.entries = [
         for (final e in catalog.entries)
@@ -342,15 +351,47 @@ void main() {
       // The automatic link is gone; the manual one stays but shows no song.
       expect((await _rows(tester, app))[galatoomi], isNull);
       expect((await _rows(tester, app))[amlak], ('galatoomi', true));
-      expect(
-        container.read(trackSongProvider(amlak)),
-        const AsyncData<Song?>(null),
-      );
-      expect(
-        container.read(trackSongProvider(galatoomi)),
-        const AsyncData<Song?>(null),
-      );
+      expect(amlakSong.read(), const AsyncData<Song?>(null));
+      expect(galatoomiSong.read(), const AsyncData<Song?>(null));
       expect(await _linked(tester, app, 'ብርሃን ሆንልን'), 'birhan-honlin');
+    });
+
+    testWidgets('a new version in the index downloads the song again', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(
+        lyrics: BundledLyricsRepository(DiskAssetBundle()),
+      );
+      final app = await _pump(tester, catalog: catalog);
+      final container = _container(tester);
+      final galatoomi = app.ids['Galatoomi - Official Video 2020']!;
+      final song = container.listen(trackSongProvider(galatoomi), (_, _) {});
+      await _settle(tester);
+      expect(song.read().value?.id, 'galatoomi');
+      expect(catalog.songCalls, ['galatoomi']);
+
+      // A refresh with the same versions downloads nothing.
+      await tester.runAsync(
+        () =>
+            container.read(catalogIndexRefresherProvider).refresh(force: true),
+      );
+      await _settle(tester);
+      expect(catalog.songCalls, ['galatoomi']);
+
+      catalog.versions['galatoomi'] = 2;
+      await tester.runAsync(
+        () =>
+            container.read(catalogIndexRefresherProvider).refresh(force: true),
+      );
+      await _settle(tester);
+
+      expect(catalog.songCalls, ['galatoomi', 'galatoomi']);
+      expect(song.read().value?.id, 'galatoomi');
+      final db = container.read(databaseProvider);
+      final cached = await tester.runAsync(
+        () => db.cachedSongsDao.song('galatoomi'),
+      );
+      expect(cached?.version, 2);
     });
 
     testWidgets('the picker lists the index, not only bundled songs', (

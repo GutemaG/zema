@@ -979,4 +979,22 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get catalogNotConfigured =>
       'The song list isn\'t available in this build.';
+
+  @override
+  String get lyricsOfflineTitle => 'You\'re offline';
+
+  @override
+  String get lyricsOfflineMessage =>
+      'These lyrics haven\'t been downloaded yet. Connect to the internet and try again.';
+
+  @override
+  String get lyricsLoadFailedTitle => 'Couldn\'t load the lyrics';
+
+  @override
+  String get lyricsLoadFailedMessage =>
+      'Something went wrong getting these lyrics. Try again in a moment.';
+
+  @override
+  String get lyricsPreviewOffline =>
+      'Offline: these lyrics aren\'t downloaded yet';
 }

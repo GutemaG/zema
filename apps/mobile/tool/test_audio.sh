@@ -83,7 +83,7 @@ for ((i = 1; i <= bulk; i++)); do
     -metadata album="Bulk Album $((i % 80))" -metadata track=$((i % 12 + 1))
 done
 
-# Sample lyrics: one file per song in assets/lyrics, tagged with the song's
+# Sample lyrics: one file per song in test/fixtures/lyrics (the same songs the local catalog is seeded with), tagged with the song's
 # title and artist so the app links them. The pitch changes at every line
 # start, so you can hear when the highlight should move.
 if ((lyrics)); then
@@ -91,9 +91,9 @@ if ((lyrics)); then
   python3 - "$OUT" <<'PY'
 import json, re, subprocess, sys
 out = sys.argv[1]
-index = json.load(open("assets/lyrics/index.json"))
+index = json.load(open("test/fixtures/lyrics/index.json"))
 for song in index["songs"]:
-    text = open(f"assets/lyrics/{song['file']}", encoding="utf-8").read()
+    text = open(f"test/fixtures/lyrics/{song['file']}", encoding="utf-8").read()
     title = re.search(r"^\[ti:(.*)\]$", text, re.M).group(1)
     artist = re.search(r"^\[ar:(.*)\]$", text, re.M).group(1)
     starts = sorted(

@@ -130,3 +130,21 @@ class CatalogSongs extends Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
+
+/// Lyrics downloaded from the catalog: one row per song holding its whole
+/// document (song, recordings, timings) as JSON, so a song is saved in one
+/// write and never partly.
+@DataClassName('CachedSongRow')
+class CachedSongs extends Table {
+  TextColumn get id => text()();
+
+  /// The catalog version the document was fetched at.
+  IntColumn get version => integer()();
+
+  /// [SongDocument.toJson], encoded.
+  TextColumn get document => text()();
+  DateTimeColumn get cachedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}

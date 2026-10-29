@@ -60,7 +60,7 @@ Switch the app from bundled sample lyrics to the cloud catalog without losing of
 |----------|-------|----------|--------|
 | 001-zema-data-package | zema_data Supabase repository | Must | Complete |
 | 002-song-index | Song index on the phone | Must | Complete |
-| 003-lyrics-cache | Lyrics cache; the app reads the catalog | Must | Planned |
+| 003-lyrics-cache | Lyrics cache; the app reads the catalog | Must | Complete |
 | 004-search-merge | Search merges the phone and the catalog | Must | Planned |
 | 005-offline-downloads | Offline downloads in Settings | Should | Planned |
 | 006-report-wrong-lyrics | Report wrong lyrics | Should | Planned |

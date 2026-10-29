@@ -10,6 +10,7 @@ import 'generated/schema.dart';
 import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
+import 'generated/schema_v4.dart' as v4;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -117,4 +118,55 @@ void main() {
       );
     },
   );
+
+  test('migration from v3 to v4 keeps links and the index, and starts an empty '
+      'cache', () async {
+    const link = v3.LyricsLinksData(
+      trackId: 1,
+      songId: 'selam-lezih-bet',
+      manual: 0,
+      linkedAt: '2026-10-02T00:00:00.000Z',
+    );
+    const entry = v3.CatalogSongsData(
+      id: 'selam-lezih-bet',
+      title: 'ሰላም ለዚህ ቤት',
+      synced: 1,
+      version: 2,
+      approvedAt: '2026-10-01T00:00:00.000Z',
+    );
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 3,
+      newVersion: 4,
+      createOld: v3.DatabaseAtV3.new,
+      createNew: v4.DatabaseAtV4.new,
+      openTestedDatabase: ZemaDatabase.new,
+      createItems: (batch, oldDb) {
+        batch
+          ..insert(oldDb.tracks, _v3Track)
+          ..insert(oldDb.lyricsLinks, link)
+          ..insert(oldDb.catalogSongs, entry);
+      },
+      validateItems: (newDb) async {
+        final links = await newDb.select(newDb.lyricsLinks).get();
+        expect(links.single.songId, 'selam-lezih-bet');
+        final index = await newDb.select(newDb.catalogSongs).get();
+        expect(index.single.version, 2);
+        expect(await newDb.select(newDb.cachedSongs).get(), isEmpty);
+      },
+    );
+  });
 }
+
+const _v3Track = v3.TracksData(
+  id: 1,
+  mediaStoreId: 11,
+  uri: 'content://media/external/audio/media/11',
+  path: '/m/1.mp3',
+  folder: '/m',
+  title: 'ሰላም ለዚህ ቤት',
+  durationMs: 60000,
+  sizeBytes: 1000,
+  dateAdded: '2026-10-01T00:00:00.000Z',
+  missing: 0,
+);

@@ -8,7 +8,9 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../../player/application/player_providers.dart';
+import '../application/lyrics_links.dart';
 import '../application/lyrics_prefs.dart';
 import '../application/track_lyrics.dart';
 import 'lyrics_options_sheet.dart';
@@ -17,7 +19,7 @@ import 'match_lyrics_sheet.dart';
 /// The lyrics of [track] (C06): the line being sung highlighted and kept in
 /// view, past lines faint, choruses marked; tapping a line seeks to it.
 /// Plain lyrics show without highlight; an unlinked track offers Match
-/// lyrics.
+/// lyrics; lyrics that can't be downloaded show C07 with Try again.
 class LyricsView extends ConsumerWidget {
   const LyricsView({super.key, required this.track});
 
@@ -39,8 +41,33 @@ class LyricsView extends ConsumerWidget {
         ],
       ),
       AsyncData() => NoLyrics(track: track),
+      AsyncError(:final error) => LyricsUnavailable(error: error),
       _ => const SizedBox.shrink(),
     };
+  }
+}
+
+/// C07 for lyrics that couldn't be loaded: offline for a
+/// [NetworkFailure], an error otherwise. Try again downloads again.
+class LyricsUnavailable extends ConsumerWidget {
+  const LyricsUnavailable({super.key, required this.error});
+
+  final Object error;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final offline = error is NetworkFailure;
+    return EmptyState(
+      kind: offline ? EmptyStateKind.offline : EmptyStateKind.error,
+      title: offline ? l10n.lyricsOfflineTitle : l10n.lyricsLoadFailedTitle,
+      message: offline
+          ? l10n.lyricsOfflineMessage
+          : l10n.lyricsLoadFailedMessage,
+      actionLabel: l10n.actionTryAgain,
+      // Nothing remembers a failure, so this fetches again.
+      onAction: () => ref.invalidate(songProvider),
+    );
   }
 }
 
@@ -338,7 +365,7 @@ class _Line extends StatelessWidget {
 }
 
 /// The line being sung, or the first line, for the small panel under the
-/// artwork; "No lyrics" when there are none. Tapping it calls [onTap].
+/// artwork; "No lyrics" when there are none, or why they couldn't load. Tapping it calls [onTap].
 class LyricsPreview extends ConsumerWidget {
   const LyricsPreview({super.key, required this.track, required this.onTap});
 
@@ -349,12 +376,17 @@ class LyricsPreview extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
-    final lyrics = ref.watch(trackLyricsProvider(track.id)).value;
+    final state = ref.watch(trackLyricsProvider(track.id));
     final current = ref.watch(currentLineProvider(track.id));
-    final line = switch (lyrics) {
+    final line = switch (state.value) {
       final TrackLyrics l when l.lines.isNotEmpty =>
         l.lines[current ?? 0].line.text,
       _ => null,
+    };
+    final none = switch (state) {
+      AsyncError(error: NetworkFailure()) => l10n.lyricsPreviewOffline,
+      AsyncError() => l10n.lyricsLoadFailedTitle,
+      _ => l10n.playerNoLyrics,
     };
     return Material(
       color: colors.surface,
@@ -366,7 +398,7 @@ class LyricsPreview extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              line ?? l10n.playerNoLyrics,
+              line ?? none,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,

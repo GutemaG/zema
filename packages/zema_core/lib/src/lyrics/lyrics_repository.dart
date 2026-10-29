@@ -1,7 +1,7 @@
 import '../search/transliteration.dart';
 import 'lyrics_models.dart';
 
-/// Where lyrics come from: bundled samples now, the cloud catalog later.
+/// Where lyrics come from: the cloud catalog, cached on the phone.
 ///
 /// Implementations throw a `ZemaFailure` when they can't read their source,
 /// never a raw platform error.

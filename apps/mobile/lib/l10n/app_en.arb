@@ -1265,5 +1265,25 @@
   "catalogNotConfigured": "The song list isn't available in this build.",
   "@catalogNotConfigured": {
     "description": "Snackbar when pulling to refresh in a build without a backend."
+  },
+  "lyricsOfflineTitle": "You're offline",
+  "@lyricsOfflineTitle": {
+    "description": "C07 title when a song's lyrics aren't downloaded and there is no network."
+  },
+  "lyricsOfflineMessage": "These lyrics haven't been downloaded yet. Connect to the internet and try again.",
+  "@lyricsOfflineMessage": {
+    "description": "C07 message when a song's lyrics aren't downloaded and there is no network."
+  },
+  "lyricsLoadFailedTitle": "Couldn't load the lyrics",
+  "@lyricsLoadFailedTitle": {
+    "description": "C07 title when downloading a song's lyrics fails for another reason."
+  },
+  "lyricsLoadFailedMessage": "Something went wrong getting these lyrics. Try again in a moment.",
+  "@lyricsLoadFailedMessage": {
+    "description": "C07 message when downloading a song's lyrics fails for another reason."
+  },
+  "lyricsPreviewOffline": "Offline: these lyrics aren't downloaded yet",
+  "@lyricsPreviewOffline": {
+    "description": "Small lyrics panel on Now Playing when the song's lyrics aren't downloaded and there is no network; tapping it opens the full lyrics with Try again."
   }
 }

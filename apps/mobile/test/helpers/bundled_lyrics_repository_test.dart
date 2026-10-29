@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zema/features/lyrics/data/bundled_lyrics_repository.dart';
 import 'package:zema_core/zema_core.dart';
 
-/// An asset bundle holding [files] (path under assets/lyrics → text).
+import 'bundled_lyrics_repository.dart';
+
+/// An asset bundle holding [files] (path under the fixtures folder → text).
 class _FakeAssets extends CachingAssetBundle {
   _FakeAssets(this.files);
 
@@ -36,7 +37,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('the bundled samples', () {
-    final repository = BundledLyricsRepository(rootBundle);
+    final repository = BundledLyricsRepository(DiskAssetBundle());
 
     test('three songs load, each fitting its timing', () async {
       final songs = await repository.songs();

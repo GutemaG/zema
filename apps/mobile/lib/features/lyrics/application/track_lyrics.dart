@@ -5,7 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../player/application/player_providers.dart';
-import '../data/bundled_lyrics_repository.dart';
+import '../../catalog/data/catalog_lyrics_repository.dart';
 import 'lyrics_links.dart';
 import 'lyrics_prefs.dart';
 
@@ -34,6 +34,7 @@ class TrackLyrics {
 }
 
 /// The lyrics of track [trackId], or null when it isn't linked to a song.
+/// Fails when the song can't be downloaded (see [songProvider]).
 final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   ref,
   trackId,
@@ -68,7 +69,8 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
     recording: recording,
     synced: synced,
   );
-});
+  // A failure shows C07 at once; its Try again retries.
+}, retry: (_, _) => null);
 
 /// The total shift of [lyrics]' timing: the recording's own offset plus the
 /// user's correction for it, or the default correction.

@@ -6,8 +6,8 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../catalog/application/catalog_index.dart';
+import '../../catalog/data/catalog_lyrics_repository.dart';
 import '../../library/application/library_providers.dart';
-import '../data/bundled_lyrics_repository.dart';
 import '../data/lyrics_links_repository.dart';
 
 final _log = Logger('lyrics.links');
@@ -16,10 +16,47 @@ final lyricsLinksRepositoryProvider = Provider<LyricsLinksRepository>(
   (ref) => LyricsLinksRepository(ref.watch(databaseProvider).lyricsLinksDao),
 );
 
-/// Every lyrics song, in the repository's order.
-final lyricsSongsProvider = FutureProvider<List<Song>>(
-  (ref) => ref.watch(lyricsRepositoryProvider).songs(),
-);
+/// The songs whose lyrics are on the phone, by ID (searched by line until
+/// the catalog's search joins in). Updates as songs are downloaded.
+final lyricsSongsProvider = StreamProvider<List<Song>>((ref) {
+  final index = ref.watch(catalogEntriesProvider).value;
+  if (index == null) return const Stream.empty();
+  final listed = {for (final e in index) e.id};
+  return ref
+      .watch(databaseProvider)
+      .cachedSongsDao
+      .watchSongs()
+      .map(
+        (cached) => [
+          for (final c in cached)
+            if (listed.contains(c.document.song.id)) c.document.song,
+        ],
+      );
+});
+
+/// The catalog song [songId] with its lyrics, downloaded on first use, or
+/// null when the catalog doesn't list it. Fetched again when the index
+/// shows a new version. Fails (usually with a [NetworkFailure]) when the
+/// song isn't on the phone and can't be downloaded; invalidate to retry.
+final songProvider = FutureProvider.family<Song?, String>((ref, songId) async {
+  final entry = switch (ref.watch(
+    catalogEntriesProvider.select(
+      (index) => index.whenData(
+        (entries) => entries.where((e) => e.id == songId).firstOrNull,
+      ),
+    ),
+  )) {
+    AsyncData(:final value) => value,
+    AsyncError(:final error, :final stackTrace) => Error.throwWithStackTrace(
+      error,
+      stackTrace,
+    ),
+    // Rebuilt when the index loads.
+    _ => await Completer<CatalogEntry?>().future,
+  };
+  if (entry == null) return null;
+  return ref.watch(lyricsRepositoryProvider).song(songId);
+}, retry: (_, _) => null);
 
 final _linksProvider = StreamProvider<Map<int, LyricsLink>>(
   (ref) => ref.watch(lyricsLinksRepositoryProvider).watchLinks(),
@@ -49,33 +86,20 @@ final lyricsLinkSyncProvider = Provider<void>((ref) {
 });
 
 /// The lyrics song [trackId] is linked to, or null. A link to a song that
-/// is no longer in the catalog's index (or has no lyrics here) counts as
-/// none.
+/// is no longer in the catalog's index counts as none.
 final trackSongProvider = Provider.family<AsyncValue<Song?>, int>((
   ref,
   trackId,
 ) {
-  final links = ref.watch(_linksProvider);
-  final index = ref.watch(catalogEntriesProvider);
-  final songs = ref.watch(lyricsSongsProvider);
-  return switch ((links, index, songs)) {
-    (
-      AsyncData(value: final links),
-      AsyncData(value: final index),
-      AsyncData(value: final songs),
-    ) =>
-      AsyncData(switch (links[trackId]?.songId) {
-        final id? when index.any((e) => e.id == id) =>
-          songs.where((s) => s.id == id).firstOrNull,
-        _ => null,
-      }),
-    (AsyncError(:final error, :final stackTrace), _, _) ||
-    (_, AsyncError(:final error, :final stackTrace), _) ||
-    (
-      _,
-      _,
-      AsyncError(:final error, :final stackTrace),
-    ) => AsyncError(error, stackTrace),
+  return switch (ref.watch(_linksProvider)) {
+    AsyncData(value: final links) => switch (links[trackId]?.songId) {
+      final id? => ref.watch(songProvider(id)),
+      null => const AsyncData(null),
+    },
+    AsyncError(:final error, :final stackTrace) => AsyncError(
+      error,
+      stackTrace,
+    ),
     _ => const AsyncLoading(),
   };
 });

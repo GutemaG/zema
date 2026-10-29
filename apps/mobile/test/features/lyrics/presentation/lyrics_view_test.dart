@@ -3,23 +3,28 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema/features/lyrics/application/lyrics_prefs.dart';
+import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/routes.dart';
 import 'package:zema/app/theme/zema_colors.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
 import 'package:zema/features/lyrics/presentation/lyrics_view.dart';
+import 'package:zema/shared/widgets/empty_state.dart';
 import 'package:zema/features/lyrics/presentation/match_lyrics_sheet.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/features/player/presentation/mini_player.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../helpers/bundled_lyrics_repository.dart';
+import '../../../helpers/fake_catalog.dart';
 import '../../../helpers/fake_library.dart';
+import '../../../helpers/fake_lyrics.dart';
 import '../../../helpers/fake_player.dart';
 import '../../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
 
-// Galatoomi's sample lines (assets/lyrics/galatoomi.lrc).
+// Galatoomi's sample lines (test/fixtures/lyrics/galatoomi.lrc).
 const _first = 'Waaqayyo nu jaallatee'; // 2.5 s
 const _second = 'Ifa isaa nuuf kenne'; // 6.5 s
 const _chorus = 'Galatoomi, galatoomi'; // 10.5, 26.5, 34.5 s
@@ -56,12 +61,15 @@ Future<_App> _pump(
   double textScale = 1,
   Brightness phoneBrightness = Brightness.dark,
   LyricsRepository? lyricsRepository,
+  FakeCatalogRepository? catalog,
+  ZemaFailure? failAfterStart,
+  ZemaDatabase? database,
   bool lyricsMode = true,
 }) async {
   useScreen(tester, size: const Size(400, 860), textScale: textScale);
   final backend = FakeAudioBackend();
   final handler = fakeAudioHandler(backend);
-  final db = memoryDatabase();
+  final db = database ?? memoryDatabase();
   await pumpZemaApp(
     tester,
     location: AppRoutes.library,
@@ -73,9 +81,12 @@ Future<_App> _pump(
     audioHandler: handler,
     phoneBrightness: phoneBrightness,
     lyricsRepository: lyricsRepository,
+    catalog: catalog,
     savedPrefs: {LibraryAccessController.explainedKey: true},
   );
   await _settle(tester);
+  // The index is saved; downloading lyrics fails from here on.
+  catalog?.failure = failAfterStart;
   final tracks = (await tester.runAsync(db.libraryDao.allTracks))!;
   final byTitle = {for (final t in tracks) t.title: t};
   await handler.playTracks([for (final t in titles) byTitle[t]!]);
@@ -344,6 +355,93 @@ void main() {
       await tester.tap(find.byTooltip(_l10n.lyricsOptions));
       await _settle(tester);
       expect(find.text(_l10n.lyricsSyncOffset), findsNothing);
+    });
+
+    testWidgets('offline, lyrics never downloaded show C07 with Try again', (
+      tester,
+    ) async {
+      final catalog = FakeCatalogRepository(
+        lyrics: BundledLyricsRepository(DiskAssetBundle()),
+      );
+      await _pump(
+        tester,
+        catalog: catalog,
+        failAfterStart: const NetworkFailure('offline'),
+      );
+
+      final state = tester.widget<EmptyState>(find.byType(EmptyState));
+      expect(state.kind, EmptyStateKind.offline);
+      expect(find.text(_l10n.lyricsOfflineTitle), findsOneWidget);
+      expect(find.text(_l10n.lyricsOfflineMessage), findsOneWidget);
+      expect(find.text(_first), findsNothing);
+
+      // Still offline: Try again asks again and keeps the state.
+      final calls = catalog.songCalls.length;
+      await tester.tap(find.text(_l10n.actionTryAgain));
+      await _settle(tester);
+      expect(catalog.songCalls.length, calls + 1);
+      expect(find.text(_l10n.lyricsOfflineTitle), findsOneWidget);
+
+      // Back online: Try again shows the lyrics.
+      catalog.failure = null;
+      await tester.tap(find.text(_l10n.actionTryAgain));
+      await _settle(tester);
+      expect(find.byType(EmptyState), findsNothing);
+      expect(find.text(_first), findsOneWidget);
+    });
+
+    testWidgets('offline, the panel under the artwork says why', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        catalog: FakeCatalogRepository(
+          lyrics: BundledLyricsRepository(DiskAssetBundle()),
+        ),
+        failAfterStart: const NetworkFailure('offline'),
+        lyricsMode: false,
+      );
+
+      expect(find.byType(LyricsPreview), findsOneWidget);
+      expect(find.text(_l10n.lyricsPreviewOffline), findsOneWidget);
+      expect(find.text(_l10n.playerNoLyrics), findsNothing);
+
+      // Tapping it opens the lyrics, where Try again is.
+      await tester.tap(find.byType(LyricsPreview));
+      await _settle(tester);
+      expect(find.text(_l10n.lyricsOfflineTitle), findsOneWidget);
+    });
+
+    testWidgets('another failure shows the C07 error state', (tester) async {
+      await _pump(
+        tester,
+        catalog: FakeCatalogRepository(
+          lyrics: BundledLyricsRepository(DiskAssetBundle()),
+        ),
+        failAfterStart: const BackendFailure('refused'),
+      );
+
+      final state = tester.widget<EmptyState>(find.byType(EmptyState));
+      expect(state.kind, EmptyStateKind.error);
+      expect(find.text(_l10n.lyricsLoadFailedTitle), findsOneWidget);
+      expect(find.text(_l10n.actionTryAgain), findsOneWidget);
+    });
+
+    testWidgets('lyrics downloaded once still show offline', (tester) async {
+      final catalog = FakeCatalogRepository(
+        lyrics: BundledLyricsRepository(DiskAssetBundle()),
+      );
+      final db = memoryDatabase();
+      await tester.runAsync(() => cacheSampleLyrics(db));
+      await _pump(
+        tester,
+        catalog: catalog,
+        database: db,
+        failAfterStart: const NetworkFailure('offline'),
+      );
+
+      expect(find.text(_first), findsOneWidget);
+      expect(catalog.songCalls, isEmpty);
     });
 
     testWidgets('an unlinked song offers Match lyrics', (tester) async {

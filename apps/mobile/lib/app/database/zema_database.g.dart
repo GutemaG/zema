@@ -3230,6 +3230,320 @@ class CatalogSongsCompanion extends UpdateCompanion<CatalogSongRow> {
   }
 }
 
+class $CachedSongsTable extends CachedSongs
+    with TableInfo<$CachedSongsTable, CachedSongRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedSongsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _documentMeta = const VerificationMeta(
+    'document',
+  );
+  @override
+  late final GeneratedColumn<String> document = GeneratedColumn<String>(
+    'document',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cachedAtMeta = const VerificationMeta(
+    'cachedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> cachedAt = GeneratedColumn<DateTime>(
+    'cached_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, version, document, cachedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_songs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedSongRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('document')) {
+      context.handle(
+        _documentMeta,
+        document.isAcceptableOrUnknown(data['document']!, _documentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_documentMeta);
+    }
+    if (data.containsKey('cached_at')) {
+      context.handle(
+        _cachedAtMeta,
+        cachedAt.isAcceptableOrUnknown(data['cached_at']!, _cachedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cachedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CachedSongRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedSongRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      document: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}document'],
+      )!,
+      cachedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}cached_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedSongsTable createAlias(String alias) {
+    return $CachedSongsTable(attachedDatabase, alias);
+  }
+}
+
+class CachedSongRow extends DataClass implements Insertable<CachedSongRow> {
+  final String id;
+
+  /// The catalog version the document was fetched at.
+  final int version;
+
+  /// [SongDocument.toJson], encoded.
+  final String document;
+  final DateTime cachedAt;
+  const CachedSongRow({
+    required this.id,
+    required this.version,
+    required this.document,
+    required this.cachedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['version'] = Variable<int>(version);
+    map['document'] = Variable<String>(document);
+    map['cached_at'] = Variable<DateTime>(cachedAt);
+    return map;
+  }
+
+  CachedSongsCompanion toCompanion(bool nullToAbsent) {
+    return CachedSongsCompanion(
+      id: Value(id),
+      version: Value(version),
+      document: Value(document),
+      cachedAt: Value(cachedAt),
+    );
+  }
+
+  factory CachedSongRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedSongRow(
+      id: serializer.fromJson<String>(json['id']),
+      version: serializer.fromJson<int>(json['version']),
+      document: serializer.fromJson<String>(json['document']),
+      cachedAt: serializer.fromJson<DateTime>(json['cachedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'version': serializer.toJson<int>(version),
+      'document': serializer.toJson<String>(document),
+      'cachedAt': serializer.toJson<DateTime>(cachedAt),
+    };
+  }
+
+  CachedSongRow copyWith({
+    String? id,
+    int? version,
+    String? document,
+    DateTime? cachedAt,
+  }) => CachedSongRow(
+    id: id ?? this.id,
+    version: version ?? this.version,
+    document: document ?? this.document,
+    cachedAt: cachedAt ?? this.cachedAt,
+  );
+  CachedSongRow copyWithCompanion(CachedSongsCompanion data) {
+    return CachedSongRow(
+      id: data.id.present ? data.id.value : this.id,
+      version: data.version.present ? data.version.value : this.version,
+      document: data.document.present ? data.document.value : this.document,
+      cachedAt: data.cachedAt.present ? data.cachedAt.value : this.cachedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedSongRow(')
+          ..write('id: $id, ')
+          ..write('version: $version, ')
+          ..write('document: $document, ')
+          ..write('cachedAt: $cachedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, version, document, cachedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedSongRow &&
+          other.id == this.id &&
+          other.version == this.version &&
+          other.document == this.document &&
+          other.cachedAt == this.cachedAt);
+}
+
+class CachedSongsCompanion extends UpdateCompanion<CachedSongRow> {
+  final Value<String> id;
+  final Value<int> version;
+  final Value<String> document;
+  final Value<DateTime> cachedAt;
+  final Value<int> rowid;
+  const CachedSongsCompanion({
+    this.id = const Value.absent(),
+    this.version = const Value.absent(),
+    this.document = const Value.absent(),
+    this.cachedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedSongsCompanion.insert({
+    required String id,
+    required int version,
+    required String document,
+    required DateTime cachedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       version = Value(version),
+       document = Value(document),
+       cachedAt = Value(cachedAt);
+  static Insertable<CachedSongRow> custom({
+    Expression<String>? id,
+    Expression<int>? version,
+    Expression<String>? document,
+    Expression<DateTime>? cachedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (version != null) 'version': version,
+      if (document != null) 'document': document,
+      if (cachedAt != null) 'cached_at': cachedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedSongsCompanion copyWith({
+    Value<String>? id,
+    Value<int>? version,
+    Value<String>? document,
+    Value<DateTime>? cachedAt,
+    Value<int>? rowid,
+  }) {
+    return CachedSongsCompanion(
+      id: id ?? this.id,
+      version: version ?? this.version,
+      document: document ?? this.document,
+      cachedAt: cachedAt ?? this.cachedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (document.present) {
+      map['document'] = Variable<String>(document.value);
+    }
+    if (cachedAt.present) {
+      map['cached_at'] = Variable<DateTime>(cachedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedSongsCompanion(')
+          ..write('id: $id, ')
+          ..write('version: $version, ')
+          ..write('document: $document, ')
+          ..write('cachedAt: $cachedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -3244,6 +3558,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $PlayEventsTable playEvents = $PlayEventsTable(this);
   late final $LyricsLinksTable lyricsLinks = $LyricsLinksTable(this);
   late final $CatalogSongsTable catalogSongs = $CatalogSongsTable(this);
+  late final $CachedSongsTable cachedSongs = $CachedSongsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -3269,6 +3584,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     this as ZemaDatabase,
   );
   late final CatalogDao catalogDao = CatalogDao(this as ZemaDatabase);
+  late final CachedSongsDao cachedSongsDao = CachedSongsDao(
+    this as ZemaDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3283,6 +3601,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     playEvents,
     lyricsLinks,
     catalogSongs,
+    cachedSongs,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -6375,6 +6694,196 @@ typedef $$CatalogSongsTableProcessedTableManager =
       CatalogSongRow,
       PrefetchHooks Function()
     >;
+typedef $$CachedSongsTableCreateCompanionBuilder =
+    CachedSongsCompanion Function({
+      required String id,
+      required int version,
+      required String document,
+      required DateTime cachedAt,
+      Value<int> rowid,
+    });
+typedef $$CachedSongsTableUpdateCompanionBuilder =
+    CachedSongsCompanion Function({
+      Value<String> id,
+      Value<int> version,
+      Value<String> document,
+      Value<DateTime> cachedAt,
+      Value<int> rowid,
+    });
+
+class $$CachedSongsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $CachedSongsTable> {
+  $$CachedSongsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get document => $composableBuilder(
+    column: $table.document,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get cachedAt => $composableBuilder(
+    column: $table.cachedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedSongsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $CachedSongsTable> {
+  $$CachedSongsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get document => $composableBuilder(
+    column: $table.document,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get cachedAt => $composableBuilder(
+    column: $table.cachedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedSongsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $CachedSongsTable> {
+  $$CachedSongsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get document =>
+      $composableBuilder(column: $table.document, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get cachedAt =>
+      $composableBuilder(column: $table.cachedAt, builder: (column) => column);
+}
+
+class $$CachedSongsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $CachedSongsTable,
+          CachedSongRow,
+          $$CachedSongsTableFilterComposer,
+          $$CachedSongsTableOrderingComposer,
+          $$CachedSongsTableAnnotationComposer,
+          $$CachedSongsTableCreateCompanionBuilder,
+          $$CachedSongsTableUpdateCompanionBuilder,
+          (
+            CachedSongRow,
+            BaseReferences<_$ZemaDatabase, $CachedSongsTable, CachedSongRow>,
+          ),
+          CachedSongRow,
+          PrefetchHooks Function()
+        > {
+  $$CachedSongsTableTableManager(_$ZemaDatabase db, $CachedSongsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedSongsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedSongsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedSongsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> document = const Value.absent(),
+                Value<DateTime> cachedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedSongsCompanion(
+                id: id,
+                version: version,
+                document: document,
+                cachedAt: cachedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int version,
+                required String document,
+                required DateTime cachedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CachedSongsCompanion.insert(
+                id: id,
+                version: version,
+                document: document,
+                cachedAt: cachedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CachedSongsTable, CachedSongRow>(table),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $CachedSongsTable,
+                    CachedSongRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedSongsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $CachedSongsTable,
+      CachedSongRow,
+      $$CachedSongsTableFilterComposer,
+      $$CachedSongsTableOrderingComposer,
+      $$CachedSongsTableAnnotationComposer,
+      $$CachedSongsTableCreateCompanionBuilder,
+      $$CachedSongsTableUpdateCompanionBuilder,
+      (
+        CachedSongRow,
+        BaseReferences<_$ZemaDatabase, $CachedSongsTable, CachedSongRow>,
+      ),
+      CachedSongRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -6397,4 +6906,6 @@ class $ZemaDatabaseManager {
       $$LyricsLinksTableTableManager(_db, _db.lyricsLinks);
   $$CatalogSongsTableTableManager get catalogSongs =>
       $$CatalogSongsTableTableManager(_db, _db.catalogSongs);
+  $$CachedSongsTableTableManager get cachedSongs =>
+      $$CachedSongsTableTableManager(_db, _db.cachedSongs);
 }

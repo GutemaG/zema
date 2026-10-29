@@ -16,6 +16,11 @@ class CatalogDao extends DatabaseAccessor<ZemaDatabase> with _$CatalogDaoMixin {
     catalogSongs,
   )..orderBy([(s) => OrderingTerm.asc(s.id)])).map(_entry).watch();
 
+  /// The indexed song [id], or null when the catalog doesn't list it.
+  Future<CatalogEntry?> entry(String id) => (select(
+    catalogSongs,
+  )..where((s) => s.id.equals(id))).map(_entry).getSingleOrNull();
+
   Future<int> count() => catalogSongs.count().getSingle();
 
   /// Makes the index exactly [entries], in one transaction: songs no longer

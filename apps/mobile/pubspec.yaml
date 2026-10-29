@@ -63,8 +63,6 @@ flutter:
     # Font license texts, shown on the licenses page.
     - assets/fonts/OFL-Inter.txt
     - assets/fonts/OFL-NotoSansEthiopic.txt
-    # Sample synced lyrics (placeholder songs), read by BundledLyricsRepository.
-    - assets/lyrics/
 
   # Bundled so Ethiopic renders offline and on phones without Ethiopic system
   # fonts. Never fetched at runtime. Static TTFs from Google Fonts (SIL OFL).

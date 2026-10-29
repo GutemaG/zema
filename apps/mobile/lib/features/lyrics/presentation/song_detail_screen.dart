@@ -13,11 +13,13 @@ import '../../library/presentation/add_to_playlist_sheet.dart';
 import '../../player/application/player_providers.dart';
 import '../application/lyrics_links.dart';
 import '../application/lyrics_prefs.dart';
+import 'lyrics_view.dart';
 
 /// S07: one song's title, transliteration, artist and album, Play,
 /// favorite and add to playlist (for its first linked track), and tabs
-/// with the full lyrics and the song's info. An unknown [songId] shows
-/// C07.
+/// with the full lyrics and the song's info. Opening it downloads the
+/// lyrics if needed. An unknown [songId] shows C07 not found; lyrics that
+/// can't be downloaded show C07 with Try again.
 class SongDetailScreen extends ConsumerWidget {
   const SongDetailScreen({super.key, required this.songId});
 
@@ -25,15 +27,20 @@ class SongDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final songs = ref.watch(lyricsSongsProvider);
-    final song = songs.value?.where((s) => s.id == songId).firstOrNull;
-    return switch (songs) {
-      AsyncData() when song != null => _SongDetail(song: song),
-      AsyncLoading() => Scaffold(
+    final id = songId;
+    if (id == null) return const NotFoundScreen();
+    return switch (ref.watch(songProvider(id))) {
+      // Kept on screen while a newer version downloads.
+      AsyncValue(value: final song?) => _SongDetail(song: song),
+      AsyncData() => const NotFoundScreen(),
+      AsyncError(:final error) => Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(child: LyricsUnavailable(error: error)),
+      ),
+      _ => Scaffold(
         appBar: AppBar(),
         body: const Center(child: CircularProgressIndicator()),
       ),
-      _ => const NotFoundScreen(),
     };
   }
 }

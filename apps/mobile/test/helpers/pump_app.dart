@@ -34,8 +34,8 @@ import 'fake_player.dart';
 /// (empty by default), [permissions] (granted by default), [database]
 /// (in-memory by default; pass one to seed or inspect it) and
 /// [shareService], and so is the player ([audioHandler], over a fake backend by
-/// default). Lyrics come from [lyricsRepository], by default the bundled
-/// samples read from disk. With [settle] false only the first frame is pumped.
+/// default). Lyrics come from [catalog], by default a fake one serving
+/// [lyricsRepository] (the sample fixtures unless given). With [settle] false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
   String location = AppRoutes.home,

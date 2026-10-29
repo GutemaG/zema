@@ -1679,6 +1679,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The song list isn\'t available in this build.'**
   String get catalogNotConfigured;
+
+  /// C07 title when a song's lyrics aren't downloaded and there is no network.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get lyricsOfflineTitle;
+
+  /// C07 message when a song's lyrics aren't downloaded and there is no network.
+  ///
+  /// In en, this message translates to:
+  /// **'These lyrics haven\'t been downloaded yet. Connect to the internet and try again.'**
+  String get lyricsOfflineMessage;
+
+  /// C07 title when downloading a song's lyrics fails for another reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the lyrics'**
+  String get lyricsLoadFailedTitle;
+
+  /// C07 message when downloading a song's lyrics fails for another reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong getting these lyrics. Try again in a moment.'**
+  String get lyricsLoadFailedMessage;
+
+  /// Small lyrics panel on Now Playing when the song's lyrics aren't downloaded and there is no network; tapping it opens the full lyrics with Try again.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline: these lyrics aren\'t downloaded yet'**
+  String get lyricsPreviewOffline;
 }
 
 class _AppLocalizationsDelegate

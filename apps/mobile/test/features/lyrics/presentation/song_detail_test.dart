@@ -7,12 +7,20 @@ import 'package:zema/features/library/application/library_access_controller.dart
 import 'package:zema/features/lyrics/presentation/song_detail_screen.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
+import 'package:zema/shared/widgets/empty_state.dart';
+import 'package:zema_core/zema_core.dart';
 
+import '../../../helpers/bundled_lyrics_repository.dart';
+import '../../../helpers/fake_catalog.dart';
 import '../../../helpers/fake_library.dart';
+import '../../../helpers/fake_lyrics.dart';
 import '../../../helpers/fake_player.dart';
 import '../../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
+
+FakeCatalogRepository _catalog() =>
+    FakeCatalogRepository(lyrics: BundledLyricsRepository(DiskAssetBundle()));
 
 /// Lets asset loading and database work finish, then settles.
 Future<void> _settle(WidgetTester tester) async {
@@ -24,14 +32,19 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 /// The app on Library with the sample Galatoomi track (linked) and an
-/// unlinked one.
+/// unlinked one. With [cached], the sample lyrics are already downloaded.
 Future<ZemaAudioHandler> _pump(
   WidgetTester tester, {
   double textScale = 1,
   Brightness phoneBrightness = Brightness.dark,
+  bool cached = false,
+  FakeCatalogRepository? catalog,
+  ZemaFailure? failAfterStart,
 }) async {
   useScreen(tester, size: const Size(400, 860), textScale: textScale);
   final handler = fakeAudioHandler(FakeAudioBackend());
+  final db = memoryDatabase();
+  if (cached) await tester.runAsync(() => cacheSampleLyrics(db));
   await pumpZemaApp(
     tester,
     location: AppRoutes.library,
@@ -39,12 +52,15 @@ Future<ZemaAudioHandler> _pump(
       scannedAudio(1, '/m/1.mp3', title: 'Galatoomi', artist: 'Zema Samples'),
       scannedAudio(2, '/m/2.mp3', title: 'Kidus'),
     ]),
-    database: memoryDatabase(),
+    database: db,
     audioHandler: handler,
     phoneBrightness: phoneBrightness,
+    catalog: catalog,
     savedPrefs: {LibraryAccessController.explainedKey: true},
   );
   await _settle(tester);
+  // The index is saved; downloading lyrics fails from here on.
+  catalog?.failure = failAfterStart;
   return handler;
 }
 
@@ -75,7 +91,7 @@ void main() {
     testWidgets('a Lyrics group shows the song with its matching line', (
       tester,
     ) async {
-      await _pump(tester);
+      await _pump(tester, cached: true);
       await _search(tester, 'jaallatee');
 
       expect(find.text(_l10n.searchScopeLyrics), findsWidgets);
@@ -96,7 +112,7 @@ void main() {
     testWidgets('a chorus line sung three times finds its song once', (
       tester,
     ) async {
-      await _pump(tester);
+      await _pump(tester, cached: true);
       await _search(tester, 'maqaan ulfaatu');
       expect(
         find.textContaining('Maqaan kee haa ulfaatu', findRichText: true),
@@ -105,7 +121,7 @@ void main() {
     });
 
     testWidgets('the Lyrics chip shows only lyric matches', (tester) async {
-      await _pump(tester);
+      await _pump(tester, cached: true);
       await _search(tester, 'galatoomi');
       // The track (Songs) and the lyrics (Lyrics) both match.
       expect(find.text(_l10n.searchScopeSongs), findsNWidgets(2));
@@ -122,7 +138,7 @@ void main() {
     });
 
     testWidgets('a result opens Song detail in the Search tab', (tester) async {
-      await _pump(tester);
+      await _pump(tester, cached: true);
       await _search(tester, 'jaallatee');
       await tester.tap(_resultLine('jaallatee'));
       await _settle(tester);
@@ -221,6 +237,44 @@ void main() {
       _go(tester, '${AppRoutes.library}/${AppRoutes.songPath}');
       await _settle(tester);
       expect(find.byType(NotFoundScreen), findsOneWidget);
+    });
+
+    testWidgets('opening a song downloads its lyrics', (tester) async {
+      final catalog = _catalog();
+      await _pump(tester, catalog: catalog);
+      expect(catalog.songCalls, isNot(contains('selam-lezih-bet')));
+
+      _go(tester, AppRoutes.song('selam-lezih-bet'));
+      await _settle(tester);
+
+      expect(catalog.songCalls, contains('selam-lezih-bet'));
+      expect(find.byType(SongDetailScreen), findsOneWidget);
+      expect(find.text(_l10n.songDetailLyricsTab), findsOneWidget);
+    });
+
+    testWidgets('offline, a song never downloaded shows C07 with Try again', (
+      tester,
+    ) async {
+      final catalog = _catalog();
+      await _pump(
+        tester,
+        catalog: catalog,
+        failAfterStart: const NetworkFailure('offline'),
+      );
+      _go(tester, AppRoutes.song('selam-lezih-bet'));
+      await _settle(tester);
+
+      final state = tester.widget<EmptyState>(find.byType(EmptyState));
+      expect(state.kind, EmptyStateKind.offline);
+      expect(find.text(_l10n.lyricsOfflineTitle), findsOneWidget);
+      expect(find.byType(NotFoundScreen), findsNothing);
+      expect(find.byType(BackButton), findsOneWidget);
+
+      catalog.failure = null;
+      await tester.tap(find.text(_l10n.actionTryAgain));
+      await _settle(tester);
+      expect(find.byType(EmptyState), findsNothing);
+      expect(find.text(_l10n.songDetailLyricsTab), findsOneWidget);
     });
 
     testWidgets('View lyrics in the song menu opens it', (tester) async {
