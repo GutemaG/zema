@@ -1,8 +1,8 @@
 ---
 intent: 004-cloud-lyrics-catalog
 created: 2026-10-23T22:16:40Z
-completed: null
-status: in-progress
+completed: 2026-10-29T06:02:07Z
+status: complete
 ---
 
 # Inception Log: 004-cloud-lyrics-catalog
@@ -18,32 +18,43 @@ status: in-progress
 
 | Artifact | Status | File |
 |----------|--------|------|
-| Requirements | 📝 draft | requirements.md |
-| System Context | ⬜ | system-context.md |
-| Units | ⬜ | units/ |
-| Stories | ⬜ | units/*/stories/ |
-| Bolt Plan | ⬜ | memory-bank/bolts/ |
+| Requirements | ✅ approved | requirements.md |
+| System Context | ✅ | system-context.md |
+| Units | ✅ 2 units | units/ |
+| Stories | ✅ 14 stories | units/*/stories/ |
+| Bolt Plan | ✅ 11 bolts (018–028) | memory-bank/bolts/ |
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
-| Functional Requirements | 10 (draft) |
+| Functional Requirements | 11 |
 | Non-Functional Requirements | see requirements.md |
-| Units | 0 |
-| Stories | 0 |
-| Bolts Planned | 0 |
+| Units | 2 |
+| Stories | 14 |
+| Bolts Planned | 11 |
 
 ## Units Breakdown
 
 | Unit | Stories | Bolts | Priority |
 |------|---------|-------|----------|
+| 001-cloud-lyrics-catalog-backend | 6 | 018–021 | Must |
+| 002-cloud-lyrics-catalog-ui | 8 | 022–028 | Must/Should/Could |
 
 ## Decision Log
 
 | Date | Decision | Rationale | Approved |
 |------|----------|-----------|----------|
 | 2026-10-23T22:16:40Z | Intent created as draft from roadmap stage | All 8 roadmap stages created up front; elaborated in order | Yes |
+| 2026-10-29T05:57:07Z | Seed from files (LRC + index), starting with the 3 placeholder songs | Owner decision; no third-party lyrics without permission | Yes |
+| 2026-10-29T05:57:07Z | Guests may report wrong lyrics, 5 per device per day | Owner decision | Yes |
+| 2026-10-29T05:57:07Z | Local Supabase during development | Free, testable, no account; hosted later | Yes |
+| 2026-10-29T05:57:07Z | Light song index on the phone; lyrics on demand + cache | Keeps auto-linking and title search offline | Yes |
+| 2026-10-29T05:57:07Z | Bundled samples move to the backend | One source of lyrics; samples stay as test fixtures | Yes |
+| 2026-10-29T05:57:07Z | All Should/Could features in scope | Owner decision | Yes |
+| 2026-10-29T05:59:04Z | Requirements approved (Checkpoint 2) | Owner review | Yes |
+| 2026-10-29T05:59:04Z | 2 units: backend + ui, both simple-construction-bolt | Backend is SQL/scripts; built and tested on its own first | Yes |
+| 2026-10-29T06:02:07Z | Artifacts approved (Checkpoint 3) | Owner review | Yes |
 
 ## Scope Changes
 
@@ -53,18 +64,17 @@ status: in-progress
 ## Ready for Construction
 
 **Checklist**:
-- [ ] All requirements documented
-- [ ] System context defined
-- [ ] Units decomposed
-- [ ] Stories created for all units
-- [ ] Bolts planned
-- [ ] Human review complete
+- [x] All requirements documented
+- [x] System context defined
+- [x] Units decomposed
+- [x] Stories created for all units
+- [x] Bolts planned
+- [x] Human review complete
 
 ## Next Steps
 
-1. Resolve open questions in requirements.md
-2. Run requirements skill (Checkpoints 1–2) via `/specsmd-inception-agent`
+1. Start construction with bolt 018 (local Supabase + schema)
 
 ## Dependencies
 
-003. Blocked on open decision: how the first catalog is seeded.
+003 (complete). Open decision on seeding resolved.

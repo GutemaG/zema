@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 48
-- **Generated**: 48
-- **Last updated**: 2026-10-26T17:43:37Z
+- **Total stories**: 62
+- **Generated**: 62
+- **Last updated**: 2026-10-29T05:59:04Z
 
 ---
 
@@ -73,7 +73,29 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 - [x] **015-lyric-text-search** (lyrics-engine-and-display-ui): Lyric text search - Must - ✅ COMPLETED
 - [x] **016-lyrics-settings** (lyrics-engine-and-display-ui): Lyrics settings - Must - ✅ COMPLETED
 
-### 004-cloud-lyrics-catalog … 008-admin-website
+### 004-cloud-lyrics-catalog
+
+Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/001-cloud-lyrics-catalog-backend/stories/`
+
+- [ ] **001-local-supabase-and-schema** (cloud-lyrics-catalog-backend): Local Supabase and catalog schema - Must - ⬜ GENERATED
+- [ ] **002-row-level-security** (cloud-lyrics-catalog-backend): Row Level Security - Must - ⬜ GENERATED
+- [ ] **003-report-function** (cloud-lyrics-catalog-backend): Rate-limited report function - Should - ⬜ GENERATED
+- [ ] **004-search-rules-to-sql** (cloud-lyrics-catalog-backend): Search rules generated into SQL - Must - ⬜ GENERATED
+- [ ] **005-server-search** (cloud-lyrics-catalog-backend): Server search function - Must - ⬜ GENERATED
+- [ ] **006-seed-script** (cloud-lyrics-catalog-backend): Seed script and placeholder songs - Must - ⬜ GENERATED
+
+Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/002-cloud-lyrics-catalog-ui/stories/`
+
+- [ ] **001-zema-data-package** (cloud-lyrics-catalog-ui): zema_data Supabase repository - Must - ⬜ GENERATED
+- [ ] **002-song-index** (cloud-lyrics-catalog-ui): Song index on the phone - Must - ⬜ GENERATED
+- [ ] **003-lyrics-cache** (cloud-lyrics-catalog-ui): Lyrics cache; the app reads the catalog - Must - ⬜ GENERATED
+- [ ] **004-search-merge** (cloud-lyrics-catalog-ui): Search merges the phone and the catalog - Must - ⬜ GENERATED
+- [ ] **005-offline-downloads** (cloud-lyrics-catalog-ui): Offline downloads in Settings - Should - ⬜ GENERATED
+- [ ] **006-report-wrong-lyrics** (cloud-lyrics-catalog-ui): Report wrong lyrics - Should - ⬜ GENERATED
+- [ ] **007-recordings-tab** (cloud-lyrics-catalog-ui): Song detail Recordings tab - Should - ⬜ GENERATED
+- [ ] **008-home-community-row** (cloud-lyrics-catalog-ui): Home: new lyrics from the community - Could - ⬜ GENERATED
+
+### 005-accounts-backup-restore … 008-admin-website
 
 No stories yet (intents in draft).
 
@@ -82,6 +104,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 0
+- **Generated**: 14
 - **In Progress**: 0
 - **Completed**: 48
