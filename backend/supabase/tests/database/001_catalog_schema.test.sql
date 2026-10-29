@@ -16,7 +16,7 @@ select tables_are(
   'public',
   array[
     'songs', 'sections', 'lines', 'play_order', 'recordings', 'sync_timings',
-    'reports', 'user_roles', 'contributions',
+    'reports', 'user_roles', 'contributions', 'profiles',
     'search_entries', 'search_entry_words', 'search_vocab', 'search_syllable_consonants'
   ],
   'the catalog has exactly the expected tables'
@@ -31,9 +31,10 @@ select ok(
 );
 
 select is(
-  (select count(*)::int from pg_policies where schemaname = 'public' and cmd <> 'SELECT'),
-  0,
-  'every policy is read-only: nothing is writable through the API'
+  (select string_agg(format('%s %s', tablename, cmd), ', ') from pg_policies
+   where schemaname = 'public' and cmd <> 'SELECT'),
+  'profiles UPDATE',
+  'the only write policy is a user renaming their own profile (bolt 029)'
 );
 
 -- Fixtures ---------------------------------------------------------------------

@@ -49,6 +49,17 @@ For a real phone, pass your computer's address: `tool/backend_env.sh http://192.
 Only Postgres, the API, auth and Studio run locally; realtime, storage, edge functions,
 analytics and the mail catcher are turned off in `config.toml` until they are needed.
 
+## Google sign-in
+
+Accounts (intent 005) sign in with Google only. The provider is set in `config.toml`
+from `supabase/.env`, which is gitignored (see `supabase/.env.example`). Without that
+file the backend still starts, but Google tokens are refused. The Google Cloud steps
+are in [docs/google-sign-in-setup.md](../docs/google-sign-in-setup.md).
+
+New users get a `profiles` row and the `contributor` role on sign-up (a trigger on
+`auth.users`). Users read only their own profile and roles, and can change only their
+display name.
+
 ## Rules
 
 - Change the schema only with a new migration file; never edit the database by hand

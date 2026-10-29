@@ -2,11 +2,11 @@
 id: 001-profiles-and-roles
 unit: 001-accounts-backend
 intent: 005-accounts-backup-restore
-status: planned
+status: complete
 priority: must
 created: '2026-10-29T19:05:45Z'
 assigned_bolt: 029-accounts-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 001-profiles-and-roles
