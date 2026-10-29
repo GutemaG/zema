@@ -9,6 +9,7 @@ backend/
     config.toml        local project settings (project ID "zema")
     migrations/        the schema, applied in order; the only source of truth
     tests/database/    pgTAP tests, run with `supabase test db`
+  bench/               timing scripts, run by hand
 ```
 
 ## Requirements
@@ -57,6 +58,21 @@ analytics and the mail catcher are turned off in `config.toml` until they are ne
 | `sync_timings` | One start time per sung line, per recording |
 | `reports` | "Wrong lyrics" reports for moderators |
 | `user_roles`, `contributions` | For accounts and contributions (later intents) |
+
+## Search
+
+`search_songs(query)` searches approved songs by title, transliteration, artist and
+lyric line, with the same spelling folds and transliteration matching as the app.
+The rules are generated from `zema_core`, never edited by hand:
+
+```text
+cd packages/zema_core && dart run tool/generate_search_sql.dart
+```
+
+This rewrites `migrations/20261029020000_search_rules.sql` and the parity test
+`tests/database/004_search_parity.test.sql` (zema_core's own answers for the same
+inputs). A Dart test fails if either file is stale. `bench/search_bench.sql` times the
+search on 5,000 synthetic songs.
 
 A song's `version` increases whenever its text, sections, recordings or timings change,
 so phones know when their cached copy is out of date.

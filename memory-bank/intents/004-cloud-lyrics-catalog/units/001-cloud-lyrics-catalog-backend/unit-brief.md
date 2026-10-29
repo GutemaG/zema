@@ -58,8 +58,8 @@ The first backend: a local Supabase project holding the shared lyrics catalog, w
 | 001-local-supabase-and-schema | Local Supabase and catalog schema | Must | Complete |
 | 002-row-level-security | Row Level Security | Must | Complete |
 | 003-report-function | Rate-limited report function | Should | Complete |
-| 004-search-rules-to-sql | Search rules generated into SQL | Must | Planned |
-| 005-server-search | Server search function | Must | Planned |
+| 004-search-rules-to-sql | Search rules generated into SQL | Must | Complete |
+| 005-server-search | Server search function | Must | Complete |
 | 006-seed-script | Seed script and placeholder songs | Must | Planned |
 
 ---

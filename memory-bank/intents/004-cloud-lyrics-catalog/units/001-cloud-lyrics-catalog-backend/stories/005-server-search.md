@@ -2,11 +2,11 @@
 id: 005-server-search
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: must
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 020-cloud-lyrics-catalog-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 005-server-search
@@ -19,9 +19,9 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a query, **When** `search_songs` is called, **Then** approved songs matching title, transliteration, artist or a line are returned best first, each once, with the matching line
-- [ ] **Given** the 003 search test queries ("kidist", "ቅድስት", "ቅዱስት" …), **When** run on the server and in `zema_core` over the same songs, **Then** both return the same songs
-- [ ] **Given** 5,000 seeded songs, **When** searching, **Then** the function answers in < 200 ms on the local database
+- [x] **Given** a query, **When** `search_songs` is called, **Then** approved songs matching title, transliteration, artist or a line are returned best first, each once, with the matching line
+- [x] **Given** the 003 search test queries ("kidist", "ቅድስት", "ቅዱስት" …), **When** run on the server and in `zema_core` over the same songs, **Then** both return the same songs
+- [x] **Given** 5,000 seeded songs, **When** searching, **Then** the function answers in < 200 ms on the local database
 
 ## Technical Notes
 

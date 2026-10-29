@@ -10,7 +10,8 @@ select tables_are(
   'public',
   array[
     'songs', 'sections', 'lines', 'play_order', 'recordings', 'sync_timings',
-    'reports', 'user_roles', 'contributions'
+    'reports', 'user_roles', 'contributions',
+    'search_entries', 'search_entry_words', 'search_vocab', 'search_syllable_consonants'
   ],
   'the catalog has exactly the expected tables'
 );
