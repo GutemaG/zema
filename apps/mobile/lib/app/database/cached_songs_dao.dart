@@ -12,6 +12,9 @@ part 'cached_songs_dao.g.dart';
 /// A cached song: its document and the catalog version it was fetched at.
 typedef CachedSong = ({SongDocument document, int version});
 
+/// The space downloaded lyrics take: songs, and bytes of their documents.
+typedef LyricsUsage = ({int songs, int bytes});
+
 /// Lyrics downloaded from the catalog.
 @DriftAccessor(tables: [CachedSongs])
 class CachedSongsDao extends DatabaseAccessor<ZemaDatabase>
@@ -37,6 +40,21 @@ class CachedSongsDao extends DatabaseAccessor<ZemaDatabase>
           cachedAt: clock.now().toUtc(),
         ),
       );
+
+  /// How many songs are cached and how many bytes their documents take,
+  /// updated after every save and clear.
+  Stream<LyricsUsage> watchUsage() {
+    final count = cachedSongs.id.count();
+    final bytes = cachedSongs.document.length.sum();
+    return (selectOnly(
+      cachedSongs,
+    )..addColumns([count, bytes])).watchSingle().map(
+      (row) => (songs: row.read(count) ?? 0, bytes: row.read(bytes) ?? 0),
+    );
+  }
+
+  /// Deletes every cached song.
+  Future<void> clear() => delete(cachedSongs).go();
 
   /// Every cached song, by ID.
   Stream<List<CachedSong>> watchSongs() =>

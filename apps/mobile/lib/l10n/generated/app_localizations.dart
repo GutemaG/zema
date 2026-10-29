@@ -1721,6 +1721,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t search the catalog'**
   String get searchCatalogFailed;
+
+  /// Settings → Lyrics row: how much storage downloaded lyrics take.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded lyrics'**
+  String get settingsLyricsDownloaded;
+
+  /// Value of the Downloaded lyrics row, e.g. '12 songs · 340 KB'.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song} other{{count} songs}} · {size}'**
+  String settingsLyricsDownloadedValue(int count, String size);
+
+  /// Value of the Downloaded lyrics row when nothing is downloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet'**
+  String get settingsLyricsDownloadedNone;
+
+  /// Settings → Lyrics row that downloads every song's lyrics for use without a network.
+  ///
+  /// In en, this message translates to:
+  /// **'Download all lyrics for offline'**
+  String get settingsLyricsDownloadAll;
+
+  /// Download all row while the song list is being checked, before songs download.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the song list…'**
+  String get settingsLyricsDownloadChecking;
+
+  /// Download all row while downloading, e.g. '12 of 40'.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String settingsLyricsDownloadProgress(int done, int total);
+
+  /// Download all row after every song was downloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'All lyrics downloaded'**
+  String get settingsLyricsDownloadDone;
+
+  /// Download all row after the listener cancelled it.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled: {done} of {total} saved'**
+  String settingsLyricsDownloadCancelled(int done, int total);
+
+  /// Download all row after it stopped because there was no network.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped: check your connection. {done} of {total} saved'**
+  String settingsLyricsDownloadOffline(int done, int total);
+
+  /// Download all row after it stopped for another reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped: something went wrong. {done} of {total} saved'**
+  String settingsLyricsDownloadFailed(int done, int total);
+
+  /// Download all row in a build with no lyrics catalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available in this build'**
+  String get settingsLyricsDownloadUnavailable;
+
+  /// Settings → Lyrics row that deletes downloaded lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear downloaded lyrics'**
+  String get settingsLyricsClear;
+
+  /// Title of the dialog confirming Clear downloaded lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear downloaded lyrics?'**
+  String get settingsLyricsClearTitle;
+
+  /// Message of the dialog confirming Clear downloaded lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs will download again when you open them online. Your matched songs stay matched.'**
+  String get settingsLyricsClearMessage;
+
+  /// Button in the dialog that clears downloaded lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get settingsLyricsClearConfirm;
 }
 
 class _AppLocalizationsDelegate

@@ -12,7 +12,7 @@ import '../../../app/database/database_provider.dart';
 final _log = Logger('catalog.lyrics');
 
 /// The lyrics the app reads: the catalog's songs, cached on the phone.
-final lyricsRepositoryProvider = Provider<LyricsRepository>((ref) {
+final lyricsRepositoryProvider = Provider<CatalogLyricsRepository>((ref) {
   final db = ref.watch(databaseProvider);
   return CatalogLyricsRepository(
     catalog: ref.watch(catalogRepositoryProvider),
@@ -53,12 +53,34 @@ class CatalogLyricsRepository implements LyricsRepository {
       _read[id] = known;
       return known.document;
     }
-    // A block body: returning the removed future from whenComplete would
-    // make it wait for itself.
-    return _fetching[id] ??= _fetch(entry, known).whenComplete(() {
-      _fetching.remove(id);
-    });
+    return _shared(entry, known);
   }
+
+  /// Saves the song [id] if it isn't cached at the index's version, for
+  /// Download all. Unlike [document], a failure is thrown even when an
+  /// older copy is cached. A song the index doesn't list is skipped.
+  Future<void> download(String id) async {
+    final entry = await _index.entry(id);
+    if (entry == null) return;
+    final known = _read[id] ?? await _cache.song(id);
+    if (known != null && known.version >= entry.version) return;
+    await _shared(entry, null);
+  }
+
+  /// Deletes every downloaded song, from Drift and from memory. Links and
+  /// the index are kept.
+  Future<void> clearCache() async {
+    _read.clear();
+    await _cache.clear();
+  }
+
+  /// One fetch per song at a time; later callers share it.
+  Future<SongDocument?> _shared(CatalogEntry entry, CachedSong? old) =>
+      // A block body: returning the removed future from whenComplete would
+      // make it wait for itself.
+      _fetching[entry.id] ??= _fetch(entry, old).whenComplete(() {
+        _fetching.remove(entry.id);
+      });
 
   Future<SongDocument?> _fetch(CatalogEntry entry, CachedSong? old) async {
     try {

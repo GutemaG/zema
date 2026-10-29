@@ -2,11 +2,11 @@
 id: 005-offline-downloads
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: should
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 026-cloud-lyrics-catalog-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 005-offline-downloads
@@ -19,9 +19,9 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Settings → Lyrics, **When** shown, **Then** storage used by downloaded lyrics shows
-- [ ] **Given** "Download all lyrics for offline", **When** started, **Then** every approved song is cached with progress and can be cancelled
-- [ ] **Given** "Clear downloaded lyrics", **When** confirmed, **Then** cached lyrics are removed but links and the index stay
+- [x] **Given** Settings → Lyrics, **When** shown, **Then** storage used by downloaded lyrics shows
+- [x] **Given** "Download all lyrics for offline", **When** started, **Then** every approved song is cached with progress and can be cancelled
+- [x] **Given** "Clear downloaded lyrics", **When** confirmed, **Then** cached lyrics are removed but links and the index stay
 
 ## Technical Notes
 

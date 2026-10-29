@@ -238,4 +238,62 @@ void main() {
       expect(catalog.songCalls, ['selam', 'amlak']);
     });
   });
+
+  group('download', () {
+    test('fetches and saves a song not cached', () async {
+      await repository().download('selam');
+      expect(catalog.songCalls, ['selam']);
+      expect(await cachedIds(), ['selam']);
+    });
+
+    test('a song cached at the index version is skipped', () async {
+      await repository().song('selam');
+      await repository().download('selam');
+      expect(catalog.songCalls, ['selam']);
+    });
+
+    test('an older copy is fetched again', () async {
+      await repository().song('selam');
+      catalog.versions['selam'] = 2;
+      await refreshIndex();
+      await repository().download('selam');
+      expect(catalog.songCalls, ['selam', 'selam']);
+      expect((await db.cachedSongsDao.song('selam'))?.version, 2);
+    });
+
+    test('a failure is thrown even with an older copy, which stays', () async {
+      await repository().song('selam');
+      catalog.versions['selam'] = 2;
+      await refreshIndex();
+      catalog.failure = const NetworkFailure('offline');
+      await expectLater(
+        repository().download('selam'),
+        throwsA(isA<NetworkFailure>()),
+      );
+      expect((await db.cachedSongsDao.song('selam'))?.version, 1);
+    });
+
+    test('a song the index does not list is skipped', () async {
+      await repository().download('kidus');
+      expect(catalog.songCalls, isEmpty);
+    });
+  });
+
+  group('clearCache', () {
+    test('removes songs from Drift and memory; the index stays', () async {
+      final r = repository();
+      await r.song('selam');
+      await r.clearCache();
+
+      expect(await cachedIds(), isEmpty);
+      expect(
+        [for (final e in await db.catalogDao.watchEntries().first) e.id],
+        ['amlak', 'selam'],
+      );
+      // The same repository doesn't serve its memory copy: offline it fails.
+      catalog.failure = const NetworkFailure('offline');
+      await expectLater(r.song('selam'), throwsA(isA<NetworkFailure>()));
+      expect(await r.recordings('selam'), isEmpty);
+    });
+  });
 }

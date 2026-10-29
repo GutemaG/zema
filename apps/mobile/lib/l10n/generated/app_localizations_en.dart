@@ -1004,4 +1004,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchCatalogFailed => 'Couldn\'t search the catalog';
+
+  @override
+  String get settingsLyricsDownloaded => 'Downloaded lyrics';
+
+  @override
+  String settingsLyricsDownloadedValue(int count, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs',
+      one: '1 song',
+    );
+    return '$_temp0 · $size';
+  }
+
+  @override
+  String get settingsLyricsDownloadedNone => 'None yet';
+
+  @override
+  String get settingsLyricsDownloadAll => 'Download all lyrics for offline';
+
+  @override
+  String get settingsLyricsDownloadChecking => 'Checking the song list…';
+
+  @override
+  String settingsLyricsDownloadProgress(int done, int total) {
+    return '$done of $total';
+  }
+
+  @override
+  String get settingsLyricsDownloadDone => 'All lyrics downloaded';
+
+  @override
+  String settingsLyricsDownloadCancelled(int done, int total) {
+    return 'Cancelled: $done of $total saved';
+  }
+
+  @override
+  String settingsLyricsDownloadOffline(int done, int total) {
+    return 'Stopped: check your connection. $done of $total saved';
+  }
+
+  @override
+  String settingsLyricsDownloadFailed(int done, int total) {
+    return 'Stopped: something went wrong. $done of $total saved';
+  }
+
+  @override
+  String get settingsLyricsDownloadUnavailable => 'Not available in this build';
+
+  @override
+  String get settingsLyricsClear => 'Clear downloaded lyrics';
+
+  @override
+  String get settingsLyricsClearTitle => 'Clear downloaded lyrics?';
+
+  @override
+  String get settingsLyricsClearMessage =>
+      'Songs will download again when you open them online. Your matched songs stay matched.';
+
+  @override
+  String get settingsLyricsClearConfirm => 'Clear';
 }

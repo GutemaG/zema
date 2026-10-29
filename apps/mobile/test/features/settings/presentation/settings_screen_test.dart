@@ -50,7 +50,7 @@ void main() {
       ];
       expect(tops, orderedEquals([...tops]..sort()));
       expect(find.byType(SettingsGroup), findsNWidgets(5));
-      expect(find.byType(SettingsRow), findsNWidgets(13));
+      expect(find.byType(SettingsRow), findsNWidgets(16));
       for (final label in [
         'Language',
         'Appearance',
@@ -62,6 +62,9 @@ void main() {
         'Pause when headphones are unplugged',
         'When another app plays sound',
         'Gapless playback',
+        'Downloaded lyrics',
+        'Download all lyrics for offline',
+        'Clear downloaded lyrics',
         'Version',
         'Open-source licenses',
       ]) {

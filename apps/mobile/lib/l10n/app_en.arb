@@ -1293,5 +1293,106 @@
   "searchCatalogFailed": "Couldn't search the catalog",
   "@searchCatalogFailed": {
     "description": "Note in Search's Lyrics group when searching the catalog fails for another reason; the lines below come from downloaded songs."
+  },
+  "settingsLyricsDownloaded": "Downloaded lyrics",
+  "@settingsLyricsDownloaded": {
+    "description": "Settings → Lyrics row: how much storage downloaded lyrics take."
+  },
+  "settingsLyricsDownloadedValue": "{count, plural, =1{1 song} other{{count} songs}} · {size}",
+  "@settingsLyricsDownloadedValue": {
+    "description": "Value of the Downloaded lyrics row, e.g. '12 songs · 340 KB'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String",
+        "example": "340 KB"
+      }
+    }
+  },
+  "settingsLyricsDownloadedNone": "None yet",
+  "@settingsLyricsDownloadedNone": {
+    "description": "Value of the Downloaded lyrics row when nothing is downloaded."
+  },
+  "settingsLyricsDownloadAll": "Download all lyrics for offline",
+  "@settingsLyricsDownloadAll": {
+    "description": "Settings → Lyrics row that downloads every song's lyrics for use without a network."
+  },
+  "settingsLyricsDownloadChecking": "Checking the song list…",
+  "@settingsLyricsDownloadChecking": {
+    "description": "Download all row while the song list is being checked, before songs download."
+  },
+  "settingsLyricsDownloadProgress": "{done} of {total}",
+  "@settingsLyricsDownloadProgress": {
+    "description": "Download all row while downloading, e.g. '12 of 40'.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLyricsDownloadDone": "All lyrics downloaded",
+  "@settingsLyricsDownloadDone": {
+    "description": "Download all row after every song was downloaded."
+  },
+  "settingsLyricsDownloadCancelled": "Cancelled: {done} of {total} saved",
+  "@settingsLyricsDownloadCancelled": {
+    "description": "Download all row after the listener cancelled it.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLyricsDownloadOffline": "Stopped: check your connection. {done} of {total} saved",
+  "@settingsLyricsDownloadOffline": {
+    "description": "Download all row after it stopped because there was no network.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLyricsDownloadFailed": "Stopped: something went wrong. {done} of {total} saved",
+  "@settingsLyricsDownloadFailed": {
+    "description": "Download all row after it stopped for another reason.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLyricsDownloadUnavailable": "Not available in this build",
+  "@settingsLyricsDownloadUnavailable": {
+    "description": "Download all row in a build with no lyrics catalog."
+  },
+  "settingsLyricsClear": "Clear downloaded lyrics",
+  "@settingsLyricsClear": {
+    "description": "Settings → Lyrics row that deletes downloaded lyrics."
+  },
+  "settingsLyricsClearTitle": "Clear downloaded lyrics?",
+  "@settingsLyricsClearTitle": {
+    "description": "Title of the dialog confirming Clear downloaded lyrics."
+  },
+  "settingsLyricsClearMessage": "Songs will download again when you open them online. Your matched songs stay matched.",
+  "@settingsLyricsClearMessage": {
+    "description": "Message of the dialog confirming Clear downloaded lyrics."
+  },
+  "settingsLyricsClearConfirm": "Clear",
+  "@settingsLyricsClearConfirm": {
+    "description": "Button in the dialog that clears downloaded lyrics."
   }
 }

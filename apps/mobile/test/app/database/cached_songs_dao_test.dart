@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:clock/clock.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zema/app/database/cached_songs_dao.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema_core/zema_core.dart';
 
@@ -93,4 +96,30 @@ void main() {
     final listed = await db.cachedSongsDao.watchSongs().first;
     expect([for (final s in listed) s.document.song.id], ['amlak']);
   });
+
+  test(
+    'usage counts songs and their bytes, and follows saves and clear',
+    () async {
+      final dao = db.cachedSongsDao;
+      final usage = <LyricsUsage>[];
+      final sub = dao.watchUsage().listen(usage.add);
+      addTearDown(sub.cancel);
+      Future<LyricsUsage> settled() async {
+        await pumpEventQueue();
+        return usage.last;
+      }
+
+      expect(await settled(), (songs: 0, bytes: 0));
+      await dao.save(_document('selam'), 1);
+      await dao.save(_document('amlak'), 1);
+      final bytes =
+          jsonEncode(_document('selam').toJson()).length +
+          jsonEncode(_document('amlak').toJson()).length;
+      expect(await settled(), (songs: 2, bytes: bytes));
+
+      await dao.clear();
+      expect(await settled(), (songs: 0, bytes: 0));
+      expect(await dao.song('selam'), isNull);
+    },
+  );
 }

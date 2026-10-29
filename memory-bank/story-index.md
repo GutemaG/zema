@@ -90,7 +90,7 @@ Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/002-cloud-lyrics-catal
 - [x] **002-song-index** (cloud-lyrics-catalog-ui): Song index on the phone - Must - ✅ COMPLETED
 - [x] **003-lyrics-cache** (cloud-lyrics-catalog-ui): Lyrics cache; the app reads the catalog - Must - ✅ COMPLETED
 - [x] **004-search-merge** (cloud-lyrics-catalog-ui): Search merges the phone and the catalog - Must - ✅ COMPLETED
-- [ ] **005-offline-downloads** (cloud-lyrics-catalog-ui): Offline downloads in Settings - Should - ⬜ GENERATED
+- [x] **005-offline-downloads** (cloud-lyrics-catalog-ui): Offline downloads in Settings - Should - ✅ COMPLETED
 - [ ] **006-report-wrong-lyrics** (cloud-lyrics-catalog-ui): Report wrong lyrics - Should - ⬜ GENERATED
 - [ ] **007-recordings-tab** (cloud-lyrics-catalog-ui): Song detail Recordings tab - Should - ⬜ GENERATED
 - [ ] **008-home-community-row** (cloud-lyrics-catalog-ui): Home: new lyrics from the community - Could - ⬜ GENERATED
@@ -104,6 +104,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 4
+- **Generated**: 3
 - **In Progress**: 0
-- **Completed**: 58
+- **Completed**: 59
