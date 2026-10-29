@@ -56,6 +56,9 @@ class FakeCatalogRepository implements CatalogRepository {
   /// How many times [report] was called, accepted or not.
   var reportCalls = 0;
 
+  /// The report IDs passed to [report], accepted or not, in order.
+  final reportIds = <String?>[];
+
   /// When set, [report] waits for it before answering.
   Completer<void>? reportGate;
 
@@ -103,8 +106,10 @@ class FakeCatalogRepository implements CatalogRepository {
     required String installId,
     String? recordingId,
     String? note,
+    String? reportId,
   }) async {
     reportCalls++;
+    reportIds.add(reportId);
     await reportGate?.future;
     if (failure case final failure?) throw failure;
     if (reportFailures[songId] case final failure?) throw failure;
@@ -114,6 +119,7 @@ class FakeCatalogRepository implements CatalogRepository {
       installId: installId,
       recordingId: recordingId,
       note: note,
+      reportId: reportId,
     ));
   }
 }
@@ -125,6 +131,7 @@ typedef FakeReport = ({
   String installId,
   String? recordingId,
   String? note,
+  String? reportId,
 });
 
 /// [song] as an index entry.

@@ -2,11 +2,11 @@
 id: 008-home-community-row
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: could
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 028-cloud-lyrics-catalog-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 008-home-community-row
@@ -19,9 +19,9 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** the index, **When** Home shows, **Then** a row lists the most recently approved songs with a Synced or Text only badge
-- [ ] **Given** a card, **When** tapped, **Then** Song detail opens
-- [ ] **Given** an empty index, **When** Home shows, **Then** the row is hidden
+- [x] **Given** the index, **When** Home shows, **Then** a row lists the most recently approved songs with a Synced or Text only badge
+- [x] **Given** a card, **When** tapped, **Then** Song detail opens
+- [x] **Given** an empty index, **When** Home shows, **Then** the row is hidden
 
 ## Technical Notes
 

@@ -46,7 +46,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -60,9 +60,28 @@ class ZemaDatabase extends _$ZemaDatabase {
       from3To4: (m, schema) => m.createTable(schema.cachedSongs),
       // v5: reports of wrong lyrics waiting to be sent.
       from4To5: (m, schema) => m.createTable(schema.queuedReports),
+      // v6: each queued report keeps one ID; waiting ones get a random one.
+      from5To6: (m, schema) => m.alterTable(
+        TableMigration(
+          schema.queuedReports,
+          newColumns: [schema.queuedReports.reportId],
+          columnTransformer: {
+            schema.queuedReports.reportId: const CustomExpression<String>(
+              _randomUuidSql,
+            ),
+          },
+        ),
+      ),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
 }
+
+/// A random version 4 UUID, in SQLite.
+const _randomUuidSql =
+    "lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || "
+    "substr(hex(randomblob(2)), 2) || '-' || "
+    "substr('89ab', 1 + (abs(random()) % 4), 1) || "
+    "substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))";

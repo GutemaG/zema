@@ -154,6 +154,10 @@ class CachedSongs extends Table {
 @DataClassName('QueuedReportRow')
 class QueuedReports extends Table {
   IntColumn get id => integer().autoIncrement()();
+
+  /// The report's own UUID, sent with every try so the catalog stores it
+  /// once.
+  TextColumn get reportId => text()();
   TextColumn get songId => text()();
   TextColumn get recordingId => text().nullable()();
 

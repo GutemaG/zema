@@ -2,6 +2,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
+-- Reports made against the local backend (emulator checks) would skew the counts.
+delete from public.reports;
+
 -- Start from an empty catalog (the seed songs come back on rollback).
 delete from public.songs;
 
@@ -84,7 +87,7 @@ select lives_ok($$select public.submit_report('open-song', 'other', 'install-aaa
 
 reset role;
 select ok(
-  not has_function_privilege('public', 'public.submit_report(public.slug, public.report_reason, text, public.slug, text)', 'execute'),
+  not has_function_privilege('public', 'public.submit_report(public.slug, public.report_reason, text, public.slug, text, uuid)', 'execute'),
   'only anon and authenticated may call it, not PUBLIC'
 );
 

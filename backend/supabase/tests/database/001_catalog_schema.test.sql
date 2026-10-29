@@ -2,6 +2,9 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
+-- Reports made against the local backend (emulator checks) would skew the counts.
+delete from public.reports;
+
 -- Start from an empty catalog (the seed songs come back on rollback).
 delete from public.songs;
 

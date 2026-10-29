@@ -1121,4 +1121,7 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get reportFailed => 'Couldn\'t send the report';
+
+  @override
+  String get homeNewLyrics => 'New lyrics from the community';
 }

@@ -1466,5 +1466,9 @@
   "reportFailed": "Couldn't send the report",
   "@reportFailed": {
     "description": "Snackbar when the catalog refuses a report."
+  },
+  "homeNewLyrics": "New lyrics from the community",
+  "@homeNewLyrics": {
+    "description": "Home row of the songs most recently added to the shared lyrics catalog."
   }
 }

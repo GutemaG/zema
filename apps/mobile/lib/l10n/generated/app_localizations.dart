@@ -1919,6 +1919,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t send the report'**
   String get reportFailed;
+
+  /// Home row of the songs most recently added to the shared lyrics catalog.
+  ///
+  /// In en, this message translates to:
+  /// **'New lyrics from the community'**
+  String get homeNewLyrics;
 }
 
 class _AppLocalizationsDelegate

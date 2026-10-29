@@ -25,24 +25,27 @@ class LyricsReport {
   String toString() => 'LyricsReport($songId ${reason.name})';
 }
 
-/// A report waiting to be sent, by its queue [id].
-typedef QueuedReport = ({int id, LyricsReport report});
+/// A report waiting to be sent, by its queue [id], with the [reportId] it
+/// was first sent with.
+typedef QueuedReport = ({int id, String reportId, LyricsReport report});
 
 /// Reports of wrong lyrics waiting to be sent.
 @DriftAccessor(tables: [QueuedReports])
 class ReportsDao extends DatabaseAccessor<ZemaDatabase> with _$ReportsDaoMixin {
   ReportsDao(super.attachedDatabase);
 
-  /// Queues [report] behind any waiting ones.
-  Future<void> add(LyricsReport report) => into(queuedReports).insert(
-    QueuedReportsCompanion.insert(
-      songId: report.songId,
-      recordingId: Value(report.recordingId),
-      reason: report.reason.name,
-      note: Value(report.note),
-      createdAt: clock.now().toUtc(),
-    ),
-  );
+  /// Queues [report], sent before as [reportId], behind any waiting ones.
+  Future<void> add(LyricsReport report, {required String reportId}) =>
+      into(queuedReports).insert(
+        QueuedReportsCompanion.insert(
+          reportId: reportId,
+          songId: report.songId,
+          recordingId: Value(report.recordingId),
+          reason: report.reason.name,
+          note: Value(report.note),
+          createdAt: clock.now().toUtc(),
+        ),
+      );
 
   /// Every waiting report, oldest first. A row with a reason this version
   /// doesn't know counts as Other.
@@ -54,6 +57,7 @@ class ReportsDao extends DatabaseAccessor<ZemaDatabase> with _$ReportsDaoMixin {
       for (final row in rows)
         (
           id: row.id,
+          reportId: row.reportId,
           report: LyricsReport(
             songId: row.songId,
             recordingId: row.recordingId,

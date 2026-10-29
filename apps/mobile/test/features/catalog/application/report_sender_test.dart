@@ -124,8 +124,8 @@ void main() {
     });
 
     test('sends the queue first, then the new report', () async {
-      await db.reportsDao.add(_report('a'));
-      await db.reportsDao.add(_report('b'));
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
+      await db.reportsDao.add(_report('b'), reportId: 'id-b');
 
       await sender.send(_report('c'));
 
@@ -134,7 +134,7 @@ void main() {
     });
 
     test('offline again: the new report joins the end of the queue', () async {
-      await db.reportsDao.add(_report('a'));
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
       catalog.failure = const NetworkFailure('offline');
 
       await sender.send(_report('b'));
@@ -143,10 +143,55 @@ void main() {
     });
   });
 
+  group('report IDs', () {
+    final uuid = RegExp(
+      r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+    );
+
+    test('each report is sent with a new UUID', () async {
+      await sender.send(_report('a'));
+      await sender.send(_report('a'));
+
+      final ids = [for (final r in catalog.reports) r.reportId];
+      expect(ids, everyElement(matches(uuid)));
+      expect(ids.first, isNot(ids.last));
+    });
+
+    test(
+      'a report queued after a timeout is sent again with the same ID',
+      () async {
+        catalog.failure = const NetworkFailure('timed out');
+        await sender.send(_report('a'));
+        final tried = catalog.reportIds.single;
+        expect((await db.reportsDao.all()).single.reportId, tried);
+        catalog.failure = null;
+
+        await sender.flush();
+
+        expect(tried, matches(uuid));
+        expect(catalog.reports.single.reportId, tried);
+        expect(await queued(), isEmpty);
+      },
+    );
+
+    test('a queued report keeps its ID across failed flushes', () async {
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
+      catalog.failure = const NetworkFailure('offline');
+      await sender.flush();
+      await sender.flush();
+      catalog.failure = null;
+
+      await sender.flush();
+
+      expect(catalog.reportCalls, 3);
+      expect(catalog.reports.single.reportId, 'id-a');
+    });
+  });
+
   group('flush', () {
     test('sends oldest first and empties the queue', () async {
       for (final id in ['c', 'a', 'b']) {
-        await db.reportsDao.add(_report(id));
+        await db.reportsDao.add(_report(id), reportId: 'id-$id');
       }
 
       await sender.flush();
@@ -157,8 +202,8 @@ void main() {
 
     test('a report for a song no longer in the index is dropped quietly, '
         'without a call', () async {
-      await db.reportsDao.add(_report('gone'));
-      await db.reportsDao.add(_report('a'));
+      await db.reportsDao.add(_report('gone'), reportId: 'id-gone');
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
 
       await sender.flush();
 
@@ -169,8 +214,8 @@ void main() {
 
     test('a report refused for good is dropped; the rest are sent', () async {
       catalog.reportFailures['a'] = const BackendFailure('22023');
-      await db.reportsDao.add(_report('a'));
-      await db.reportsDao.add(_report('b'));
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
+      await db.reportsDao.add(_report('b'), reportId: 'id-b');
 
       await sender.flush();
 
@@ -180,8 +225,8 @@ void main() {
 
     test('offline: stops at the first and keeps them all', () async {
       catalog.failure = const NetworkFailure('offline');
-      await db.reportsDao.add(_report('a'));
-      await db.reportsDao.add(_report('b'));
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
+      await db.reportsDao.add(_report('b'), reportId: 'id-b');
 
       await sender.flush();
 
@@ -192,7 +237,7 @@ void main() {
     test('past the limit: keeps the one refused and the rest', () async {
       catalog.reportFailures['b'] = const RateLimitFailure('PT429');
       for (final id in ['a', 'b', 'c']) {
-        await db.reportsDao.add(_report(id));
+        await db.reportsDao.add(_report(id), reportId: 'id-$id');
       }
 
       await sender.flush();
@@ -203,7 +248,7 @@ void main() {
     });
 
     test('a second flush while one runs shares it', () async {
-      await db.reportsDao.add(_report('a'));
+      await db.reportsDao.add(_report('a'), reportId: 'id-a');
       final gate = catalog.reportGate = Completer<void>();
 
       final first = sender.flush();

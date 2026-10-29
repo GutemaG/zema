@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 62
-- **Generated**: 62
-- **Last updated**: 2026-10-29T05:59:04Z
+- **Total stories**: 63
+- **Generated**: 63
+- **Last updated**: 2026-10-29T14:00:21Z
 
 ---
 
@@ -93,7 +93,8 @@ Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/002-cloud-lyrics-catal
 - [x] **005-offline-downloads** (cloud-lyrics-catalog-ui): Offline downloads in Settings - Should - ✅ COMPLETED
 - [x] **006-report-wrong-lyrics** (cloud-lyrics-catalog-ui): Report wrong lyrics - Should - ✅ COMPLETED
 - [x] **007-recordings-tab** (cloud-lyrics-catalog-ui): Song detail Recordings tab - Should - ✅ COMPLETED
-- [ ] **008-home-community-row** (cloud-lyrics-catalog-ui): Home: new lyrics from the community - Could - ⬜ GENERATED
+- [x] **008-home-community-row** (cloud-lyrics-catalog-ui): Home: new lyrics from the community - Could - ✅ COMPLETED
+- [x] **009-report-sent-once** (cloud-lyrics-catalog-ui): A report is stored once, even if sent again - Should - ✅ COMPLETED
 
 ### 005-accounts-backup-restore … 008-admin-website
 
@@ -104,6 +105,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 1
+- **Generated**: 0
 - **In Progress**: 0
-- **Completed**: 61
+- **Completed**: 63

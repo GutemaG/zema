@@ -2,7 +2,7 @@
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
 created: 2026-10-29T08:32:46Z
-last_updated: 2026-10-29T13:25:19Z
+last_updated: 2026-10-29T14:55:20Z
 ---
 
 # Construction Log: cloud-lyrics-catalog-ui
@@ -37,7 +37,7 @@ last_updated: 2026-10-29T13:25:19Z
 | 025-cloud-lyrics-catalog-ui | 004 | ✅ completed | - |
 | 026-cloud-lyrics-catalog-ui | 005 | ✅ completed | - |
 | 027-cloud-lyrics-catalog-ui | 006, 007 | ✅ completed | - |
-| 028-cloud-lyrics-catalog-ui | 008 | [ ] planned | - |
+| 028-cloud-lyrics-catalog-ui | 008 | ✅ completed | - |
 
 ## Execution History
 
@@ -67,6 +67,10 @@ last_updated: 2026-10-29T13:25:19Z
 | 2026-10-29T12:55:53Z | 027-cloud-lyrics-catalog-ui | stage-complete | plan → implement |
 | 2026-10-29T13:00:56Z | 027-cloud-lyrics-catalog-ui | stage-complete | implement → test |
 | 2026-10-29T13:25:19Z | 027-cloud-lyrics-catalog-ui | completed | All 3 stages done; 201 core + 28 zema_data + 789 app tests pass; checked on the emulator (Recordings tab, report online, offline queue sent at restart, daily limit); a timed-out report can arrive twice (follow-up) |
+| 2026-10-29T14:01:41Z | 028-cloud-lyrics-catalog-ui | started | Stage 1: plan |
+| 2026-10-29T14:08:38Z | 028-cloud-lyrics-catalog-ui | stage-complete | plan → implement |
+| 2026-10-29T14:15:39Z | 028-cloud-lyrics-catalog-ui | stage-complete | implement → test |
+| 2026-10-29T14:55:20Z | 028-cloud-lyrics-catalog-ui | completed | All 3 stages done; 201 core + 28 zema_data + 810 app + 298 pgTAP tests pass; checked on the emulator (Home row, v5→v6 upgrade, a timed-out report stored once); intent done-when checks pass (3G search 247–621 ms via throttling proxy, 5,000-song index 347 KB gzip) |
 
 ## Notes
 - Bolt 022: zema_data (SupabaseCatalogRepository, no dart:io) with typed failures; song_index() added to the backend (scope addition for FR-6); app reads ZEMA_BACKEND_URL/KEY from --dart-define, no key committed (tool/backend_env.sh writes a gitignored file); emulator check deferred to 023/024.
@@ -75,3 +79,4 @@ last_updated: 2026-10-29T13:25:19Z
 - Bolt 025: Search's Lyrics group merges catalog titles (index, offline too), server lines (300 ms debounce, per-query auto-dispose provider, so stale answers drop) and downloaded songs' lines; C07 note with Try again when offline or failing; emulator umts didn't throttle host traffic, so < 1 s on 3G is estimated, not measured.
 - Bolt 026: Settings → Lyrics shows storage used (count + JSON length), Download all (kept-alive LyricsDownloader, batches of 4, Cancel between batches, a failure keeps what finished) and Clear (confirm dialog; clears Drift and memory, invalidates songProvider; links and index kept).
 - Bolt 027: reports of wrong lyrics (sheet from Song detail menu and Now Playing options; Drift v5 queued_reports; ReportSender flushes at startup and before each report; drops reports for songs off the index or refused for good; install ID in prefs) and Song detail's Recordings tab (usedRecording shared with the lyrics view). Follow-up: a report that times out can reach the server and be resent from the queue; needs a client report ID that submit_report ignores when repeated (backend migration).
+- Bolt 028: Home 'New lyrics from the community' row (newLyricsProvider: newest 10 by approvedAt; LetterTile + Synced/Text only badge; Song detail in the Home tab) and story 009 (report IDs: reports.client_id unique per install hash; submit_report answers a repeat with the first id, before the limit; Drift v6 queued_reports.report_id, existing rows given a UUID in SQL). Intent done-when checks all pass; the concurrent-copy fallback in submit_report is reviewed, not tested.

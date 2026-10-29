@@ -214,6 +214,7 @@ void main() {
         installId: 'install-1234',
         recordingId: 'selam',
         note: 'Line 3 is late',
+        reportId: '3f2b8c1e-9a4d-4e7f-b2c6-0d5e8a1f7c93',
       );
       expect(requests.single.url.path, '/rest/v1/rpc/submit_report');
       expect(jsonDecode(requests.single.body), {
@@ -222,10 +223,11 @@ void main() {
         'install_id': 'install-1234',
         'recording_id': 'selam',
         'note': 'Line 3 is late',
+        'report_id': '3f2b8c1e-9a4d-4e7f-b2c6-0d5e8a1f7c93',
       });
     });
 
-    test('leaves out a missing recording and note', () async {
+    test('leaves out a missing recording, note and report ID', () async {
       answerWith((_) => http.Response('', 204));
       await repository.report(
         songId: 'selam',

@@ -53,6 +53,7 @@ class SupabaseCatalogRepository implements CatalogRepository {
     required String installId,
     String? recordingId,
     String? note,
+    String? reportId,
   }) async {
     await _call('submit_report', {
       'song_id': songId,
@@ -60,6 +61,7 @@ class SupabaseCatalogRepository implements CatalogRepository {
       'install_id': installId,
       'recording_id': ?recordingId,
       'note': ?note,
+      'report_id': ?reportId,
     });
   }
 

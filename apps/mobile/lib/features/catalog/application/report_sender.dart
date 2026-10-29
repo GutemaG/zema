@@ -11,6 +11,7 @@ import '../../../app/database/catalog_dao.dart';
 import '../../../app/database/database_provider.dart';
 import '../../../app/database/reports_dao.dart';
 import '../../../app/preferences_provider.dart';
+import '../../../shared/random_uuid.dart';
 import 'catalog_index.dart';
 
 final _log = Logger('catalog.reports');
@@ -61,18 +62,20 @@ class ReportSender {
   final SharedPreferences _preferences;
   Future<void>? _flushing;
 
-  /// Sends [report] after any waiting ones. Offline it is queued; past the
+  /// Sends [report] after any waiting ones, with a new report ID. Offline it
+  /// is queued with that ID, as the catalog may have it already; past the
   /// daily limit, or refused, it is not.
   Future<ReportOutcome> send(LyricsReport report) async {
     final catalog = _catalog;
     if (catalog == null) return ReportOutcome.failed;
     await flush();
+    final reportId = randomUuid();
     try {
-      await _report(catalog, report);
+      await _report(catalog, report, reportId);
       return ReportOutcome.sent;
     } on NetworkFailure catch (e) {
       _log.info('Report queued', e);
-      await _reports.add(report);
+      await _reports.add(report, reportId: reportId);
       return ReportOutcome.queued;
     } on RateLimitFailure catch (e) {
       _log.info('Report refused: daily limit', e);
@@ -96,7 +99,7 @@ class ReportSender {
     final queued = await _reports.all();
     if (queued.isEmpty) return;
     final songs = {for (final e in await _index.watchEntries().first) e.id};
-    for (final (:id, :report) in queued) {
+    for (final (:id, :reportId, :report) in queued) {
       if (!songs.contains(report.songId)) {
         _log.info(
           'Dropped a queued report for ${report.songId}: not in the '
@@ -106,7 +109,7 @@ class ReportSender {
         continue;
       }
       try {
-        await _report(catalog, report);
+        await _report(catalog, report, reportId);
       } on NetworkFailure catch (e) {
         _log.info('Queued reports wait: offline', e);
         return;
@@ -120,14 +123,18 @@ class ReportSender {
     }
   }
 
-  Future<void> _report(CatalogRepository catalog, LyricsReport report) =>
-      catalog.report(
-        songId: report.songId,
-        reason: report.reason,
-        installId: installId(_preferences),
-        recordingId: report.recordingId,
-        note: report.note,
-      );
+  Future<void> _report(
+    CatalogRepository catalog,
+    LyricsReport report,
+    String reportId,
+  ) => catalog.report(
+    songId: report.songId,
+    reason: report.reason,
+    installId: installId(_preferences),
+    recordingId: report.recordingId,
+    note: report.note,
+    reportId: reportId,
+  );
 }
 
 final reportSenderProvider = Provider<ReportSender>(

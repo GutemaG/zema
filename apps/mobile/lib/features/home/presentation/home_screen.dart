@@ -91,6 +91,7 @@ class _HomeBody extends ConsumerWidget {
           ContinueListeningCard(),
           RecentlyPlayedRow(),
           PlaylistsRow(),
+          CommunityLyricsRow(),
         ],
       ],
     );

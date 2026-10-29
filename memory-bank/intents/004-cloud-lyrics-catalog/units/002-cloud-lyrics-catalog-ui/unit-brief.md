@@ -4,9 +4,9 @@ intent: 004-cloud-lyrics-catalog
 unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: stories-defined
-created: 2026-10-29T05:59:04Z
-updated: 2026-10-29T08:32:46Z
+status: complete
+created: '2026-10-29T05:59:04Z'
+updated: '2026-10-29T08:32:46Z'
 ---
 
 # Unit Brief: Cloud Lyrics Catalog UI
@@ -49,9 +49,9 @@ Switch the app from bundled sample lyrics to the cloud catalog without losing of
 
 | Metric | Count |
 |--------|-------|
-| Total Stories | 8 |
+| Total Stories | 9 |
 | Must Have | 4 |
-| Should Have | 3 |
+| Should Have | 4 |
 | Could Have | 1 |
 
 ### Stories
@@ -65,7 +65,8 @@ Switch the app from bundled sample lyrics to the cloud catalog without losing of
 | 005-offline-downloads | Offline downloads in Settings | Should | Complete |
 | 006-report-wrong-lyrics | Report wrong lyrics | Should | Complete |
 | 007-recordings-tab | Song detail Recordings tab | Should | Complete |
-| 008-home-community-row | Home: new lyrics from the community | Could | Planned |
+| 008-home-community-row | Home: new lyrics from the community | Could | Complete |
+| 009-report-sent-once | A report is stored once, even if sent again | Should | Complete |
 
 ---
 

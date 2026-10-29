@@ -6,8 +6,7 @@ import '../../../../app/theme/zema_colors.dart';
 import '../../application/artwork_provider.dart';
 
 /// A track's album art, loaded lazily. Until it loads, or when there is none,
-/// a `tile` square with the first letter of [label] (the title by default)
-/// in `tileFg`.
+/// a [LetterTile] of [label] (the title by default).
 class TrackArt extends ConsumerWidget {
   const TrackArt({
     super.key,
@@ -27,7 +26,6 @@ class TrackArt extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.zemaColors;
     final image = ref.watch(artworkProvider(track.mediaStoreId)).value;
     final pixels = (size * MediaQuery.devicePixelRatioOf(context)).round();
     final shape = BorderRadius.circular(radius);
@@ -37,23 +35,10 @@ class TrackArt extends ConsumerWidget {
         child: image == null
             // A rounded box is cheaper to draw than a clip, and most rows in
             // a long list show the placeholder.
-            ? DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colors.tile,
-                  borderRadius: shape,
-                ),
-                child: Center(
-                  child: Text(
-                    _letter(label ?? track.title),
-                    style: TextStyle(
-                      color: colors.tileFg,
-                      fontSize: size * 0.42,
-                      fontWeight: FontWeight.w600,
-                      height: 1,
-                    ),
-                    textScaler: TextScaler.noScaling,
-                  ),
-                ),
+            ? LetterTile(
+                label: label ?? track.title,
+                size: size,
+                radius: radius,
               )
             : ClipRRect(
                 borderRadius: shape,
@@ -64,6 +49,47 @@ class TrackArt extends ConsumerWidget {
                   gaplessPlayback: true,
                 ),
               ),
+      ),
+    );
+  }
+}
+
+/// A `tile` square with the first letter of [label] in `tileFg`, standing in
+/// for missing art.
+class LetterTile extends StatelessWidget {
+  const LetterTile({
+    super.key,
+    required this.label,
+    required this.size,
+    this.radius = 8,
+  });
+
+  final String label;
+  final double size;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.zemaColors;
+    return SizedBox.square(
+      dimension: size,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.tile,
+          borderRadius: BorderRadius.circular(radius),
+        ),
+        child: Center(
+          child: Text(
+            _letter(label),
+            style: TextStyle(
+              color: colors.tileFg,
+              fontSize: size * 0.42,
+              fontWeight: FontWeight.w600,
+              height: 1,
+            ),
+            textScaler: TextScaler.noScaling,
+          ),
+        ),
       ),
     );
   }

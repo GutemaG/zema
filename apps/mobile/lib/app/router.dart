@@ -45,6 +45,7 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
               GoRoute(
                 path: AppRoutes.home,
                 builder: (_, _) => const HomeScreen(),
+                routes: _albumAndArtistRoutes(),
               ),
             ],
           ),
@@ -139,8 +140,8 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
   );
 }
 
-/// S12a and S13a, under Library and under Search, so pages opened from
-/// search results keep the Search tab (and its results) underneath.
+/// S12a, S13a and S07, under Home, Search and Library, so a page keeps the
+/// tab it was opened from (and, in Search, its results) underneath.
 List<RouteBase> _albumAndArtistRoutes() => [
   GoRoute(
     path: AppRoutes.albumPath,

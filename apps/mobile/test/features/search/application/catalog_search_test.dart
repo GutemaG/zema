@@ -51,6 +51,29 @@ void main() {
       expect(index.search('  '), isEmpty);
       expect(index.search('zzzzqq'), isEmpty);
     });
+
+    test('searches 5,000 songs within the keystroke budget', () {
+      final big = CatalogTitleIndex([
+        for (var i = 0; i < 5000; i++)
+          _entry(
+            's$i',
+            'ቅዱስ መዝሙር ቁጥር $i',
+            transliteration: 'Kidus Mezmur Kutir $i',
+          ),
+      ]);
+      expect(big.search('kidus'), hasLength(5000));
+      // < 100 ms per keystroke (NFR, with the library's 1,000 tracks timed in
+      // library_search_test); the slowest of each keystroke of "kidus".
+      var slowest = Duration.zero;
+      for (final query in ['k', 'ki', 'kid', 'kidu', 'kidus']) {
+        final watch = Stopwatch()..start();
+        big.search(query);
+        watch.stop();
+        if (watch.elapsed > slowest) slowest = watch.elapsed;
+      }
+      expect(slowest, lessThan(const Duration(milliseconds: 100)));
+      printOnFailure('slowest keystroke: $slowest');
+    });
   });
 
   group('mergeCatalogMatches', () {

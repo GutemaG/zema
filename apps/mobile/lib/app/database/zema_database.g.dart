@@ -3563,6 +3563,17 @@ class $QueuedReportsTable extends QueuedReports
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _reportIdMeta = const VerificationMeta(
+    'reportId',
+  );
+  @override
+  late final GeneratedColumn<String> reportId = GeneratedColumn<String>(
+    'report_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
   @override
   late final GeneratedColumn<String> songId = GeneratedColumn<String>(
@@ -3615,6 +3626,7 @@ class $QueuedReportsTable extends QueuedReports
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    reportId,
     songId,
     recordingId,
     reason,
@@ -3635,6 +3647,14 @@ class $QueuedReportsTable extends QueuedReports
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('report_id')) {
+      context.handle(
+        _reportIdMeta,
+        reportId.isAcceptableOrUnknown(data['report_id']!, _reportIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reportIdMeta);
     }
     if (data.containsKey('song_id')) {
       context.handle(
@@ -3688,6 +3708,10 @@ class $QueuedReportsTable extends QueuedReports
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      reportId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}report_id'],
+      )!,
       songId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}song_id'],
@@ -3719,6 +3743,10 @@ class $QueuedReportsTable extends QueuedReports
 
 class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
   final int id;
+
+  /// The report's own UUID, sent with every try so the catalog stores it
+  /// once.
+  final String reportId;
   final String songId;
   final String? recordingId;
 
@@ -3728,6 +3756,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
   final DateTime createdAt;
   const QueuedReportRow({
     required this.id,
+    required this.reportId,
     required this.songId,
     this.recordingId,
     required this.reason,
@@ -3738,6 +3767,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['report_id'] = Variable<String>(reportId);
     map['song_id'] = Variable<String>(songId);
     if (!nullToAbsent || recordingId != null) {
       map['recording_id'] = Variable<String>(recordingId);
@@ -3753,6 +3783,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
   QueuedReportsCompanion toCompanion(bool nullToAbsent) {
     return QueuedReportsCompanion(
       id: Value(id),
+      reportId: Value(reportId),
       songId: Value(songId),
       recordingId: recordingId == null && nullToAbsent
           ? const Value.absent()
@@ -3770,6 +3801,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return QueuedReportRow(
       id: serializer.fromJson<int>(json['id']),
+      reportId: serializer.fromJson<String>(json['reportId']),
       songId: serializer.fromJson<String>(json['songId']),
       recordingId: serializer.fromJson<String?>(json['recordingId']),
       reason: serializer.fromJson<String>(json['reason']),
@@ -3782,6 +3814,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'reportId': serializer.toJson<String>(reportId),
       'songId': serializer.toJson<String>(songId),
       'recordingId': serializer.toJson<String?>(recordingId),
       'reason': serializer.toJson<String>(reason),
@@ -3792,6 +3825,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
 
   QueuedReportRow copyWith({
     int? id,
+    String? reportId,
     String? songId,
     Value<String?> recordingId = const Value.absent(),
     String? reason,
@@ -3799,6 +3833,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
     DateTime? createdAt,
   }) => QueuedReportRow(
     id: id ?? this.id,
+    reportId: reportId ?? this.reportId,
     songId: songId ?? this.songId,
     recordingId: recordingId.present ? recordingId.value : this.recordingId,
     reason: reason ?? this.reason,
@@ -3808,6 +3843,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
   QueuedReportRow copyWithCompanion(QueuedReportsCompanion data) {
     return QueuedReportRow(
       id: data.id.present ? data.id.value : this.id,
+      reportId: data.reportId.present ? data.reportId.value : this.reportId,
       songId: data.songId.present ? data.songId.value : this.songId,
       recordingId: data.recordingId.present
           ? data.recordingId.value
@@ -3822,6 +3858,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
   String toString() {
     return (StringBuffer('QueuedReportRow(')
           ..write('id: $id, ')
+          ..write('reportId: $reportId, ')
           ..write('songId: $songId, ')
           ..write('recordingId: $recordingId, ')
           ..write('reason: $reason, ')
@@ -3833,12 +3870,13 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
 
   @override
   int get hashCode =>
-      Object.hash(id, songId, recordingId, reason, note, createdAt);
+      Object.hash(id, reportId, songId, recordingId, reason, note, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is QueuedReportRow &&
           other.id == this.id &&
+          other.reportId == this.reportId &&
           other.songId == this.songId &&
           other.recordingId == this.recordingId &&
           other.reason == this.reason &&
@@ -3848,6 +3886,7 @@ class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
 
 class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   final Value<int> id;
+  final Value<String> reportId;
   final Value<String> songId;
   final Value<String?> recordingId;
   final Value<String> reason;
@@ -3855,6 +3894,7 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   final Value<DateTime> createdAt;
   const QueuedReportsCompanion({
     this.id = const Value.absent(),
+    this.reportId = const Value.absent(),
     this.songId = const Value.absent(),
     this.recordingId = const Value.absent(),
     this.reason = const Value.absent(),
@@ -3863,16 +3903,19 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   });
   QueuedReportsCompanion.insert({
     this.id = const Value.absent(),
+    required String reportId,
     required String songId,
     this.recordingId = const Value.absent(),
     required String reason,
     this.note = const Value.absent(),
     required DateTime createdAt,
-  }) : songId = Value(songId),
+  }) : reportId = Value(reportId),
+       songId = Value(songId),
        reason = Value(reason),
        createdAt = Value(createdAt);
   static Insertable<QueuedReportRow> custom({
     Expression<int>? id,
+    Expression<String>? reportId,
     Expression<String>? songId,
     Expression<String>? recordingId,
     Expression<String>? reason,
@@ -3881,6 +3924,7 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (reportId != null) 'report_id': reportId,
       if (songId != null) 'song_id': songId,
       if (recordingId != null) 'recording_id': recordingId,
       if (reason != null) 'reason': reason,
@@ -3891,6 +3935,7 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
 
   QueuedReportsCompanion copyWith({
     Value<int>? id,
+    Value<String>? reportId,
     Value<String>? songId,
     Value<String?>? recordingId,
     Value<String>? reason,
@@ -3899,6 +3944,7 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   }) {
     return QueuedReportsCompanion(
       id: id ?? this.id,
+      reportId: reportId ?? this.reportId,
       songId: songId ?? this.songId,
       recordingId: recordingId ?? this.recordingId,
       reason: reason ?? this.reason,
@@ -3912,6 +3958,9 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (reportId.present) {
+      map['report_id'] = Variable<String>(reportId.value);
     }
     if (songId.present) {
       map['song_id'] = Variable<String>(songId.value);
@@ -3935,6 +3984,7 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   String toString() {
     return (StringBuffer('QueuedReportsCompanion(')
           ..write('id: $id, ')
+          ..write('reportId: $reportId, ')
           ..write('songId: $songId, ')
           ..write('recordingId: $recordingId, ')
           ..write('reason: $reason, ')
@@ -7291,6 +7341,7 @@ typedef $$CachedSongsTableProcessedTableManager =
 typedef $$QueuedReportsTableCreateCompanionBuilder =
     QueuedReportsCompanion Function({
       Value<int> id,
+      required String reportId,
       required String songId,
       Value<String?> recordingId,
       required String reason,
@@ -7300,6 +7351,7 @@ typedef $$QueuedReportsTableCreateCompanionBuilder =
 typedef $$QueuedReportsTableUpdateCompanionBuilder =
     QueuedReportsCompanion Function({
       Value<int> id,
+      Value<String> reportId,
       Value<String> songId,
       Value<String?> recordingId,
       Value<String> reason,
@@ -7318,6 +7370,11 @@ class $$QueuedReportsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reportId => $composableBuilder(
+    column: $table.reportId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7361,6 +7418,11 @@ class $$QueuedReportsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get reportId => $composableBuilder(
+    column: $table.reportId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get songId => $composableBuilder(
     column: $table.songId,
     builder: (column) => ColumnOrderings(column),
@@ -7398,6 +7460,9 @@ class $$QueuedReportsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get reportId =>
+      $composableBuilder(column: $table.reportId, builder: (column) => column);
 
   GeneratedColumn<String> get songId =>
       $composableBuilder(column: $table.songId, builder: (column) => column);
@@ -7453,6 +7518,7 @@ class $$QueuedReportsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<String> reportId = const Value.absent(),
                 Value<String> songId = const Value.absent(),
                 Value<String?> recordingId = const Value.absent(),
                 Value<String> reason = const Value.absent(),
@@ -7460,6 +7526,7 @@ class $$QueuedReportsTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
               }) => QueuedReportsCompanion(
                 id: id,
+                reportId: reportId,
                 songId: songId,
                 recordingId: recordingId,
                 reason: reason,
@@ -7469,6 +7536,7 @@ class $$QueuedReportsTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                required String reportId,
                 required String songId,
                 Value<String?> recordingId = const Value.absent(),
                 required String reason,
@@ -7476,6 +7544,7 @@ class $$QueuedReportsTableTableManager
                 required DateTime createdAt,
               }) => QueuedReportsCompanion.insert(
                 id: id,
+                reportId: reportId,
                 songId: songId,
                 recordingId: recordingId,
                 reason: reason,

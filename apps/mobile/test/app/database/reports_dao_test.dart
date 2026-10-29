@@ -19,11 +19,16 @@ void main() {
         recordingId: 'a-rec',
         note: 'Late by a line',
       ),
+      reportId: 'id-a',
     );
-    await dao.add(const LyricsReport(songId: 'b', reason: ReportReason.other));
+    await dao.add(
+      const LyricsReport(songId: 'b', reason: ReportReason.other),
+      reportId: 'id-b',
+    );
 
     final queued = await dao.all();
     expect([for (final q in queued) q.report.songId], ['a', 'b']);
+    expect([for (final q in queued) q.reportId], ['id-a', 'id-b']);
     final first = queued.first.report;
     expect(first.reason, ReportReason.wrongTiming);
     expect(first.recordingId, 'a-rec');
@@ -35,7 +40,10 @@ void main() {
   test('remove takes out one report', () async {
     final dao = db.reportsDao;
     for (final id in ['a', 'b', 'c']) {
-      await dao.add(LyricsReport(songId: id, reason: ReportReason.wrongWords));
+      await dao.add(
+        LyricsReport(songId: id, reason: ReportReason.wrongWords),
+        reportId: 'id-$id',
+      );
     }
     final queued = await dao.all();
 
@@ -49,6 +57,7 @@ void main() {
         .into(db.queuedReports)
         .insert(
           QueuedReportsCompanion.insert(
+            reportId: 'id-a',
             songId: 'a',
             reason: 'from_the_future',
             createdAt: DateTime.utc(2026, 10, 29),

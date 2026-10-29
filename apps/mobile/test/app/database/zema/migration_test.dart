@@ -12,6 +12,7 @@ import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v5.dart' as v5;
+import 'generated/schema_v6.dart' as v6;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -194,6 +195,54 @@ void main() {
       },
     );
   });
+
+  test(
+    'migration from v5 to v6 gives each waiting report its own ID',
+    () async {
+      const first = v5.QueuedReportsData(
+        id: 1,
+        songId: 'galatoomi',
+        recordingId: 'galatoomi',
+        reason: 'wrongTiming',
+        createdAt: '2026-10-29T13:20:35.000Z',
+      );
+      const second = v5.QueuedReportsData(
+        id: 2,
+        songId: 'selam-lezih-bet',
+        reason: 'other',
+        note: 'Verse 2',
+        createdAt: '2026-10-29T13:21:00.000Z',
+      );
+
+      await verifier.testWithDataIntegrity(
+        oldVersion: 5,
+        newVersion: 6,
+        createOld: v5.DatabaseAtV5.new,
+        createNew: v6.DatabaseAtV6.new,
+        openTestedDatabase: ZemaDatabase.new,
+        createItems: (batch, oldDb) =>
+            batch.insertAll(oldDb.queuedReports, [first, second]),
+        validateItems: (newDb) async {
+          final rows = await (newDb.select(
+            newDb.queuedReports,
+          )..orderBy([(r) => OrderingTerm.asc(r.id)])).get();
+          expect(
+            [for (final r in rows) r.songId],
+            ['galatoomi', 'selam-lezih-bet'],
+          );
+          expect(rows.first.recordingId, 'galatoomi');
+          expect(rows.last.note, 'Verse 2');
+          final uuid = RegExp(
+            r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+          );
+          for (final row in rows) {
+            expect(row.reportId, matches(uuid));
+          }
+          expect(rows.first.reportId, isNot(rows.last.reportId));
+        },
+      );
+    },
+  );
 }
 
 const _v3Track = v3.TracksData(

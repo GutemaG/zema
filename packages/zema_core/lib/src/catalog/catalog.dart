@@ -144,11 +144,14 @@ abstract interface class CatalogRepository {
 
   /// Reports song [songId]'s lyrics for moderators. [installId] identifies
   /// this install for the daily limit ([RateLimitFailure] past it).
+  /// [reportId], a UUID made once per report, makes sending it again safe:
+  /// a copy this install already sent is accepted and not stored twice.
   Future<void> report({
     required String songId,
     required ReportReason reason,
     required String installId,
     String? recordingId,
     String? note,
+    String? reportId,
   });
 }

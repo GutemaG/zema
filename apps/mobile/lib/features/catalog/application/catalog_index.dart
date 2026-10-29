@@ -90,6 +90,18 @@ final catalogEntriesProvider = StreamProvider<List<CatalogEntry>>(
   (ref) => ref.watch(databaseProvider).catalogDao.watchEntries(),
 );
 
+/// The songs most recently approved in the catalog, newest first (ties by
+/// title), for Home's community row. Updates whenever the index does.
+final newLyricsProvider = Provider<List<CatalogEntry>>((ref) {
+  const count = 10;
+  final entries = [...?ref.watch(catalogEntriesProvider).value]
+    ..sort((a, b) {
+      final newer = b.approvedAt.compareTo(a.approvedAt);
+      return newer != 0 ? newer : a.title.compareTo(b.title);
+    });
+  return entries.take(count).toList();
+});
+
 /// Refreshes the index once when the app starts, if it is stale. Failing is
 /// normal offline, so it is only logged. Kept alive by the app shell.
 final catalogStartupRefreshProvider = Provider<void>((ref) {
