@@ -6,16 +6,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../catalog/application/report_sender.dart';
 import '../application/lyrics_prefs.dart';
 import '../application/track_lyrics.dart';
+import 'report_lyrics_sheet.dart';
 
-/// Opens the lyrics options: transliteration, text size and, for synced
-/// lyrics, the sync offset of their recording.
-Future<void> showLyricsOptionsSheet(BuildContext context, TrackLyrics lyrics) {
-  return showModalBottomSheet<void>(
+/// Opens the lyrics options: transliteration, text size, for synced
+/// lyrics the sync offset of their recording, and for catalog songs Report
+/// wrong lyrics, which closes the options and opens the report sheet.
+Future<void> showLyricsOptionsSheet(
+  BuildContext context,
+  TrackLyrics lyrics,
+) async {
+  final report = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     builder: (_) => LyricsOptionsSheet(lyrics: lyrics),
+  );
+  if (report != true || !context.mounted) return;
+  await showReportLyricsSheet(
+    context,
+    songId: lyrics.song.id,
+    recordingId: lyrics.recording?.id,
   );
 }
 
@@ -126,6 +138,12 @@ class LyricsOptionsSheet extends ConsumerWidget {
                     ],
                   );
                 },
+              ),
+            if (ref.watch(canReportProvider(lyrics.song.id)))
+              ListTile(
+                leading: const Icon(Icons.flag_outlined),
+                title: Text(l10n.reportLyrics),
+                onTap: () => Navigator.of(context).pop(true),
               ),
           ],
         ),

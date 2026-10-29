@@ -33,6 +33,9 @@ class TrackLyrics {
   final SyncedLyrics? synced;
 }
 
+/// The recording of a song whose timing the lyrics view uses.
+Recording? usedRecording(List<Recording> recordings) => recordings.firstOrNull;
+
 /// The lyrics of track [trackId], or null when it isn't linked to a song.
 /// Fails when the song can't be downloaded (see [songProvider]).
 final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
@@ -51,7 +54,7 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   if (song == null) return null;
   final lines = expandPlayOrder(song).occurrences;
   final repository = ref.watch(lyricsRepositoryProvider);
-  final recording = (await repository.recordings(song.id)).firstOrNull;
+  final recording = usedRecording(await repository.recordings(song.id));
   if (recording == null) return TrackLyrics(song: song, lines: lines);
   final timing = await repository.timing(recording.id);
   SyncedLyrics? synced;
@@ -97,3 +100,23 @@ final currentLineProvider = Provider.family<int?, int>((ref, trackId) {
       .at(position, offset: ref.watch(lyricsShiftProvider(lyrics)))
       .current;
 });
+
+/// A song's recording, and whether it has a timing (synced lyrics).
+typedef RecordingInfo = ({Recording recording, bool synced});
+
+/// The recordings of the song [songId] with whether each is synced; the
+/// recordings keep the catalog's order (see [usedRecording]). Read again
+/// with the song, so C07's Try again covers it too.
+final songRecordingsInfoProvider =
+    FutureProvider.family<List<RecordingInfo>, String>((ref, songId) async {
+      await ref.watch(songProvider(songId).future);
+      final repository = ref.watch(lyricsRepositoryProvider);
+      final recordings = await repository.recordings(songId);
+      return [
+        for (final recording in recordings)
+          (
+            recording: recording,
+            synced: await repository.timing(recording.id) != null,
+          ),
+      ];
+    }, retry: (_, _) => null);

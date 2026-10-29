@@ -63,8 +63,8 @@ Switch the app from bundled sample lyrics to the cloud catalog without losing of
 | 003-lyrics-cache | Lyrics cache; the app reads the catalog | Must | Complete |
 | 004-search-merge | Search merges the phone and the catalog | Must | Complete |
 | 005-offline-downloads | Offline downloads in Settings | Should | Complete |
-| 006-report-wrong-lyrics | Report wrong lyrics | Should | Planned |
-| 007-recordings-tab | Song detail Recordings tab | Should | Planned |
+| 006-report-wrong-lyrics | Report wrong lyrics | Should | Complete |
+| 007-recordings-tab | Song detail Recordings tab | Should | Complete |
 | 008-home-community-row | Home: new lyrics from the community | Could | Planned |
 
 ---

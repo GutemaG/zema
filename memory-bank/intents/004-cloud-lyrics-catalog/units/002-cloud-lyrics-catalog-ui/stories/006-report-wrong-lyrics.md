@@ -2,11 +2,11 @@
 id: 006-report-wrong-lyrics
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: should
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 027-cloud-lyrics-catalog-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 006-report-wrong-lyrics
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Song detail or the Now Playing lyrics options, **When** I choose Report wrong lyrics, **Then** a sheet asks for a reason (wrong words, wrong timing, wrong song, other) and an optional note
-- [ ] **Given** I send it online, **When** accepted, **Then** a snackbar thanks me
-- [ ] **Given** I am offline, **When** I send it, **Then** it is queued in Drift and sent later
-- [ ] **Given** the daily limit, **When** reached, **Then** a friendly message explains it
+- [x] **Given** Song detail or the Now Playing lyrics options, **When** I choose Report wrong lyrics, **Then** a sheet asks for a reason (wrong words, wrong timing, wrong song, other) and an optional note
+- [x] **Given** I send it online, **When** accepted, **Then** a snackbar thanks me
+- [x] **Given** I am offline, **When** I send it, **Then** it is queued in Drift and sent later
+- [x] **Given** the daily limit, **When** reached, **Then** a friendly message explains it
 
 ## Technical Notes
 

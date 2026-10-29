@@ -1394,5 +1394,77 @@
   "settingsLyricsClearConfirm": "Clear",
   "@settingsLyricsClearConfirm": {
     "description": "Button in the dialog that clears downloaded lyrics."
+  },
+  "songDetailRecordingsTab": "Recordings",
+  "@songDetailRecordingsTab": {
+    "description": "Song page tab listing the song's recordings."
+  },
+  "songDetailMoreOptions": "More options",
+  "@songDetailMoreOptions": {
+    "description": "Tooltip of the song page's overflow menu."
+  },
+  "songRecordingsEmpty": "No recordings yet",
+  "@songRecordingsEmpty": {
+    "description": "Recordings tab when the song has none."
+  },
+  "songRecordingSynced": "Synced",
+  "@songRecordingSynced": {
+    "description": "Label on a recording whose lyrics are timed to it."
+  },
+  "songRecordingTextOnly": "Text only",
+  "@songRecordingTextOnly": {
+    "description": "Label on a recording with no lyrics timing."
+  },
+  "songRecordingUsed": "Used for lyrics",
+  "@songRecordingUsed": {
+    "description": "Marks the recording whose timing the lyrics view uses."
+  },
+  "reportLyrics": "Report wrong lyrics",
+  "@reportLyrics": {
+    "description": "Menu item and sheet title for reporting a song's lyrics."
+  },
+  "reportReasonPrompt": "What's wrong?",
+  "@reportReasonPrompt": {
+    "description": "Asks for the reason in the report sheet."
+  },
+  "reportReasonWrongWords": "Wrong words",
+  "@reportReasonWrongWords": {
+    "description": "Report reason: the words are wrong."
+  },
+  "reportReasonWrongTiming": "Wrong timing",
+  "@reportReasonWrongTiming": {
+    "description": "Report reason: the lines show at the wrong time."
+  },
+  "reportReasonWrongSong": "Wrong song",
+  "@reportReasonWrongSong": {
+    "description": "Report reason: these are another song's lyrics."
+  },
+  "reportReasonOther": "Other",
+  "@reportReasonOther": {
+    "description": "Report reason: something else."
+  },
+  "reportNote": "Note (optional)",
+  "@reportNote": {
+    "description": "Label of the report sheet's note field."
+  },
+  "reportSend": "Send",
+  "@reportSend": {
+    "description": "Sends the report."
+  },
+  "reportSent": "Thanks, we'll take a look",
+  "@reportSent": {
+    "description": "Snackbar after a report is accepted."
+  },
+  "reportQueued": "You're offline, so it'll be sent later",
+  "@reportQueued": {
+    "description": "Snackbar after a report is kept on the phone to send later."
+  },
+  "reportLimited": "You've sent the most reports for today. Try again tomorrow.",
+  "@reportLimited": {
+    "description": "Snackbar when the daily report limit is reached."
+  },
+  "reportFailed": "Couldn't send the report",
+  "@reportFailed": {
+    "description": "Snackbar when the catalog refuses a report."
   }
 }

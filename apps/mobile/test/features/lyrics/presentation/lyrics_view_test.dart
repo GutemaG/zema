@@ -10,6 +10,7 @@ import 'package:zema/features/library/application/library_access_controller.dart
 import 'package:zema/features/lyrics/presentation/lyrics_view.dart';
 import 'package:zema/shared/widgets/empty_state.dart';
 import 'package:zema/features/lyrics/presentation/match_lyrics_sheet.dart';
+import 'package:zema/features/lyrics/presentation/report_lyrics_sheet.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/features/player/presentation/mini_player.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
@@ -471,5 +472,32 @@ void main() {
         expect(tester.takeException(), isNull);
       });
     }
+
+    testWidgets('Report wrong lyrics in the options opens the report sheet '
+        'for the song and recording shown', (tester) async {
+      final catalog = FakeCatalogRepository(
+        lyrics: BundledLyricsRepository(DiskAssetBundle()),
+      );
+      await _pump(tester, catalog: catalog);
+      await tester.tap(find.byTooltip(_l10n.lyricsOptions));
+      await _settle(tester);
+      await tester.ensureVisible(find.text(_l10n.reportLyrics));
+      await tester.tap(find.text(_l10n.reportLyrics));
+      await _settle(tester);
+
+      // The options closed; only the report sheet is open.
+      expect(find.text(_l10n.lyricsShowTransliteration), findsNothing);
+      expect(find.byType(ReportLyricsSheet), findsOneWidget);
+      await tester.tap(find.text(_l10n.reportReasonWrongTiming));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(FilledButton, _l10n.reportSend));
+      await _settle(tester);
+
+      expect(find.text(_l10n.reportSent), findsOneWidget);
+      final sent = catalog.reports.single;
+      expect(sent.songId, 'galatoomi');
+      expect(sent.recordingId, 'galatoomi');
+      expect(sent.reason, ReportReason.wrongTiming);
+    });
   });
 }

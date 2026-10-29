@@ -47,6 +47,18 @@ class FakeCatalogRepository implements CatalogRepository {
   /// When set, [search] waits for it before answering.
   Completer<void>? searchGate;
 
+  /// The reports accepted by [report], in order.
+  final reports = <FakeReport>[];
+
+  /// Thrown by [report] for that song (after [failure]).
+  final reportFailures = <String, ZemaFailure>{};
+
+  /// How many times [report] was called, accepted or not.
+  var reportCalls = 0;
+
+  /// When set, [report] waits for it before answering.
+  Completer<void>? reportGate;
+
   @override
   Future<List<CatalogEntry>> index() async {
     indexCalls++;
@@ -92,9 +104,28 @@ class FakeCatalogRepository implements CatalogRepository {
     String? recordingId,
     String? note,
   }) async {
+    reportCalls++;
+    await reportGate?.future;
     if (failure case final failure?) throw failure;
+    if (reportFailures[songId] case final failure?) throw failure;
+    reports.add((
+      songId: songId,
+      reason: reason,
+      installId: installId,
+      recordingId: recordingId,
+      note: note,
+    ));
   }
 }
+
+/// A report [FakeCatalogRepository] accepted.
+typedef FakeReport = ({
+  String songId,
+  ReportReason reason,
+  String installId,
+  String? recordingId,
+  String? note,
+});
 
 /// [song] as an index entry.
 CatalogEntry catalogEntry(

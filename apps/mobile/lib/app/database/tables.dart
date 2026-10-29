@@ -148,3 +148,17 @@ class CachedSongs extends Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
+
+/// Reports of wrong lyrics made offline, sent when the catalog can be
+/// reached again.
+@DataClassName('QueuedReportRow')
+class QueuedReports extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get songId => text()();
+  TextColumn get recordingId => text().nullable()();
+
+  /// [ReportReason.name].
+  TextColumn get reason => text()();
+  TextColumn get note => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}

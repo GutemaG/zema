@@ -7,6 +7,7 @@ import 'collections_dao.dart';
 import 'history_dao.dart';
 import 'library_dao.dart';
 import 'lyrics_links_dao.dart';
+import 'reports_dao.dart';
 import 'tables.dart';
 import 'zema_database.steps.dart';
 
@@ -26,6 +27,7 @@ part 'zema_database.g.dart';
     LyricsLinks,
     CatalogSongs,
     CachedSongs,
+    QueuedReports,
   ],
   daos: [
     LibraryDao,
@@ -34,6 +36,7 @@ part 'zema_database.g.dart';
     LyricsLinksDao,
     CatalogDao,
     CachedSongsDao,
+    ReportsDao,
   ],
 )
 class ZemaDatabase extends _$ZemaDatabase {
@@ -43,7 +46,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -55,6 +58,8 @@ class ZemaDatabase extends _$ZemaDatabase {
       from2To3: (m, schema) => m.createTable(schema.catalogSongs),
       // v4: lyrics downloaded from the catalog.
       from3To4: (m, schema) => m.createTable(schema.cachedSongs),
+      // v5: reports of wrong lyrics waiting to be sent.
+      from4To5: (m, schema) => m.createTable(schema.queuedReports),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

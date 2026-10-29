@@ -2,11 +2,11 @@
 id: 007-recordings-tab
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: should
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 027-cloud-lyrics-catalog-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 007-recordings-tab
@@ -19,9 +19,9 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Song detail, **When** I open Recordings, **Then** each recording shows artist, source, duration and Synced or Text only
-- [ ] **Given** the recording used by the lyrics view, **When** listed, **Then** it is marked
-- [ ] **Given** 1.3× text in light and dark, **When** shown, **Then** nothing overflows
+- [x] **Given** Song detail, **When** I open Recordings, **Then** each recording shows artist, source, duration and Synced or Text only
+- [x] **Given** the recording used by the lyrics view, **When** listed, **Then** it is marked
+- [x] **Given** 1.3× text in light and dark, **When** shown, **Then** nothing overflows
 
 ## Technical Notes
 

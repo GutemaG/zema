@@ -1811,6 +1811,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get settingsLyricsClearConfirm;
+
+  /// Song page tab listing the song's recordings.
+  ///
+  /// In en, this message translates to:
+  /// **'Recordings'**
+  String get songDetailRecordingsTab;
+
+  /// Tooltip of the song page's overflow menu.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get songDetailMoreOptions;
+
+  /// Recordings tab when the song has none.
+  ///
+  /// In en, this message translates to:
+  /// **'No recordings yet'**
+  String get songRecordingsEmpty;
+
+  /// Label on a recording whose lyrics are timed to it.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get songRecordingSynced;
+
+  /// Label on a recording with no lyrics timing.
+  ///
+  /// In en, this message translates to:
+  /// **'Text only'**
+  String get songRecordingTextOnly;
+
+  /// Marks the recording whose timing the lyrics view uses.
+  ///
+  /// In en, this message translates to:
+  /// **'Used for lyrics'**
+  String get songRecordingUsed;
+
+  /// Menu item and sheet title for reporting a song's lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Report wrong lyrics'**
+  String get reportLyrics;
+
+  /// Asks for the reason in the report sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s wrong?'**
+  String get reportReasonPrompt;
+
+  /// Report reason: the words are wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong words'**
+  String get reportReasonWrongWords;
+
+  /// Report reason: the lines show at the wrong time.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong timing'**
+  String get reportReasonWrongTiming;
+
+  /// Report reason: these are another song's lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong song'**
+  String get reportReasonWrongSong;
+
+  /// Report reason: something else.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get reportReasonOther;
+
+  /// Label of the report sheet's note field.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get reportNote;
+
+  /// Sends the report.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get reportSend;
+
+  /// Snackbar after a report is accepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks, we\'ll take a look'**
+  String get reportSent;
+
+  /// Snackbar after a report is kept on the phone to send later.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline, so it\'ll be sent later'**
+  String get reportQueued;
+
+  /// Snackbar when the daily report limit is reached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve sent the most reports for today. Try again tomorrow.'**
+  String get reportLimited;
+
+  /// Snackbar when the catalog refuses a report.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send the report'**
+  String get reportFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -11,6 +11,7 @@ import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
+import 'generated/schema_v5.dart' as v5;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -153,6 +154,43 @@ void main() {
         final index = await newDb.select(newDb.catalogSongs).get();
         expect(index.single.version, 2);
         expect(await newDb.select(newDb.cachedSongs).get(), isEmpty);
+      },
+    );
+  });
+
+  test('migration from v4 to v5 keeps the cache and index, and starts an '
+      'empty report queue', () async {
+    const entry = v4.CatalogSongsData(
+      id: 'selam-lezih-bet',
+      title: 'ሰላም ለዚህ ቤት',
+      synced: 1,
+      version: 2,
+      approvedAt: '2026-10-01T00:00:00.000Z',
+    );
+    const cached = v4.CachedSongsData(
+      id: 'selam-lezih-bet',
+      version: 2,
+      document: '{"song":{}}',
+      cachedAt: '2026-10-02T00:00:00.000Z',
+    );
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 4,
+      newVersion: 5,
+      createOld: v4.DatabaseAtV4.new,
+      createNew: v5.DatabaseAtV5.new,
+      openTestedDatabase: ZemaDatabase.new,
+      createItems: (batch, oldDb) {
+        batch
+          ..insert(oldDb.catalogSongs, entry)
+          ..insert(oldDb.cachedSongs, cached);
+      },
+      validateItems: (newDb) async {
+        final index = await newDb.select(newDb.catalogSongs).get();
+        expect(index.single.version, 2);
+        final cache = await newDb.select(newDb.cachedSongs).get();
+        expect(cache.single.document, '{"song":{}}');
+        expect(await newDb.select(newDb.queuedReports).get(), isEmpty);
       },
     );
   });

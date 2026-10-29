@@ -1066,4 +1066,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLyricsClearConfirm => 'Clear';
+
+  @override
+  String get songDetailRecordingsTab => 'Recordings';
+
+  @override
+  String get songDetailMoreOptions => 'More options';
+
+  @override
+  String get songRecordingsEmpty => 'No recordings yet';
+
+  @override
+  String get songRecordingSynced => 'Synced';
+
+  @override
+  String get songRecordingTextOnly => 'Text only';
+
+  @override
+  String get songRecordingUsed => 'Used for lyrics';
+
+  @override
+  String get reportLyrics => 'Report wrong lyrics';
+
+  @override
+  String get reportReasonPrompt => 'What\'s wrong?';
+
+  @override
+  String get reportReasonWrongWords => 'Wrong words';
+
+  @override
+  String get reportReasonWrongTiming => 'Wrong timing';
+
+  @override
+  String get reportReasonWrongSong => 'Wrong song';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get reportNote => 'Note (optional)';
+
+  @override
+  String get reportSend => 'Send';
+
+  @override
+  String get reportSent => 'Thanks, we\'ll take a look';
+
+  @override
+  String get reportQueued => 'You\'re offline, so it\'ll be sent later';
+
+  @override
+  String get reportLimited =>
+      'You\'ve sent the most reports for today. Try again tomorrow.';
+
+  @override
+  String get reportFailed => 'Couldn\'t send the report';
 }

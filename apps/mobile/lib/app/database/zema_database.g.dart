@@ -3544,6 +3544,407 @@ class CachedSongsCompanion extends UpdateCompanion<CachedSongRow> {
   }
 }
 
+class $QueuedReportsTable extends QueuedReports
+    with TableInfo<$QueuedReportsTable, QueuedReportRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QueuedReportsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordingIdMeta = const VerificationMeta(
+    'recordingId',
+  );
+  @override
+  late final GeneratedColumn<String> recordingId = GeneratedColumn<String>(
+    'recording_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumn<String> reason = GeneratedColumn<String>(
+    'reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    songId,
+    recordingId,
+    reason,
+    note,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'queued_reports';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<QueuedReportRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_songIdMeta);
+    }
+    if (data.containsKey('recording_id')) {
+      context.handle(
+        _recordingIdMeta,
+        recordingId.isAcceptableOrUnknown(
+          data['recording_id']!,
+          _recordingIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reason')) {
+      context.handle(
+        _reasonMeta,
+        reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reasonMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QueuedReportRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QueuedReportRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      )!,
+      recordingId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recording_id'],
+      ),
+      reason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $QueuedReportsTable createAlias(String alias) {
+    return $QueuedReportsTable(attachedDatabase, alias);
+  }
+}
+
+class QueuedReportRow extends DataClass implements Insertable<QueuedReportRow> {
+  final int id;
+  final String songId;
+  final String? recordingId;
+
+  /// [ReportReason.name].
+  final String reason;
+  final String? note;
+  final DateTime createdAt;
+  const QueuedReportRow({
+    required this.id,
+    required this.songId,
+    this.recordingId,
+    required this.reason,
+    this.note,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['song_id'] = Variable<String>(songId);
+    if (!nullToAbsent || recordingId != null) {
+      map['recording_id'] = Variable<String>(recordingId);
+    }
+    map['reason'] = Variable<String>(reason);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  QueuedReportsCompanion toCompanion(bool nullToAbsent) {
+    return QueuedReportsCompanion(
+      id: Value(id),
+      songId: Value(songId),
+      recordingId: recordingId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recordingId),
+      reason: Value(reason),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory QueuedReportRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QueuedReportRow(
+      id: serializer.fromJson<int>(json['id']),
+      songId: serializer.fromJson<String>(json['songId']),
+      recordingId: serializer.fromJson<String?>(json['recordingId']),
+      reason: serializer.fromJson<String>(json['reason']),
+      note: serializer.fromJson<String?>(json['note']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'songId': serializer.toJson<String>(songId),
+      'recordingId': serializer.toJson<String?>(recordingId),
+      'reason': serializer.toJson<String>(reason),
+      'note': serializer.toJson<String?>(note),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  QueuedReportRow copyWith({
+    int? id,
+    String? songId,
+    Value<String?> recordingId = const Value.absent(),
+    String? reason,
+    Value<String?> note = const Value.absent(),
+    DateTime? createdAt,
+  }) => QueuedReportRow(
+    id: id ?? this.id,
+    songId: songId ?? this.songId,
+    recordingId: recordingId.present ? recordingId.value : this.recordingId,
+    reason: reason ?? this.reason,
+    note: note.present ? note.value : this.note,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  QueuedReportRow copyWithCompanion(QueuedReportsCompanion data) {
+    return QueuedReportRow(
+      id: data.id.present ? data.id.value : this.id,
+      songId: data.songId.present ? data.songId.value : this.songId,
+      recordingId: data.recordingId.present
+          ? data.recordingId.value
+          : this.recordingId,
+      reason: data.reason.present ? data.reason.value : this.reason,
+      note: data.note.present ? data.note.value : this.note,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QueuedReportRow(')
+          ..write('id: $id, ')
+          ..write('songId: $songId, ')
+          ..write('recordingId: $recordingId, ')
+          ..write('reason: $reason, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, songId, recordingId, reason, note, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QueuedReportRow &&
+          other.id == this.id &&
+          other.songId == this.songId &&
+          other.recordingId == this.recordingId &&
+          other.reason == this.reason &&
+          other.note == this.note &&
+          other.createdAt == this.createdAt);
+}
+
+class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
+  final Value<int> id;
+  final Value<String> songId;
+  final Value<String?> recordingId;
+  final Value<String> reason;
+  final Value<String?> note;
+  final Value<DateTime> createdAt;
+  const QueuedReportsCompanion({
+    this.id = const Value.absent(),
+    this.songId = const Value.absent(),
+    this.recordingId = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  QueuedReportsCompanion.insert({
+    this.id = const Value.absent(),
+    required String songId,
+    this.recordingId = const Value.absent(),
+    required String reason,
+    this.note = const Value.absent(),
+    required DateTime createdAt,
+  }) : songId = Value(songId),
+       reason = Value(reason),
+       createdAt = Value(createdAt);
+  static Insertable<QueuedReportRow> custom({
+    Expression<int>? id,
+    Expression<String>? songId,
+    Expression<String>? recordingId,
+    Expression<String>? reason,
+    Expression<String>? note,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (songId != null) 'song_id': songId,
+      if (recordingId != null) 'recording_id': recordingId,
+      if (reason != null) 'reason': reason,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  QueuedReportsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? songId,
+    Value<String?>? recordingId,
+    Value<String>? reason,
+    Value<String?>? note,
+    Value<DateTime>? createdAt,
+  }) {
+    return QueuedReportsCompanion(
+      id: id ?? this.id,
+      songId: songId ?? this.songId,
+      recordingId: recordingId ?? this.recordingId,
+      reason: reason ?? this.reason,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    if (recordingId.present) {
+      map['recording_id'] = Variable<String>(recordingId.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QueuedReportsCompanion(')
+          ..write('id: $id, ')
+          ..write('songId: $songId, ')
+          ..write('recordingId: $recordingId, ')
+          ..write('reason: $reason, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -3559,6 +3960,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $LyricsLinksTable lyricsLinks = $LyricsLinksTable(this);
   late final $CatalogSongsTable catalogSongs = $CatalogSongsTable(this);
   late final $CachedSongsTable cachedSongs = $CachedSongsTable(this);
+  late final $QueuedReportsTable queuedReports = $QueuedReportsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -3587,6 +3989,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final CachedSongsDao cachedSongsDao = CachedSongsDao(
     this as ZemaDatabase,
   );
+  late final ReportsDao reportsDao = ReportsDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3602,6 +4005,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     lyricsLinks,
     catalogSongs,
     cachedSongs,
+    queuedReports,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -6884,6 +7288,234 @@ typedef $$CachedSongsTableProcessedTableManager =
       CachedSongRow,
       PrefetchHooks Function()
     >;
+typedef $$QueuedReportsTableCreateCompanionBuilder =
+    QueuedReportsCompanion Function({
+      Value<int> id,
+      required String songId,
+      Value<String?> recordingId,
+      required String reason,
+      Value<String?> note,
+      required DateTime createdAt,
+    });
+typedef $$QueuedReportsTableUpdateCompanionBuilder =
+    QueuedReportsCompanion Function({
+      Value<int> id,
+      Value<String> songId,
+      Value<String?> recordingId,
+      Value<String> reason,
+      Value<String?> note,
+      Value<DateTime> createdAt,
+    });
+
+class $$QueuedReportsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $QueuedReportsTable> {
+  $$QueuedReportsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$QueuedReportsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $QueuedReportsTable> {
+  $$QueuedReportsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$QueuedReportsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $QueuedReportsTable> {
+  $$QueuedReportsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$QueuedReportsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $QueuedReportsTable,
+          QueuedReportRow,
+          $$QueuedReportsTableFilterComposer,
+          $$QueuedReportsTableOrderingComposer,
+          $$QueuedReportsTableAnnotationComposer,
+          $$QueuedReportsTableCreateCompanionBuilder,
+          $$QueuedReportsTableUpdateCompanionBuilder,
+          (
+            QueuedReportRow,
+            BaseReferences<
+              _$ZemaDatabase,
+              $QueuedReportsTable,
+              QueuedReportRow
+            >,
+          ),
+          QueuedReportRow,
+          PrefetchHooks Function()
+        > {
+  $$QueuedReportsTableTableManager(_$ZemaDatabase db, $QueuedReportsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QueuedReportsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QueuedReportsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QueuedReportsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> songId = const Value.absent(),
+                Value<String?> recordingId = const Value.absent(),
+                Value<String> reason = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => QueuedReportsCompanion(
+                id: id,
+                songId: songId,
+                recordingId: recordingId,
+                reason: reason,
+                note: note,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String songId,
+                Value<String?> recordingId = const Value.absent(),
+                required String reason,
+                Value<String?> note = const Value.absent(),
+                required DateTime createdAt,
+              }) => QueuedReportsCompanion.insert(
+                id: id,
+                songId: songId,
+                recordingId: recordingId,
+                reason: reason,
+                note: note,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$QueuedReportsTable, QueuedReportRow>(table),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $QueuedReportsTable,
+                    QueuedReportRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$QueuedReportsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $QueuedReportsTable,
+      QueuedReportRow,
+      $$QueuedReportsTableFilterComposer,
+      $$QueuedReportsTableOrderingComposer,
+      $$QueuedReportsTableAnnotationComposer,
+      $$QueuedReportsTableCreateCompanionBuilder,
+      $$QueuedReportsTableUpdateCompanionBuilder,
+      (
+        QueuedReportRow,
+        BaseReferences<_$ZemaDatabase, $QueuedReportsTable, QueuedReportRow>,
+      ),
+      QueuedReportRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -6908,4 +7540,6 @@ class $ZemaDatabaseManager {
       $$CatalogSongsTableTableManager(_db, _db.catalogSongs);
   $$CachedSongsTableTableManager get cachedSongs =>
       $$CachedSongsTableTableManager(_db, _db.cachedSongs);
+  $$QueuedReportsTableTableManager get queuedReports =>
+      $$QueuedReportsTableTableManager(_db, _db.queuedReports);
 }

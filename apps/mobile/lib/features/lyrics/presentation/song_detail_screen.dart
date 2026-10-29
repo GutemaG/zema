@@ -8,16 +8,21 @@ import '../../../app/not_found_screen.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/format_duration.dart';
+import '../../catalog/application/report_sender.dart';
 import '../../library/application/favorites.dart';
 import '../../library/presentation/add_to_playlist_sheet.dart';
 import '../../player/application/player_providers.dart';
 import '../application/lyrics_links.dart';
 import '../application/lyrics_prefs.dart';
+import '../application/track_lyrics.dart';
 import 'lyrics_view.dart';
+import 'report_lyrics_sheet.dart';
 
 /// S07: one song's title, transliteration, artist and album, Play,
-/// favorite and add to playlist (for its first linked track), and tabs
-/// with the full lyrics and the song's info. Opening it downloads the
+/// favorite and add to playlist (for its first linked track), tabs with
+/// the full lyrics, the song's recordings and its info, and for catalog
+/// songs Report wrong lyrics in the menu. Opening it downloads the
 /// lyrics if needed. An unknown [songId] shows C07 not found; lyrics that
 /// can't be downloaded show C07 with Try again.
 class SongDetailScreen extends ConsumerWidget {
@@ -56,7 +61,7 @@ class _SongDetail extends ConsumerWidget {
     final display = ref.watch(lyricsDisplayProvider);
     final displayController = ref.read(lyricsDisplayProvider.notifier);
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           actions: [
@@ -74,6 +79,18 @@ class _SongDetail extends ConsumerWidget {
                   ? () => unawaited(displayController.stepScale(1))
                   : null,
             ),
+            if (ref.watch(canReportProvider(song.id)))
+              PopupMenuButton<void>(
+                tooltip: l10n.songDetailMoreOptions,
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    onTap: () => unawaited(
+                      showReportLyricsSheet(context, songId: song.id),
+                    ),
+                    child: Text(l10n.reportLyrics),
+                  ),
+                ],
+              ),
           ],
         ),
         body: NestedScrollView(
@@ -83,6 +100,7 @@ class _SongDetail extends ConsumerWidget {
               child: TabBar(
                 tabs: [
                   Tab(text: l10n.songDetailLyricsTab),
+                  Tab(text: l10n.songDetailRecordingsTab),
                   Tab(text: l10n.songDetailInfoTab),
                 ],
               ),
@@ -91,6 +109,7 @@ class _SongDetail extends ConsumerWidget {
           body: TabBarView(
             children: [
               _LyricsTab(song: song, display: display),
+              _RecordingsTab(song: song),
               _InfoTab(song: song),
             ],
           ),
@@ -279,6 +298,86 @@ class _LyricsTab extends StatelessWidget {
   }
 }
 
+/// The song's recordings: artist, source, duration and whether its lyrics
+/// are synced. The one the lyrics view uses ([usedRecording]) is marked.
+class _RecordingsTab extends ConsumerWidget {
+  const _RecordingsTab({required this.song});
+
+  final Song song;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final textTheme = Theme.of(context).textTheme;
+    final info = ref.watch(songRecordingsInfoProvider(song.id));
+    final used = usedRecording([
+      for (final r in info.value ?? const <RecordingInfo>[]) r.recording,
+    ]);
+    return switch (info) {
+      AsyncData(value: []) => Padding(
+        padding: const EdgeInsets.all(ZemaSpacing.screenSide),
+        child: Text(
+          l10n.songRecordingsEmpty,
+          style: textTheme.bodyMedium?.copyWith(color: colors.muted),
+        ),
+      ),
+      AsyncData(value: final recordings) => ListView(
+        children: [
+          for (final (:recording, :synced) in recordings)
+            ListTile(
+              title: Text(recording.artist ?? l10n.unknownArtist),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    [
+                      _sourceName(l10n, recording.source),
+                      if (recording.duration case final duration?)
+                        formatDuration(duration),
+                    ].join(' · '),
+                  ),
+                  if (recording.id == used?.id)
+                    Text(
+                      l10n.songRecordingUsed,
+                      style: TextStyle(color: colors.accentText),
+                    ),
+                ],
+              ),
+              trailing: synced
+                  ? DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: colors.soft,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        child: Text(
+                          l10n.songRecordingSynced,
+                          style: textTheme.labelMedium?.copyWith(
+                            color: colors.accentText,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Text(
+                      l10n.songRecordingTextOnly,
+                      style: textTheme.labelMedium?.copyWith(
+                        color: colors.muted,
+                      ),
+                    ),
+            ),
+        ],
+      ),
+      AsyncError(:final error) => LyricsUnavailable(error: error),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
+  }
+}
+
 class _InfoTab extends ConsumerWidget {
   const _InfoTab({required this.song});
 
@@ -290,12 +389,6 @@ class _InfoTab extends ConsumerWidget {
     final recordings = ref.watch(songRecordingsProvider(song.id)).value;
     final sources = {
       for (final r in recordings ?? const <Recording>[]) r.source,
-    };
-    String sourceName(RecordingSource source) => switch (source) {
-      RecordingSource.bundled => l10n.songSourceBundled,
-      RecordingSource.localFile => l10n.songSourceLocal,
-      RecordingSource.youtube => 'YouTube',
-      RecordingSource.telegram => 'Telegram',
     };
     return ListView(
       children: [
@@ -310,9 +403,17 @@ class _InfoTab extends ConsumerWidget {
         if (sources.isNotEmpty)
           ListTile(
             title: Text(l10n.songDetailSource),
-            subtitle: Text(sources.map(sourceName).join(', ')),
+            subtitle: Text(sources.map((s) => _sourceName(l10n, s)).join(', ')),
           ),
       ],
     );
   }
 }
+
+String _sourceName(AppLocalizations l10n, RecordingSource source) =>
+    switch (source) {
+      RecordingSource.bundled => l10n.songSourceBundled,
+      RecordingSource.localFile => l10n.songSourceLocal,
+      RecordingSource.youtube => 'YouTube',
+      RecordingSource.telegram => 'Telegram',
+    };
