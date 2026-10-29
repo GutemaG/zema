@@ -96,7 +96,7 @@ reset role;
 select is(
   (select count(*)::int from pg_policies
    where schemaname = 'public' and cmd = 'SELECT'
-     and tablename not in ('profiles', 'user_roles')),
+     and tablename not in ('profiles', 'user_roles', 'backups')),
   6,
   'six catalog read policies: songs and their five kinds of parts'
 );

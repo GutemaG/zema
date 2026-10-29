@@ -60,6 +60,11 @@ New users get a `profiles` row and the `contributor` role on sign-up (a trigger 
 `auth.users`). Users read only their own profile and roles, and can change only their
 display name.
 
+Each user has at most one backup (`backups`, a JSON document of at most 2 MB). Users
+read only their own, and save it with `save_backup`, which replaces the previous one.
+`delete_account` removes the caller's auth user, which also removes their profile,
+roles, backup and sessions.
+
 ## Rules
 
 - Change the schema only with a new migration file; never edit the database by hand

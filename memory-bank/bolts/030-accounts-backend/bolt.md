@@ -3,15 +3,24 @@ id: 030-accounts-backend
 unit: 001-accounts-backend
 intent: 005-accounts-backup-restore
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 003-backups-table
   - 004-delete-account-function
 created: '2026-10-29T19:05:45Z'
-started: null
-completed: null
+started: '2026-10-29T19:26:59Z'
+completed: '2026-10-29T19:33:58Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T19:27:59Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T19:29:48Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-29T19:33:58Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 029-accounts-backend
 enables_bolts:
@@ -33,8 +42,8 @@ The private backups table and the delete_account function.
 
 ## Stories Included
 
-- [ ] **003-backups-table**: One private backup per user - Priority: Must
-- [ ] **004-delete-account-function**: Delete account on the server - Priority: Must
+- [x] **003-backups-table**: One private backup per user - Priority: Must
+- [x] **004-delete-account-function**: Delete account on the server - Priority: Must
 
 ## Bolt Type
 
@@ -43,9 +52,9 @@ The private backups table and the delete_account function.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -57,9 +66,9 @@ The private backups table and the delete_account function.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
-- [ ] Key scan clean before commit
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] Key scan clean before commit
