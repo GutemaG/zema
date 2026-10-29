@@ -24,9 +24,9 @@ select ok(
 );
 
 select is(
-  (select count(*)::int from pg_policies where schemaname = 'public'),
+  (select count(*)::int from pg_policies where schemaname = 'public' and cmd <> 'SELECT'),
   0,
-  'no policies yet: nothing is exposed through the API'
+  'every policy is read-only: nothing is writable through the API'
 );
 
 -- Fixtures ---------------------------------------------------------------------

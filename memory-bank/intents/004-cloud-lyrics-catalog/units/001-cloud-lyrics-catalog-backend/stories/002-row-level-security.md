@@ -2,11 +2,11 @@
 id: 002-row-level-security
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: must
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 019-cloud-lyrics-catalog-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 002-row-level-security
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** the anonymous role, **When** reading songs, sections, lines, recordings and timings, **Then** only rows of approved songs are returned
-- [ ] **Given** the anonymous role, **When** reading reports, contributions or roles, **Then** nothing is returned
-- [ ] **Given** the anonymous role, **When** inserting, updating or deleting on any table, **Then** it fails
-- [ ] **Given** pgTAP, **When** run, **Then** each rule above has a test that switches to the `anon` role
+- [x] **Given** the anonymous role, **When** reading songs, sections, lines, recordings and timings, **Then** only rows of approved songs are returned
+- [x] **Given** the anonymous role, **When** reading reports, contributions or roles, **Then** nothing is returned
+- [x] **Given** the anonymous role, **When** inserting, updating or deleting on any table, **Then** it fails
+- [x] **Given** pgTAP, **When** run, **Then** each rule above has a test that switches to the `anon` role
 
 ## Technical Notes
 

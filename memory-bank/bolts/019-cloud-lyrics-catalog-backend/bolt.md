@@ -3,15 +3,24 @@ id: 019-cloud-lyrics-catalog-backend
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 002-row-level-security
   - 003-report-function
-created: 2026-10-29T05:59:04Z
-started: null
-completed: null
+created: '2026-10-29T05:59:04Z'
+started: '2026-10-29T06:17:46Z'
+completed: 2026-10-29T06:23:49Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T06:19:45Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T06:19:45Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-29T06:23:49Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 018-cloud-lyrics-catalog-backend
 enables_bolts:
@@ -33,8 +42,8 @@ Row Level Security and the rate-limited report function.
 
 ## Stories Included
 
-- [ ] **002-row-level-security**: Row Level Security - Priority: Must
-- [ ] **003-report-function**: Rate-limited report function - Priority: Should
+- [x] **002-row-level-security**: Row Level Security - Priority: Must
+- [x] **003-report-function**: Rate-limited report function - Priority: Should
 
 ## Bolt Type
 
@@ -43,9 +52,9 @@ Row Level Security and the rate-limited report function.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -57,11 +66,11 @@ Row Level Security and the rate-limited report function.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
 
 ## Notes
 

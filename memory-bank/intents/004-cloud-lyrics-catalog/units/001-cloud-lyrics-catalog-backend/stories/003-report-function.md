@@ -2,11 +2,11 @@
 id: 003-report-function
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: should
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 019-cloud-lyrics-catalog-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 003-report-function
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a song, optional recording, reason, note and install ID, **When** `submit_report` is called anonymously, **Then** a report row is stored
-- [ ] **Given** 5 reports from one install ID today, **When** a 6th is submitted, **Then** it is refused with a recognisable error code
-- [ ] **Given** a reason outside the allowed list, a note over 500 characters, or an unknown or unapproved song, **When** submitted, **Then** it is refused
-- [ ] **Given** pgTAP, **When** run, **Then** the rate limit and validation are tested
+- [x] **Given** a song, optional recording, reason, note and install ID, **When** `submit_report` is called anonymously, **Then** a report row is stored
+- [x] **Given** 5 reports from one install ID today, **When** a 6th is submitted, **Then** it is refused with a recognisable error code
+- [x] **Given** a reason outside the allowed list, a note over 500 characters, or an unknown or unapproved song, **When** submitted, **Then** it is refused
+- [x] **Given** pgTAP, **When** run, **Then** the rate limit and validation are tested
 
 ## Technical Notes
 

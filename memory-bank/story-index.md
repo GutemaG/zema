@@ -78,8 +78,8 @@ Path: `memory-bank/intents/003-lyrics-engine-and-display/units/001-lyrics-engine
 Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/001-cloud-lyrics-catalog-backend/stories/`
 
 - [x] **001-local-supabase-and-schema** (cloud-lyrics-catalog-backend): Local Supabase and catalog schema - Must - ✅ COMPLETED
-- [ ] **002-row-level-security** (cloud-lyrics-catalog-backend): Row Level Security - Must - ⬜ GENERATED
-- [ ] **003-report-function** (cloud-lyrics-catalog-backend): Rate-limited report function - Should - ⬜ GENERATED
+- [x] **002-row-level-security** (cloud-lyrics-catalog-backend): Row Level Security - Must - ✅ COMPLETED
+- [x] **003-report-function** (cloud-lyrics-catalog-backend): Rate-limited report function - Should - ✅ COMPLETED
 - [ ] **004-search-rules-to-sql** (cloud-lyrics-catalog-backend): Search rules generated into SQL - Must - ⬜ GENERATED
 - [ ] **005-server-search** (cloud-lyrics-catalog-backend): Server search function - Must - ⬜ GENERATED
 - [ ] **006-seed-script** (cloud-lyrics-catalog-backend): Seed script and placeholder songs - Must - ⬜ GENERATED
@@ -104,6 +104,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 13
+- **Generated**: 11
 - **In Progress**: 0
-- **Completed**: 49
+- **Completed**: 51

@@ -2,7 +2,7 @@
 unit: 001-cloud-lyrics-catalog-backend
 intent: 004-cloud-lyrics-catalog
 created: 2026-10-29T06:03:48Z
-last_updated: 2026-10-29T06:17:00Z
+last_updated: 2026-10-29T06:23:49Z
 ---
 
 # Construction Log: cloud-lyrics-catalog-backend
@@ -29,7 +29,7 @@ last_updated: 2026-10-29T06:17:00Z
 | Bolt ID | Stories | Status | Changed |
 |---------|---------|--------|---------|
 | 018-cloud-lyrics-catalog-backend | 001 | ✅ completed | - |
-| 019-cloud-lyrics-catalog-backend | 002, 003 | [ ] planned | - |
+| 019-cloud-lyrics-catalog-backend | 002, 003 | ✅ completed | - |
 | 020-cloud-lyrics-catalog-backend | 004, 005 | [ ] planned | - |
 | 021-cloud-lyrics-catalog-backend | 006 | [ ] planned | - |
 
@@ -41,6 +41,11 @@ last_updated: 2026-10-29T06:17:00Z
 | 2026-10-29T06:13:14Z | 018-cloud-lyrics-catalog-backend | stage-complete | plan → implement |
 | 2026-10-29T06:13:14Z | 018-cloud-lyrics-catalog-backend | stage-complete | implement → test |
 | 2026-10-29T06:17:00Z | 018-cloud-lyrics-catalog-backend | completed | All 3 stages done; 28 pgTAP checks pass |
+| 2026-10-29T06:17:46Z | 019-cloud-lyrics-catalog-backend | started | Stage 1: plan |
+| 2026-10-29T06:19:45Z | 019-cloud-lyrics-catalog-backend | stage-complete | plan → implement |
+| 2026-10-29T06:19:45Z | 019-cloud-lyrics-catalog-backend | stage-complete | implement → test |
+| 2026-10-29T06:23:49Z | 019-cloud-lyrics-catalog-backend | completed | All 3 stages done; 76 pgTAP checks pass |
 
 ## Notes
 - Bolt 018: local services trimmed in config.toml (realtime, storage, edge, analytics, mail off); RLS on with no policies until bolt 019.
+- Bolt 019: write grants revoked from anon/authenticated (also by default privileges); submit_report is the only anonymous write.
