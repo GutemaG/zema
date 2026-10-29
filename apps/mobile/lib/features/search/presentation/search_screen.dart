@@ -22,6 +22,7 @@ import '../../library/presentation/widgets/library_search_field.dart';
 import '../../library/presentation/widgets/track_art.dart';
 import '../../library/presentation/widgets/track_row.dart';
 import '../../player/application/player_providers.dart';
+import '../application/catalog_search.dart';
 import '../application/library_search.dart';
 import '../application/recent_searches.dart';
 import 'widgets/recent_searches_view.dart';
@@ -30,7 +31,9 @@ import 'widgets/recent_searches_view.dart';
 enum SearchScope { all, songs, lyrics, artists, albums }
 
 /// S06: songs, artists and albums on the phone, found while typing with
-/// any keyboard (see `normalizeSearchText` and `matchScore`).
+/// any keyboard (see `normalizeSearchText` and `matchScore`), and catalog
+/// songs by title (from the index) or by a lyric line (from the server,
+/// or downloaded songs offline).
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
@@ -154,11 +157,26 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
     final index = ref.watch(librarySearchIndexProvider);
     if (index == null) return const Center(child: CircularProgressIndicator());
     final results = index.search(_query);
-    final lyricMatches =
-        _scope == SearchScope.all || _scope == SearchScope.lyrics
-        ? ref.watch(lyricsSearchIndexProvider)?.search(_query) ??
-              const <LyricMatch>[]
-        : const <LyricMatch>[];
+    final withLyrics =
+        _scope == SearchScope.all || _scope == SearchScope.lyrics;
+    var lyricMatches = const <CatalogMatch>[];
+    Object? catalogError;
+    if (withLyrics) {
+      final titles =
+          ref.watch(catalogTitleIndexProvider)?.search(_query) ?? const [];
+      final server = ref.watch(catalogLineSearchProvider(_query.trim()));
+      if (server.hasError) catalogError = server.error;
+      // Lines of downloaded songs show at once, and stay when the server
+      // answers or fails; the server adds songs that aren't downloaded.
+      final lines = [
+        ...?server.value,
+        for (final match
+            in ref.watch(lyricsSearchIndexProvider)?.search(_query) ??
+                const <LyricMatch>[])
+          CatalogMatch.fromLyricMatch(match),
+      ];
+      lyricMatches = mergeCatalogMatches(titles, lines);
+    }
     final shown = switch (_scope) {
       SearchScope.all => results,
       SearchScope.lyrics => const SearchResults(
@@ -182,7 +200,7 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
         albums: results.albums,
       ),
     };
-    if (shown.isEmpty && lyricMatches.isEmpty) {
+    if (shown.isEmpty && lyricMatches.isEmpty && catalogError == null) {
       return EmptyState(
         kind: EmptyStateKind.empty,
         icon: Icons.search_off,
@@ -224,19 +242,25 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
               trailing: SongMenuButton(track: track),
             ),
         ],
-        if (lyricMatches.isNotEmpty) ...[
+        if (lyricMatches.isNotEmpty || catalogError != null) ...[
           _GroupHeader(
             title: l10n.searchScopeLyrics,
             onSeeAll: seeAll(lyricMatches.length, SearchScope.lyrics),
           ),
+          if (catalogError != null)
+            _CatalogSearchNote(
+              error: catalogError,
+              onRetry: () =>
+                  ref.invalidate(catalogLineSearchProvider(_query.trim())),
+            ),
           for (final match in limit(lyricMatches))
-            _LyricMatchRow(
+            _CatalogMatchRow(
               match: match,
               query: _query,
               onTap: () {
                 _remember();
                 context.go(
-                  AppRoutes.song(match.song.id, base: AppRoutes.search),
+                  AppRoutes.song(match.songId, base: AppRoutes.search),
                 );
               },
             ),
@@ -417,16 +441,65 @@ class _AlbumRow extends StatelessWidget {
   }
 }
 
-/// A song found by a lyric line: its title and the line, with the words
-/// that match the query in bold.
-class _LyricMatchRow extends StatelessWidget {
-  const _LyricMatchRow({
+/// C07 in the Lyrics group: the catalog couldn't be searched, so the lines
+/// below come from downloaded songs.
+class _CatalogSearchNote extends StatelessWidget {
+  const _CatalogSearchNote({required this.error, required this.onRetry});
+
+  final Object error;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final offline = error is NetworkFailure;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        ZemaSpacing.screenSide,
+        4,
+        ZemaSpacing.screenSide - 4,
+        4,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            offline ? Icons.cloud_off : Icons.error_outline,
+            size: 20,
+            color: colors.muted,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              offline ? l10n.searchCatalogOffline : l10n.searchCatalogFailed,
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: colors.muted),
+            ),
+          ),
+          TextButton(
+            onPressed: onRetry,
+            style: TextButton.styleFrom(
+              foregroundColor: colors.primaryText,
+              minimumSize: const Size(ZemaSpacing.minTap, ZemaSpacing.minTap),
+            ),
+            child: Text(l10n.actionTryAgain),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A catalog song: its title, and the line that matched with the query's
+/// words in bold, or its artist when the title matched.
+class _CatalogMatchRow extends StatelessWidget {
+  const _CatalogMatchRow({
     required this.match,
     required this.query,
     required this.onTap,
   });
 
-  final LyricMatch match;
+  final CatalogMatch match;
   final String query;
   final VoidCallback onTap;
 
@@ -448,27 +521,41 @@ class _LyricMatchRow extends StatelessWidget {
     return ListTile(
       leading: Icon(Icons.lyrics_outlined, color: colors.muted),
       title: Text(
-        match.song.title,
+        match.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: textTheme.bodyLarge?.copyWith(color: colors.text),
       ),
-      subtitle: Text.rich(
-        TextSpan(
-          children: [
-            for (final (i, word) in match.line.text.split(' ').indexed)
-              TextSpan(
-                text: i == 0 ? word : ' $word',
-                style: matches(word)
-                    ? TextStyle(color: colors.text, fontWeight: FontWeight.w700)
-                    : null,
-              ),
-          ],
+      subtitle: switch (match.line) {
+        final line? => Text.rich(
+          TextSpan(
+            children: [
+              for (final (i, word) in line.split(' ').indexed)
+                TextSpan(
+                  text: i == 0 ? word : ' $word',
+                  style: matches(word)
+                      ? TextStyle(
+                          color: colors.text,
+                          fontWeight: FontWeight.w700,
+                        )
+                      : null,
+                ),
+            ],
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: style,
         ),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: style,
-      ),
+        null => switch (match.artist) {
+          final artist? => Text(
+            artist,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: style,
+          ),
+          null => null,
+        },
+      },
       onTap: onTap,
     );
   }

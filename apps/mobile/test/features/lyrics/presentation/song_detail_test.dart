@@ -131,8 +131,12 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text(_l10n.searchScopeSongs), findsOneWidget); // chip only
+      // The title matches as well as the chorus, and the title wins a tie
+      // (as on the server), so the row shows the artist, once.
+      final row = find.widgetWithText(ListTile, 'Galatoomi');
+      expect(row, findsOneWidget);
       expect(
-        find.textContaining('Galatoomi, galatoomi', findRichText: true),
+        find.descendant(of: row, matching: find.text('Zema Samples')),
         findsOneWidget,
       );
     });

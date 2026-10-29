@@ -997,4 +997,11 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get lyricsPreviewOffline =>
       'Offline: these lyrics aren\'t downloaded yet';
+
+  @override
+  String get searchCatalogOffline =>
+      'Offline: showing lyrics saved on this phone';
+
+  @override
+  String get searchCatalogFailed => 'Couldn\'t search the catalog';
 }

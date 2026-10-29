@@ -1709,6 +1709,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offline: these lyrics aren\'t downloaded yet'**
   String get lyricsPreviewOffline;
+
+  /// Note in Search's Lyrics group when the catalog can't be searched without a network; the lines below come from downloaded songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline: showing lyrics saved on this phone'**
+  String get searchCatalogOffline;
+
+  /// Note in Search's Lyrics group when searching the catalog fails for another reason; the lines below come from downloaded songs.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t search the catalog'**
+  String get searchCatalogFailed;
 }
 
 class _AppLocalizationsDelegate

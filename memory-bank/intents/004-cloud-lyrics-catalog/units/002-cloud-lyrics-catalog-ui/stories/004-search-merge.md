@@ -2,11 +2,11 @@
 id: 004-search-merge
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
-status: draft
+status: complete
 priority: must
-created: 2026-10-29T05:59:04Z
+created: '2026-10-29T05:59:04Z'
 assigned_bolt: 025-cloud-lyrics-catalog-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 004-search-merge
@@ -19,9 +19,9 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a query, **When** searching, **Then** phone results show at once and catalog title matches come from the index
-- [ ] **Given** online, **When** searching, **Then** lyric-line matches come from the server (debounced 300 ms) and a line from an uncached song is found
-- [ ] **Given** offline, **When** searching, **Then** the Lyrics group shows a C07 offline note and lines from cached songs; phone results are unaffected
+- [x] **Given** a query, **When** searching, **Then** phone results show at once and catalog title matches come from the index
+- [x] **Given** online, **When** searching, **Then** lyric-line matches come from the server (debounced 300 ms) and a line from an uncached song is found
+- [x] **Given** offline, **When** searching, **Then** the Lyrics group shows a C07 offline note and lines from cached songs; phone results are unaffected
 - [ ] **Given** a 3G-class network, **When** searching, **Then** catalog results arrive in < 1 s
 
 ## Technical Notes

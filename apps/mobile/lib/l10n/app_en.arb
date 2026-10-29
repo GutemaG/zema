@@ -1285,5 +1285,13 @@
   "lyricsPreviewOffline": "Offline: these lyrics aren't downloaded yet",
   "@lyricsPreviewOffline": {
     "description": "Small lyrics panel on Now Playing when the song's lyrics aren't downloaded and there is no network; tapping it opens the full lyrics with Try again."
+  },
+  "searchCatalogOffline": "Offline: showing lyrics saved on this phone",
+  "@searchCatalogOffline": {
+    "description": "Note in Search's Lyrics group when the catalog can't be searched without a network; the lines below come from downloaded songs."
+  },
+  "searchCatalogFailed": "Couldn't search the catalog",
+  "@searchCatalogFailed": {
+    "description": "Note in Search's Lyrics group when searching the catalog fails for another reason; the lines below come from downloaded songs."
   }
 }

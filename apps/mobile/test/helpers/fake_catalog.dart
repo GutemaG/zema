@@ -38,6 +38,15 @@ class FakeCatalogRepository implements CatalogRepository {
   /// When set, [song] waits for it before answering.
   Completer<void>? songGate;
 
+  /// What [search] answers, by query (nothing for other queries).
+  final searchHits = <String, List<CatalogSearchHit>>{};
+
+  /// The queries passed to [search], in order.
+  final searchCalls = <String>[];
+
+  /// When set, [search] waits for it before answering.
+  Completer<void>? searchGate;
+
   @override
   Future<List<CatalogEntry>> index() async {
     indexCalls++;
@@ -69,8 +78,10 @@ class FakeCatalogRepository implements CatalogRepository {
 
   @override
   Future<List<CatalogSearchHit>> search(String query) async {
+    searchCalls.add(query);
+    await searchGate?.future;
     if (failure case final failure?) throw failure;
-    return const [];
+    return searchHits[query] ?? const [];
   }
 
   @override

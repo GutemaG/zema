@@ -3,14 +3,23 @@ id: 025-cloud-lyrics-catalog-ui
 unit: 002-cloud-lyrics-catalog-ui
 intent: 004-cloud-lyrics-catalog
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 004-search-merge
-created: 2026-10-29T05:59:04Z
-started: null
-completed: null
+created: '2026-10-29T05:59:04Z'
+started: '2026-10-29T11:24:42Z'
+completed: 2026-10-29T12:00:11Z
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T11:26:11Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T11:38:13Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: 2026-10-29T12:00:11Z
+    artifact: test-walkthrough.md
 requires_bolts:
   - 024-cloud-lyrics-catalog-ui
 enables_bolts:
@@ -32,7 +41,7 @@ Search merges the phone and the catalog.
 
 ## Stories Included
 
-- [ ] **004-search-merge**: Search merges the phone and the catalog - Priority: Must
+- [x] **004-search-merge**: Search merges the phone and the catalog - Priority: Must
 
 ## Bolt Type
 
@@ -41,9 +50,9 @@ Search merges the phone and the catalog.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -55,11 +64,11 @@ Search merges the phone and the catalog.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
 
 ## Notes
 
