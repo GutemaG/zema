@@ -70,3 +70,13 @@ String fileNameOf(String path) {
   final slash = path.lastIndexOf('/');
   return slash < 0 ? path : path.substring(slash + 1);
 }
+
+final _storageVolume = RegExp(
+  r'^(/storage/emulated/\d+|/storage/[^/]+|/sdcard)(/|$)',
+);
+
+/// [path] without its storage volume: `/storage/emulated/0/Recordings` is
+/// `Recordings`, so a backup names the same folder on any phone. Other
+/// paths are kept whole.
+String storageRelativePath(String path) =>
+    path.replaceFirst(_storageVolume, '');

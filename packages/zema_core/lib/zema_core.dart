@@ -5,8 +5,10 @@ library;
 
 export 'src/account/account.dart';
 export 'src/backup/backup_document.dart';
+export 'src/backup/backup_matcher.dart';
 export 'src/backup/backup_repository.dart';
 export 'src/backup/track_identity.dart';
+export 'src/backup/unmatched_entry.dart';
 export 'src/catalog/catalog.dart';
 export 'src/failures.dart';
 export 'src/library/playlist_order.dart';

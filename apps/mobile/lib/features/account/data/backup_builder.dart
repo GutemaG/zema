@@ -54,16 +54,6 @@ TrackIdentity identityOf(TrackRow row) => TrackIdentity(
   fileName: fileNameOf(row.path),
 );
 
-final _storageVolume = RegExp(
-  r'^(/storage/emulated/\d+|/storage/[^/]+|/sdcard)(/|$)',
-);
-
-/// [path] without its storage volume: `/storage/emulated/0/Recordings` is
-/// `Recordings`, so a backup names the same folder on any phone. Other
-/// paths are kept whole.
-String storageRelativePath(String path) =>
-    path.replaceFirst(_storageVolume, '');
-
 /// [settings] as the backup's plain values. [settingsFromBackup] reads them
 /// back.
 Map<String, Object?> backupSettings(AppSettings settings) => {

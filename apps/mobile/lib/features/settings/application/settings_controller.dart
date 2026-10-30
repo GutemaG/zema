@@ -113,6 +113,19 @@ class SettingsController extends Notifier<AppSettings> {
 
   /// A failed save keeps the new value for this session; it is only lost on
   /// the next launch.
+  /// Applies every setting in [next] that differs, e.g. from a restored
+  /// backup. A missing language keeps the current one.
+  Future<void> replaceAll(AppSettings next) async {
+    await setPalette(next.palette);
+    await setThemeMode(next.themeMode);
+    if (next.languageCode case final code?) await setLanguage(code);
+    await setMinTrackSeconds(next.minTrackSeconds);
+    await setSleepTimerDefault(next.sleepTimerDefault);
+    await setPauseOnUnplug(next.pauseOnUnplug);
+    await setDuckOnInterruption(next.duckOnInterruption);
+    await setGapless(next.gapless);
+  }
+
   Future<void> _persist(Future<void> Function() save) async {
     try {
       await save();

@@ -3,14 +3,23 @@ id: 037-accounts-backup-restore-ui
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 010-relink-and-merge
 created: '2026-10-29T19:05:45Z'
-started: null
-completed: null
+started: '2026-10-30T12:09:00Z'
+completed: '2026-10-30T12:15:33Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-30T12:10:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-30T12:13:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-30T12:15:33Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 036-accounts-backup-restore-ui
 enables_bolts:
@@ -32,7 +41,7 @@ Track matcher and the merge into Drift in one transaction.
 
 ## Stories Included
 
-- [ ] **010-relink-and-merge**: Re-link tracks and merge - Priority: Must
+- [x] **010-relink-and-merge**: Re-link tracks and merge - Priority: Must
 
 ## Bolt Type
 
@@ -41,9 +50,9 @@ Track matcher and the merge into Drift in one transaction.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -55,9 +64,9 @@ Track matcher and the merge into Drift in one transaction.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
-- [ ] Key scan clean before commit
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] Key scan clean before commit

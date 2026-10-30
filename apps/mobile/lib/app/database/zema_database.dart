@@ -9,6 +9,7 @@ import 'history_dao.dart';
 import 'library_dao.dart';
 import 'lyrics_links_dao.dart';
 import 'reports_dao.dart';
+import 'restore_dao.dart';
 import 'tables.dart';
 import 'zema_database.steps.dart';
 
@@ -39,6 +40,7 @@ part 'zema_database.g.dart';
     CachedSongsDao,
     ReportsDao,
     BackupDao,
+    RestoreDao,
   ],
 )
 class ZemaDatabase extends _$ZemaDatabase {

@@ -38,7 +38,7 @@ last_updated: 2026-10-29T19:59:26Z
 | 034-accounts-backup-restore-ui | 006, 007 | ✅ completed | - |
 | 035-accounts-backup-restore-ui | 008 | ✅ completed | - |
 | 036-accounts-backup-restore-ui | 009 | ✅ completed | - |
-| 037-accounts-backup-restore-ui | 010 | planned | - |
+| 037-accounts-backup-restore-ui | 010 | ✅ completed | - |
 | 038-accounts-backup-restore-ui | 011, 012 | planned | - |
 
 ## Execution History
@@ -69,6 +69,10 @@ last_updated: 2026-10-29T19:59:26Z
 | 2026-10-30T11:44:00Z | 036-accounts-backup-restore-ui | stage-complete | plan → implement |
 | 2026-10-30T11:48:00Z | 036-accounts-backup-restore-ui | stage-complete | implement → test |
 | 2026-10-30T12:07:54Z | 036-accounts-backup-restore-ui | completed | All 3 stages done; app 974 pass; on-open and app-closed WorkManager backups land on the emulator; iOS simulator build launches; 11/12 planted bugs caught (1 equivalent; 1 after a new test) |
+| 2026-10-30T12:09:00Z | 037-accounts-backup-restore-ui | started | Stage 1: plan |
+| 2026-10-30T12:10:00Z | 037-accounts-backup-restore-ui | stage-complete | plan → implement |
+| 2026-10-30T12:13:00Z | 037-accounts-backup-restore-ui | stage-complete | implement → test |
+| 2026-10-30T12:15:33Z | 037-accounts-backup-restore-ui | completed | All 3 stages done; app 985, core 236 pass; ≥95% on the realistic fixture, 2,000 vs 5,000 under 2 s; 15/15 planted bugs caught; the emulator restore runs in 038 |
 
 ## Notes
 - Bolt 031: restore() signs the saved user in at once and confirms in the background (gotrue retries ~10 s offline). Avoid postgrest maybeSingle(): it loses server error codes. Expired test sessions need a stand-in access token (expiry is read from the JWT).
@@ -77,3 +81,4 @@ last_updated: 2026-10-29T19:59:26Z
 - Bolt 034: Riverpod 3 pauses unlistened providers; await authUserProvider only where something watches it. If local Google sign-in times out (504 on /token), the auth container may have lost its route to www.googleapis.com: docker restart supabase_auth_zema.
 - Bolt 035: "Another phone's backup" is the cloud's updated_at differing from BackupStatus.syncedAt (kept per user in prefs; removed on delete, kept on sign-out). Dates use MaterialLocalizations: intl has no om/ti date data.
 - Bolt 036: A running app gets the background task's request over IsolateNameServer ('zema.autoBackup'), so one Supabase client refreshes a session per process. Force WorkManager jobs with 'cmd jobscheduler run -f -n androidx.work.systemjobscheduler com.zemaapp.zema <id>'; periodic jobs only run after their period starts (move the clock with cmd alarm set-time).
+- Bolt 037: Drift's insert returns the row ID, not a count: count against existing rows. Settings can't share Drift's transaction, so BackupRestorer applies them after the merge.
