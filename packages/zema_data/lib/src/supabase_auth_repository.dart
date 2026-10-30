@@ -122,6 +122,16 @@ class SupabaseAuthRepository implements AuthRepository {
     await _signedOut();
   }
 
+  @override
+  Future<void> deleteAccount() async {
+    await run(
+      'deleteAccount',
+      (client, _) => client.rpc<void>('delete_account'),
+    );
+    // The server has already ended every session; this clears the phone's.
+    await signOut();
+  }
+
   /// Runs [call] as the signed-in user, after refreshing a session that the
   /// server hasn't confirmed yet. Errors become [ZemaFailure]s:
   /// [AuthFailure] when not signed in or the session is refused.

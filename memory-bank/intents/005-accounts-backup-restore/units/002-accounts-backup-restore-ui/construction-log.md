@@ -53,7 +53,12 @@ last_updated: 2026-10-29T19:59:26Z
 | 2026-10-29T20:21:31Z | 032-accounts-backup-restore-ui | stage-complete | plan → implement |
 | 2026-10-29T20:31:00Z | 032-accounts-backup-restore-ui | stage-complete | implement → test |
 | 2026-10-29T20:51:19Z | 032-accounts-backup-restore-ui | completed | All 3 stages done; app 861 pass; real Google sign-in on the emulator creates the profile; 16/16 planted bugs caught (1 after a new test) |
+| 2026-10-30T08:38:00Z | 033-accounts-backup-restore-ui | started | Stage 1: plan |
+| 2026-10-30T08:40:00Z | 033-accounts-backup-restore-ui | stage-complete | plan → implement |
+| 2026-10-30T08:54:15Z | 033-accounts-backup-restore-ui | stage-complete | implement → test |
+| 2026-10-30T09:32:30Z | 033-accounts-backup-restore-ui | completed | All 3 stages done; app 909, data 52 pass; profile, rename, sign out and delete account checked on the emulator (server rows gone); 19/19 planted bugs caught (2 after new tests) |
 
 ## Notes
 - Bolt 031: restore() signs the saved user in at once and confirms in the background (gotrue retries ~10 s offline). Avoid postgrest maybeSingle(): it loses server error codes. Expired test sessions need a stand-in access token (expiry is read from the JWT).
 - Bolt 032: the Google picker is a seam (FakeGoogleAccountPicker); tests have no picker by default, so S04 stays away. Android reports a SHA-1/package mismatch as a cancel. The iOS URL scheme comes from the gitignored ios/Flutter/Google.local.xcconfig (tool/google_env.sh).
+- Bolt 033: an action that signs out removes S25's Account rows before it returns; look up the ScaffoldMessenger first. After delete (Google disconnect), the next sign-in shows Google's consent screen. Google photo URLs end in =s96-c; the avatar cache asks for =s256-c.

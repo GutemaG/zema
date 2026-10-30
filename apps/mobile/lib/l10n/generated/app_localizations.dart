@@ -2009,6 +2009,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Signed in as {name}'**
   String signInDone(String name);
+
+  /// Home header button that opens Profile (S25).
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get homeProfileTooltip;
+
+  /// Title of the Profile screen (S25).
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// Shown instead of a name on Profile when not signed in.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get profileGuestName;
+
+  /// Heading of the sign-in card on Profile for a guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to do more'**
+  String get profileSignInCardTitle;
+
+  /// Role badge: a signed-in user who can add lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Contributor'**
+  String get profileRoleContributor;
+
+  /// Role badge: a user who reviews contributions.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderator'**
+  String get profileRoleModerator;
+
+  /// Role badge: an administrator.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get profileRoleAdmin;
+
+  /// Profile section holding the link to Settings.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get profileSectionGeneral;
+
+  /// Profile section holding Sign out and Delete account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get profileSectionAccount;
+
+  /// Tooltip of the edit button next to the name, and title of its dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit name'**
+  String get profileEditName;
+
+  /// Label of the name field in the Edit name dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name'**
+  String get profileNameLabel;
+
+  /// Snackbar when the new name can't be saved because the phone is offline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Your name wasn\'t changed.'**
+  String get profileNameOffline;
+
+  /// Snackbar when the server refuses the new name.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save your name. Try again.'**
+  String get profileNameFailed;
+
+  /// Profile row and dialog button that signs out.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get profileSignOut;
+
+  /// Title of the sign-out confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out?'**
+  String get profileSignOutTitle;
+
+  /// Sign-out confirmation text.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songs, playlists and favorites stay on this phone.'**
+  String get profileSignOutMessage;
+
+  /// Snackbar after signing out.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out'**
+  String get profileSignedOut;
+
+  /// Profile row that starts deleting the account.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get profileDeleteAccount;
+
+  /// Title of the first delete-account dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get profileDeleteTitle;
+
+  /// First delete-account dialog: what is deleted and what stays.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes your Zema account, your profile and your cloud backup. Lyrics you contributed stay, without your name.\n\nSongs, playlists and favorites on this phone stay.'**
+  String get profileDeleteMessage;
+
+  /// Button that goes on to the second delete-account dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get profileDeleteContinue;
+
+  /// Title of the second delete-account dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be undone'**
+  String get profileDeleteConfirmTitle;
+
+  /// Second delete-account dialog text.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account and cloud backup will be deleted now, and you\'ll be signed out.'**
+  String get profileDeleteConfirmMessage;
+
+  /// Shown while the account is being deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account…'**
+  String get profileDeleting;
+
+  /// Snackbar after the account is deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted'**
+  String get profileDeleted;
+
+  /// Snackbar when deleting fails because the phone is offline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Your account wasn\'t deleted.'**
+  String get profileDeleteOffline;
+
+  /// Snackbar when the server fails to delete the account.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete your account. Try again later.'**
+  String get profileDeleteFailed;
 }
 
 class _AppLocalizationsDelegate

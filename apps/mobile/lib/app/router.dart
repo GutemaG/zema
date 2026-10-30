@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/account/application/sign_in.dart';
 import '../features/account/presentation/account_choice_screen.dart';
+import '../features/account/presentation/profile_screen.dart';
 import '../features/account/presentation/sign_in_screen.dart';
 import '../features/lyrics/presentation/song_detail_screen.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
@@ -127,6 +128,10 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
         builder: (_, _) => const AccountChoiceScreen(),
       ),
       GoRoute(path: AppRoutes.signIn, builder: (_, _) => const SignInScreen()),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (_, _) => const ProfileScreen(),
+      ),
       GoRoute(
         path: AppRoutes.addSongsPath,
         builder: (_, state) => AddSongsScreen(

@@ -11,6 +11,7 @@ import 'package:zema/app/routes.dart';
 import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/theme/zema_theme.dart';
 import 'package:zema/app/zema_app.dart';
+import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/data/audio_share_service.dart';
@@ -39,7 +40,8 @@ import 'fake_player.dart';
 /// default). Lyrics come from [catalog], by default a fake one serving
 /// [lyricsRepository] (the sample fixtures unless given). Accounts use [auth]
 /// and [profiles], by default a fake where the user is a guest; sign-in (and
-/// so the account choice) is offered only with a [googlePicker]. With [settle]
+/// so the account choice) is offered only with a [googlePicker]; avatars
+/// come from [avatars]. With [settle]
 /// false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
@@ -60,6 +62,7 @@ Future<void> pumpZemaApp(
   AuthRepository? auth,
   ProfileRepository? profiles,
   GoogleAccountPicker? googlePicker,
+  AvatarCache? avatars,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -89,6 +92,7 @@ Future<void> pumpZemaApp(
           auth: auth,
           profiles: profiles,
           picker: googlePicker,
+          avatars: avatars,
           backendConfigured: backendConfigured,
         ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),

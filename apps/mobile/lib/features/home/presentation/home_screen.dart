@@ -9,6 +9,7 @@ import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/tab_page.dart';
+import '../../account/presentation/widgets/profile_button.dart';
 import '../../library/application/library_providers.dart';
 import '../../library/application/library_sync_controller.dart';
 import '../../library/presentation/library_access_gate.dart';
@@ -37,12 +38,7 @@ class HomeScreen extends StatelessWidget {
           constraints: tap,
           onPressed: () => context.go(AppRoutes.search),
         ),
-        IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          tooltip: l10n.homeSettingsTooltip,
-          constraints: tap,
-          onPressed: () => context.push(AppRoutes.settings),
-        ),
+        const ProfileButton(),
       ],
       child: const LibraryAccessGate(child: _HomeBody()),
     );

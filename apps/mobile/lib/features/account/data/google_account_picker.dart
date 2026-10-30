@@ -21,8 +21,13 @@ abstract interface class GoogleAccountPicker {
   /// Google refuses or the picker can't show.
   Future<GoogleTokens?> pick();
 
-  /// Forgets the picked account, so the next [pick] asks again.
+  /// Forgets the picked account, so the next [pick] asks again. Never
+  /// throws: the user is signed out of Zema already.
   Future<void> signOut();
+
+  /// Like [signOut], and also revokes Zema's access to the Google account,
+  /// for a deleted account. Never throws.
+  Future<void> disconnect();
 }
 
 /// [GoogleAccountPicker] over `google_sign_in`: Credential Manager on
@@ -75,6 +80,16 @@ class PluginGoogleAccountPicker implements GoogleAccountPicker {
       await _signIn.signOut();
     } on Object catch (e) {
       _log.warning('Google sign-out failed', e);
+    }
+  }
+
+  @override
+  Future<void> disconnect() async {
+    try {
+      await _initialize();
+      await _signIn.disconnect();
+    } on Object catch (e) {
+      _log.warning('Google disconnect failed', e);
     }
   }
 }

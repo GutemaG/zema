@@ -1171,4 +1171,90 @@ class AppLocalizationsEn extends AppLocalizations {
   String signInDone(String name) {
     return 'Signed in as $name';
   }
+
+  @override
+  String get homeProfileTooltip => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileGuestName => 'Guest';
+
+  @override
+  String get profileSignInCardTitle => 'Sign in to do more';
+
+  @override
+  String get profileRoleContributor => 'Contributor';
+
+  @override
+  String get profileRoleModerator => 'Moderator';
+
+  @override
+  String get profileRoleAdmin => 'Admin';
+
+  @override
+  String get profileSectionGeneral => 'General';
+
+  @override
+  String get profileSectionAccount => 'Account';
+
+  @override
+  String get profileEditName => 'Edit name';
+
+  @override
+  String get profileNameLabel => 'Display name';
+
+  @override
+  String get profileNameOffline => 'No connection. Your name wasn\'t changed.';
+
+  @override
+  String get profileNameFailed => 'Couldn\'t save your name. Try again.';
+
+  @override
+  String get profileSignOut => 'Sign out';
+
+  @override
+  String get profileSignOutTitle => 'Sign out?';
+
+  @override
+  String get profileSignOutMessage =>
+      'Your songs, playlists and favorites stay on this phone.';
+
+  @override
+  String get profileSignedOut => 'Signed out';
+
+  @override
+  String get profileDeleteAccount => 'Delete account';
+
+  @override
+  String get profileDeleteTitle => 'Delete your account?';
+
+  @override
+  String get profileDeleteMessage =>
+      'This deletes your Zema account, your profile and your cloud backup. Lyrics you contributed stay, without your name.\n\nSongs, playlists and favorites on this phone stay.';
+
+  @override
+  String get profileDeleteContinue => 'Continue';
+
+  @override
+  String get profileDeleteConfirmTitle => 'This can\'t be undone';
+
+  @override
+  String get profileDeleteConfirmMessage =>
+      'Your account and cloud backup will be deleted now, and you\'ll be signed out.';
+
+  @override
+  String get profileDeleting => 'Deleting your account…';
+
+  @override
+  String get profileDeleted => 'Account deleted';
+
+  @override
+  String get profileDeleteOffline =>
+      'No connection. Your account wasn\'t deleted.';
+
+  @override
+  String get profileDeleteFailed =>
+      'Couldn\'t delete your account. Try again later.';
 }

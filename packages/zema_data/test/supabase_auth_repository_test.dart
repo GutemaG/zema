@@ -190,6 +190,70 @@ void main() {
     });
   });
 
+  group('deleteAccount', () {
+    test('calls delete_account as the user, then signs out here', () async {
+      answerWith((_) => json(null), saved: jsonEncode(sessionJson()));
+      await auth.restore();
+      await auth.confirmed;
+      requests.clear();
+      final changes = <AuthUser?>[];
+      auth.userChanges.listen(changes.add);
+
+      await auth.deleteAccount();
+      await pumpEventQueue();
+
+      final call = requests.first;
+      expect(call.method, 'POST');
+      expect(call.url.path, '/rest/v1/rpc/delete_account');
+      expect(
+        call.headers['Authorization'],
+        startsWith('Bearer ${accessToken().split('.').first}'),
+      );
+      expect(auth.currentUser, isNull);
+      expect(store.session, isNull);
+      expect(changes, [null]);
+    });
+
+    test('offline: a NetworkFailure, and still signed in', () async {
+      answerWith(
+        (_) => throw http.ClientException('offline'),
+        saved: jsonEncode(sessionJson()),
+      );
+      await auth.restore();
+      await auth.confirmed;
+
+      await expectLater(auth.deleteAccount(), throwsA(isA<NetworkFailure>()));
+      expect(auth.currentUser?.id, userId);
+      expect(store.session, isNotNull);
+    });
+
+    test('a server error is thrown, and still signed in', () async {
+      answerWith((request) {
+        if (request.url.path.endsWith('/delete_account')) {
+          return json({
+            'code': 'XX000',
+            'message': 'internal error',
+            'details': null,
+            'hint': null,
+          }, 500);
+        }
+        return json(sessionJson());
+      }, saved: jsonEncode(sessionJson()));
+      await auth.restore();
+      await auth.confirmed;
+
+      await expectLater(auth.deleteAccount(), throwsA(isA<ZemaFailure>()));
+      expect(auth.currentUser?.id, userId);
+      expect(store.session, isNotNull);
+    });
+
+    test('needs a signed-in user', () async {
+      answerWith((_) => json(null));
+      await expectLater(auth.deleteAccount(), throwsA(isA<AuthFailure>()));
+      expect(requests, isEmpty);
+    });
+  });
+
   group('profiles', () {
     test('need a signed-in user', () async {
       answerWith((_) => json({}));

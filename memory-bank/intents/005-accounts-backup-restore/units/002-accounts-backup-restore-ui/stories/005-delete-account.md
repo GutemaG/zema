@@ -2,11 +2,11 @@
 id: 005-delete-account
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
-status: planned
+status: complete
 priority: must
 created: '2026-10-29T19:05:45Z'
 assigned_bolt: 033-accounts-backup-restore-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 005-delete-account
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Profile, **When** Delete account, **Then** a first dialog names what will be deleted (account, profile, cloud backup) and keeps local data
-- [ ] **Given** the second confirmation, **When** confirmed online, **Then** `delete_account` runs, the phone signs out and Google is disconnected
-- [ ] **Given** offline, **When** tried, **Then** a message shows and nothing changes
-- [ ] **Given** the emulator, **When** checked, **Then** the user's rows are gone on the local backend
+- [x] **Given** Profile, **When** Delete account, **Then** a first dialog names what will be deleted (account, profile, cloud backup) and keeps local data
+- [x] **Given** the second confirmation, **When** confirmed online, **Then** `delete_account` runs, the phone signs out and Google is disconnected
+- [x] **Given** offline, **When** tried, **Then** a message shows and nothing changes
+- [x] **Given** the emulator, **When** checked, **Then** the user's rows are gone on the local backend
 
 ## Technical Notes
 

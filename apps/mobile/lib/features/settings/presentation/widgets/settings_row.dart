@@ -14,6 +14,7 @@ class SettingsRow extends StatelessWidget {
     this.value,
     this.onTap,
     this.trailing,
+    this.labelColor,
   });
 
   static const double minHeight = 56;
@@ -22,6 +23,10 @@ class SettingsRow extends StatelessWidget {
   final String? value;
   final VoidCallback? onTap;
   final Widget? trailing;
+
+  /// The label's color, e.g. the error color for a destructive action;
+  /// `text` by default.
+  final Color? labelColor;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +47,9 @@ class SettingsRow extends StatelessWidget {
                   Expanded(
                     child: Text(
                       label,
-                      style: textTheme.bodyLarge?.copyWith(color: colors.text),
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: labelColor ?? colors.text,
+                      ),
                     ),
                   ),
                   if (value != null) ...[

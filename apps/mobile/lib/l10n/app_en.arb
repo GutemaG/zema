@@ -1532,5 +1532,113 @@
         "example": "Abebe Bikila"
       }
     }
+  },
+  "homeProfileTooltip": "Profile",
+  "@homeProfileTooltip": {
+    "description": "Home header button that opens Profile (S25)."
+  },
+  "profileTitle": "Profile",
+  "@profileTitle": {
+    "description": "Title of the Profile screen (S25)."
+  },
+  "profileGuestName": "Guest",
+  "@profileGuestName": {
+    "description": "Shown instead of a name on Profile when not signed in."
+  },
+  "profileSignInCardTitle": "Sign in to do more",
+  "@profileSignInCardTitle": {
+    "description": "Heading of the sign-in card on Profile for a guest."
+  },
+  "profileRoleContributor": "Contributor",
+  "@profileRoleContributor": {
+    "description": "Role badge: a signed-in user who can add lyrics."
+  },
+  "profileRoleModerator": "Moderator",
+  "@profileRoleModerator": {
+    "description": "Role badge: a user who reviews contributions."
+  },
+  "profileRoleAdmin": "Admin",
+  "@profileRoleAdmin": {
+    "description": "Role badge: an administrator."
+  },
+  "profileSectionGeneral": "General",
+  "@profileSectionGeneral": {
+    "description": "Profile section holding the link to Settings."
+  },
+  "profileSectionAccount": "Account",
+  "@profileSectionAccount": {
+    "description": "Profile section holding Sign out and Delete account."
+  },
+  "profileEditName": "Edit name",
+  "@profileEditName": {
+    "description": "Tooltip of the edit button next to the name, and title of its dialog."
+  },
+  "profileNameLabel": "Display name",
+  "@profileNameLabel": {
+    "description": "Label of the name field in the Edit name dialog."
+  },
+  "profileNameOffline": "No connection. Your name wasn't changed.",
+  "@profileNameOffline": {
+    "description": "Snackbar when the new name can't be saved because the phone is offline."
+  },
+  "profileNameFailed": "Couldn't save your name. Try again.",
+  "@profileNameFailed": {
+    "description": "Snackbar when the server refuses the new name."
+  },
+  "profileSignOut": "Sign out",
+  "@profileSignOut": {
+    "description": "Profile row and dialog button that signs out."
+  },
+  "profileSignOutTitle": "Sign out?",
+  "@profileSignOutTitle": {
+    "description": "Title of the sign-out confirmation."
+  },
+  "profileSignOutMessage": "Your songs, playlists and favorites stay on this phone.",
+  "@profileSignOutMessage": {
+    "description": "Sign-out confirmation text."
+  },
+  "profileSignedOut": "Signed out",
+  "@profileSignedOut": {
+    "description": "Snackbar after signing out."
+  },
+  "profileDeleteAccount": "Delete account",
+  "@profileDeleteAccount": {
+    "description": "Profile row that starts deleting the account."
+  },
+  "profileDeleteTitle": "Delete your account?",
+  "@profileDeleteTitle": {
+    "description": "Title of the first delete-account dialog."
+  },
+  "profileDeleteMessage": "This deletes your Zema account, your profile and your cloud backup. Lyrics you contributed stay, without your name.\n\nSongs, playlists and favorites on this phone stay.",
+  "@profileDeleteMessage": {
+    "description": "First delete-account dialog: what is deleted and what stays."
+  },
+  "profileDeleteContinue": "Continue",
+  "@profileDeleteContinue": {
+    "description": "Button that goes on to the second delete-account dialog."
+  },
+  "profileDeleteConfirmTitle": "This can't be undone",
+  "@profileDeleteConfirmTitle": {
+    "description": "Title of the second delete-account dialog."
+  },
+  "profileDeleteConfirmMessage": "Your account and cloud backup will be deleted now, and you'll be signed out.",
+  "@profileDeleteConfirmMessage": {
+    "description": "Second delete-account dialog text."
+  },
+  "profileDeleting": "Deleting your account…",
+  "@profileDeleting": {
+    "description": "Shown while the account is being deleted."
+  },
+  "profileDeleted": "Account deleted",
+  "@profileDeleted": {
+    "description": "Snackbar after the account is deleted."
+  },
+  "profileDeleteOffline": "No connection. Your account wasn't deleted.",
+  "@profileDeleteOffline": {
+    "description": "Snackbar when deleting fails because the phone is offline."
+  },
+  "profileDeleteFailed": "Couldn't delete your account. Try again later.",
+  "@profileDeleteFailed": {
+    "description": "Snackbar when the server fails to delete the account."
   }
 }

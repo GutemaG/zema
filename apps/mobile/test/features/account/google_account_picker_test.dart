@@ -12,6 +12,10 @@ class _FakePlatform extends GoogleSignInPlatform
   final inits = <InitParameters>[];
   var authenticates = 0;
   var signOuts = 0;
+  var disconnects = 0;
+
+  /// Thrown by disconnect when set.
+  Object? disconnectFailure;
 
   /// Thrown by the next init when set (then cleared).
   Object? initFailure;
@@ -69,7 +73,11 @@ class _FakePlatform extends GoogleSignInPlatform
   ) async => null;
 
   @override
-  Future<void> disconnect(DisconnectParams params) async {}
+  Future<void> disconnect(DisconnectParams params) async {
+    final failure = disconnectFailure;
+    if (failure != null) throw failure;
+    disconnects++;
+  }
 }
 
 void main() {
@@ -185,6 +193,16 @@ void main() {
       platform.initFailure = StateError('no plugin');
       await PluginGoogleAccountPicker(config).signOut();
       expect(platform.signOuts, 0);
+    });
+
+    test('disconnect revokes access, and its errors are swallowed', () async {
+      final picker = PluginGoogleAccountPicker(config);
+      await picker.disconnect();
+      expect(platform.disconnects, 1);
+
+      platform.disconnectFailure = StateError('offline');
+      await picker.disconnect();
+      expect(platform.disconnects, 1);
     });
   });
 }

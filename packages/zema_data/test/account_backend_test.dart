@@ -238,5 +238,23 @@ void main() {
         throwsA(isA<AuthFailure>()),
       );
     });
+
+    test('deleteAccount removes the user and signs out here', () async {
+      final store = MemorySessionStore(await signUp());
+      final saved = store.session!;
+      final auth = connect(store);
+      await auth.restore();
+
+      await auth.deleteAccount();
+
+      expect(auth.currentUser, isNull);
+      expect(store.session, isNull);
+      // Its refresh token went with the user, so the old session can't
+      // come back once its access token expires.
+      final again = connect(MemorySessionStore(expired(saved)));
+      await again.restore();
+      await again.confirmed;
+      expect(again.currentUser, isNull);
+    });
   });
 }

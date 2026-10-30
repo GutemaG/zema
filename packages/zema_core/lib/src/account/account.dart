@@ -124,6 +124,11 @@ abstract interface class AuthRepository {
 
   /// Signs out on this phone. Always ends signed out, even offline.
   Future<void> signOut();
+
+  /// Deletes the signed-in user's account on the server (profile, roles,
+  /// backup and sessions with it), then signs out on this phone. Throws
+  /// when the server can't be reached or refuses, and stays signed in.
+  Future<void> deleteAccount();
 }
 
 /// The signed-in user's profile. Both calls need a signed-in user

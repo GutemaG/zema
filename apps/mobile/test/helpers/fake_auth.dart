@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter_riverpod/misc.dart';
 import 'package:zema/features/account/application/account_providers.dart';
+import 'package:zema/features/account/application/profile.dart';
+import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema_core/zema_core.dart';
 
@@ -47,7 +50,9 @@ class FakeAuthRepository implements AuthRepository {
   @override
   Future<AuthUser?> restore() async {
     restoreCalls++;
-    _set(_saved);
+    // A sign-in before the restore has saved its own session, as the real
+    // store would.
+    if (_user == null) _set(_saved);
     return _user;
   }
 
@@ -70,6 +75,27 @@ class FakeAuthRepository implements AuthRepository {
   @override
   Future<void> signOut() async {
     signOutCalls++;
+    _set(null);
+  }
+
+  /// Thrown by the next [deleteAccount] when set (then cleared).
+  ZemaFailure? deleteFailure;
+
+  /// When set, [deleteAccount] waits for it before answering.
+  Completer<void>? deleteGate;
+
+  var deleteCalls = 0;
+
+  @override
+  Future<void> deleteAccount() async {
+    if (_user == null) throw const AuthFailure('not signed in');
+    deleteCalls++;
+    await deleteGate?.future;
+    final failure = deleteFailure;
+    if (failure != null) {
+      deleteFailure = null;
+      throw failure;
+    }
     _set(null);
   }
 
@@ -131,8 +157,13 @@ class FakeGoogleAccountPicker implements GoogleAccountPicker {
   /// When set, [pick] waits for it before answering.
   Completer<void>? gate;
 
+  /// When set, [signOut] and [disconnect] wait for it, as the plugin
+  /// takes a moment.
+  Completer<void>? signOutGate;
+
   var picks = 0;
   var signOutCalls = 0;
+  var disconnectCalls = 0;
 
   @override
   Future<GoogleTokens?> pick() async {
@@ -147,21 +178,64 @@ class FakeGoogleAccountPicker implements GoogleAccountPicker {
   }
 
   @override
-  Future<void> signOut() async => signOutCalls++;
+  Future<void> signOut() async {
+    signOutCalls++;
+    await signOutGate?.future;
+  }
+
+  @override
+  Future<void> disconnect() async {
+    disconnectCalls++;
+    await signOutGate?.future;
+  }
+}
+
+/// A 1×1 PNG, a stand-in avatar.
+final testAvatar = Uint8List.fromList(const [
+  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, //
+  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, //
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00, //
+  0x0D, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x38, 0x31, 0x41, 0xEB, //
+  0x3F, 0x00, 0x06, 0x28, 0x02, 0x82, 0x73, 0x84, 0x85, 0x06, 0x00, 0x00, //
+  0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82, //
+]);
+
+/// Avatars in memory: every URL gives [image] (null: none to show).
+class FakeAvatarCache implements AvatarCache {
+  Uint8List? image = testAvatar;
+
+  /// The URLs loaded, in order.
+  final loads = <String>[];
+  var clearCalls = 0;
+
+  @override
+  Future<Uint8List?> load(String userId, String url) async {
+    loads.add(url);
+    return image;
+  }
+
+  @override
+  Future<void> clear() async => clearCalls++;
 }
 
 /// Overrides for the account repositories: [auth] (a guest by default) and
-/// [profiles] over it, or none when [backendConfigured] is false. Sign-in is
+/// [profiles] over it, or none when [backendConfigured] is false; avatars
+/// from [avatars], a [FakeAvatarCache] by default. Sign-in is
 /// offered only with a [picker] (none by default, as in a build without
 /// Google client IDs), so the account choice (S04) stays away.
 List<Override> accountOverrides({
   AuthRepository? auth,
   ProfileRepository? profiles,
   GoogleAccountPicker? picker,
+  AvatarCache? avatars,
   bool backendConfigured = true,
 }) {
+  final avatarCache = avatarCacheProvider.overrideWithValue(
+    avatars ?? FakeAvatarCache(),
+  );
   if (!backendConfigured) {
     return [
+      avatarCache,
       authRepositoryProvider.overrideWithValue(null),
       profileRepositoryProvider.overrideWithValue(null),
       googleAccountPickerProvider.overrideWithValue(picker),
@@ -169,6 +243,7 @@ List<Override> accountOverrides({
   }
   final authRepository = auth ?? FakeAuthRepository();
   return [
+    avatarCache,
     googleAccountPickerProvider.overrideWithValue(picker),
     authRepositoryProvider.overrideWithValue(authRepository),
     profileRepositoryProvider.overrideWithValue(

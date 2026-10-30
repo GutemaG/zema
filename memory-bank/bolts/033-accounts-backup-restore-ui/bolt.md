@@ -3,15 +3,24 @@ id: 033-accounts-backup-restore-ui
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 004-profile
   - 005-delete-account
 created: '2026-10-29T19:05:45Z'
-started: null
-completed: null
+started: '2026-10-30T08:38:00Z'
+completed: '2026-10-30T09:32:30Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-30T08:40:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-30T08:54:15Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-30T09:32:30Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 032-accounts-backup-restore-ui
 enables_bolts:
@@ -33,8 +42,8 @@ Profile from a Home avatar, sign out, and delete account.
 
 ## Stories Included
 
-- [ ] **004-profile**: Profile and Home avatar (S25) - Priority: Must
-- [ ] **005-delete-account**: Delete account - Priority: Must
+- [x] **004-profile**: Profile and Home avatar (S25) - Priority: Must
+- [x] **005-delete-account**: Delete account - Priority: Must
 
 ## Bolt Type
 
@@ -43,9 +52,9 @@ Profile from a Home avatar, sign out, and delete account.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -57,9 +66,9 @@ Profile from a Home avatar, sign out, and delete account.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
-- [ ] Key scan clean before commit
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] Key scan clean before commit

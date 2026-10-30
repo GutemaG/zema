@@ -18,6 +18,9 @@ abstract final class AppRoutes {
   /// S24, above everything; it returns to the screen it was opened from.
   static const String signIn = '/sign-in';
 
+  /// S25, above the shell like Settings, which opens from it.
+  static const String profile = '/profile';
+
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 
