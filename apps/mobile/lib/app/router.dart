@@ -6,6 +6,7 @@ import '../features/account/application/sign_in.dart';
 import '../features/account/presentation/account_choice_screen.dart';
 import '../features/account/presentation/backup_screen.dart';
 import '../features/account/presentation/profile_screen.dart';
+import '../features/account/presentation/restore_screen.dart';
 import '../features/account/presentation/sign_in_screen.dart';
 import '../features/lyrics/presentation/song_detail_screen.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
@@ -134,6 +135,10 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
         builder: (_, _) => const ProfileScreen(),
       ),
       GoRoute(path: AppRoutes.backup, builder: (_, _) => const BackupScreen()),
+      GoRoute(
+        path: AppRoutes.restore,
+        builder: (_, _) => const RestoreScreen(),
+      ),
       GoRoute(
         path: AppRoutes.addSongsPath,
         builder: (_, state) => AddSongsScreen(

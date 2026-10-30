@@ -2,11 +2,11 @@
 id: 012-unmatched-entries-kept
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
-status: planned
+status: complete
 priority: should
 created: '2026-10-29T19:05:45Z'
 assigned_bolt: 038-accounts-backup-restore-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 012-unmatched-entries-kept

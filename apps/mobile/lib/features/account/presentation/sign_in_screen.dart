@@ -6,6 +6,7 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../application/restore.dart';
 import '../application/sign_in.dart';
 import 'widgets/account_page.dart';
 
@@ -13,7 +14,8 @@ import 'widgets/account_page.dart';
 ///
 /// Signing in, Continue as guest and back all return to the screen
 /// underneath, or Home when opened from the account choice (S04), with a
-/// "Signed in as" message after a sign-in. A cancelled picker stays here
+/// "Signed in as" message after a sign-in. A sign-in that finds a cloud
+/// backup this phone hasn't seen opens S26 instead. A cancelled picker stays here
 /// with no message; a failure shows a short one.
 class SignInScreen extends ConsumerWidget {
   const SignInScreen({super.key});
@@ -44,6 +46,19 @@ class SignInScreen extends ConsumerWidget {
     Future<void> signIn() async {
       final user = await ref.read(signInProvider.notifier).signIn();
       if (user == null || !context.mounted) return;
+      // A backup this phone hasn't seen: offer it on S26, in S24's place.
+      // S26 shows the account is in use, and a message would cover its
+      // buttons.
+      final offer = await ref.read(restoreToOfferProvider)();
+      if (!context.mounted) return;
+      if (offer) {
+        if (context.canPop()) {
+          context.pushReplacement(AppRoutes.restore);
+        } else {
+          context.go(AppRoutes.restore);
+        }
+        return;
+      }
       // Nothing else shows the user yet, so say who signed in.
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()

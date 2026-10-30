@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-// Schema version 1. Every change after release needs a new schema version and
+// Schema version 7. Every change after release needs a new schema version and
 // a migration step: run `dart run drift_dev make-migrations` from apps/mobile.
 
 /// Local audio files Zema has seen. Rows are never deleted by a scan: a file
@@ -165,4 +165,32 @@ class QueuedReports extends Table {
   TextColumn get reason => text()();
   TextColumn get note => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
+}
+
+/// Backed-up entries whose song wasn't on this phone at restore. Kept so
+/// the next backup still holds them, and added once a scan finds the song.
+/// Cleared on sign-out and account deletion.
+@DataClassName('UnmatchedEntryRow')
+class UnmatchedEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// [BackupEntryKind.name].
+  TextColumn get kind => text()();
+
+  // The song's identity (see TrackIdentity).
+  TextColumn get title => text()();
+  TextColumn get artist => text().nullable()();
+  TextColumn get album => text().nullable()();
+  IntColumn get durationMs => integer()();
+  TextColumn get fileName => text()();
+
+  /// A favorite's date.
+  DateTimeColumn get addedAt => dateTime().nullable()();
+
+  /// A playlist entry's playlist name and place.
+  TextColumn get playlist => text().nullable()();
+  IntColumn get position => integer().nullable()();
+
+  /// A lyrics choice's song; null is "no lyrics".
+  TextColumn get songId => text().nullable()();
 }

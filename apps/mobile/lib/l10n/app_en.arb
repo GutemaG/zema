@@ -1757,5 +1757,146 @@
   "backupReplace": "Replace",
   "@backupReplace": {
     "description": "Confirms replacing the cloud backup."
+  },
+  "restoreTitle": "Restore",
+  "@restoreTitle": {
+    "description": "Title of the Restore screen (S26)."
+  },
+  "restoreLoading": "Looking for your backup…",
+  "@restoreLoading": {
+    "description": "Shown while the cloud backup downloads."
+  },
+  "restoreFound": "We found your backup from {date}: {favorites}, {playlists}, settings.",
+  "@restoreFound": {
+    "description": "What the cloud backup holds. {favorites} and {playlists} are restoreCountFavorites and restoreCountPlaylists.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "favorites": {
+        "type": "String"
+      },
+      "playlists": {
+        "type": "String"
+      }
+    }
+  },
+  "restoreCountFavorites": "{count, plural, =1{1 favorite} other{{count} favorites}}",
+  "@restoreCountFavorites": {
+    "description": "Number of favorites in a backup.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreCountPlaylists": "{count, plural, =1{1 playlist} other{{count} playlists}}",
+  "@restoreCountPlaylists": {
+    "description": "Number of playlists in a backup.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreMergeNote": "Restoring adds them to what's on this phone, and replaces your settings. Nothing here is removed.",
+  "@restoreMergeNote": {
+    "description": "How a restore merges."
+  },
+  "restoreAction": "Restore",
+  "@restoreAction": {
+    "description": "Button that restores the backup."
+  },
+  "restoreStartFresh": "Start fresh",
+  "@restoreStartFresh": {
+    "description": "Button that leaves the backup in the cloud and changes nothing on this phone."
+  },
+  "restoreStartFreshNote": "Start fresh keeps your backup in the cloud and changes nothing here.",
+  "@restoreStartFreshNote": {
+    "description": "Explains Start fresh."
+  },
+  "restoreNone": "There's no backup for this account yet.",
+  "@restoreNone": {
+    "description": "Shown when the account has no cloud backup."
+  },
+  "restoreOffline": "No connection. Try again when you're online.",
+  "@restoreOffline": {
+    "description": "Shown when the backup can't be downloaded offline."
+  },
+  "restoreFailed": "Couldn't restore your backup. Try again later.",
+  "@restoreFailed": {
+    "description": "Shown when the backup can't be read or restored."
+  },
+  "restoreNewer": "This backup was made by a newer version of Zema. Update the app to restore it.",
+  "@restoreNewer": {
+    "description": "Shown when the backup's format is newer than this app."
+  },
+  "restoreRetry": "Try again",
+  "@restoreRetry": {
+    "description": "Retries loading the backup."
+  },
+  "restoreWaitingForScan": "Finding the songs on this phone…",
+  "@restoreWaitingForScan": {
+    "description": "Shown while the library is scanned before a restore."
+  },
+  "restoreRunning": "Restoring…",
+  "@restoreRunning": {
+    "description": "Shown while a backup is merged."
+  },
+  "restoreDoneTitle": "Restored",
+  "@restoreDoneTitle": {
+    "description": "Heading after a restore."
+  },
+  "restoreDoneFavorites": "{count, plural, =1{1 favorite added} other{{count} favorites added}}",
+  "@restoreDoneFavorites": {
+    "description": "Restore summary line.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDonePlaylists": "{count, plural, =1{1 song added to playlists} other{{count} songs added to playlists}}",
+  "@restoreDonePlaylists": {
+    "description": "Restore summary line.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneChoices": "{count, plural, =1{1 lyrics choice added} other{{count} lyrics choices added}}",
+  "@restoreDoneChoices": {
+    "description": "Restore summary line.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneSettings": "Settings restored",
+  "@restoreDoneSettings": {
+    "description": "Restore summary line."
+  },
+  "restoreNotFoundTitle": "{count, plural, =1{1 song isn't on this phone} other{{count} songs aren't on this phone}}",
+  "@restoreNotFoundTitle": {
+    "description": "Heading of the songs a restore couldn't find.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotFoundNote": "They're kept, and added as soon as they show up on this phone.",
+  "@restoreNotFoundNote": {
+    "description": "Explains what happens to songs not found."
+  },
+  "restoreDone": "Done",
+  "@restoreDone": {
+    "description": "Closes the Restore screen after a restore."
+  },
+  "backupRestore": "Restore from backup",
+  "@backupRestore": {
+    "description": "Backup & sync row opening the Restore screen."
   }
 }

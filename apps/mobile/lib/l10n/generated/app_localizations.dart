@@ -2327,6 +2327,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Replace'**
   String get backupReplace;
+
+  /// Title of the Restore screen (S26).
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreTitle;
+
+  /// Shown while the cloud backup downloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for your backup…'**
+  String get restoreLoading;
+
+  /// What the cloud backup holds. {favorites} and {playlists} are restoreCountFavorites and restoreCountPlaylists.
+  ///
+  /// In en, this message translates to:
+  /// **'We found your backup from {date}: {favorites}, {playlists}, settings.'**
+  String restoreFound(String date, String favorites, String playlists);
+
+  /// Number of favorites in a backup.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 favorite} other{{count} favorites}}'**
+  String restoreCountFavorites(int count);
+
+  /// Number of playlists in a backup.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 playlist} other{{count} playlists}}'**
+  String restoreCountPlaylists(int count);
+
+  /// How a restore merges.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring adds them to what\'s on this phone, and replaces your settings. Nothing here is removed.'**
+  String get restoreMergeNote;
+
+  /// Button that restores the backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreAction;
+
+  /// Button that leaves the backup in the cloud and changes nothing on this phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh'**
+  String get restoreStartFresh;
+
+  /// Explains Start fresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh keeps your backup in the cloud and changes nothing here.'**
+  String get restoreStartFreshNote;
+
+  /// Shown when the account has no cloud backup.
+  ///
+  /// In en, this message translates to:
+  /// **'There\'s no backup for this account yet.'**
+  String get restoreNone;
+
+  /// Shown when the backup can't be downloaded offline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Try again when you\'re online.'**
+  String get restoreOffline;
+
+  /// Shown when the backup can't be read or restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t restore your backup. Try again later.'**
+  String get restoreFailed;
+
+  /// Shown when the backup's format is newer than this app.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup was made by a newer version of Zema. Update the app to restore it.'**
+  String get restoreNewer;
+
+  /// Retries loading the backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get restoreRetry;
+
+  /// Shown while the library is scanned before a restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the songs on this phone…'**
+  String get restoreWaitingForScan;
+
+  /// Shown while a backup is merged.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring…'**
+  String get restoreRunning;
+
+  /// Heading after a restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored'**
+  String get restoreDoneTitle;
+
+  /// Restore summary line.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 favorite added} other{{count} favorites added}}'**
+  String restoreDoneFavorites(int count);
+
+  /// Restore summary line.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song added to playlists} other{{count} songs added to playlists}}'**
+  String restoreDonePlaylists(int count);
+
+  /// Restore summary line.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 lyrics choice added} other{{count} lyrics choices added}}'**
+  String restoreDoneChoices(int count);
+
+  /// Restore summary line.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings restored'**
+  String get restoreDoneSettings;
+
+  /// Heading of the songs a restore couldn't find.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song isn\'t on this phone} other{{count} songs aren\'t on this phone}}'**
+  String restoreNotFoundTitle(int count);
+
+  /// Explains what happens to songs not found.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re kept, and added as soon as they show up on this phone.'**
+  String get restoreNotFoundNote;
+
+  /// Closes the Restore screen after a restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get restoreDone;
+
+  /// Backup & sync row opening the Restore screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from backup'**
+  String get backupRestore;
 }
 
 class _AppLocalizationsDelegate

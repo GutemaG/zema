@@ -8,6 +8,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../app/database/database_provider.dart';
 import '../../../app/preferences_provider.dart';
 import '../data/avatar_cache.dart';
 import '../data/profile_cache.dart';
@@ -160,6 +161,8 @@ class AccountActionsController extends Notifier<AccountAction?> {
 
   Future<void> _forget(String? userId) async {
     if (userId != null) await ref.read(profileCacheProvider).remove(userId);
+    // Songs not found at restore belong to that account's backup.
+    await ref.read(databaseProvider).unmatchedDao.clear();
     try {
       await ref.read(avatarCacheProvider).clear();
     } on Object catch (e) {

@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/app/preferences_provider.dart';
 import 'package:zema/features/account/application/profile.dart';
 import 'package:zema/features/account/data/profile_cache.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../helpers/fake_auth.dart';
+import '../../helpers/fake_library.dart';
 
 void main() {
   late FakeAuthRepository auth;
@@ -37,6 +39,7 @@ void main() {
     container = ProviderContainer(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
+        databaseProvider.overrideWithValue(memoryDatabase()),
         ...accountOverrides(
           auth: auth,
           profiles: profiles,

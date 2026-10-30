@@ -4,7 +4,7 @@ intent: 005-accounts-backup-restore
 unit_type: frontend
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: stories-defined
+status: complete
 created: '2026-10-29T19:05:45Z'
 updated: '2026-10-29T19:05:45Z'
 ---

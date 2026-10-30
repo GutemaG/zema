@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/backup_dao.dart';
+import '../../../app/database/unmatched_dao.dart';
 import '../../../app/database/zema_database.dart';
 import '../../../app/theme/zema_palette.dart';
 import '../../settings/data/app_settings.dart';
@@ -10,38 +11,98 @@ import '../../settings/data/app_settings.dart';
 /// data the user made, never audio, play history, the queue, cached lyrics
 /// or any path but a file name. Dates are in UTC, as the document stores
 /// them.
+///
+/// Entries kept from a restore whose songs aren't on this phone ([_unmatched])
+/// go back in too, so a backup from this phone doesn't lose them: a playlist
+/// entry at its old place in its playlist, if the playlist is still here.
 class BackupBuilder {
-  BackupBuilder(this._dao);
+  BackupBuilder(this._dao, this._unmatched);
 
   final BackupDao _dao;
+  final UnmatchedDao _unmatched;
 
   Future<BackupDocument> build(AppSettings settings, {DateTime? now}) async {
     final rows = await _dao.read();
+    final kept = await _unmatched.all();
+    List<UnmatchedEntry> keptOf(BackupEntryKind kind) => [
+      for (final e in kept)
+        if (e.kind == kind) e,
+    ];
+
+    final favorites = [
+      for (final (:track, :addedAt) in rows.favorites)
+        BackupFavorite(track: identityOf(track), addedAt: addedAt.toUtc()),
+    ];
+    final favorite = {for (final f in favorites) f.track};
+    for (final e in keptOf(BackupEntryKind.favorite)) {
+      if (favorite.add(e.track)) {
+        favorites.add(BackupFavorite(track: e.track, addedAt: e.addedAt!));
+      }
+    }
+
+    final keptInPlaylists = keptOf(BackupEntryKind.playlist)
+      ..sort((a, b) => a.position!.compareTo(b.position!));
+    final playlists = [
+      for (final (:playlist, :tracks) in rows.playlists)
+        BackupPlaylist(
+          name: playlist.name,
+          description: playlist.description,
+          createdAt: playlist.createdAt.toUtc(),
+          tracks: _withKept(
+            [for (final track in tracks) identityOf(track)],
+            [
+              for (final e in keptInPlaylists)
+                if (playlistNameKey(e.playlist!) == playlist.nameKey) e,
+            ],
+          ),
+        ),
+    ];
+
+    final lyricsChoices = [
+      for (final (:track, :songId) in rows.manualLinks)
+        BackupLyricsChoice(track: identityOf(track), songId: songId),
+    ];
+    final chosen = {for (final c in lyricsChoices) c.track};
+    for (final e in keptOf(BackupEntryKind.lyricsChoice)) {
+      if (chosen.add(e.track)) {
+        lyricsChoices.add(BackupLyricsChoice(track: e.track, songId: e.songId));
+      }
+    }
+
+    final hiddenTracks = [
+      for (final track in rows.hiddenTracks) identityOf(track),
+    ];
+    final hidden = hiddenTracks.toSet();
+    for (final e in keptOf(BackupEntryKind.hiddenTrack)) {
+      if (hidden.add(e.track)) hiddenTracks.add(e.track);
+    }
+
     return BackupDocument(
       createdAt: (now ?? DateTime.now()).toUtc(),
-      favorites: [
-        for (final (:track, :addedAt) in rows.favorites)
-          BackupFavorite(track: identityOf(track), addedAt: addedAt.toUtc()),
-      ],
-      playlists: [
-        for (final (:playlist, :tracks) in rows.playlists)
-          BackupPlaylist(
-            name: playlist.name,
-            description: playlist.description,
-            createdAt: playlist.createdAt.toUtc(),
-            tracks: [for (final track in tracks) identityOf(track)],
-          ),
-      ],
-      lyricsChoices: [
-        for (final (:track, :songId) in rows.manualLinks)
-          BackupLyricsChoice(track: identityOf(track), songId: songId),
-      ],
+      favorites: favorites,
+      playlists: playlists,
+      lyricsChoices: lyricsChoices,
       hiddenFolders: [
         for (final folder in rows.hiddenFolders) storageRelativePath(folder),
       ],
-      hiddenTracks: [for (final track in rows.hiddenTracks) identityOf(track)],
+      hiddenTracks: hiddenTracks,
       settings: backupSettings(settings),
     );
+  }
+
+  /// [tracks] with [kept] songs put back at their old places (in order of
+  /// position, clamped to the end).
+  static List<TrackIdentity> _withKept(
+    List<TrackIdentity> tracks,
+    List<UnmatchedEntry> kept,
+  ) {
+    final present = tracks.toSet();
+    final result = [...tracks];
+    for (final e in kept) {
+      if (!present.add(e.track)) continue;
+      result.insert(e.position!.clamp(0, result.length), e.track);
+    }
+    return result;
   }
 }
 
@@ -113,4 +174,4 @@ AppSettings settingsFromBackup(
 
 /// The builder over [database].
 BackupBuilder backupBuilderOf(ZemaDatabase database) =>
-    BackupBuilder(database.backupDao);
+    BackupBuilder(database.backupDao, database.unmatchedDao);

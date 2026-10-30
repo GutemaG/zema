@@ -24,6 +24,10 @@ abstract final class AppRoutes {
   /// S25b, above the shell; opened from Settings and Profile.
   static const String backup = '/backup';
 
+  /// S26, above everything: after a sign-in that found a backup, or from
+  /// S25b. It returns to the screen it was opened from.
+  static const String restore = '/restore';
+
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 

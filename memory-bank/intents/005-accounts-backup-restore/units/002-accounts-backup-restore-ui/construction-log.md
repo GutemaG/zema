@@ -39,7 +39,7 @@ last_updated: 2026-10-29T19:59:26Z
 | 035-accounts-backup-restore-ui | 008 | ✅ completed | - |
 | 036-accounts-backup-restore-ui | 009 | ✅ completed | - |
 | 037-accounts-backup-restore-ui | 010 | ✅ completed | - |
-| 038-accounts-backup-restore-ui | 011, 012 | planned | - |
+| 038-accounts-backup-restore-ui | 011, 012 | ✅ completed | - |
 
 ## Execution History
 
@@ -73,6 +73,10 @@ last_updated: 2026-10-29T19:59:26Z
 | 2026-10-30T12:10:00Z | 037-accounts-backup-restore-ui | stage-complete | plan → implement |
 | 2026-10-30T12:13:00Z | 037-accounts-backup-restore-ui | stage-complete | implement → test |
 | 2026-10-30T12:15:33Z | 037-accounts-backup-restore-ui | completed | All 3 stages done; app 985, core 236 pass; ≥95% on the realistic fixture, 2,000 vs 5,000 under 2 s; 15/15 planted bugs caught; the emulator restore runs in 038 |
+| 2026-10-30T12:17:00Z | 038-accounts-backup-restore-ui | started | Stage 1: plan |
+| 2026-10-30T12:18:00Z | 038-accounts-backup-restore-ui | stage-complete | plan → implement |
+| 2026-10-30T12:35:00Z | 038-accounts-backup-restore-ui | stage-complete | implement → test |
+| 2026-10-30T12:58:04Z | 038-accounts-backup-restore-ui | completed | All 3 stages done; app 1,018, core 236, data 58 pass; S26 opened after sign-in on the emulator; the end-to-end restore check was skipped at the owner's request; 15/15 planted bugs caught (2 after fixes) |
 
 ## Notes
 - Bolt 031: restore() signs the saved user in at once and confirms in the background (gotrue retries ~10 s offline). Avoid postgrest maybeSingle(): it loses server error codes. Expired test sessions need a stand-in access token (expiry is read from the JWT).
@@ -82,3 +86,4 @@ last_updated: 2026-10-29T19:59:26Z
 - Bolt 035: "Another phone's backup" is the cloud's updated_at differing from BackupStatus.syncedAt (kept per user in prefs; removed on delete, kept on sign-out). Dates use MaterialLocalizations: intl has no om/ti date data.
 - Bolt 036: A running app gets the background task's request over IsolateNameServer ('zema.autoBackup'), so one Supabase client refreshes a session per process. Force WorkManager jobs with 'cmd jobscheduler run -f -n androidx.work.systemjobscheduler com.zemaapp.zema <id>'; periodic jobs only run after their period starts (move the clock with cmd alarm set-time).
 - Bolt 037: Drift's insert returns the row ID, not a count: count against existing rows. Settings can't share Drift's transaction, so BackupRestorer applies them after the merge.
+- Bolt 038: in widget tests, pumpZemaApp resets mock prefs, so pass saved state through savedPrefs. S26 replaces S24 and skips the 'Signed in as' snackbar, which covered its buttons.

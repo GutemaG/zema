@@ -13,6 +13,7 @@ import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v5.dart' as v5;
 import 'generated/schema_v6.dart' as v6;
+import 'generated/schema_v7.dart' as v7;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -243,6 +244,44 @@ void main() {
       );
     },
   );
+
+  test('migration from v6 to v7 keeps the library and starts with no '
+      'unmatched entries', () async {
+    const track = v6.TracksData(
+      id: 1,
+      mediaStoreId: 11,
+      uri: 'content://media/11',
+      path: '/storage/emulated/0/Music/Tizita.mp3',
+      folder: '/storage/emulated/0/Music',
+      title: 'Tizita',
+      durationMs: 241000,
+      sizeBytes: 1000,
+      dateAdded: '2026-10-01T00:00:00.000Z',
+      missing: 0,
+    );
+    const favorite = v6.FavoritesData(
+      trackId: 1,
+      addedAt: '2026-10-02T00:00:00.000Z',
+    );
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 6,
+      newVersion: 7,
+      createOld: v6.DatabaseAtV6.new,
+      createNew: v7.DatabaseAtV7.new,
+      openTestedDatabase: ZemaDatabase.new,
+      createItems: (batch, oldDb) {
+        batch
+          ..insert(oldDb.tracks, track)
+          ..insert(oldDb.favorites, favorite);
+      },
+      validateItems: (newDb) async {
+        expect((await newDb.select(newDb.tracks).get()).single.title, 'Tizita');
+        expect(await newDb.select(newDb.favorites).get(), hasLength(1));
+        expect(await newDb.select(newDb.unmatchedEntries).get(), isEmpty);
+      },
+    );
+  });
 }
 
 const _v3Track = v3.TracksData(

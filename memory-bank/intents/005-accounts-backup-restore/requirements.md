@@ -1,9 +1,9 @@
 ---
 intent: 005-accounts-backup-restore
 phase: inception
-status: units-defined
-created: 2026-10-23T22:16:40Z
-updated: 2026-10-29T16:20:00Z
+status: complete
+created: '2026-10-23T22:16:40Z'
+updated: '2026-10-29T16:20:00Z'
 ---
 
 # Requirements: Accounts, Backup and Restore

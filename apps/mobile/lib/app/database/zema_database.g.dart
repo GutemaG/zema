@@ -3995,6 +3995,659 @@ class QueuedReportsCompanion extends UpdateCompanion<QueuedReportRow> {
   }
 }
 
+class $UnmatchedEntriesTable extends UnmatchedEntries
+    with TableInfo<$UnmatchedEntriesTable, UnmatchedEntryRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UnmatchedEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _artistMeta = const VerificationMeta('artist');
+  @override
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+    'artist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _albumMeta = const VerificationMeta('album');
+  @override
+  late final GeneratedColumn<String> album = GeneratedColumn<String>(
+    'album',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationMsMeta = const VerificationMeta(
+    'durationMs',
+  );
+  @override
+  late final GeneratedColumn<int> durationMs = GeneratedColumn<int>(
+    'duration_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileNameMeta = const VerificationMeta(
+    'fileName',
+  );
+  @override
+  late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
+    'file_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _addedAtMeta = const VerificationMeta(
+    'addedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> addedAt = GeneratedColumn<DateTime>(
+    'added_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _playlistMeta = const VerificationMeta(
+    'playlist',
+  );
+  @override
+  late final GeneratedColumn<String> playlist = GeneratedColumn<String>(
+    'playlist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    kind,
+    title,
+    artist,
+    album,
+    durationMs,
+    fileName,
+    addedAt,
+    playlist,
+    position,
+    songId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'unmatched_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UnmatchedEntryRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('artist')) {
+      context.handle(
+        _artistMeta,
+        artist.isAcceptableOrUnknown(data['artist']!, _artistMeta),
+      );
+    }
+    if (data.containsKey('album')) {
+      context.handle(
+        _albumMeta,
+        album.isAcceptableOrUnknown(data['album']!, _albumMeta),
+      );
+    }
+    if (data.containsKey('duration_ms')) {
+      context.handle(
+        _durationMsMeta,
+        durationMs.isAcceptableOrUnknown(data['duration_ms']!, _durationMsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_durationMsMeta);
+    }
+    if (data.containsKey('file_name')) {
+      context.handle(
+        _fileNameMeta,
+        fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileNameMeta);
+    }
+    if (data.containsKey('added_at')) {
+      context.handle(
+        _addedAtMeta,
+        addedAt.isAcceptableOrUnknown(data['added_at']!, _addedAtMeta),
+      );
+    }
+    if (data.containsKey('playlist')) {
+      context.handle(
+        _playlistMeta,
+        playlist.isAcceptableOrUnknown(data['playlist']!, _playlistMeta),
+      );
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UnmatchedEntryRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UnmatchedEntryRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      artist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}artist'],
+      ),
+      album: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}album'],
+      ),
+      durationMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_ms'],
+      )!,
+      fileName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_name'],
+      )!,
+      addedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}added_at'],
+      ),
+      playlist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}playlist'],
+      ),
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      ),
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      ),
+    );
+  }
+
+  @override
+  $UnmatchedEntriesTable createAlias(String alias) {
+    return $UnmatchedEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class UnmatchedEntryRow extends DataClass
+    implements Insertable<UnmatchedEntryRow> {
+  final int id;
+
+  /// [BackupEntryKind.name].
+  final String kind;
+  final String title;
+  final String? artist;
+  final String? album;
+  final int durationMs;
+  final String fileName;
+
+  /// A favorite's date.
+  final DateTime? addedAt;
+
+  /// A playlist entry's playlist name and place.
+  final String? playlist;
+  final int? position;
+
+  /// A lyrics choice's song; null is "no lyrics".
+  final String? songId;
+  const UnmatchedEntryRow({
+    required this.id,
+    required this.kind,
+    required this.title,
+    this.artist,
+    this.album,
+    required this.durationMs,
+    required this.fileName,
+    this.addedAt,
+    this.playlist,
+    this.position,
+    this.songId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['kind'] = Variable<String>(kind);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
+    if (!nullToAbsent || album != null) {
+      map['album'] = Variable<String>(album);
+    }
+    map['duration_ms'] = Variable<int>(durationMs);
+    map['file_name'] = Variable<String>(fileName);
+    if (!nullToAbsent || addedAt != null) {
+      map['added_at'] = Variable<DateTime>(addedAt);
+    }
+    if (!nullToAbsent || playlist != null) {
+      map['playlist'] = Variable<String>(playlist);
+    }
+    if (!nullToAbsent || position != null) {
+      map['position'] = Variable<int>(position);
+    }
+    if (!nullToAbsent || songId != null) {
+      map['song_id'] = Variable<String>(songId);
+    }
+    return map;
+  }
+
+  UnmatchedEntriesCompanion toCompanion(bool nullToAbsent) {
+    return UnmatchedEntriesCompanion(
+      id: Value(id),
+      kind: Value(kind),
+      title: Value(title),
+      artist: artist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(artist),
+      album: album == null && nullToAbsent
+          ? const Value.absent()
+          : Value(album),
+      durationMs: Value(durationMs),
+      fileName: Value(fileName),
+      addedAt: addedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(addedAt),
+      playlist: playlist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(playlist),
+      position: position == null && nullToAbsent
+          ? const Value.absent()
+          : Value(position),
+      songId: songId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(songId),
+    );
+  }
+
+  factory UnmatchedEntryRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UnmatchedEntryRow(
+      id: serializer.fromJson<int>(json['id']),
+      kind: serializer.fromJson<String>(json['kind']),
+      title: serializer.fromJson<String>(json['title']),
+      artist: serializer.fromJson<String?>(json['artist']),
+      album: serializer.fromJson<String?>(json['album']),
+      durationMs: serializer.fromJson<int>(json['durationMs']),
+      fileName: serializer.fromJson<String>(json['fileName']),
+      addedAt: serializer.fromJson<DateTime?>(json['addedAt']),
+      playlist: serializer.fromJson<String?>(json['playlist']),
+      position: serializer.fromJson<int?>(json['position']),
+      songId: serializer.fromJson<String?>(json['songId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'kind': serializer.toJson<String>(kind),
+      'title': serializer.toJson<String>(title),
+      'artist': serializer.toJson<String?>(artist),
+      'album': serializer.toJson<String?>(album),
+      'durationMs': serializer.toJson<int>(durationMs),
+      'fileName': serializer.toJson<String>(fileName),
+      'addedAt': serializer.toJson<DateTime?>(addedAt),
+      'playlist': serializer.toJson<String?>(playlist),
+      'position': serializer.toJson<int?>(position),
+      'songId': serializer.toJson<String?>(songId),
+    };
+  }
+
+  UnmatchedEntryRow copyWith({
+    int? id,
+    String? kind,
+    String? title,
+    Value<String?> artist = const Value.absent(),
+    Value<String?> album = const Value.absent(),
+    int? durationMs,
+    String? fileName,
+    Value<DateTime?> addedAt = const Value.absent(),
+    Value<String?> playlist = const Value.absent(),
+    Value<int?> position = const Value.absent(),
+    Value<String?> songId = const Value.absent(),
+  }) => UnmatchedEntryRow(
+    id: id ?? this.id,
+    kind: kind ?? this.kind,
+    title: title ?? this.title,
+    artist: artist.present ? artist.value : this.artist,
+    album: album.present ? album.value : this.album,
+    durationMs: durationMs ?? this.durationMs,
+    fileName: fileName ?? this.fileName,
+    addedAt: addedAt.present ? addedAt.value : this.addedAt,
+    playlist: playlist.present ? playlist.value : this.playlist,
+    position: position.present ? position.value : this.position,
+    songId: songId.present ? songId.value : this.songId,
+  );
+  UnmatchedEntryRow copyWithCompanion(UnmatchedEntriesCompanion data) {
+    return UnmatchedEntryRow(
+      id: data.id.present ? data.id.value : this.id,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      title: data.title.present ? data.title.value : this.title,
+      artist: data.artist.present ? data.artist.value : this.artist,
+      album: data.album.present ? data.album.value : this.album,
+      durationMs: data.durationMs.present
+          ? data.durationMs.value
+          : this.durationMs,
+      fileName: data.fileName.present ? data.fileName.value : this.fileName,
+      addedAt: data.addedAt.present ? data.addedAt.value : this.addedAt,
+      playlist: data.playlist.present ? data.playlist.value : this.playlist,
+      position: data.position.present ? data.position.value : this.position,
+      songId: data.songId.present ? data.songId.value : this.songId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnmatchedEntryRow(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('durationMs: $durationMs, ')
+          ..write('fileName: $fileName, ')
+          ..write('addedAt: $addedAt, ')
+          ..write('playlist: $playlist, ')
+          ..write('position: $position, ')
+          ..write('songId: $songId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    kind,
+    title,
+    artist,
+    album,
+    durationMs,
+    fileName,
+    addedAt,
+    playlist,
+    position,
+    songId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UnmatchedEntryRow &&
+          other.id == this.id &&
+          other.kind == this.kind &&
+          other.title == this.title &&
+          other.artist == this.artist &&
+          other.album == this.album &&
+          other.durationMs == this.durationMs &&
+          other.fileName == this.fileName &&
+          other.addedAt == this.addedAt &&
+          other.playlist == this.playlist &&
+          other.position == this.position &&
+          other.songId == this.songId);
+}
+
+class UnmatchedEntriesCompanion extends UpdateCompanion<UnmatchedEntryRow> {
+  final Value<int> id;
+  final Value<String> kind;
+  final Value<String> title;
+  final Value<String?> artist;
+  final Value<String?> album;
+  final Value<int> durationMs;
+  final Value<String> fileName;
+  final Value<DateTime?> addedAt;
+  final Value<String?> playlist;
+  final Value<int?> position;
+  final Value<String?> songId;
+  const UnmatchedEntriesCompanion({
+    this.id = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    this.durationMs = const Value.absent(),
+    this.fileName = const Value.absent(),
+    this.addedAt = const Value.absent(),
+    this.playlist = const Value.absent(),
+    this.position = const Value.absent(),
+    this.songId = const Value.absent(),
+  });
+  UnmatchedEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String kind,
+    required String title,
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    required int durationMs,
+    required String fileName,
+    this.addedAt = const Value.absent(),
+    this.playlist = const Value.absent(),
+    this.position = const Value.absent(),
+    this.songId = const Value.absent(),
+  }) : kind = Value(kind),
+       title = Value(title),
+       durationMs = Value(durationMs),
+       fileName = Value(fileName);
+  static Insertable<UnmatchedEntryRow> custom({
+    Expression<int>? id,
+    Expression<String>? kind,
+    Expression<String>? title,
+    Expression<String>? artist,
+    Expression<String>? album,
+    Expression<int>? durationMs,
+    Expression<String>? fileName,
+    Expression<DateTime>? addedAt,
+    Expression<String>? playlist,
+    Expression<int>? position,
+    Expression<String>? songId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (kind != null) 'kind': kind,
+      if (title != null) 'title': title,
+      if (artist != null) 'artist': artist,
+      if (album != null) 'album': album,
+      if (durationMs != null) 'duration_ms': durationMs,
+      if (fileName != null) 'file_name': fileName,
+      if (addedAt != null) 'added_at': addedAt,
+      if (playlist != null) 'playlist': playlist,
+      if (position != null) 'position': position,
+      if (songId != null) 'song_id': songId,
+    });
+  }
+
+  UnmatchedEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? kind,
+    Value<String>? title,
+    Value<String?>? artist,
+    Value<String?>? album,
+    Value<int>? durationMs,
+    Value<String>? fileName,
+    Value<DateTime?>? addedAt,
+    Value<String?>? playlist,
+    Value<int?>? position,
+    Value<String?>? songId,
+  }) {
+    return UnmatchedEntriesCompanion(
+      id: id ?? this.id,
+      kind: kind ?? this.kind,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      album: album ?? this.album,
+      durationMs: durationMs ?? this.durationMs,
+      fileName: fileName ?? this.fileName,
+      addedAt: addedAt ?? this.addedAt,
+      playlist: playlist ?? this.playlist,
+      position: position ?? this.position,
+      songId: songId ?? this.songId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
+    if (album.present) {
+      map['album'] = Variable<String>(album.value);
+    }
+    if (durationMs.present) {
+      map['duration_ms'] = Variable<int>(durationMs.value);
+    }
+    if (fileName.present) {
+      map['file_name'] = Variable<String>(fileName.value);
+    }
+    if (addedAt.present) {
+      map['added_at'] = Variable<DateTime>(addedAt.value);
+    }
+    if (playlist.present) {
+      map['playlist'] = Variable<String>(playlist.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnmatchedEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('durationMs: $durationMs, ')
+          ..write('fileName: $fileName, ')
+          ..write('addedAt: $addedAt, ')
+          ..write('playlist: $playlist, ')
+          ..write('position: $position, ')
+          ..write('songId: $songId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -4011,6 +4664,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $CatalogSongsTable catalogSongs = $CatalogSongsTable(this);
   late final $CachedSongsTable cachedSongs = $CachedSongsTable(this);
   late final $QueuedReportsTable queuedReports = $QueuedReportsTable(this);
+  late final $UnmatchedEntriesTable unmatchedEntries = $UnmatchedEntriesTable(
+    this,
+  );
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -4042,6 +4698,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final ReportsDao reportsDao = ReportsDao(this as ZemaDatabase);
   late final BackupDao backupDao = BackupDao(this as ZemaDatabase);
   late final RestoreDao restoreDao = RestoreDao(this as ZemaDatabase);
+  late final UnmatchedDao unmatchedDao = UnmatchedDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4058,6 +4715,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     catalogSongs,
     cachedSongs,
     queuedReports,
+    unmatchedEntries,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -7587,6 +8245,335 @@ typedef $$QueuedReportsTableProcessedTableManager =
       QueuedReportRow,
       PrefetchHooks Function()
     >;
+typedef $$UnmatchedEntriesTableCreateCompanionBuilder =
+    UnmatchedEntriesCompanion Function({
+      Value<int> id,
+      required String kind,
+      required String title,
+      Value<String?> artist,
+      Value<String?> album,
+      required int durationMs,
+      required String fileName,
+      Value<DateTime?> addedAt,
+      Value<String?> playlist,
+      Value<int?> position,
+      Value<String?> songId,
+    });
+typedef $$UnmatchedEntriesTableUpdateCompanionBuilder =
+    UnmatchedEntriesCompanion Function({
+      Value<int> id,
+      Value<String> kind,
+      Value<String> title,
+      Value<String?> artist,
+      Value<String?> album,
+      Value<int> durationMs,
+      Value<String> fileName,
+      Value<DateTime?> addedAt,
+      Value<String?> playlist,
+      Value<int?> position,
+      Value<String?> songId,
+    });
+
+class $$UnmatchedEntriesTableFilterComposer
+    extends Composer<_$ZemaDatabase, $UnmatchedEntriesTable> {
+  $$UnmatchedEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get artist => $composableBuilder(
+    column: $table.artist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get album => $composableBuilder(
+    column: $table.album,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationMs => $composableBuilder(
+    column: $table.durationMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get addedAt => $composableBuilder(
+    column: $table.addedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get playlist => $composableBuilder(
+    column: $table.playlist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UnmatchedEntriesTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $UnmatchedEntriesTable> {
+  $$UnmatchedEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get artist => $composableBuilder(
+    column: $table.artist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get album => $composableBuilder(
+    column: $table.album,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationMs => $composableBuilder(
+    column: $table.durationMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get addedAt => $composableBuilder(
+    column: $table.addedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get playlist => $composableBuilder(
+    column: $table.playlist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UnmatchedEntriesTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $UnmatchedEntriesTable> {
+  $$UnmatchedEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get artist =>
+      $composableBuilder(column: $table.artist, builder: (column) => column);
+
+  GeneratedColumn<String> get album =>
+      $composableBuilder(column: $table.album, builder: (column) => column);
+
+  GeneratedColumn<int> get durationMs => $composableBuilder(
+    column: $table.durationMs,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fileName =>
+      $composableBuilder(column: $table.fileName, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get addedAt =>
+      $composableBuilder(column: $table.addedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get playlist =>
+      $composableBuilder(column: $table.playlist, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+}
+
+class $$UnmatchedEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $UnmatchedEntriesTable,
+          UnmatchedEntryRow,
+          $$UnmatchedEntriesTableFilterComposer,
+          $$UnmatchedEntriesTableOrderingComposer,
+          $$UnmatchedEntriesTableAnnotationComposer,
+          $$UnmatchedEntriesTableCreateCompanionBuilder,
+          $$UnmatchedEntriesTableUpdateCompanionBuilder,
+          (
+            UnmatchedEntryRow,
+            BaseReferences<
+              _$ZemaDatabase,
+              $UnmatchedEntriesTable,
+              UnmatchedEntryRow
+            >,
+          ),
+          UnmatchedEntryRow,
+          PrefetchHooks Function()
+        > {
+  $$UnmatchedEntriesTableTableManager(
+    _$ZemaDatabase db,
+    $UnmatchedEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UnmatchedEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UnmatchedEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UnmatchedEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> artist = const Value.absent(),
+                Value<String?> album = const Value.absent(),
+                Value<int> durationMs = const Value.absent(),
+                Value<String> fileName = const Value.absent(),
+                Value<DateTime?> addedAt = const Value.absent(),
+                Value<String?> playlist = const Value.absent(),
+                Value<int?> position = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+              }) => UnmatchedEntriesCompanion(
+                id: id,
+                kind: kind,
+                title: title,
+                artist: artist,
+                album: album,
+                durationMs: durationMs,
+                fileName: fileName,
+                addedAt: addedAt,
+                playlist: playlist,
+                position: position,
+                songId: songId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String kind,
+                required String title,
+                Value<String?> artist = const Value.absent(),
+                Value<String?> album = const Value.absent(),
+                required int durationMs,
+                required String fileName,
+                Value<DateTime?> addedAt = const Value.absent(),
+                Value<String?> playlist = const Value.absent(),
+                Value<int?> position = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+              }) => UnmatchedEntriesCompanion.insert(
+                id: id,
+                kind: kind,
+                title: title,
+                artist: artist,
+                album: album,
+                durationMs: durationMs,
+                fileName: fileName,
+                addedAt: addedAt,
+                playlist: playlist,
+                position: position,
+                songId: songId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$UnmatchedEntriesTable, UnmatchedEntryRow>(table),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $UnmatchedEntriesTable,
+                    UnmatchedEntryRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UnmatchedEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $UnmatchedEntriesTable,
+      UnmatchedEntryRow,
+      $$UnmatchedEntriesTableFilterComposer,
+      $$UnmatchedEntriesTableOrderingComposer,
+      $$UnmatchedEntriesTableAnnotationComposer,
+      $$UnmatchedEntriesTableCreateCompanionBuilder,
+      $$UnmatchedEntriesTableUpdateCompanionBuilder,
+      (
+        UnmatchedEntryRow,
+        BaseReferences<
+          _$ZemaDatabase,
+          $UnmatchedEntriesTable,
+          UnmatchedEntryRow
+        >,
+      ),
+      UnmatchedEntryRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -7613,4 +8600,6 @@ class $ZemaDatabaseManager {
       $$CachedSongsTableTableManager(_db, _db.cachedSongs);
   $$QueuedReportsTableTableManager get queuedReports =>
       $$QueuedReportsTableTableManager(_db, _db.queuedReports);
+  $$UnmatchedEntriesTableTableManager get unmatchedEntries =>
+      $$UnmatchedEntriesTableTableManager(_db, _db.unmatchedEntries);
 }

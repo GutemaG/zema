@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app/routes.dart';
 
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
@@ -13,7 +16,8 @@ import '../application/backup_service.dart';
 import '../data/backup_status.dart';
 
 /// S25b: Backup & sync, opened from Settings → Account & backup and from
-/// Profile. The last backup and any error, Back up now and Auto backup,
+/// Profile. The last backup and any error, Back up now, Restore (S26) and
+/// Auto backup,
 /// then what a backup holds and leaves out.
 class BackupScreen extends ConsumerWidget {
   const BackupScreen({super.key});
@@ -155,6 +159,10 @@ class _StatusGroup extends ConsumerWidget {
                   ),
                 )
               : null,
+        ),
+        SettingsRow(
+          label: l10n.backupRestore,
+          onTap: running ? null : () => context.push(AppRoutes.restore),
         ),
         SettingsRow(
           label: l10n.backupAuto,

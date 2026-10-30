@@ -1343,4 +1343,133 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupReplace => 'Replace';
+
+  @override
+  String get restoreTitle => 'Restore';
+
+  @override
+  String get restoreLoading => 'Looking for your backup…';
+
+  @override
+  String restoreFound(String date, String favorites, String playlists) {
+    return 'We found your backup from $date: $favorites, $playlists, settings.';
+  }
+
+  @override
+  String restoreCountFavorites(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count favorites',
+      one: '1 favorite',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String restoreCountPlaylists(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count playlists',
+      one: '1 playlist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreMergeNote =>
+      'Restoring adds them to what\'s on this phone, and replaces your settings. Nothing here is removed.';
+
+  @override
+  String get restoreAction => 'Restore';
+
+  @override
+  String get restoreStartFresh => 'Start fresh';
+
+  @override
+  String get restoreStartFreshNote =>
+      'Start fresh keeps your backup in the cloud and changes nothing here.';
+
+  @override
+  String get restoreNone => 'There\'s no backup for this account yet.';
+
+  @override
+  String get restoreOffline => 'No connection. Try again when you\'re online.';
+
+  @override
+  String get restoreFailed => 'Couldn\'t restore your backup. Try again later.';
+
+  @override
+  String get restoreNewer =>
+      'This backup was made by a newer version of Zema. Update the app to restore it.';
+
+  @override
+  String get restoreRetry => 'Try again';
+
+  @override
+  String get restoreWaitingForScan => 'Finding the songs on this phone…';
+
+  @override
+  String get restoreRunning => 'Restoring…';
+
+  @override
+  String get restoreDoneTitle => 'Restored';
+
+  @override
+  String restoreDoneFavorites(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count favorites added',
+      one: '1 favorite added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String restoreDonePlaylists(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs added to playlists',
+      one: '1 song added to playlists',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String restoreDoneChoices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lyrics choices added',
+      one: '1 lyrics choice added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreDoneSettings => 'Settings restored';
+
+  @override
+  String restoreNotFoundTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs aren\'t on this phone',
+      one: '1 song isn\'t on this phone',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreNotFoundNote =>
+      'They\'re kept, and added as soon as they show up on this phone.';
+
+  @override
+  String get restoreDone => 'Done';
+
+  @override
+  String get backupRestore => 'Restore from backup';
 }
