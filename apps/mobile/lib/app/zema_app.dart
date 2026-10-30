@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../features/account/application/auto_backup.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'l10n/fallback_localizations.dart';
 import 'l10n/language_providers.dart';
@@ -15,6 +16,8 @@ class ZemaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final palette = ref.watch(paletteProvider);
+    // Backs up when due while the app is open.
+    ref.watch(autoBackupProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,

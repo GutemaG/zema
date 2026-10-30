@@ -46,7 +46,8 @@ import 'fake_player.dart';
 /// [lyricsRepository] (the sample fixtures unless given). Accounts use [auth]
 /// and [profiles], by default a fake where the user is a guest; sign-in (and
 /// so the account choice) is offered only with a [googlePicker]; avatars
-/// come from [avatars] and the cloud backup from [backups]. With [settle]
+/// come from [avatars] and the cloud backup from [backups]; the phone is on Wi-Fi only when
+/// [onWifi] says so. With [settle]
 /// false only the first frame is pumped.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
@@ -69,6 +70,7 @@ Future<void> pumpZemaApp(
   GoogleAccountPicker? googlePicker,
   AvatarCache? avatars,
   BackupRepository? backups,
+  bool Function()? onWifi,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -100,6 +102,7 @@ Future<void> pumpZemaApp(
           picker: googlePicker,
           avatars: avatars,
           backups: backups,
+          onWifi: onWifi,
           backendConfigured: backendConfigured,
         ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),

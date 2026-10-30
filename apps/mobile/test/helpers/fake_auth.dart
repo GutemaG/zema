@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/misc.dart';
 import 'package:zema/features/account/application/account_providers.dart';
+import 'package:zema/features/account/application/auto_backup.dart';
 import 'package:zema/features/account/application/profile.dart';
 import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
@@ -278,14 +279,20 @@ List<Override> accountOverrides({
   GoogleAccountPicker? picker,
   AvatarCache? avatars,
   BackupRepository? backups,
+  bool Function()? onWifi,
   bool backendConfigured = true,
 }) {
   final avatarCache = avatarCacheProvider.overrideWithValue(
     avatars ?? FakeAvatarCache(),
   );
+  // Off Wi-Fi by default, so auto backup stays out of other tests.
+  final network = unmeteredNetworkProvider.overrideWithValue(
+    () async => onWifi?.call() ?? false,
+  );
   if (!backendConfigured) {
     return [
       avatarCache,
+      network,
       authRepositoryProvider.overrideWithValue(null),
       profileRepositoryProvider.overrideWithValue(null),
       backupRepositoryProvider.overrideWithValue(null),
@@ -295,6 +302,7 @@ List<Override> accountOverrides({
   final authRepository = auth ?? FakeAuthRepository();
   return [
     avatarCache,
+    network,
     googleAccountPickerProvider.overrideWithValue(picker),
     authRepositoryProvider.overrideWithValue(authRepository),
     profileRepositoryProvider.overrideWithValue(

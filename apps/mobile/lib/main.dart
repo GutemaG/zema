@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:logging/logging.dart';
 import 'app/l10n/app_language.dart';
 import 'app/licenses.dart';
 import 'app/zema_app.dart';
+import 'features/account/application/auto_backup_task.dart';
 import 'features/player/application/player_providers.dart';
 import 'features/player/data/audio_backend.dart';
 import 'features/player/data/zema_audio_handler.dart';
@@ -34,6 +37,7 @@ Future<void> main() async {
       child: const ZemaApp(),
     ),
   );
+  unawaited(scheduleAutoBackup());
 }
 
 /// Starts the background playback service. The notification channel is
