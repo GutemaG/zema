@@ -1680,5 +1680,82 @@
   "backupNotIncluded": "Your audio files, play history and downloaded lyrics. On a new phone, songs are found again by their title, artist, length and file name.",
   "@backupNotIncluded": {
     "description": "What a backup leaves out, and how songs are found again."
+  },
+  "backupSectionStatus": "Backup",
+  "@backupSectionStatus": {
+    "description": "Backup & sync section with the last backup, Back up now and Auto backup."
+  },
+  "backupLast": "Last backup",
+  "@backupLast": {
+    "description": "Label of the row showing when the last backup was made."
+  },
+  "backupNever": "Never",
+  "@backupNever": {
+    "description": "Last backup value when there has been none."
+  },
+  "backupLastAt": "{date}, {time}",
+  "@backupLastAt": {
+    "description": "When the last backup was made, e.g. 'Oct 30, 2026, 2:15 PM'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "backupNow": "Back up now",
+  "@backupNow": {
+    "description": "Row that uploads a backup at once."
+  },
+  "backupAuto": "Auto backup",
+  "@backupAuto": {
+    "description": "Switch for the daily automatic backup."
+  },
+  "backupAutoNote": "Daily on Wi-Fi",
+  "@backupAutoNote": {
+    "description": "When auto backup runs, shown beside its switch."
+  },
+  "backupErrorOffline": "The last backup failed: no connection.",
+  "@backupErrorOffline": {
+    "description": "Shown under the last backup time when it failed offline."
+  },
+  "backupErrorFailed": "The last backup failed. Try again later.",
+  "@backupErrorFailed": {
+    "description": "Shown under the last backup time when the server failed."
+  },
+  "backupErrorOther": "The cloud has a backup from another phone. Back up now to replace it.",
+  "@backupErrorOther": {
+    "description": "Shown when auto backup stopped because the cloud backup came from elsewhere."
+  },
+  "backupDone": "Backed up",
+  "@backupDone": {
+    "description": "Message after Back up now succeeds."
+  },
+  "backupOffline": "No connection. Your backup wasn't changed.",
+  "@backupOffline": {
+    "description": "Message when Back up now fails offline."
+  },
+  "backupFailed": "Backup failed. Your backup wasn't changed.",
+  "@backupFailed": {
+    "description": "Message when Back up now fails on the server."
+  },
+  "backupReplaceTitle": "Replace the cloud backup?",
+  "@backupReplaceTitle": {
+    "description": "Title of the warning before replacing a backup made elsewhere."
+  },
+  "backupReplaceMessage": "The backup from {date} was made on another phone, or kept when you started fresh. Backing up now replaces it with this phone's library.",
+  "@backupReplaceMessage": {
+    "description": "Warning before replacing a backup this phone didn't make.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "backupReplace": "Replace",
+  "@backupReplace": {
+    "description": "Confirms replacing the cloud backup."
   }
 }

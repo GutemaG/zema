@@ -12,6 +12,7 @@ import '../../../app/preferences_provider.dart';
 import '../data/avatar_cache.dart';
 import '../data/profile_cache.dart';
 import 'account_providers.dart';
+import 'backup.dart';
 
 final _log = Logger('account.profile');
 
@@ -138,6 +139,11 @@ class AccountActionsController extends Notifier<AccountAction?> {
       rethrow;
     }
     await ref.read(googleAccountPickerProvider)?.disconnect();
+    // The backup went with the account. On sign-out the status stays, so
+    // signing in again knows the cloud backup is this phone's.
+    if (userId != null) {
+      await ref.read(backupStatusStoreProvider).remove(userId);
+    }
     await _forget(userId);
   });
 

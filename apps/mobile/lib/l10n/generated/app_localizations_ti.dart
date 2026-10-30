@@ -1290,4 +1290,57 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get backupNotIncluded =>
       'Your audio files, play history and downloaded lyrics. On a new phone, songs are found again by their title, artist, length and file name.';
+
+  @override
+  String get backupSectionStatus => 'Backup';
+
+  @override
+  String get backupLast => 'Last backup';
+
+  @override
+  String get backupNever => 'Never';
+
+  @override
+  String backupLastAt(String date, String time) {
+    return '$date, $time';
+  }
+
+  @override
+  String get backupNow => 'Back up now';
+
+  @override
+  String get backupAuto => 'Auto backup';
+
+  @override
+  String get backupAutoNote => 'Daily on Wi-Fi';
+
+  @override
+  String get backupErrorOffline => 'The last backup failed: no connection.';
+
+  @override
+  String get backupErrorFailed => 'The last backup failed. Try again later.';
+
+  @override
+  String get backupErrorOther =>
+      'The cloud has a backup from another phone. Back up now to replace it.';
+
+  @override
+  String get backupDone => 'Backed up';
+
+  @override
+  String get backupOffline => 'No connection. Your backup wasn\'t changed.';
+
+  @override
+  String get backupFailed => 'Backup failed. Your backup wasn\'t changed.';
+
+  @override
+  String get backupReplaceTitle => 'Replace the cloud backup?';
+
+  @override
+  String backupReplaceMessage(String date) {
+    return 'The backup from $date was made on another phone, or kept when you started fresh. Backing up now replaces it with this phone\'s library.';
+  }
+
+  @override
+  String get backupReplace => 'Replace';
 }

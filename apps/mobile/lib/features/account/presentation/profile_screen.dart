@@ -15,11 +15,10 @@ import 'widgets/account_page.dart';
 import 'widgets/rename_dialog.dart';
 
 /// S25: the signed-in user's avatar, name (editable) and role, with
-/// Settings, Sign out and Delete account; for a guest, a sign-in card and
-/// Settings.
+/// Backup & sync, Settings, Sign out and Delete account; for a guest, a
+/// sign-in card and Settings.
 ///
-/// Backup & sync joins in bolt 035; stats and My contributions in intent
-/// 006.
+/// Stats and My contributions join in intent 006.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -54,6 +53,11 @@ class ProfileScreen extends ConsumerWidget {
                 SettingsGroup(
                   title: l10n.profileSectionGeneral,
                   children: [
+                    if (profile != null)
+                      SettingsRow(
+                        label: l10n.backupTitle,
+                        onTap: () => context.push(AppRoutes.backup),
+                      ),
                     SettingsRow(
                       label: l10n.settingsTitle,
                       onTap: () => context.push(AppRoutes.settings),

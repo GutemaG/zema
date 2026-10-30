@@ -2231,6 +2231,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your audio files, play history and downloaded lyrics. On a new phone, songs are found again by their title, artist, length and file name.'**
   String get backupNotIncluded;
+
+  /// Backup & sync section with the last backup, Back up now and Auto backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupSectionStatus;
+
+  /// Label of the row showing when the last backup was made.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup'**
+  String get backupLast;
+
+  /// Last backup value when there has been none.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get backupNever;
+
+  /// When the last backup was made, e.g. 'Oct 30, 2026, 2:15 PM'.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}, {time}'**
+  String backupLastAt(String date, String time);
+
+  /// Row that uploads a backup at once.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get backupNow;
+
+  /// Switch for the daily automatic backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto backup'**
+  String get backupAuto;
+
+  /// When auto backup runs, shown beside its switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily on Wi-Fi'**
+  String get backupAutoNote;
+
+  /// Shown under the last backup time when it failed offline.
+  ///
+  /// In en, this message translates to:
+  /// **'The last backup failed: no connection.'**
+  String get backupErrorOffline;
+
+  /// Shown under the last backup time when the server failed.
+  ///
+  /// In en, this message translates to:
+  /// **'The last backup failed. Try again later.'**
+  String get backupErrorFailed;
+
+  /// Shown when auto backup stopped because the cloud backup came from elsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'The cloud has a backup from another phone. Back up now to replace it.'**
+  String get backupErrorOther;
+
+  /// Message after Back up now succeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up'**
+  String get backupDone;
+
+  /// Message when Back up now fails offline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Your backup wasn\'t changed.'**
+  String get backupOffline;
+
+  /// Message when Back up now fails on the server.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed. Your backup wasn\'t changed.'**
+  String get backupFailed;
+
+  /// Title of the warning before replacing a backup made elsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace the cloud backup?'**
+  String get backupReplaceTitle;
+
+  /// Warning before replacing a backup this phone didn't make.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup from {date} was made on another phone, or kept when you started fresh. Backing up now replaces it with this phone\'s library.'**
+  String backupReplaceMessage(String date);
+
+  /// Confirms replacing the cloud backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get backupReplace;
 }
 
 class _AppLocalizationsDelegate

@@ -257,4 +257,131 @@ void main() {
       expect(again.currentUser, isNull);
     });
   });
+
+  group('backups on the local backend', skip: skip, () {
+    final document = BackupDocument(
+      createdAt: DateTime.utc(2026, 10, 30, 12),
+      favorites: [
+        BackupFavorite(
+          track: const TrackIdentity(
+            title: 'Tizita',
+            artist: 'Mahmoud Ahmed',
+            durationMs: 241000,
+            fileName: 'Tizita.mp3',
+          ),
+          addedAt: DateTime.utc(2026, 1, 2),
+        ),
+      ],
+      settings: const {'themeMode': 'dark'},
+      extras: const {
+        'futureSection': [1, 2],
+      },
+    );
+
+    test('none at first; save, then read it back exactly', () async {
+      final auth = connect(MemorySessionStore(await signUp()));
+      await auth.restore();
+      final backups = SupabaseBackupRepository(auth);
+
+      expect(await backups.savedAt(), isNull);
+      expect(await backups.fetch(), isNull);
+
+      final before = DateTime.now().toUtc().subtract(
+        const Duration(minutes: 1),
+      );
+      final savedAt = await backups.save(document);
+      expect(savedAt.isUtc, isTrue);
+      expect(savedAt.isAfter(before), isTrue);
+      expect(await backups.savedAt(), savedAt);
+
+      final stored = await backups.fetch();
+      expect(stored!.savedAt, savedAt);
+      expect(stored.document, document);
+
+      await deleteAccount(auth);
+    });
+
+    test('a save replaces the previous backup', () async {
+      final auth = connect(MemorySessionStore(await signUp()));
+      await auth.restore();
+      final backups = SupabaseBackupRepository(auth);
+
+      final first = await backups.save(document);
+      final second = await backups.save(
+        BackupDocument(createdAt: DateTime.utc(2026, 11)),
+      );
+      expect(second.isAfter(first), isTrue);
+      final stored = await backups.fetch();
+      expect(stored!.document.favorites, isEmpty);
+      expect(stored.document.createdAt, DateTime.utc(2026, 11));
+
+      await deleteAccount(auth);
+    });
+
+    test("users can't read each other's backups", () async {
+      final alice = connect(MemorySessionStore(await signUp()));
+      final bob = connect(MemorySessionStore(await signUp()));
+      await alice.restore();
+      await bob.restore();
+      await SupabaseBackupRepository(alice).save(document);
+
+      expect(await SupabaseBackupRepository(bob).fetch(), isNull);
+
+      await deleteAccount(alice);
+      await deleteAccount(bob);
+    });
+
+    test('a backup from a newer app says so', () async {
+      final auth = connect(MemorySessionStore(await signUp()));
+      await auth.restore();
+      await auth.run(
+        'save newer',
+        (client, _) => client.rpc<Object?>(
+          'save_backup',
+          params: {
+            'document': {'format': 2, 'createdAt': '2027-01-01T00:00:00Z'},
+            'format': 2,
+          },
+        ),
+      );
+
+      await expectLater(
+        SupabaseBackupRepository(auth).fetch(),
+        throwsA(
+          isA<BackupFormatFailure>().having(
+            (f) => f.newerFormat,
+            'newerFormat',
+            isTrue,
+          ),
+        ),
+      );
+
+      await deleteAccount(auth);
+    });
+
+    test('offline: NetworkFailure', () async {
+      final store = MemorySessionStore(await signUp());
+      final auth = connect(store);
+      await auth.restore();
+      final offline = connect(
+        MemorySessionStore(await store.read()),
+        url: 'http://127.0.0.1:9',
+        timeout: const Duration(seconds: 2),
+      );
+      await offline.restore();
+
+      await expectLater(
+        SupabaseBackupRepository(offline).save(document),
+        throwsA(isA<NetworkFailure>()),
+      );
+
+      await deleteAccount(auth);
+    });
+
+    test('a guest gets AuthFailure', () async {
+      final backups = SupabaseBackupRepository(connect(MemorySessionStore()));
+      await expectLater(backups.savedAt(), throwsA(isA<AuthFailure>()));
+      await expectLater(backups.save(document), throwsA(isA<AuthFailure>()));
+    });
+  });
 }

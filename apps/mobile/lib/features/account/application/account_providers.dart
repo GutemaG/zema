@@ -42,6 +42,13 @@ final profileRepositoryProvider = Provider<ProfileRepository?>((ref) {
   return auth == null ? null : SupabaseProfileRepository(auth);
 });
 
+/// The signed-in user's backup, or null when the build has no backend.
+/// Tests override it.
+final backupRepositoryProvider = Provider<BackupRepository?>((ref) {
+  final auth = ref.watch(_supabaseAuthProvider);
+  return auth == null ? null : SupabaseBackupRepository(auth);
+});
+
 /// Whether this build offers accounts at all.
 final accountsAvailableProvider = Provider<bool>(
   (ref) => ref.watch(authRepositoryProvider) != null,

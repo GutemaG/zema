@@ -5,6 +5,7 @@ library;
 
 export 'src/account/account.dart';
 export 'src/backup/backup_document.dart';
+export 'src/backup/backup_repository.dart';
 export 'src/backup/track_identity.dart';
 export 'src/catalog/catalog.dart';
 export 'src/failures.dart';

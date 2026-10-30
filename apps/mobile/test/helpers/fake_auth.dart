@@ -223,11 +223,61 @@ class FakeAvatarCache implements AvatarCache {
 /// from [avatars], a [FakeAvatarCache] by default. Sign-in is
 /// offered only with a [picker] (none by default, as in a build without
 /// Google client IDs), so the account choice (S04) stays away.
+/// The user's one cloud backup, in memory.
+class FakeBackupRepository implements BackupRepository {
+  FakeBackupRepository({this.stored});
+
+  StoredBackup? stored;
+
+  /// Thrown by the next call when set (then cleared).
+  ZemaFailure? failure;
+
+  /// When set, [save] waits for it before saving.
+  Completer<void>? saveGate;
+
+  /// Every document saved, in order.
+  final saves = <BackupDocument>[];
+  var fetches = 0;
+
+  /// The server's clock: each save is a second after the last.
+  DateTime clock = DateTime.utc(2026, 10, 30, 12);
+
+  void _fail() {
+    final f = failure;
+    failure = null;
+    if (f != null) throw f;
+  }
+
+  @override
+  Future<DateTime?> savedAt() async {
+    _fail();
+    return stored?.savedAt;
+  }
+
+  @override
+  Future<StoredBackup?> fetch() async {
+    _fail();
+    fetches++;
+    return stored;
+  }
+
+  @override
+  Future<DateTime> save(BackupDocument document) async {
+    _fail();
+    await saveGate?.future;
+    clock = clock.add(const Duration(seconds: 1));
+    saves.add(document);
+    stored = StoredBackup(document: document, savedAt: clock);
+    return clock;
+  }
+}
+
 List<Override> accountOverrides({
   AuthRepository? auth,
   ProfileRepository? profiles,
   GoogleAccountPicker? picker,
   AvatarCache? avatars,
+  BackupRepository? backups,
   bool backendConfigured = true,
 }) {
   final avatarCache = avatarCacheProvider.overrideWithValue(
@@ -238,6 +288,7 @@ List<Override> accountOverrides({
       avatarCache,
       authRepositoryProvider.overrideWithValue(null),
       profileRepositoryProvider.overrideWithValue(null),
+      backupRepositoryProvider.overrideWithValue(null),
       googleAccountPickerProvider.overrideWithValue(picker),
     ];
   }
@@ -248,6 +299,9 @@ List<Override> accountOverrides({
     authRepositoryProvider.overrideWithValue(authRepository),
     profileRepositoryProvider.overrideWithValue(
       profiles ?? FakeProfileRepository(authRepository),
+    ),
+    backupRepositoryProvider.overrideWithValue(
+      backups ?? FakeBackupRepository(),
     ),
   ];
 }

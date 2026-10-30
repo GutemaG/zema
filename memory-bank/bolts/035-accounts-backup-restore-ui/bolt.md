@@ -3,14 +3,23 @@ id: 035-accounts-backup-restore-ui
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 008-backup-now
 created: '2026-10-29T19:05:45Z'
-started: null
-completed: null
+started: '2026-10-30T11:28:00Z'
+completed: '2026-10-30T11:41:30Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-10-30T11:29:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-30T11:33:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-30T11:41:30Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 034-accounts-backup-restore-ui
 enables_bolts:
@@ -32,7 +41,7 @@ Backup & sync screen with Back up now.
 
 ## Stories Included
 
-- [ ] **008-backup-now**: Back up now (S25b) - Priority: Must
+- [x] **008-backup-now**: Back up now (S25b) - Priority: Must
 
 ## Bolt Type
 
@@ -41,9 +50,9 @@ Backup & sync screen with Back up now.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -55,9 +64,9 @@ Backup & sync screen with Back up now.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
-- [ ] Key scan clean before commit
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator (app bolts) or against the local backend (backend bolts)
+- [x] Key scan clean before commit

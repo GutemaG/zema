@@ -36,7 +36,7 @@ last_updated: 2026-10-29T19:59:26Z
 | 032-accounts-backup-restore-ui | 002, 003 | ✅ completed | - |
 | 033-accounts-backup-restore-ui | 004, 005 | ✅ completed | - |
 | 034-accounts-backup-restore-ui | 006, 007 | ✅ completed | - |
-| 035-accounts-backup-restore-ui | 008 | planned | - |
+| 035-accounts-backup-restore-ui | 008 | ✅ completed | - |
 | 036-accounts-backup-restore-ui | 009 | planned | - |
 | 037-accounts-backup-restore-ui | 010 | planned | - |
 | 038-accounts-backup-restore-ui | 011, 012 | planned | - |
@@ -61,9 +61,14 @@ last_updated: 2026-10-29T19:59:26Z
 | 2026-10-30T10:10:00Z | 034-accounts-backup-restore-ui | stage-complete | plan → implement |
 | 2026-10-30T10:45:00Z | 034-accounts-backup-restore-ui | stage-complete | implement → test |
 | 2026-10-30T11:26:44Z | 034-accounts-backup-restore-ui | completed | All 3 stages done; app 928, core 223 pass; C09 and Account & backup checked on the emulator; 15/15 planted bugs caught |
+| 2026-10-30T11:28:00Z | 035-accounts-backup-restore-ui | started | Stage 1: plan |
+| 2026-10-30T11:29:00Z | 035-accounts-backup-restore-ui | stage-complete | plan → implement |
+| 2026-10-30T11:33:00Z | 035-accounts-backup-restore-ui | stage-complete | implement → test |
+| 2026-10-30T11:41:30Z | 035-accounts-backup-restore-ui | completed | All 3 stages done; app 956, data 58 pass; Back up now, the other-phone warning and offline checked on the emulator (server row matches); 16/16 planted bugs caught (2 after a new test) |
 
 ## Notes
 - Bolt 031: restore() signs the saved user in at once and confirms in the background (gotrue retries ~10 s offline). Avoid postgrest maybeSingle(): it loses server error codes. Expired test sessions need a stand-in access token (expiry is read from the JWT).
 - Bolt 032: the Google picker is a seam (FakeGoogleAccountPicker); tests have no picker by default, so S04 stays away. Android reports a SHA-1/package mismatch as a cancel. The iOS URL scheme comes from the gitignored ios/Flutter/Google.local.xcconfig (tool/google_env.sh).
 - Bolt 033: an action that signs out removes S25's Account rows before it returns; look up the ScaffoldMessenger first. After delete (Google disconnect), the next sign-in shows Google's consent screen. Google photo URLs end in =s96-c; the avatar cache asks for =s256-c.
 - Bolt 034: Riverpod 3 pauses unlistened providers; await authUserProvider only where something watches it. If local Google sign-in times out (504 on /token), the auth container may have lost its route to www.googleapis.com: docker restart supabase_auth_zema.
+- Bolt 035: "Another phone's backup" is the cloud's updated_at differing from BackupStatus.syncedAt (kept per user in prefs; removed on delete, kept on sign-out). Dates use MaterialLocalizations: intl has no om/ti date data.
