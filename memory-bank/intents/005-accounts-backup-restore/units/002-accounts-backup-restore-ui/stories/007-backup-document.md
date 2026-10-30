@@ -2,11 +2,11 @@
 id: 007-backup-document
 unit: 002-accounts-backup-restore-ui
 intent: 005-accounts-backup-restore
-status: planned
+status: complete
 priority: must
 created: '2026-10-29T19:05:45Z'
 assigned_bolt: 034-accounts-backup-restore-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 007-backup-document

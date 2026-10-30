@@ -69,3 +69,16 @@ final class AuthFailure extends ZemaFailure {
 final class ValidationFailure extends ZemaFailure {
   const ValidationFailure(super.message, {super.cause});
 }
+
+/// A backup document that can't be read: malformed, or written by a newer
+/// app ([newerFormat]; the user should update the app).
+final class BackupFormatFailure extends ZemaFailure {
+  const BackupFormatFailure(
+    super.message, {
+    this.newerFormat = false,
+    super.cause,
+  });
+
+  /// The backup's format is newer than this app knows.
+  final bool newerFormat;
+}

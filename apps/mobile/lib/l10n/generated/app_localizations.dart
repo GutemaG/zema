@@ -2171,6 +2171,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t delete your account. Try again later.'**
   String get profileDeleteFailed;
+
+  /// Title of the sheet (C09) shown when a guest tries something that needs an account.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get signInPromptTitle;
+
+  /// Closes the sign-in sheet (C09) without signing in.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get signInPromptNotNow;
+
+  /// Settings section holding Account & backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsSectionAccount;
+
+  /// Settings row opening Backup & sync, or the sign-in sheet for a guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & backup'**
+  String get settingsAccountBackup;
+
+  /// Why Backup & sync needs an account, on the sign-in sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google to back up your favorites, playlists and settings, and get them back on a new phone.'**
+  String get backupSignInReason;
+
+  /// Title of the Backup & sync screen (S25b).
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & sync'**
+  String get backupTitle;
+
+  /// Heading of the list of what a backup holds.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s backed up'**
+  String get backupIncludedTitle;
+
+  /// What a backup holds.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites, playlists, the lyrics you chose for songs, hidden folders and songs, and your settings.'**
+  String get backupIncluded;
+
+  /// Heading of what a backup leaves out.
+  ///
+  /// In en, this message translates to:
+  /// **'Not backed up'**
+  String get backupNotIncludedTitle;
+
+  /// What a backup leaves out, and how songs are found again.
+  ///
+  /// In en, this message translates to:
+  /// **'Your audio files, play history and downloaded lyrics. On a new phone, songs are found again by their title, artist, length and file name.'**
+  String get backupNotIncluded;
 }
 
 class _AppLocalizationsDelegate

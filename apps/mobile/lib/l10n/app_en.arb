@@ -1640,5 +1640,45 @@
   "profileDeleteFailed": "Couldn't delete your account. Try again later.",
   "@profileDeleteFailed": {
     "description": "Snackbar when the server fails to delete the account."
+  },
+  "signInPromptTitle": "Sign in to continue",
+  "@signInPromptTitle": {
+    "description": "Title of the sheet (C09) shown when a guest tries something that needs an account."
+  },
+  "signInPromptNotNow": "Not now",
+  "@signInPromptNotNow": {
+    "description": "Closes the sign-in sheet (C09) without signing in."
+  },
+  "settingsSectionAccount": "Account",
+  "@settingsSectionAccount": {
+    "description": "Settings section holding Account & backup."
+  },
+  "settingsAccountBackup": "Account & backup",
+  "@settingsAccountBackup": {
+    "description": "Settings row opening Backup & sync, or the sign-in sheet for a guest."
+  },
+  "backupSignInReason": "Sign in with Google to back up your favorites, playlists and settings, and get them back on a new phone.",
+  "@backupSignInReason": {
+    "description": "Why Backup & sync needs an account, on the sign-in sheet."
+  },
+  "backupTitle": "Backup & sync",
+  "@backupTitle": {
+    "description": "Title of the Backup & sync screen (S25b)."
+  },
+  "backupIncludedTitle": "What's backed up",
+  "@backupIncludedTitle": {
+    "description": "Heading of the list of what a backup holds."
+  },
+  "backupIncluded": "Favorites, playlists, the lyrics you chose for songs, hidden folders and songs, and your settings.",
+  "@backupIncluded": {
+    "description": "What a backup holds."
+  },
+  "backupNotIncludedTitle": "Not backed up",
+  "@backupNotIncludedTitle": {
+    "description": "Heading of what a backup leaves out."
+  },
+  "backupNotIncluded": "Your audio files, play history and downloaded lyrics. On a new phone, songs are found again by their title, artist, length and file name.",
+  "@backupNotIncluded": {
+    "description": "What a backup leaves out, and how songs are found again."
   }
 }

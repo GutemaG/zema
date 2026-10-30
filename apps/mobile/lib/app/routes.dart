@@ -21,6 +21,9 @@ abstract final class AppRoutes {
   /// S25, above the shell like Settings, which opens from it.
   static const String profile = '/profile';
 
+  /// S25b, above the shell; opened from Settings and Profile.
+  static const String backup = '/backup';
+
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 

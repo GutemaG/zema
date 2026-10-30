@@ -1257,4 +1257,37 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get profileDeleteFailed =>
       'Couldn\'t delete your account. Try again later.';
+
+  @override
+  String get signInPromptTitle => 'Sign in to continue';
+
+  @override
+  String get signInPromptNotNow => 'Not now';
+
+  @override
+  String get settingsSectionAccount => 'Account';
+
+  @override
+  String get settingsAccountBackup => 'Account & backup';
+
+  @override
+  String get backupSignInReason =>
+      'Sign in with Google to back up your favorites, playlists and settings, and get them back on a new phone.';
+
+  @override
+  String get backupTitle => 'Backup & sync';
+
+  @override
+  String get backupIncludedTitle => 'What\'s backed up';
+
+  @override
+  String get backupIncluded =>
+      'Favorites, playlists, the lyrics you chose for songs, hidden folders and songs, and your settings.';
+
+  @override
+  String get backupNotIncludedTitle => 'Not backed up';
+
+  @override
+  String get backupNotIncluded =>
+      'Your audio files, play history and downloaded lyrics. On a new phone, songs are found again by their title, artist, length and file name.';
 }

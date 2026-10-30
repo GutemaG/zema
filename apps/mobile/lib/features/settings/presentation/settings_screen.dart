@@ -8,6 +8,8 @@ import '../../../app/l10n/language_providers.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../account/application/account_providers.dart';
+import '../../account/presentation/widgets/sign_in_prompt.dart';
 import '../../library/application/library_access_controller.dart';
 import '../../library/application/library_providers.dart';
 import '../../library/application/library_sync_controller.dart';
@@ -24,7 +26,8 @@ import 'widgets/settings_row.dart';
 /// Shown when the version can't be read.
 const String _unavailable = '—';
 
-/// S28: General (Language, Appearance), Library (hidden folders and songs,
+/// S28: General (Language, Appearance), Account (Account & backup, when
+/// sign-in is available), Library (hidden folders and songs,
 /// rescan, minimum length), Playback (sleep timer default, unplug,
 /// interruptions, gapless) and About (Version, licenses). Later intents add
 /// their own sections.
@@ -63,9 +66,28 @@ class SettingsScreen extends ConsumerWidget {
       ..showSnackBar(snack);
   }
 
+  /// S25b when signed in; for a guest, the sign-in sheet (C09), which
+  /// returns here. Waits for the saved session if it is still being
+  /// restored.
+  Future<void> _openBackup(BuildContext context, WidgetRef ref) async {
+    final user = await ref.read(authUserProvider.future);
+    if (!context.mounted) return;
+    if (user != null) {
+      await context.push<void>(AppRoutes.backup);
+      return;
+    }
+    await showSignInPrompt(
+      context,
+      reason: AppLocalizations.of(context).backupSignInReason,
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final signInAvailable = ref.watch(signInAvailableProvider);
+    // Restores the session, so Account & backup knows who is signed in.
+    if (signInAvailable) ref.watch(authUserProvider);
     final language = ref.watch(appLanguageProvider);
     final version = ref.watch(appVersionProvider);
     final settings = ref.watch(settingsProvider);
@@ -118,6 +140,16 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
+          if (signInAvailable)
+            SettingsGroup(
+              title: l10n.settingsSectionAccount,
+              children: [
+                SettingsRow(
+                  label: l10n.settingsAccountBackup,
+                  onTap: () => unawaited(_openBackup(context, ref)),
+                ),
+              ],
+            ),
           SettingsGroup(
             title: l10n.settingsSectionLibrary,
             children: [

@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import 'backup_dao.dart';
 import 'cached_songs_dao.dart';
 import 'catalog_dao.dart';
 import 'collections_dao.dart';
@@ -37,6 +38,7 @@ part 'zema_database.g.dart';
     CatalogDao,
     CachedSongsDao,
     ReportsDao,
+    BackupDao,
   ],
 )
 class ZemaDatabase extends _$ZemaDatabase {
