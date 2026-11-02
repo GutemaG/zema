@@ -1575,4 +1575,154 @@ class AppLocalizationsAm extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String contributeBlockVerse(int n) {
+    return 'Verse $n';
+  }
+
+  @override
+  String contributeBlockChorusN(int n) {
+    return 'Chorus $n';
+  }
+
+  @override
+  String get contributeBlockBridge => 'Bridge';
+
+  @override
+  String contributeBlockBridgeN(int n) {
+    return 'Bridge $n';
+  }
+
+  @override
+  String get contributeBlockOther => 'Other';
+
+  @override
+  String contributeBlockOtherN(int n) {
+    return 'Other $n';
+  }
+
+  @override
+  String get contributeBlockKind => 'Block type';
+
+  @override
+  String get contributeBlockMenu => 'Block options';
+
+  @override
+  String get contributeBlockMoveUp => 'Move up';
+
+  @override
+  String get contributeBlockMoveDown => 'Move down';
+
+  @override
+  String get contributeBlockShowLatin => 'Add Latin letters';
+
+  @override
+  String get contributeBlockHideLatin => 'Hide Latin letters';
+
+  @override
+  String get contributeBlockLatin => 'In Latin letters (optional)';
+
+  @override
+  String get contributeBlockLatinHelp =>
+      'One row for each line above, in the same order.';
+
+  @override
+  String get contributeBlockDelete => 'Delete block';
+
+  @override
+  String contributeBlockDeleteTitle(String block) {
+    return 'Delete $block?';
+  }
+
+  @override
+  String contributeBlockDeleteMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Its lines will be deleted, and its $count places in the play order are taken out.',
+      one: 'Its lines will be deleted, and it\'s taken out of the play order.',
+      zero: 'Its lines will be deleted.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contributeBlockHint => 'Type the lines, one per row';
+
+  @override
+  String get contributeBlockBlankLine =>
+      'Remove empty rows. To start a new part, add a block.';
+
+  @override
+  String contributeLineTooLong(int max) {
+    return 'Keep each line under $max characters';
+  }
+
+  @override
+  String contributeTooManyLines(int max) {
+    return 'Songs can have up to $max written lines.';
+  }
+
+  @override
+  String get contributeChorusHint =>
+      'Write the chorus once. Then add it to the play order every time it\'s sung.';
+
+  @override
+  String get contributeAddBlock => 'Add block';
+
+  @override
+  String get contributePasteAll => 'Paste all text';
+
+  @override
+  String get contributePasteHelp =>
+      'Paste the whole song. A blank line starts a new block, and a block that comes again becomes the chorus.';
+
+  @override
+  String get contributePasteReplaces => 'This replaces the blocks you have.';
+
+  @override
+  String get contributePasteSplit => 'Split into blocks';
+
+  @override
+  String contributePasted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count blocks made. Check their types and the play order.',
+      one: '1 block made. Check its type and the play order.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contributePlayOrder => 'Play order';
+
+  @override
+  String get contributePlayOrderHelp => 'Tap an entry to move or remove it.';
+
+  @override
+  String contributePlayOrderEntry(int n) {
+    return 'Entry $n of the play order';
+  }
+
+  @override
+  String get contributePlayOrderAdd => 'Add';
+
+  @override
+  String get contributePlayOrderEarlier => 'Move earlier';
+
+  @override
+  String get contributePlayOrderLater => 'Move later';
+
+  @override
+  String get contributePlayOrderRemove => 'Remove';
+
+  @override
+  String get contributePlayOrderEmpty =>
+      'Add at least one block to the play order.';
+
+  @override
+  String get contributeNextRecording => 'Next: link a recording';
 }

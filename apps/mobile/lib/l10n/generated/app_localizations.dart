@@ -2645,6 +2645,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 draft on this phone will be deleted: {titles}.} other{{count} drafts on this phone will be deleted: {titles}.}}'**
   String profileDraftsWarning(int count, String titles);
+
+  /// A verse block's label, numbered.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse {n}'**
+  String contributeBlockVerse(int n);
+
+  /// A chorus block's label when the song has more than one chorus.
+  ///
+  /// In en, this message translates to:
+  /// **'Chorus {n}'**
+  String contributeBlockChorusN(int n);
+
+  /// The bridge block kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge'**
+  String get contributeBlockBridge;
+
+  /// A bridge block's label when there is more than one.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge {n}'**
+  String contributeBlockBridgeN(int n);
+
+  /// A block that is neither verse, chorus nor bridge (an intro, a spoken part).
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get contributeBlockOther;
+
+  /// An other block's label when there is more than one.
+  ///
+  /// In en, this message translates to:
+  /// **'Other {n}'**
+  String contributeBlockOtherN(int n);
+
+  /// Tooltip of the menu that changes a block's kind.
+  ///
+  /// In en, this message translates to:
+  /// **'Block type'**
+  String get contributeBlockKind;
+
+  /// Tooltip of a block's menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Block options'**
+  String get contributeBlockMenu;
+
+  /// Moves a block up.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get contributeBlockMoveUp;
+
+  /// Moves a block down.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get contributeBlockMoveDown;
+
+  /// Opens a field for the block's lines in Latin letters.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Latin letters'**
+  String get contributeBlockShowLatin;
+
+  /// Closes the block's Latin-letters field while it's empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Latin letters'**
+  String get contributeBlockHideLatin;
+
+  /// Label of a block's transliteration field.
+  ///
+  /// In en, this message translates to:
+  /// **'In Latin letters (optional)'**
+  String get contributeBlockLatin;
+
+  /// Helper under a block's transliteration field.
+  ///
+  /// In en, this message translates to:
+  /// **'One row for each line above, in the same order.'**
+  String get contributeBlockLatinHelp;
+
+  /// Deletes a block (menu item and confirm button).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete block'**
+  String get contributeBlockDelete;
+
+  /// Title when deleting a block.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {block}?'**
+  String contributeBlockDeleteTitle(String block);
+
+  /// Body when deleting a block; count is how often it's in the play order.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Its lines will be deleted.} =1{Its lines will be deleted, and it\'s taken out of the play order.} other{Its lines will be deleted, and its {count} places in the play order are taken out.}}'**
+  String contributeBlockDeleteMessage(int count);
+
+  /// Hint in an empty block.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the lines, one per row'**
+  String get contributeBlockHint;
+
+  /// Error when a block has an empty row between lines.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove empty rows. To start a new part, add a block.'**
+  String get contributeBlockBlankLine;
+
+  /// Error when a line is too long.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep each line under {max} characters'**
+  String contributeLineTooLong(int max);
+
+  /// Error when the blocks have too many lines in total.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs can have up to {max} written lines.'**
+  String contributeTooManyLines(int max);
+
+  /// Hint above the blocks.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the chorus once. Then add it to the play order every time it\'s sung.'**
+  String get contributeChorusHint;
+
+  /// Adds a block.
+  ///
+  /// In en, this message translates to:
+  /// **'Add block'**
+  String get contributeAddBlock;
+
+  /// Opens the dialog that splits pasted lyrics into blocks.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste all text'**
+  String get contributePasteAll;
+
+  /// Explains how pasted text is split.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the whole song. A blank line starts a new block, and a block that comes again becomes the chorus.'**
+  String get contributePasteHelp;
+
+  /// Added when pasting would replace existing blocks.
+  ///
+  /// In en, this message translates to:
+  /// **'This replaces the blocks you have.'**
+  String get contributePasteReplaces;
+
+  /// Confirms pasting.
+  ///
+  /// In en, this message translates to:
+  /// **'Split into blocks'**
+  String get contributePasteSplit;
+
+  /// Shown after pasting.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 block made. Check its type and the play order.} other{{count} blocks made. Check their types and the play order.}}'**
+  String contributePasted(int count);
+
+  /// Heading of the play order strip.
+  ///
+  /// In en, this message translates to:
+  /// **'Play order'**
+  String get contributePlayOrder;
+
+  /// Help under the play order heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap an entry to move or remove it.'**
+  String get contributePlayOrderHelp;
+
+  /// Tooltip of a play order entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry {n} of the play order'**
+  String contributePlayOrderEntry(int n);
+
+  /// Adds a block to the end of the play order.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get contributePlayOrderAdd;
+
+  /// Moves a play order entry one place earlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Move earlier'**
+  String get contributePlayOrderEarlier;
+
+  /// Moves a play order entry one place later.
+  ///
+  /// In en, this message translates to:
+  /// **'Move later'**
+  String get contributePlayOrderLater;
+
+  /// Removes an entry from the play order.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get contributePlayOrderRemove;
+
+  /// Error when the play order is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one block to the play order.'**
+  String get contributePlayOrderEmpty;
+
+  /// Goes from the lyrics to step 2.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: link a recording'**
+  String get contributeNextRecording;
 }
 
 class _AppLocalizationsDelegate

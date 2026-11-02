@@ -2031,5 +2031,203 @@
         "type": "String"
       }
     }
+  },
+  "contributeBlockVerse": "Verse {n}",
+  "@contributeBlockVerse": {
+    "description": "A verse block's label, numbered.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeBlockChorusN": "Chorus {n}",
+  "@contributeBlockChorusN": {
+    "description": "A chorus block's label when the song has more than one chorus.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeBlockBridge": "Bridge",
+  "@contributeBlockBridge": {
+    "description": "The bridge block kind."
+  },
+  "contributeBlockBridgeN": "Bridge {n}",
+  "@contributeBlockBridgeN": {
+    "description": "A bridge block's label when there is more than one.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeBlockOther": "Other",
+  "@contributeBlockOther": {
+    "description": "A block that is neither verse, chorus nor bridge (an intro, a spoken part)."
+  },
+  "contributeBlockOtherN": "Other {n}",
+  "@contributeBlockOtherN": {
+    "description": "An other block's label when there is more than one.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeBlockKind": "Block type",
+  "@contributeBlockKind": {
+    "description": "Tooltip of the menu that changes a block's kind."
+  },
+  "contributeBlockMenu": "Block options",
+  "@contributeBlockMenu": {
+    "description": "Tooltip of a block's menu."
+  },
+  "contributeBlockMoveUp": "Move up",
+  "@contributeBlockMoveUp": {
+    "description": "Moves a block up."
+  },
+  "contributeBlockMoveDown": "Move down",
+  "@contributeBlockMoveDown": {
+    "description": "Moves a block down."
+  },
+  "contributeBlockShowLatin": "Add Latin letters",
+  "@contributeBlockShowLatin": {
+    "description": "Opens a field for the block's lines in Latin letters."
+  },
+  "contributeBlockHideLatin": "Hide Latin letters",
+  "@contributeBlockHideLatin": {
+    "description": "Closes the block's Latin-letters field while it's empty."
+  },
+  "contributeBlockLatin": "In Latin letters (optional)",
+  "@contributeBlockLatin": {
+    "description": "Label of a block's transliteration field."
+  },
+  "contributeBlockLatinHelp": "One row for each line above, in the same order.",
+  "@contributeBlockLatinHelp": {
+    "description": "Helper under a block's transliteration field."
+  },
+  "contributeBlockDelete": "Delete block",
+  "@contributeBlockDelete": {
+    "description": "Deletes a block (menu item and confirm button)."
+  },
+  "contributeBlockDeleteTitle": "Delete {block}?",
+  "@contributeBlockDeleteTitle": {
+    "description": "Title when deleting a block.",
+    "placeholders": {
+      "block": {
+        "type": "String"
+      }
+    }
+  },
+  "contributeBlockDeleteMessage": "{count, plural, =0{Its lines will be deleted.} =1{Its lines will be deleted, and it's taken out of the play order.} other{Its lines will be deleted, and its {count} places in the play order are taken out.}}",
+  "@contributeBlockDeleteMessage": {
+    "description": "Body when deleting a block; count is how often it's in the play order.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeBlockHint": "Type the lines, one per row",
+  "@contributeBlockHint": {
+    "description": "Hint in an empty block."
+  },
+  "contributeBlockBlankLine": "Remove empty rows. To start a new part, add a block.",
+  "@contributeBlockBlankLine": {
+    "description": "Error when a block has an empty row between lines."
+  },
+  "contributeLineTooLong": "Keep each line under {max} characters",
+  "@contributeLineTooLong": {
+    "description": "Error when a line is too long.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeTooManyLines": "Songs can have up to {max} written lines.",
+  "@contributeTooManyLines": {
+    "description": "Error when the blocks have too many lines in total.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "contributeChorusHint": "Write the chorus once. Then add it to the play order every time it's sung.",
+  "@contributeChorusHint": {
+    "description": "Hint above the blocks."
+  },
+  "contributeAddBlock": "Add block",
+  "@contributeAddBlock": {
+    "description": "Adds a block."
+  },
+  "contributePasteAll": "Paste all text",
+  "@contributePasteAll": {
+    "description": "Opens the dialog that splits pasted lyrics into blocks."
+  },
+  "contributePasteHelp": "Paste the whole song. A blank line starts a new block, and a block that comes again becomes the chorus.",
+  "@contributePasteHelp": {
+    "description": "Explains how pasted text is split."
+  },
+  "contributePasteReplaces": "This replaces the blocks you have.",
+  "@contributePasteReplaces": {
+    "description": "Added when pasting would replace existing blocks."
+  },
+  "contributePasteSplit": "Split into blocks",
+  "@contributePasteSplit": {
+    "description": "Confirms pasting."
+  },
+  "contributePasted": "{count, plural, =1{1 block made. Check its type and the play order.} other{{count} blocks made. Check their types and the play order.}}",
+  "@contributePasted": {
+    "description": "Shown after pasting.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contributePlayOrder": "Play order",
+  "@contributePlayOrder": {
+    "description": "Heading of the play order strip."
+  },
+  "contributePlayOrderHelp": "Tap an entry to move or remove it.",
+  "@contributePlayOrderHelp": {
+    "description": "Help under the play order heading."
+  },
+  "contributePlayOrderEntry": "Entry {n} of the play order",
+  "@contributePlayOrderEntry": {
+    "description": "Tooltip of a play order entry.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "contributePlayOrderAdd": "Add",
+  "@contributePlayOrderAdd": {
+    "description": "Adds a block to the end of the play order."
+  },
+  "contributePlayOrderEarlier": "Move earlier",
+  "@contributePlayOrderEarlier": {
+    "description": "Moves a play order entry one place earlier."
+  },
+  "contributePlayOrderLater": "Move later",
+  "@contributePlayOrderLater": {
+    "description": "Moves a play order entry one place later."
+  },
+  "contributePlayOrderRemove": "Remove",
+  "@contributePlayOrderRemove": {
+    "description": "Removes an entry from the play order."
+  },
+  "contributePlayOrderEmpty": "Add at least one block to the play order.",
+  "@contributePlayOrderEmpty": {
+    "description": "Error when the play order is empty."
+  },
+  "contributeNextRecording": "Next: link a recording",
+  "@contributeNextRecording": {
+    "description": "Goes from the lyrics to step 2."
   }
 }

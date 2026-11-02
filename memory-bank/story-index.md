@@ -127,7 +127,7 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **001-contribution-model-and-validation** (contribution-and-sync-editor-ui): Contribution model and shared validation - Must - ✅ COMPLETED
 - [x] **002-contribution-repository** (contribution-and-sync-editor-ui): Contribution repository - Must - ✅ COMPLETED
 - [x] **003-contribute-tab-and-drafts** (contribution-and-sync-editor-ui): Contribute tab (S05) and drafts - Must - ✅ COMPLETED
-- [ ] **004-add-lyrics-editor** (contribution-and-sync-editor-ui): Add lyrics (S19) - Must - 📋 PLANNED
+- [x] **004-add-lyrics-editor** (contribution-and-sync-editor-ui): Add lyrics (S19) - Must - ✅ COMPLETED
 - [ ] **005-link-recording** (contribution-and-sync-editor-ui): Link recording (S20): local file and YouTube - Must - 📋 PLANNED
 - [ ] **006-telegram-share** (contribution-and-sync-editor-ui): Share audio from Telegram (Android) - Should - 📋 PLANNED
 - [ ] **007-sync-editor-list** (contribution-and-sync-editor-ui): Sync editor: List view (S21) - Must - 📋 PLANNED
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 12
+- **Planned**: 11
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 85
+- **Completed**: 86
