@@ -78,3 +78,14 @@ Duration? _following(List<Duration?> starts, int index) {
   }
   return null;
 }
+
+/// The line sung at [position]: the last timed line starting at or before
+/// it; null before the first.
+int? lineAt(List<Duration?> starts, Duration position) {
+  int? line;
+  for (var i = 0; i < starts.length; i++) {
+    final start = starts[i];
+    if (start != null && start <= position) line = i;
+  }
+  return line;
+}

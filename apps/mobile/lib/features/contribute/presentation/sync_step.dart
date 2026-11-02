@@ -8,7 +8,10 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../app/database/database_provider.dart';
+import '../../lyrics/application/lyrics_prefs.dart';
+import '../../lyrics/presentation/lyrics_view.dart';
 import '../../player/application/player_providers.dart';
+import 'lyrics_step.dart';
 import '../application/drafts.dart';
 import '../application/recording.dart';
 import '../data/sync_player.dart';
@@ -50,6 +53,10 @@ class SyncStep extends ConsumerStatefulWidget {
 
 enum _Audio { loading, ready, missing }
 
+/// S21's views: the List and Focus views time lines; Preview plays the
+/// result in the shared lyrics view.
+enum _View { list, focus, preview }
+
 class _SyncStepState extends ConsumerState<SyncStep> {
   late final SyncPlayer _player = ref.read(syncPlayerProvider)();
   late final AppLifecycleListener _lifecycle;
@@ -64,6 +71,11 @@ class _SyncStepState extends ConsumerState<SyncStep> {
 
   /// The timed line whose controls are open.
   int? _selected;
+
+  var _view = _View.list;
+
+  /// The timing view to go back to after Preview.
+  var _timingView = _View.list;
 
   late final List<LineOccurrence> _lines = expandPlayOrder(widget.draft.song)
       .occurrences;
@@ -175,6 +187,24 @@ class _SyncStepState extends ConsumerState<SyncStep> {
     await _player.seek(at < Duration.zero ? Duration.zero : at);
   }
 
+  Future<void> _playPause() => _playing ? _player.pause() : _player.play();
+
+  Future<void> _startPreview() async {
+    setState(() {
+      _timingView = _view;
+      _view = _View.preview;
+      _selected = null;
+    });
+    await _player.seek(Duration.zero);
+    await _player.play();
+  }
+
+  Future<void> _endPreview() async {
+    setState(() => _view = _timingView);
+    await _player.pause();
+    _revealCurrent();
+  }
+
   Future<void> _toggleSpeed() async {
     final speed = _speed == 1.0 ? 0.75 : 1.0;
     setState(() => _speed = speed);
@@ -210,8 +240,86 @@ class _SyncStepState extends ConsumerState<SyncStep> {
       );
     }
 
+    final bar = _ViewBar(
+      view: _view,
+      canPreview: starts.any((s) => s != null) && _audio == _Audio.ready,
+      onView: (view) => setState(() {
+        _view = view;
+        _selected = null;
+      }),
+      onPreview: () => unawaited(_startPreview()),
+      onEndPreview: () => unawaited(_endPreview()),
+      onSkip: () =>
+          _edit((d) => d.copyWith(starts: const [], step: DraftStep.review)),
+    );
+    final playback = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: ZemaSpacing.screenSide),
+      child: _PlaybackBar(
+        position: _position,
+        duration: _duration,
+        playing: _playing,
+        speed: _speed,
+        ready: _audio == _Audio.ready,
+        onPlayPause: () => unawaited(_playPause()),
+        onBack5: () => unawaited(_back5()),
+        onSpeed: () => unawaited(_toggleSpeed()),
+        onSeek: (at) => unawaited(_player.seek(at)),
+      ),
+    );
+
+    switch (_view) {
+      case _View.preview:
+        return Column(
+          children: [
+            bar,
+            playback,
+            Expanded(
+              child: LyricsLines(
+                lines: _lines,
+                synced: true,
+                current: lineAt(starts, _position),
+                display: ref.watch(lyricsDisplayProvider),
+                onTapLine: (i) {
+                  if (starts[i] case final start?) {
+                    unawaited(_player.seek(start));
+                  }
+                },
+              ),
+            ),
+          ],
+        );
+      case _View.focus:
+        return Column(
+          children: [
+            bar,
+            Expanded(
+              child: _FocusView(
+                lines: _lines,
+                sections: widget.draft.song.sections,
+                starts: starts,
+                position: _position,
+                duration: _duration,
+                playing: _playing,
+                ready: _audio == _Audio.ready,
+                onTap: synced
+                    ? () => _edit((d) => d.copyWith(step: DraftStep.review))
+                    : _playing
+                    ? _tap
+                    : () => unawaited(_player.play()),
+                onUndo: starts.any((s) => s != null) ? _undo : null,
+                onPlayPause: () => unawaited(_playPause()),
+                onBack5: () => unawaited(_back5()),
+              ),
+            ),
+          ],
+        );
+      case _View.list:
+        break;
+    }
+
     return Column(
       children: [
+        bar,
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: ZemaSpacing.screenSide,
@@ -354,23 +462,13 @@ class _SyncStepState extends ConsumerState<SyncStep> {
           ),
           child: Column(
             children: [
-              OverflowBar(
-                alignment: MainAxisAlignment.spaceBetween,
-                overflowAlignment: OverflowBarAlignment.center,
-                children: [
-                  TextButton.icon(
-                    onPressed: starts.any((s) => s != null) ? _undo : null,
-                    icon: const Icon(Icons.undo),
-                    label: Text(l10n.contributeSyncUndo),
-                  ),
-                  TextButton(
-                    onPressed: () => _edit(
-                      (d) =>
-                          d.copyWith(starts: const [], step: DraftStep.review),
-                    ),
-                    child: Text(l10n.contributeSyncSkip),
-                  ),
-                ],
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  onPressed: starts.any((s) => s != null) ? _undo : null,
+                  icon: const Icon(Icons.undo),
+                  label: Text(l10n.contributeSyncUndo),
+                ),
               ),
               const SizedBox(height: 4),
               SizedBox(
@@ -381,7 +479,7 @@ class _SyncStepState extends ConsumerState<SyncStep> {
                       ? () => _edit((d) => d.copyWith(step: DraftStep.review))
                       : _playing
                       ? _tap
-                      : null,
+                      : () => unawaited(_player.play()),
                   style: FilledButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(ZemaRadius.large),
@@ -402,6 +500,287 @@ class _SyncStepState extends ConsumerState<SyncStep> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// List or Focus, and Preview; during Preview, a way back.
+class _ViewBar extends StatelessWidget {
+  const _ViewBar({
+    required this.view,
+    required this.canPreview,
+    required this.onView,
+    required this.onPreview,
+    required this.onEndPreview,
+    required this.onSkip,
+  });
+
+  final _View view;
+  final bool canPreview;
+  final ValueChanged<_View> onView;
+  final VoidCallback onPreview;
+  final VoidCallback onEndPreview;
+
+  /// Leaves without timings (text only).
+  final VoidCallback onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        ZemaSpacing.screenSide,
+        0,
+        ZemaSpacing.screenSide,
+        8,
+      ),
+      child: view == _View.preview
+          ? Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton.icon(
+                onPressed: onEndPreview,
+                icon: const Icon(Icons.arrow_back),
+                label: Text(l10n.contributeSyncEndPreview),
+              ),
+            )
+          : Row(
+              children: [
+                // Icons only, so the bar stays one row with large text.
+                SegmentedButton<_View>(
+                  showSelectedIcon: false,
+                  segments: [
+                    ButtonSegment(
+                      value: _View.list,
+                      icon: const Icon(Icons.view_list),
+                      tooltip: l10n.contributeSyncList,
+                    ),
+                    ButtonSegment(
+                      value: _View.focus,
+                      icon: const Icon(Icons.center_focus_strong),
+                      tooltip: l10n.contributeSyncFocus,
+                    ),
+                  ],
+                  selected: {view},
+                  onSelectionChanged: (views) => onView(views.single),
+                ),
+                const Spacer(),
+                Flexible(
+                  child: TextButton.icon(
+                    onPressed: canPreview ? onPreview : null,
+                    icon: const Icon(Icons.play_circle_outline),
+                    label: Text(
+                      l10n.contributeSyncPreview,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                PopupMenuButton<String>(
+                  tooltip: l10n.contributeSyncMore,
+                  onSelected: (_) => onSkip(),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'skip',
+                      child: Text(l10n.contributeSyncSkip),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+/// The Focus view: the line before with its time, the next line to time
+/// large with its block, the one after, a big tap area, and Undo, Play or
+/// Pause and −5 s.
+class _FocusView extends StatelessWidget {
+  const _FocusView({
+    required this.lines,
+    required this.sections,
+    required this.starts,
+    required this.position,
+    required this.duration,
+    required this.playing,
+    required this.ready,
+    required this.onTap,
+    required this.onUndo,
+    required this.onPlayPause,
+    required this.onBack5,
+  });
+
+  final List<LineOccurrence> lines;
+  final List<LyricSection> sections;
+  final List<Duration?> starts;
+  final Duration position;
+  final Duration? duration;
+  final bool playing;
+  final bool ready;
+  final VoidCallback onTap;
+  final VoidCallback? onUndo;
+  final VoidCallback onPlayPause;
+  final VoidCallback onBack5;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final textTheme = Theme.of(context).textTheme;
+    final current = nextUntimed(starts);
+    final previous = (current ?? lines.length) - 1;
+    final section = current == null
+        ? null
+        : sections.where((s) => s.id == lines[current].sectionId).firstOrNull;
+    final total = duration;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        ZemaSpacing.screenSide,
+        0,
+        ZemaSpacing.screenSide,
+        8,
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Column(
+                  children: [
+                    if (previous >= 0) ...[
+                      Text(
+                        lines[previous].line.text,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: colors.muted,
+                        ),
+                      ),
+                      if (starts[previous] case final start?)
+                        Text(
+                          l10n.contributeSyncTimedAt(formatSyncTime(start)),
+                          style: textTheme.labelMedium?.copyWith(
+                            color: colors.primaryText,
+                          ),
+                        ),
+                      const SizedBox(height: 24),
+                    ],
+                    if (current == null)
+                      Text(
+                        l10n.contributeSyncAllTimed,
+                        textAlign: TextAlign.center,
+                        style: textTheme.titleMedium,
+                      )
+                    else ...[
+                      if (section != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              ZemaRadius.pill,
+                            ),
+                            border: Border.all(color: colors.primary),
+                          ),
+                          child: Text(
+                            sectionLabel(l10n, sections, section).toUpperCase(),
+                            style: textTheme.labelSmall?.copyWith(
+                              color: colors.primaryText,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      Text(
+                        lines[current].line.text,
+                        textAlign: TextAlign.center,
+                        style: textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (current + 1 < lines.length) ...[
+                        const SizedBox(height: 24),
+                        Text(
+                          lines[current + 1].line.text,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: colors.muted,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 200,
+            width: double.infinity,
+            child: Material(
+              color: ready ? colors.primary : colors.tile,
+              borderRadius: BorderRadius.circular(ZemaRadius.large),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(ZemaRadius.large),
+                onTap: ready ? onTap : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        current == null
+                            ? l10n.contributeNextReview
+                            : playing
+                            ? l10n.contributeSyncHearIt
+                            : l10n.contributeSyncPressPlay,
+                        textAlign: TextAlign.center,
+                        style: textTheme.titleLarge?.copyWith(
+                          color: colors.onPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        total == null
+                            ? formatSyncTime(position)
+                            : '${formatSyncTime(position)} / '
+                                  '${formatDurationText(total)}',
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colors.onPrimary,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          OverflowBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            overflowAlignment: OverflowBarAlignment.center,
+            children: [
+              TextButton.icon(
+                onPressed: onUndo,
+                icon: const Icon(Icons.undo),
+                label: Text(l10n.contributeSyncUndo),
+              ),
+              TextButton.icon(
+                onPressed: ready ? onPlayPause : null,
+                icon: Icon(playing ? Icons.pause : Icons.play_arrow),
+                label: Text(playing ? l10n.playerPause : l10n.playerPlay),
+              ),
+              TextButton(
+                onPressed: ready ? onBack5 : null,
+                child: Text(l10n.contributeSyncBack5),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

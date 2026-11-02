@@ -8,6 +8,7 @@ import 'package:zema/features/account/application/sign_in.dart';
 import 'package:zema/features/contribute/application/drafts.dart';
 import 'package:zema/features/contribute/presentation/recording_step.dart';
 import 'package:zema/features/contribute/presentation/sync_step.dart';
+import 'package:zema/features/lyrics/presentation/lyrics_view.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
@@ -109,8 +110,10 @@ void main() {
 
   Finder big(String label) => find.widgetWithText(FilledButton, label);
 
-  Future<void> play(WidgetTester tester) =>
-      tap(tester, find.byTooltip(_l10n.playerPlay));
+  Future<void> play(WidgetTester tester) => tap(
+    tester,
+    find.byTooltip(player.isPlaying ? _l10n.playerPause : _l10n.playerPlay),
+  );
 
   Future<void> tapAt(WidgetTester tester, num seconds) async {
     player.position = s(seconds);
@@ -127,14 +130,13 @@ void main() {
     expect(find.text('—'), findsNWidgets(4));
     expect(find.text(_l10n.contributeSyncTapHint), findsOneWidget);
     expect(find.text('0:00.0 / 3:00'), findsOneWidget);
-    expect(
-      tester.widget<FilledButton>(big(_l10n.contributeSyncPressPlay)).onPressed,
-      isNull,
-    );
 
-    await play(tester);
+    // Paused, the big button plays.
+    await tap(tester, big(_l10n.contributeSyncPressPlay));
     expect(player.isPlaying, isTrue);
     expect(big(_l10n.contributeSyncTap), findsOneWidget);
+    await play(tester);
+    expect(player.isPlaying, isFalse, reason: 'the bar pauses');
   });
 
   testWidgets('each tap times the next line at the position; done goes to '
@@ -221,6 +223,7 @@ void main() {
       tester,
       draft: sharedDraft.copyWith(starts: [s(1), null, null, null]),
     );
+    await tap(tester, find.byTooltip(_l10n.contributeSyncMore));
     await tap(tester, find.text(_l10n.contributeSyncSkip));
     final draft = await saved(tester);
     expect(draft.starts, isEmpty);
@@ -291,6 +294,127 @@ void main() {
     expect((await saved(tester)).starts, [null, null, null, null]);
   });
 
+  group('Focus and Preview', () {
+    Future<void> focus(WidgetTester tester) =>
+        tap(tester, find.byTooltip(_l10n.contributeSyncFocus));
+
+    Finder area(String label) =>
+        find.ancestor(of: find.text(label), matching: find.byType(InkWell));
+
+    testWidgets('Focus shows the line before with its time, the next line '
+        'with its block, and the one after; it taps the same lines', (
+      tester,
+    ) async {
+      await open(
+        tester,
+        draft: sharedDraft.copyWith(starts: [s(1), s(3), null, null]),
+      );
+      await focus(tester);
+      expect(find.text('Verse line two'), findsOneWidget);
+      expect(
+        find.text(_l10n.contributeSyncTimedAt(formatSyncTime(s(3)))),
+        findsOneWidget,
+      );
+      expect(find.text('CHORUS'), findsOneWidget);
+      expect(find.text('The chorus'), findsNWidgets(2), reason: 'now, next');
+      expect(find.text('Verse line one'), findsNothing);
+
+      // Paused, the area plays; playing, it taps.
+      await tap(tester, area(_l10n.contributeSyncPressPlay));
+      expect(player.isPlaying, isTrue);
+      player.position = s(6.2);
+      await tap(tester, area(_l10n.contributeSyncHearIt));
+      expect((await saved(tester)).starts, [s(1), s(3), s(6.2), null]);
+
+      await tap(tester, find.text(_l10n.contributeSyncUndo));
+      expect((await saved(tester)).starts, [s(1), s(3), null, null]);
+      await tap(tester, find.text(_l10n.contributeSyncBack5));
+      expect(player.seeks.last, s(1.2));
+      await tap(tester, find.text(_l10n.playerPause));
+      expect(player.isPlaying, isFalse);
+    });
+
+    testWidgets('switching views keeps the times, the position and playback', (
+      tester,
+    ) async {
+      await open(tester);
+      await play(tester);
+      player.position = s(2);
+      await tapAt(tester, 2);
+      await focus(tester);
+      expect(player.isPlaying, isTrue);
+      player.position = s(4);
+      await tap(tester, area(_l10n.contributeSyncHearIt));
+      await tap(tester, find.byTooltip(_l10n.contributeSyncList));
+      expect(player.isPlaying, isTrue);
+      expect(player.loaded, hasLength(1), reason: 'the same player');
+      expect(find.text(formatSyncTime(s(4))), findsWidgets);
+      expect((await saved(tester)).starts, [s(2), s(4), null, null]);
+    });
+
+    testWidgets('once every line is timed, Focus goes on to review', (
+      tester,
+    ) async {
+      await open(
+        tester,
+        draft: sharedDraft.copyWith(starts: [s(1), s(2), s(3), s(4)]),
+      );
+      await focus(tester);
+      expect(find.text(_l10n.contributeSyncAllTimed), findsOneWidget);
+      await tap(tester, area(_l10n.contributeNextReview));
+      expect((await saved(tester)).step, DraftStep.review);
+    });
+
+    testWidgets('Preview plays from the start in the lyrics view, '
+        'highlighting by the times', (tester) async {
+      await open(
+        tester,
+        draft: sharedDraft.copyWith(starts: [s(1), s(3), s(6), null]),
+      );
+      player.position = s(30);
+      await tester.pump();
+      await tap(tester, find.text(_l10n.contributeSyncPreview));
+      expect(find.byType(LyricsLines), findsOneWidget);
+      expect(player.seeks.last, Duration.zero);
+      expect(player.isPlaying, isTrue);
+
+      LyricsLines lines() => tester.widget(find.byType(LyricsLines));
+      // A position event lands after one frame and shows on the next.
+      Future<void> moveTo(num seconds) async {
+        player.position = s(seconds);
+        await tester.pump();
+        await tester.pump();
+      }
+
+      expect(lines().current, isNull);
+      await moveTo(3.5);
+      expect(find.text('${formatSyncTime(s(3.5))} / 3:00'), findsOneWidget);
+      expect(lines().current, 1);
+      await moveTo(7);
+      expect(lines().current, 2);
+
+      await tap(tester, find.text(_l10n.contributeSyncEndPreview));
+      expect(player.isPlaying, isFalse);
+      expect(find.byType(LyricsLines), findsNothing);
+      expect(find.text(_l10n.contributeSyncTapHint), findsOneWidget);
+    });
+
+    testWidgets('Preview needs a time first', (tester) async {
+      await open(tester);
+      expect(
+        tester
+            .widget<TextButton>(
+              find.ancestor(
+                of: find.text(_l10n.contributeSyncPreview),
+                matching: find.byWidgetPredicate((w) => w is TextButton),
+              ),
+            )
+            .onPressed,
+        isNull,
+      );
+    });
+  });
+
   for (final brightness in Brightness.values) {
     testWidgets('fits a small phone at 1.3× text ($brightness)', (
       tester,
@@ -317,8 +441,14 @@ void main() {
         ),
       );
       expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.textContaining('እግዚአብሔርን').first);
+      await tester.pumpAndSettle();
       await tap(tester, find.textContaining('እግዚአብሔርን').first);
       expect(find.text(_l10n.contributeSyncRedo), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tap(tester, find.byTooltip(_l10n.contributeSyncFocus));
+      expect(tester.takeException(), isNull);
+      await tap(tester, find.text(_l10n.contributeSyncPreview));
       expect(tester.takeException(), isNull);
     });
   }

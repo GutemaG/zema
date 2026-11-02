@@ -123,17 +123,59 @@ class _OptionsButton extends StatelessWidget {
   }
 }
 
-class _Lines extends ConsumerStatefulWidget {
+/// [lyrics] for [track], following the main player: the current line
+/// lights up, and tapping a synced line seeks to it.
+class _Lines extends ConsumerWidget {
   const _Lines({required this.track, required this.lyrics});
 
   final Track track;
   final TrackLyrics lyrics;
 
   @override
-  ConsumerState<_Lines> createState() => _LinesState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final synced = lyrics.synced;
+    final shift = ref.watch(lyricsShiftProvider(lyrics));
+    return LyricsLines(
+      lines: lyrics.lines,
+      synced: synced != null,
+      current: ref.watch(currentLineProvider(track.id)),
+      display: ref.watch(lyricsDisplayProvider),
+      onTapLine: synced == null
+          ? null
+          : (i) => unawaited(
+              ref
+                  .read(playerControllerProvider)
+                  .seek(synced.engine.startOf(i, offset: shift)),
+            ),
+    );
+  }
 }
 
-class _LinesState extends ConsumerState<_Lines> {
+/// The shared lyrics view (C06): [lines] scrolled so the [current] one sits
+/// a third of the way down, past lines faint, choruses marked. Plain
+/// lyrics ([synced] false) show without highlight. Used for a playing song
+/// and for the sync editor's preview.
+class LyricsLines extends StatefulWidget {
+  const LyricsLines({
+    super.key,
+    required this.lines,
+    required this.synced,
+    required this.current,
+    required this.display,
+    this.onTapLine,
+  });
+
+  final List<LineOccurrence> lines;
+  final bool synced;
+  final int? current;
+  final LyricsDisplay display;
+  final ValueChanged<int>? onTapLine;
+
+  @override
+  State<LyricsLines> createState() => _LyricsLinesState();
+}
+
+class _LyricsLinesState extends State<LyricsLines> {
   /// How long auto-scroll waits after the user last scrolled.
   static const resumeAfter = Duration(seconds: 3);
 
@@ -149,14 +191,19 @@ class _LinesState extends ConsumerState<_Lines> {
   var _userScrolling = false;
 
   List<GlobalKey> _newKeys() => [
-    for (var i = 0; i < widget.lyrics.lines.length; i++) GlobalKey(),
+    for (var i = 0; i < widget.lines.length; i++) GlobalKey(),
   ];
 
   @override
-  void didUpdateWidget(_Lines old) {
+  void didUpdateWidget(LyricsLines old) {
     super.didUpdateWidget(old);
-    if (old.lyrics.lines.length != widget.lyrics.lines.length) {
+    if (old.lines.length != widget.lines.length) {
       _keys = _newKeys();
+    }
+    if (old.display.textScale != widget.display.textScale) {
+      _followSoon(animate: false);
+    } else if (old.current != widget.current) {
+      _followSoon();
     }
   }
 
@@ -181,7 +228,7 @@ class _LinesState extends ConsumerState<_Lines> {
       ..scheduleFrame()
       ..addPostFrameCallback((_) {
         if (!mounted || _userScrolling) return;
-        final index = ref.read(currentLineProvider(widget.track.id));
+        final index = widget.current;
         if (index == null || index >= _keys.length) return;
         final line = _keys[index].currentContext;
         if (line == null) return;
@@ -214,17 +261,9 @@ class _LinesState extends ConsumerState<_Lines> {
 
   @override
   Widget build(BuildContext context) {
-    ref
-      ..listen(currentLineProvider(widget.track.id), (_, _) => _followSoon())
-      ..listen(
-        lyricsDisplayProvider.select((d) => d.textScale),
-        (_, _) => _followSoon(animate: false),
-      );
-    final lyrics = widget.lyrics;
-    final synced = lyrics.synced;
-    final current = ref.watch(currentLineProvider(widget.track.id));
-    final display = ref.watch(lyricsDisplayProvider);
-    final shift = ref.watch(lyricsShiftProvider(lyrics));
+    final synced = widget.synced;
+    final current = widget.current;
+    final onTapLine = widget.onTapLine;
     return LayoutBuilder(
       builder: (context, constraints) =>
           NotificationListener<UserScrollNotification>(
@@ -251,29 +290,19 @@ class _LinesState extends ConsumerState<_Lines> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final (i, line) in lyrics.lines.indexed)
+                    for (final (i, line) in widget.lines.indexed)
                       _Line(
                         key: _keys[i],
                         line: line,
-                        state: synced == null || current == null
-                            ? (synced == null
-                                  ? _LineState.plain
-                                  : _LineState.ahead)
+                        state: !synced || current == null
+                            ? (!synced ? _LineState.plain : _LineState.ahead)
                             : i == current
                             ? _LineState.current
                             : i < current
                             ? _LineState.past
                             : _LineState.ahead,
-                        display: display,
-                        onTap: synced == null
-                            ? null
-                            : () => unawaited(
-                                ref
-                                    .read(playerControllerProvider)
-                                    .seek(
-                                      synced.engine.startOf(i, offset: shift),
-                                    ),
-                              ),
+                        display: widget.display,
+                        onTap: onTapLine == null ? null : () => onTapLine(i),
                       ),
                   ],
                 ),

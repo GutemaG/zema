@@ -3066,10 +3066,10 @@ abstract class AppLocalizations {
   /// **'Tap — next line'**
   String get contributeSyncTap;
 
-  /// The big button while the recording is paused.
+  /// The big button while the recording is paused; pressing it plays.
   ///
   /// In en, this message translates to:
-  /// **'Press play, then tap as each line starts'**
+  /// **'Play to start'**
   String get contributeSyncPressPlay;
 
   /// Moves playback back 5 seconds.
@@ -3089,6 +3089,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'0.75×'**
   String get contributeSyncSpeedSlow;
+
+  /// S21 view with every line in a list.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get contributeSyncList;
+
+  /// S21 view with one line large and a big tap area.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get contributeSyncFocus;
+
+  /// Plays the song from the start with the lyrics highlighting.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get contributeSyncPreview;
+
+  /// Leaves the preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to syncing'**
+  String get contributeSyncEndPreview;
+
+  /// The Focus view's tap area while playing.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap when you hear it'**
+  String get contributeSyncHearIt;
+
+  /// The time of the line before, in the Focus view.
+  ///
+  /// In en, this message translates to:
+  /// **'✓ {time}'**
+  String contributeSyncTimedAt(String time);
+
+  /// The Focus view when all lines are timed.
+  ///
+  /// In en, this message translates to:
+  /// **'Every line has a time. Check it with Preview.'**
+  String get contributeSyncAllTimed;
+
+  /// Tooltip of S21 menu with Skip.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get contributeSyncMore;
 }
 
 class _AppLocalizationsDelegate

@@ -3,14 +3,23 @@ id: 047-contribution-and-sync-editor-ui
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 008-sync-editor-focus-and-preview
 created: '2026-11-02T07:00:52Z'
-started: null
-completed: null
+started: '2026-11-02T17:00:00Z'
+completed: '2026-11-02T12:31:02Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-11-02T17:00:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-11-02T17:20:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-11-02T17:30:00Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 046-contribution-and-sync-editor-ui
 enables_bolts:

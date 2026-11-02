@@ -1835,8 +1835,7 @@ class AppLocalizationsTi extends AppLocalizations {
   String get contributeSyncTap => 'Tap — next line';
 
   @override
-  String get contributeSyncPressPlay =>
-      'Press play, then tap as each line starts';
+  String get contributeSyncPressPlay => 'Play to start';
 
   @override
   String get contributeSyncBack5 => '−5 s';
@@ -1846,4 +1845,31 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get contributeSyncSpeedSlow => '0.75×';
+
+  @override
+  String get contributeSyncList => 'List';
+
+  @override
+  String get contributeSyncFocus => 'Focus';
+
+  @override
+  String get contributeSyncPreview => 'Preview';
+
+  @override
+  String get contributeSyncEndPreview => 'Back to syncing';
+
+  @override
+  String get contributeSyncHearIt => 'Tap when you hear it';
+
+  @override
+  String contributeSyncTimedAt(String time) {
+    return '✓ $time';
+  }
+
+  @override
+  String get contributeSyncAllTimed =>
+      'Every line has a time. Check it with Preview.';
+
+  @override
+  String get contributeSyncMore => 'More';
 }

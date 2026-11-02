@@ -58,4 +58,12 @@ void main() {
     expect(startsFor(starts, 2), same(starts));
     expect(startsFor(starts, 3), [null, null, null]);
   });
+
+  test('the line at a position is the last timed one started', () {
+    final starts = [s(1), s(4), null, s(9)];
+    expect(lineAt(starts, s(0.5)), isNull);
+    expect(lineAt(starts, s(1)), 0);
+    expect(lineAt(starts, s(8)), 1);
+    expect(lineAt(starts, s(20)), 3);
+  });
 }

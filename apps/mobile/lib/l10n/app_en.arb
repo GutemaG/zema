@@ -2362,9 +2362,9 @@
   "@contributeSyncTap": {
     "description": "The big button that times the next line."
   },
-  "contributeSyncPressPlay": "Press play, then tap as each line starts",
+  "contributeSyncPressPlay": "Play to start",
   "@contributeSyncPressPlay": {
-    "description": "The big button while the recording is paused."
+    "description": "The big button while the recording is paused; pressing it plays."
   },
   "contributeSyncBack5": "−5 s",
   "@contributeSyncBack5": {
@@ -2377,5 +2377,42 @@
   "contributeSyncSpeedSlow": "0.75×",
   "@contributeSyncSpeedSlow": {
     "description": "Playback speed button at 0.75×; tap for normal speed."
+  },
+  "contributeSyncList": "List",
+  "@contributeSyncList": {
+    "description": "S21 view with every line in a list."
+  },
+  "contributeSyncFocus": "Focus",
+  "@contributeSyncFocus": {
+    "description": "S21 view with one line large and a big tap area."
+  },
+  "contributeSyncPreview": "Preview",
+  "@contributeSyncPreview": {
+    "description": "Plays the song from the start with the lyrics highlighting."
+  },
+  "contributeSyncEndPreview": "Back to syncing",
+  "@contributeSyncEndPreview": {
+    "description": "Leaves the preview."
+  },
+  "contributeSyncHearIt": "Tap when you hear it",
+  "@contributeSyncHearIt": {
+    "description": "The Focus view's tap area while playing."
+  },
+  "contributeSyncTimedAt": "✓ {time}",
+  "@contributeSyncTimedAt": {
+    "description": "The time of the line before, in the Focus view.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "contributeSyncAllTimed": "Every line has a time. Check it with Preview.",
+  "@contributeSyncAllTimed": {
+    "description": "The Focus view when all lines are timed."
+  },
+  "contributeSyncMore": "More",
+  "@contributeSyncMore": {
+    "description": "Tooltip of S21 menu with Skip."
   }
 }
