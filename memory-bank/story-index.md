@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 63
-- **Generated**: 63
-- **Last updated**: 2026-10-29T14:00:21Z
+- **Total stories**: 97
+- **Generated**: 97
+- **Last updated**: 2026-11-02T07:00:52Z
 
 ---
 
@@ -96,7 +96,51 @@ Path: `memory-bank/intents/004-cloud-lyrics-catalog/units/002-cloud-lyrics-catal
 - [x] **008-home-community-row** (cloud-lyrics-catalog-ui): Home: new lyrics from the community - Could - ✅ COMPLETED
 - [x] **009-report-sent-once** (cloud-lyrics-catalog-ui): A report is stored once, even if sent again - Should - ✅ COMPLETED
 
-### 005-accounts-backup-restore … 008-admin-website
+### 005-accounts-backup-restore
+
+Path: `memory-bank/intents/005-accounts-backup-restore/units/*/stories/`
+
+- [x] **001-profiles-and-roles** (accounts-backend): Profiles made on sign-up, with roles - Must - ✅ COMPLETED
+- [x] **002-google-auth-config** (accounts-backend): Google provider config and setup guide - Must - ✅ COMPLETED
+- [x] **003-backups-table** (accounts-backend): One private backup per user - Must - ✅ COMPLETED
+- [x] **004-delete-account-function** (accounts-backend): Delete account on the server - Must - ✅ COMPLETED
+- [x] **001-auth-repository** (accounts-backup-restore-ui): Auth and profile repositories - Must - ✅ COMPLETED
+- [x] **002-account-choice** (accounts-backup-restore-ui): Account choice once (S04) - Must - ✅ COMPLETED
+- [x] **003-google-sign-in** (accounts-backup-restore-ui): Sign in with Google (S24) - Must - ✅ COMPLETED
+- [x] **004-profile** (accounts-backup-restore-ui): Profile and Home avatar (S25) - Must - ✅ COMPLETED
+- [x] **005-delete-account** (accounts-backup-restore-ui): Delete account - Must - ✅ COMPLETED
+- [x] **006-guest-prompt-and-entry-points** (accounts-backup-restore-ui): Guest sign-in prompt (C09) and entry points - Must - ✅ COMPLETED
+- [x] **007-backup-document** (accounts-backup-restore-ui): Versioned backup document - Must - ✅ COMPLETED
+- [x] **008-backup-now** (accounts-backup-restore-ui): Back up now (S25b) - Must - ✅ COMPLETED
+- [x] **009-auto-backup** (accounts-backup-restore-ui): Daily auto backup on Wi-Fi - Must - ✅ COMPLETED
+- [x] **010-relink-and-merge** (accounts-backup-restore-ui): Re-link tracks and merge - Must - ✅ COMPLETED
+- [x] **011-restore-screen** (accounts-backup-restore-ui): Restore on a new phone (S26) - Must - ✅ COMPLETED
+- [x] **012-unmatched-entries-kept** (accounts-backup-restore-ui): Songs not found are kept - Should - ✅ COMPLETED
+
+### 006-contribution-and-sync-editor
+
+Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
+
+- [ ] **001-submit-contributions** (contribution-backend): Submit and resubmit contributions - Must - 📋 PLANNED
+- [ ] **002-review-and-moderator-role** (contribution-backend): Review RPC and the moderator role - Must - 📋 PLANNED
+- [ ] **003-publish-on-approval** (contribution-backend): Publish approved contributions - Must - 📋 PLANNED
+- [ ] **001-contribution-model-and-validation** (contribution-and-sync-editor-ui): Contribution model and shared validation - Must - 📋 PLANNED
+- [ ] **002-contribution-repository** (contribution-and-sync-editor-ui): Contribution repository - Must - 📋 PLANNED
+- [ ] **003-contribute-tab-and-drafts** (contribution-and-sync-editor-ui): Contribute tab (S05) and drafts - Must - 📋 PLANNED
+- [ ] **004-add-lyrics-editor** (contribution-and-sync-editor-ui): Add lyrics (S19) - Must - 📋 PLANNED
+- [ ] **005-link-recording** (contribution-and-sync-editor-ui): Link recording (S20): local file and YouTube - Must - 📋 PLANNED
+- [ ] **006-telegram-share** (contribution-and-sync-editor-ui): Share audio from Telegram (Android) - Should - 📋 PLANNED
+- [ ] **007-sync-editor-list** (contribution-and-sync-editor-ui): Sync editor: List view (S21) - Must - 📋 PLANNED
+- [ ] **008-sync-editor-focus-and-preview** (contribution-and-sync-editor-ui): Sync editor: Focus view and Preview - Must - 📋 PLANNED
+- [ ] **009-review-and-submit** (contribution-and-sync-editor-ui): Review & submit (S22) and the own copy - Must - 📋 PLANNED
+- [ ] **010-duplicate-check-and-entry-points** (contribution-and-sync-editor-ui): Duplicate check and entry points - Must - 📋 PLANNED
+- [ ] **011-corrections** (contribution-and-sync-editor-ui): Suggest a correction - Must - 📋 PLANNED
+- [ ] **012-my-contributions-and-badge** (contribution-and-sync-editor-ui): My contributions (S23) and the status badge - Must - 📋 PLANNED
+- [ ] **013-moderator-queue** (contribution-and-sync-editor-ui): Moderator review queue (S23m) - Must - 📋 PLANNED
+- [ ] **014-edit-song-info** (contribution-and-sync-editor-ui): Edit song info (S09) - Should - 📋 PLANNED
+- [ ] **015-backup-additions** (contribution-and-sync-editor-ui): Backup additions: overrides and sync offsets - Could - 📋 PLANNED
+
+### 007-background-detection-floating-lyrics … 012-ai-lyrics-from-audio
 
 No stories yet (intents in draft).
 
@@ -104,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 0
-- **Generated**: 0
+- **Planned**: 18
+- **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 63
+- **Completed**: 79
