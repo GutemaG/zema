@@ -9,6 +9,9 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../account/application/account_providers.dart';
+import '../../contribute/application/contribution_starts.dart';
+import '../../contribute/presentation/start_contribution.dart';
 import '../../player/application/player_providers.dart';
 import '../application/lyrics_links.dart';
 import '../application/lyrics_prefs.dart';
@@ -77,14 +80,15 @@ class LyricsUnavailable extends ConsumerWidget {
   }
 }
 
-/// The "No lyrics" state with a Match lyrics button.
-class NoLyrics extends StatelessWidget {
+/// The "No lyrics" state with a Match lyrics button, and Add lyrics (when
+/// the build has a backend) to contribute them.
+class NoLyrics extends ConsumerWidget {
   const NoLyrics({super.key, required this.track});
 
   final Track track;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
     return Center(
@@ -107,6 +111,20 @@ class NoLyrics extends StatelessWidget {
               label: Text(l10n.songMatchLyrics),
               onPressed: () => unawaited(showMatchLyricsSheet(context, track)),
             ),
+            if (ref.watch(accountsAvailableProvider)) ...[
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.edit_note),
+                label: Text(l10n.contributeAddLyrics),
+                onPressed: () => unawaited(
+                  startContribution(
+                    context,
+                    ref,
+                    draft: newSongDraftFor(track),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),

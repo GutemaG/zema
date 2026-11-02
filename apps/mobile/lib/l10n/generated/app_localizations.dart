@@ -3305,6 +3305,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pending review'**
   String get lyricsPendingReview;
+
+  /// Shown on S19 when the typed title matches catalog songs.
+  ///
+  /// In en, this message translates to:
+  /// **'A similar song exists'**
+  String get contributeSimilarTitle;
+
+  /// Under the similar-song heading on S19.
+  ///
+  /// In en, this message translates to:
+  /// **'If it\'s the same song, add your recording to it or suggest a correction instead.'**
+  String get contributeSimilarHelp;
+
+  /// Switches the draft to adding a recording of the matched song.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a recording'**
+  String get contributeSimilarAddRecording;
+
+  /// Switches the draft to correcting the matched song's lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest a correction'**
+  String get contributeSimilarCorrect;
+
+  /// Tooltip of the button that hides the similar-song warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Not the same song'**
+  String get contributeSimilarIgnore;
+
+  /// Snackbar when the matched song can't be downloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open that song. Check your connection and try again.'**
+  String get contributeSimilarUnavailable;
+
+  /// Search with no results: starts a new song with the query as its title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this song\'s lyrics'**
+  String get contributeEntryAddSongLyrics;
+
+  /// Song detail menu: adds a recording to this catalog song.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a recording'**
+  String get contributeEntryLinkRecording;
+
+  /// Song detail menu: times the lyrics for the phone's recording of this song.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync this recording'**
+  String get contributeEntrySyncRecording;
+
+  /// Song detail menu: opens S19 filled with this song to fix it.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest a correction'**
+  String get contributeCorrectionSuggest;
+
+  /// Shown at the top of S19 for a correction.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re correcting the catalog\'s lyrics. Change only what\'s wrong; a moderator checks it.'**
+  String get contributeCorrectionNote;
+
+  /// Heading of the list of lines a correction changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed lines'**
+  String get contributeCorrectionChanges;
+
+  /// When a correction changes no line.
+  ///
+  /// In en, this message translates to:
+  /// **'No lines changed.'**
+  String get contributeCorrectionNoChanges;
+
+  /// Label of a line the correction adds.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get contributeCorrectionAdded;
+
+  /// Label of a line the correction removes.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get contributeCorrectionRemoved;
+
+  /// Label of a line the correction changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get contributeCorrectionChanged;
+
+  /// Above the recordings a correction would leave unsynced.
+  ///
+  /// In en, this message translates to:
+  /// **'The number of sung lines changes, so these recordings lose their timings until someone syncs them again:'**
+  String get contributeCorrectionLosesTimings;
+
+  /// Title of the flow when adding a recording to a catalog song.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a recording'**
+  String get contributeFlowRecordingTitle;
+
+  /// Title of the flow when syncing a catalog recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync a recording'**
+  String get contributeFlowSyncTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -10,29 +10,14 @@ import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../account/application/account_providers.dart';
 import '../../account/presentation/backup_screen.dart';
-import '../../account/presentation/widgets/sign_in_prompt.dart';
 import '../application/drafts.dart';
+import 'start_contribution.dart';
 
 /// S05: how contributing works, Add lyrics and the user's drafts. Guests are
 /// asked to sign in (C09) when they start; builds without a backend explain
 /// that contributing needs one.
 class ContributeScreen extends ConsumerWidget {
   const ContributeScreen({super.key});
-
-  /// Signs a guest in first (C09); whether to go on.
-  static Future<bool> _signedIn(BuildContext context, WidgetRef ref) async {
-    if (ref.read(authRepositoryProvider)?.currentUser != null) return true;
-    return showSignInPrompt(
-      context,
-      reason: AppLocalizations.of(context).contributeSignInReason,
-    );
-  }
-
-  Future<void> _addLyrics(BuildContext context, WidgetRef ref) async {
-    if (!await _signedIn(context, ref) || !context.mounted) return;
-    final id = await startDraft(ref);
-    if (context.mounted) await context.push<void>(AppRoutes.draft(id));
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,7 +54,7 @@ class ContributeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             if (available)
               FilledButton.icon(
-                onPressed: () => _addLyrics(context, ref),
+                onPressed: () => startContribution(context, ref),
                 icon: const Icon(Icons.edit_note),
                 label: Text(l10n.contributeAddLyrics),
                 style: FilledButton.styleFrom(

@@ -10,7 +10,10 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../application/drafts.dart';
+import '../../catalog/data/catalog_lyrics_repository.dart';
+import '../../lyrics/application/lyrics_links.dart';
 import '../application/own_copies.dart';
+import 'correction_changes.dart';
 import 'lyrics_step.dart';
 
 /// How a draft's timings will be sent, as S22 shows them.
@@ -61,6 +64,24 @@ String submitProblem(AppLocalizations l10n, Object error) => switch (error) {
   ContributionFailure() => l10n.contributeSubmitRefused,
   _ => l10n.contributeSubmitFailed,
 };
+
+/// The catalog song a correction changes, with its recordings and their
+/// timings (to name the ones that would lose them). Null when it can't be
+/// had.
+final correctionBaseProvider = FutureProvider.autoDispose
+    .family<
+      ({Song song, List<Recording> recordings, List<SyncTiming> timings})?,
+      String
+    >((ref, songId) async {
+      final song = await ref.watch(songProvider(songId).future);
+      if (song == null) return null;
+      final repository = ref.watch(lyricsRepositoryProvider);
+      final recordings = await repository.recordings(songId);
+      final timings = [
+        for (final r in recordings) ?await repository.timing(r.id),
+      ];
+      return (song: song, recordings: recordings, timings: timings);
+    });
 
 /// S22, step 4: the song, the lyrics in play order, the recording and the
 /// sync status, each with Edit, and Submit for review.
@@ -120,6 +141,13 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
     final song = draft.song;
     final recording = draft.recording;
     final status = syncStatusOf(draft);
+    final correction =
+        draft.kind == ContributionKind.editLyrics && draft.songId != null
+        ? ref.watch(correctionBaseProvider(draft.songId!)).value
+        : null;
+    // A correction that changes nothing has nothing to send.
+    final unchanged =
+        correction != null && !songChanged(correction.song, draft.song);
     final details = [
       ?_blankToNull(song.artist),
       ?_blankToNull(song.album),
@@ -163,6 +191,20 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                     ),
                 ],
               ),
+              if (correction != null)
+                _Section(
+                  title: l10n.contributeCorrectionChanges,
+                  editLabel: l10n.contributeReviewEditLyrics,
+                  onEdit: _sending ? null : () => _goTo(DraftStep.lyrics),
+                  children: [
+                    CorrectionChanges(
+                      base: correction.song,
+                      edited: draft.song,
+                      recordings: correction.recordings,
+                      timings: correction.timings,
+                    ),
+                  ],
+                ),
               _Section(
                 title: l10n.contributeReviewLyrics,
                 editLabel: l10n.contributeReviewEditLyrics,
@@ -299,7 +341,9 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
               SizedBox(
                 height: 56,
                 child: FilledButton(
-                  onPressed: _sending ? null : () => unawaited(_submit()),
+                  onPressed: _sending || unchanged
+                      ? null
+                      : () => unawaited(_submit()),
                   style: FilledButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(ZemaRadius.large),

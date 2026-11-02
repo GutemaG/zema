@@ -133,8 +133,8 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **007-sync-editor-list** (contribution-and-sync-editor-ui): Sync editor: List view (S21) - Must - ✅ COMPLETED
 - [x] **008-sync-editor-focus-and-preview** (contribution-and-sync-editor-ui): Sync editor: Focus view and Preview - Must - ✅ COMPLETED
 - [x] **009-review-and-submit** (contribution-and-sync-editor-ui): Review & submit (S22) and the own copy - Must - ✅ COMPLETED
-- [ ] **010-duplicate-check-and-entry-points** (contribution-and-sync-editor-ui): Duplicate check and entry points - Must - 📋 PLANNED
-- [ ] **011-corrections** (contribution-and-sync-editor-ui): Suggest a correction - Must - 📋 PLANNED
+- [x] **010-duplicate-check-and-entry-points** (contribution-and-sync-editor-ui): Duplicate check and entry points - Must - ✅ COMPLETED
+- [x] **011-corrections** (contribution-and-sync-editor-ui): Suggest a correction - Must - ✅ COMPLETED
 - [ ] **012-my-contributions-and-badge** (contribution-and-sync-editor-ui): My contributions (S23) and the status badge - Must - 📋 PLANNED
 - [ ] **013-moderator-queue** (contribution-and-sync-editor-ui): Moderator review queue (S23m) - Must - 📋 PLANNED
 - [ ] **014-edit-song-info** (contribution-and-sync-editor-ui): Edit song info (S09) - Should - 📋 PLANNED
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 6
+- **Planned**: 4
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 91
+- **Completed**: 93

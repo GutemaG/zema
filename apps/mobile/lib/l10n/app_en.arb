@@ -2536,5 +2536,81 @@
   "lyricsPendingReview": "Pending review",
   "@lyricsPendingReview": {
     "description": "Chip on lyrics the user sent that a moderator hasn't checked yet; only this phone shows them."
+  },
+  "contributeSimilarTitle": "A similar song exists",
+  "@contributeSimilarTitle": {
+    "description": "Shown on S19 when the typed title matches catalog songs."
+  },
+  "contributeSimilarHelp": "If it's the same song, add your recording to it or suggest a correction instead.",
+  "@contributeSimilarHelp": {
+    "description": "Under the similar-song heading on S19."
+  },
+  "contributeSimilarAddRecording": "Add a recording",
+  "@contributeSimilarAddRecording": {
+    "description": "Switches the draft to adding a recording of the matched song."
+  },
+  "contributeSimilarCorrect": "Suggest a correction",
+  "@contributeSimilarCorrect": {
+    "description": "Switches the draft to correcting the matched song's lyrics."
+  },
+  "contributeSimilarIgnore": "Not the same song",
+  "@contributeSimilarIgnore": {
+    "description": "Tooltip of the button that hides the similar-song warning."
+  },
+  "contributeSimilarUnavailable": "Couldn't open that song. Check your connection and try again.",
+  "@contributeSimilarUnavailable": {
+    "description": "Snackbar when the matched song can't be downloaded."
+  },
+  "contributeEntryAddSongLyrics": "Add this song's lyrics",
+  "@contributeEntryAddSongLyrics": {
+    "description": "Search with no results: starts a new song with the query as its title."
+  },
+  "contributeEntryLinkRecording": "Link a recording",
+  "@contributeEntryLinkRecording": {
+    "description": "Song detail menu: adds a recording to this catalog song."
+  },
+  "contributeEntrySyncRecording": "Sync this recording",
+  "@contributeEntrySyncRecording": {
+    "description": "Song detail menu: times the lyrics for the phone's recording of this song."
+  },
+  "contributeCorrectionSuggest": "Suggest a correction",
+  "@contributeCorrectionSuggest": {
+    "description": "Song detail menu: opens S19 filled with this song to fix it."
+  },
+  "contributeCorrectionNote": "You're correcting the catalog's lyrics. Change only what's wrong; a moderator checks it.",
+  "@contributeCorrectionNote": {
+    "description": "Shown at the top of S19 for a correction."
+  },
+  "contributeCorrectionChanges": "Changed lines",
+  "@contributeCorrectionChanges": {
+    "description": "Heading of the list of lines a correction changes."
+  },
+  "contributeCorrectionNoChanges": "No lines changed.",
+  "@contributeCorrectionNoChanges": {
+    "description": "When a correction changes no line."
+  },
+  "contributeCorrectionAdded": "Added",
+  "@contributeCorrectionAdded": {
+    "description": "Label of a line the correction adds."
+  },
+  "contributeCorrectionRemoved": "Removed",
+  "@contributeCorrectionRemoved": {
+    "description": "Label of a line the correction removes."
+  },
+  "contributeCorrectionChanged": "Changed",
+  "@contributeCorrectionChanged": {
+    "description": "Label of a line the correction changes."
+  },
+  "contributeCorrectionLosesTimings": "The number of sung lines changes, so these recordings lose their timings until someone syncs them again:",
+  "@contributeCorrectionLosesTimings": {
+    "description": "Above the recordings a correction would leave unsynced."
+  },
+  "contributeFlowRecordingTitle": "Link a recording",
+  "@contributeFlowRecordingTitle": {
+    "description": "Title of the flow when adding a recording to a catalog song."
+  },
+  "contributeFlowSyncTitle": "Sync a recording",
+  "@contributeFlowSyncTitle": {
+    "description": "Title of the flow when syncing a catalog recording."
   }
 }

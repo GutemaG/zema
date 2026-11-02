@@ -1970,4 +1970,65 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get lyricsPendingReview => 'Pending review';
+
+  @override
+  String get contributeSimilarTitle => 'A similar song exists';
+
+  @override
+  String get contributeSimilarHelp =>
+      'If it\'s the same song, add your recording to it or suggest a correction instead.';
+
+  @override
+  String get contributeSimilarAddRecording => 'Add a recording';
+
+  @override
+  String get contributeSimilarCorrect => 'Suggest a correction';
+
+  @override
+  String get contributeSimilarIgnore => 'Not the same song';
+
+  @override
+  String get contributeSimilarUnavailable =>
+      'Couldn\'t open that song. Check your connection and try again.';
+
+  @override
+  String get contributeEntryAddSongLyrics => 'Add this song\'s lyrics';
+
+  @override
+  String get contributeEntryLinkRecording => 'Link a recording';
+
+  @override
+  String get contributeEntrySyncRecording => 'Sync this recording';
+
+  @override
+  String get contributeCorrectionSuggest => 'Suggest a correction';
+
+  @override
+  String get contributeCorrectionNote =>
+      'You\'re correcting the catalog\'s lyrics. Change only what\'s wrong; a moderator checks it.';
+
+  @override
+  String get contributeCorrectionChanges => 'Changed lines';
+
+  @override
+  String get contributeCorrectionNoChanges => 'No lines changed.';
+
+  @override
+  String get contributeCorrectionAdded => 'Added';
+
+  @override
+  String get contributeCorrectionRemoved => 'Removed';
+
+  @override
+  String get contributeCorrectionChanged => 'Changed';
+
+  @override
+  String get contributeCorrectionLosesTimings =>
+      'The number of sung lines changes, so these recordings lose their timings until someone syncs them again:';
+
+  @override
+  String get contributeFlowRecordingTitle => 'Link a recording';
+
+  @override
+  String get contributeFlowSyncTitle => 'Sync a recording';
 }

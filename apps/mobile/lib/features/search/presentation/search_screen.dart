@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../account/application/account_providers.dart';
 import '../../catalog/application/catalog_index.dart';
+import '../../contribute/presentation/start_contribution.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
@@ -206,6 +208,17 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
         icon: Icons.search_off,
         title: l10n.libraryNoResultsTitle,
         message: l10n.libraryNoResultsMessage,
+        // Not in the catalog either: it can be added.
+        actionLabel: ref.watch(accountsAvailableProvider)
+            ? l10n.contributeEntryAddSongLyrics
+            : null,
+        onAction: () => startContribution(
+          context,
+          ref,
+          draft: ContributionDraft(
+            song: Song(id: '', title: _query.trim(), sections: const []),
+          ),
+        ),
       );
     }
 

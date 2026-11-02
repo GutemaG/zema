@@ -11,15 +11,18 @@ import 'package:zema/features/contribute/application/drafts.dart';
 import 'package:zema/features/contribute/presentation/contribute_screen.dart';
 import 'package:zema/features/contribute/presentation/lyrics_step.dart';
 import 'package:zema/features/contribute/presentation/recording_step.dart';
+import 'package:zema/features/contribute/presentation/correction_changes.dart';
 import 'package:zema/features/contribute/presentation/review_step.dart';
 import 'package:zema/features/contribute/presentation/sync_step.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../helpers/fake_auth.dart';
+import '../../helpers/fake_catalog.dart';
 import '../../helpers/fake_contribute.dart';
 import '../../helpers/fake_contributions.dart';
 import '../../helpers/fake_library.dart';
+import '../../helpers/memory_lyrics.dart';
 import '../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
@@ -89,6 +92,8 @@ void main() {
   Future<void> open(
     WidgetTester tester, {
     ContributionDraft? draft,
+    FakeCatalogRepository? catalog,
+    String? location,
     Brightness brightness = Brightness.dark,
     double textScale = 1,
     Size size = const Size(400, 1200),
@@ -104,7 +109,7 @@ void main() {
     });
     await pumpZemaApp(
       tester,
-      location: AppRoutes.draft(id),
+      location: location ?? AppRoutes.draft(id),
       auth: FakeAuthRepository(user: testUser),
       database: db,
       googlePicker: FakeGoogleAccountPicker(),
@@ -112,6 +117,7 @@ void main() {
       savedPrefs: {AccountChoiceController.key: true},
       syncPlayer: FakeSyncPlayer(),
       contributions: contributions,
+      catalog: catalog,
     );
   }
 
@@ -373,6 +379,104 @@ void main() {
       expect(contributions.calls, 1);
       expect(contributions.sent, hasLength(1));
       expect(find.byType(ContributeScreen), findsOneWidget);
+    });
+  });
+
+  group('a correction', () {
+    const base = Song(
+      id: 'selam',
+      title: 'Selam',
+      sections: [
+        LyricSection(
+          id: 'v1',
+          kind: SectionKind.verse,
+          lines: [LyricLine('one'), LyricLine('two')],
+        ),
+      ],
+      playOrder: ['v1'],
+    );
+    const recording = Recording(
+      id: 'rec-1',
+      songId: 'selam',
+      source: RecordingSource.localFile,
+      artist: 'Sunday Choir',
+      fileName: 'Selam.mp3',
+    );
+    final catalog = FakeCatalogRepository(
+      lyrics: MemoryLyricsRepository(
+        [base],
+        recordings: [recording],
+        timings: const [
+          SyncTiming(
+            recordingId: 'rec-1',
+            starts: [Duration(seconds: 1), Duration(seconds: 2)],
+          ),
+        ],
+      ),
+    );
+
+    ContributionDraft correction(Song song) => ContributionDraft(
+      kind: ContributionKind.editLyrics,
+      songId: 'selam',
+      baseVersion: 1,
+      song: song,
+      step: DraftStep.review,
+    );
+
+    // From S05: the catalog index loads under the tabs.
+    Future<void> openCorrection(WidgetTester tester, Song song) async {
+      await open(
+        tester,
+        draft: correction(song),
+        catalog: catalog,
+        location: AppRoutes.contribute,
+      );
+      await tap(tester, find.text('Selam'));
+    }
+
+    testWidgets('with nothing changed, Submit is off', (tester) async {
+      await openCorrection(tester, base);
+      expect(find.text(_l10n.contributeCorrectionNoChanges), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, _l10n.contributeSubmit),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(find.text(_l10n.contributeCorrectionSuggest), findsOneWidget);
+    });
+
+    testWidgets('shows the changed lines and the recordings losing timings', (
+      tester,
+    ) async {
+      await openCorrection(
+        tester,
+        const Song(
+          id: 'selam',
+          title: 'Selam',
+          sections: [
+            LyricSection(
+              id: 'v1',
+              kind: SectionKind.verse,
+              lines: [LyricLine('one'), LyricLine('two'), LyricLine('three')],
+            ),
+          ],
+          playOrder: ['v1'],
+        ),
+      );
+      expect(find.byType(CorrectionChanges), findsOneWidget);
+      expect(find.text(_l10n.contributeCorrectionLosesTimings), findsOneWidget);
+      expect(find.textContaining('Sunday Choir'), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, _l10n.contributeSubmit),
+            )
+            .onPressed,
+        isNotNull,
+      );
     });
   });
 

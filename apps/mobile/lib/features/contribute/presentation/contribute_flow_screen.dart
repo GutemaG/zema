@@ -40,7 +40,12 @@ class ContributeFlowScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: CloseButton(onPressed: () => _close(context)),
-        title: Text(l10n.contributeAddLyrics),
+        title: Text(switch (draft.value?.kind) {
+          ContributionKind.editLyrics => l10n.contributeCorrectionSuggest,
+          ContributionKind.recording => l10n.contributeFlowRecordingTitle,
+          ContributionKind.syncTiming => l10n.contributeFlowSyncTitle,
+          _ => l10n.contributeAddLyrics,
+        }),
       ),
       body: SafeArea(
         top: false,
