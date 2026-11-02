@@ -10,6 +10,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/preferences_provider.dart';
+import '../../contribute/data/shared_audio.dart';
 import '../data/avatar_cache.dart';
 import '../data/profile_cache.dart';
 import 'account_providers.dart';
@@ -165,7 +166,9 @@ class AccountActionsController extends Notifier<AccountAction?> {
     // Songs not found at restore belong to that account's backup, and
     // drafts to its contributions.
     await database.unmatchedDao.clear();
+    final shared = await database.draftsDao.audioPaths();
     await database.draftsDao.clear();
+    await Future.wait(shared.map(deleteSharedAudio));
     try {
       await ref.read(avatarCacheProvider).clear();
     } on Object catch (e) {

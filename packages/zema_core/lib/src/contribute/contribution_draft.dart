@@ -21,6 +21,8 @@ class ContributionDraft {
     this.recording,
     this.starts = const [],
     this.trackId,
+    this.audioPath,
+    this.videoTitle,
     this.step = DraftStep.lyrics,
   });
 
@@ -49,6 +51,8 @@ class ContributionDraft {
             ms is int ? Duration(milliseconds: ms) : null,
       ],
       trackId: json['trackId'] as int?,
+      audioPath: json['audioPath'] as String?,
+      videoTitle: json['videoTitle'] as String?,
       step: DraftStep.values.asNameMap()[json['step']] ?? DraftStep.lyrics,
     );
   }
@@ -69,6 +73,13 @@ class ContributionDraft {
 
   /// The local track the user started from, if any.
   final int? trackId;
+
+  /// Zema's own copy of an audio file shared to it (Telegram), which the
+  /// sync editor plays; deleted with the draft.
+  final String? audioPath;
+
+  /// The YouTube video's title, shown on S20; not sent.
+  final String? videoTitle;
   final DraftStep step;
 
   /// The title as shown in lists; empty until typed.
@@ -155,6 +166,8 @@ class ContributionDraft {
     Recording? Function()? recording,
     List<Duration?>? starts,
     int? Function()? trackId,
+    String? Function()? audioPath,
+    String? Function()? videoTitle,
     DraftStep? step,
   }) => ContributionDraft(
     kind: kind,
@@ -164,6 +177,8 @@ class ContributionDraft {
     recording: recording == null ? this.recording : recording(),
     starts: starts ?? this.starts,
     trackId: trackId == null ? this.trackId : trackId(),
+    audioPath: audioPath == null ? this.audioPath : audioPath(),
+    videoTitle: videoTitle == null ? this.videoTitle : videoTitle(),
     step: step ?? this.step,
   );
 
@@ -177,6 +192,8 @@ class ContributionDraft {
     if (starts.isNotEmpty)
       'startsMs': [for (final s in starts) s?.inMilliseconds],
     'trackId': ?trackId,
+    'audioPath': ?audioPath,
+    'videoTitle': ?videoTitle,
     'step': step.name,
   };
 
@@ -190,6 +207,8 @@ class ContributionDraft {
       other.recording == recording &&
       _sameStarts(other.starts, starts) &&
       other.trackId == trackId &&
+      other.audioPath == audioPath &&
+      other.videoTitle == videoTitle &&
       other.step == step;
 
   @override
@@ -201,6 +220,8 @@ class ContributionDraft {
     recording,
     Object.hashAll(starts),
     trackId,
+    audioPath,
+    videoTitle,
     step,
   );
 }

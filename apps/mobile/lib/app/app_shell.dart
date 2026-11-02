@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/account/application/account_providers.dart';
+import '../features/account/presentation/widgets/sign_in_prompt.dart';
+import '../features/contribute/application/recording.dart';
+import '../features/contribute/data/shared_audio.dart';
 import '../features/library/application/library_sync_controller.dart';
 import '../features/library/application/play_history.dart';
 import '../features/catalog/application/catalog_index.dart';
@@ -10,6 +16,7 @@ import '../features/lyrics/application/lyrics_links.dart';
 import '../features/player/application/player_providers.dart';
 import '../features/player/presentation/mini_player.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'routes.dart';
 import 'zema_nav_bar.dart';
 
 /// The main app frame: the current tab above the bottom navigation.
@@ -19,7 +26,8 @@ import 'zema_nav_bar.dart';
 ///
 /// The shell also keeps the library sync and the player session (restore and
 /// autosave of the queue) running from app start, shows the mini player above
-/// the navigation, and reports songs that couldn't be played.
+/// the navigation, and reports songs that couldn't be played. An audio file
+/// shared to Zema starts a contribution with it (after C09 for a guest).
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -35,8 +43,33 @@ class AppShell extends ConsumerWidget {
     );
   }
 
+  static Future<void> _contributeShared(
+    BuildContext context,
+    WidgetRef ref,
+    SharedAudio audio,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    if (!ref.read(accountsAvailableProvider)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.contributeShareNeedsBackend)));
+      return deleteSharedAudio(audio.path);
+    }
+    if (ref.read(authRepositoryProvider)?.currentUser == null &&
+        !await showSignInPrompt(context, reason: l10n.contributeSignInReason)) {
+      return deleteSharedAudio(audio.path);
+    }
+    final id = await startSharedDraft(ref, audio);
+    if (context.mounted) await context.push<void>(AppRoutes.draft(id));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(incomingSharesProvider, (_, next) {
+      if (next case AsyncData(:final value)) {
+        unawaited(_contributeShared(context, ref, value));
+      }
+    });
     // Listening (not watching) keeps these alive without rebuilding.
     ref.listen(librarySyncProvider, (_, _) {});
     ref.listen(playerSessionProvider, (_, _) {});

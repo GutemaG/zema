@@ -81,6 +81,12 @@ class DraftsDao extends DatabaseAccessor<ZemaDatabase> with _$DraftsDaoMixin {
 
   Future<void> clear() => delete(drafts).go();
 
+  /// Zema's copies of shared audio files the drafts use.
+  Future<List<String>> audioPaths() async => [
+    for (final row in await select(drafts).get())
+      ?_toSaved(row)?.draft.audioPath,
+  ];
+
   /// The titles of all drafts, last changed first; empty for untitled ones.
   Future<List<String>> titles() async => [
     for (final row in await (select(

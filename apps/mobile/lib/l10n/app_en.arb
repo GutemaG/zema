@@ -2229,5 +2229,101 @@
   "contributeNextRecording": "Next: link a recording",
   "@contributeNextRecording": {
     "description": "Goes from the lyrics to step 2."
+  },
+  "contributeRecordingTitle": "Which recording are these lyrics for?",
+  "@contributeRecordingTitle": {
+    "description": "S20 heading."
+  },
+  "contributeRecordingBody": "Timings belong to one performance. Pick the one you'll sync with.",
+  "@contributeRecordingBody": {
+    "description": "S20 explanation."
+  },
+  "contributeRecordingLocal": "A song on this phone",
+  "@contributeRecordingLocal": {
+    "description": "S20 choice: a track in the library."
+  },
+  "contributeRecordingYoutube": "A YouTube link",
+  "@contributeRecordingYoutube": {
+    "description": "S20 choice: a YouTube video."
+  },
+  "contributeRecordingShared": "An audio from Telegram",
+  "@contributeRecordingShared": {
+    "description": "S20 choice: an audio file shared to Zema from Telegram or another app."
+  },
+  "contributeRecordingArtist": "Artist or choir in this recording",
+  "@contributeRecordingArtist": {
+    "description": "Field for the recording's performer."
+  },
+  "contributeChooseSong": "Choose a song",
+  "@contributeChooseSong": {
+    "description": "Opens the list of songs on the phone."
+  },
+  "contributeChange": "Change",
+  "@contributeChange": {
+    "description": "Chooses another song."
+  },
+  "contributeNoSongs": "No songs on this phone yet.",
+  "@contributeNoSongs": {
+    "description": "Shown in the song picker when the library is empty."
+  },
+  "contributeYoutubeLink": "YouTube link",
+  "@contributeYoutubeLink": {
+    "description": "Field for a YouTube link."
+  },
+  "contributeYoutubeBadLink": "This isn't a link to one video. Copy the link from the video's Share button.",
+  "@contributeYoutubeBadLink": {
+    "description": "Error for a link that isn't one YouTube video (a playlist, a channel, another site)."
+  },
+  "contributeYoutubeTitle": "Video title",
+  "@contributeYoutubeTitle": {
+    "description": "Field for the video's title when it can't be looked up."
+  },
+  "contributeYoutubeOffline": "Couldn't look up the video. Type its title, or try again online.",
+  "@contributeYoutubeOffline": {
+    "description": "Helper when the YouTube lookup failed."
+  },
+  "contributeYoutubeDuration": "Length (optional)",
+  "@contributeYoutubeDuration": {
+    "description": "Field for the video's length, as m:ss."
+  },
+  "contributeYoutubeBadDuration": "Type the length as minutes:seconds, like 4:05",
+  "@contributeYoutubeBadDuration": {
+    "description": "Error for a length that doesn't read."
+  },
+  "contributeYoutubeNoSync": "YouTube videos can't be played in Zema, so they can't be synced. The lyrics and the link are sent without timings.",
+  "@contributeYoutubeNoSync": {
+    "description": "Explains that a YouTube recording skips the sync step."
+  },
+  "contributeSharedHow": "In Telegram, open the audio's menu, tap Share, and choose Zema. It opens here.",
+  "@contributeSharedHow": {
+    "description": "How to share an audio file from Telegram to Zema."
+  },
+  "contributeNextSync": "Next: sync the lines",
+  "@contributeNextSync": {
+    "description": "Goes from the recording to the sync step."
+  },
+  "contributeNextReview": "Next: review",
+  "@contributeNextReview": {
+    "description": "Goes to the review step (YouTube skips syncing)."
+  },
+  "contributeBack": "Back",
+  "@contributeBack": {
+    "description": "Goes to the previous step."
+  },
+  "contributeSkipRecording": "Skip, lyrics only",
+  "@contributeSkipRecording": {
+    "description": "Sends a new song without a recording or timings."
+  },
+  "contributeLyricsFirst": "Finish the lyrics first.",
+  "@contributeLyricsFirst": {
+    "description": "Shown when Next is pressed on S20 while the lyrics still have problems."
+  },
+  "contributeStepLater": "This step is coming in the next update.",
+  "@contributeStepLater": {
+    "description": "Temporary text for steps not built yet."
+  },
+  "contributeShareNeedsBackend": "Contributing needs the online catalog, which this version of the app doesn't have.",
+  "@contributeShareNeedsBackend": {
+    "description": "Shown when an audio file is shared to an app without a backend."
   }
 }

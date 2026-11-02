@@ -14,6 +14,7 @@ export 'src/contribute/contribution.dart';
 export 'src/contribute/contribution_draft.dart';
 export 'src/contribute/contribution_repository.dart';
 export 'src/contribute/contribution_rules.dart';
+export 'src/contribute/duration_text.dart';
 export 'src/contribute/paste_lyrics.dart';
 export 'src/contribute/song_slug.dart';
 export 'src/contribute/youtube.dart';

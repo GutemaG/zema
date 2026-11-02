@@ -30,6 +30,8 @@ complexity:
 
 My contributions S23 and the status badge.
 
+**Carried over from 045**: when a contribution is approved or rejected, delete Zema's copy of its shared audio file (story 006).
+
 ## Stories Included
 
 - [ ] **012-my-contributions-and-badge**: My contributions (S23) and the status badge - Priority: Must

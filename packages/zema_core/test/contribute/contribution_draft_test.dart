@@ -48,9 +48,15 @@ void main() {
         recording: local,
         starts: [Duration(seconds: 1), null],
         trackId: 12,
+        audioPath: '/data/shared_audio/1-Selam.ogg',
+        videoTitle: 'Selam (live)',
         step: DraftStep.sync,
       );
       expect(roundTrip(draft), draft);
+      expect(
+        draft.copyWith(audioPath: () => null, videoTitle: () => null),
+        isNot(draft),
+      );
       expect(draft.toJson()['startsMs'], [1000, null]);
     });
 

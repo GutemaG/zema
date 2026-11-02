@@ -1725,4 +1725,84 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get contributeNextRecording => 'Next: link a recording';
+
+  @override
+  String get contributeRecordingTitle =>
+      'Which recording are these lyrics for?';
+
+  @override
+  String get contributeRecordingBody =>
+      'Timings belong to one performance. Pick the one you\'ll sync with.';
+
+  @override
+  String get contributeRecordingLocal => 'A song on this phone';
+
+  @override
+  String get contributeRecordingYoutube => 'A YouTube link';
+
+  @override
+  String get contributeRecordingShared => 'An audio from Telegram';
+
+  @override
+  String get contributeRecordingArtist => 'Artist or choir in this recording';
+
+  @override
+  String get contributeChooseSong => 'Choose a song';
+
+  @override
+  String get contributeChange => 'Change';
+
+  @override
+  String get contributeNoSongs => 'No songs on this phone yet.';
+
+  @override
+  String get contributeYoutubeLink => 'YouTube link';
+
+  @override
+  String get contributeYoutubeBadLink =>
+      'This isn\'t a link to one video. Copy the link from the video\'s Share button.';
+
+  @override
+  String get contributeYoutubeTitle => 'Video title';
+
+  @override
+  String get contributeYoutubeOffline =>
+      'Couldn\'t look up the video. Type its title, or try again online.';
+
+  @override
+  String get contributeYoutubeDuration => 'Length (optional)';
+
+  @override
+  String get contributeYoutubeBadDuration =>
+      'Type the length as minutes:seconds, like 4:05';
+
+  @override
+  String get contributeYoutubeNoSync =>
+      'YouTube videos can\'t be played in Zema, so they can\'t be synced. The lyrics and the link are sent without timings.';
+
+  @override
+  String get contributeSharedHow =>
+      'In Telegram, open the audio\'s menu, tap Share, and choose Zema. It opens here.';
+
+  @override
+  String get contributeNextSync => 'Next: sync the lines';
+
+  @override
+  String get contributeNextReview => 'Next: review';
+
+  @override
+  String get contributeBack => 'Back';
+
+  @override
+  String get contributeSkipRecording => 'Skip, lyrics only';
+
+  @override
+  String get contributeLyricsFirst => 'Finish the lyrics first.';
+
+  @override
+  String get contributeStepLater => 'This step is coming in the next update.';
+
+  @override
+  String get contributeShareNeedsBackend =>
+      'Contributing needs the online catalog, which this version of the app doesn\'t have.';
 }

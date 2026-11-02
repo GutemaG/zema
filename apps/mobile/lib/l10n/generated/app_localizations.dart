@@ -2867,6 +2867,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next: link a recording'**
   String get contributeNextRecording;
+
+  /// S20 heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Which recording are these lyrics for?'**
+  String get contributeRecordingTitle;
+
+  /// S20 explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Timings belong to one performance. Pick the one you\'ll sync with.'**
+  String get contributeRecordingBody;
+
+  /// S20 choice: a track in the library.
+  ///
+  /// In en, this message translates to:
+  /// **'A song on this phone'**
+  String get contributeRecordingLocal;
+
+  /// S20 choice: a YouTube video.
+  ///
+  /// In en, this message translates to:
+  /// **'A YouTube link'**
+  String get contributeRecordingYoutube;
+
+  /// S20 choice: an audio file shared to Zema from Telegram or another app.
+  ///
+  /// In en, this message translates to:
+  /// **'An audio from Telegram'**
+  String get contributeRecordingShared;
+
+  /// Field for the recording's performer.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist or choir in this recording'**
+  String get contributeRecordingArtist;
+
+  /// Opens the list of songs on the phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a song'**
+  String get contributeChooseSong;
+
+  /// Chooses another song.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get contributeChange;
+
+  /// Shown in the song picker when the library is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs on this phone yet.'**
+  String get contributeNoSongs;
+
+  /// Field for a YouTube link.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube link'**
+  String get contributeYoutubeLink;
+
+  /// Error for a link that isn't one YouTube video (a playlist, a channel, another site).
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t a link to one video. Copy the link from the video\'s Share button.'**
+  String get contributeYoutubeBadLink;
+
+  /// Field for the video's title when it can't be looked up.
+  ///
+  /// In en, this message translates to:
+  /// **'Video title'**
+  String get contributeYoutubeTitle;
+
+  /// Helper when the YouTube lookup failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t look up the video. Type its title, or try again online.'**
+  String get contributeYoutubeOffline;
+
+  /// Field for the video's length, as m:ss.
+  ///
+  /// In en, this message translates to:
+  /// **'Length (optional)'**
+  String get contributeYoutubeDuration;
+
+  /// Error for a length that doesn't read.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the length as minutes:seconds, like 4:05'**
+  String get contributeYoutubeBadDuration;
+
+  /// Explains that a YouTube recording skips the sync step.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube videos can\'t be played in Zema, so they can\'t be synced. The lyrics and the link are sent without timings.'**
+  String get contributeYoutubeNoSync;
+
+  /// How to share an audio file from Telegram to Zema.
+  ///
+  /// In en, this message translates to:
+  /// **'In Telegram, open the audio\'s menu, tap Share, and choose Zema. It opens here.'**
+  String get contributeSharedHow;
+
+  /// Goes from the recording to the sync step.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: sync the lines'**
+  String get contributeNextSync;
+
+  /// Goes to the review step (YouTube skips syncing).
+  ///
+  /// In en, this message translates to:
+  /// **'Next: review'**
+  String get contributeNextReview;
+
+  /// Goes to the previous step.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get contributeBack;
+
+  /// Sends a new song without a recording or timings.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip, lyrics only'**
+  String get contributeSkipRecording;
+
+  /// Shown when Next is pressed on S20 while the lyrics still have problems.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish the lyrics first.'**
+  String get contributeLyricsFirst;
+
+  /// Temporary text for steps not built yet.
+  ///
+  /// In en, this message translates to:
+  /// **'This step is coming in the next update.'**
+  String get contributeStepLater;
+
+  /// Shown when an audio file is shared to an app without a backend.
+  ///
+  /// In en, this message translates to:
+  /// **'Contributing needs the online catalog, which this version of the app doesn\'t have.'**
+  String get contributeShareNeedsBackend;
 }
 
 class _AppLocalizationsDelegate

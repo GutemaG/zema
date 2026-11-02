@@ -8,6 +8,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/database/drafts_dao.dart';
+import '../data/shared_audio.dart';
 
 final _log = Logger('contribute.drafts');
 
@@ -26,9 +27,13 @@ Future<int> startDraft(
   ContributionDraft draft = const ContributionDraft(),
 }) => ref.read(databaseProvider).draftsDao.create(draft, now: clock.now());
 
-/// Deletes draft [id].
-Future<void> deleteDraft(WidgetRef ref, int id) =>
-    ref.read(databaseProvider).draftsDao.remove(id);
+/// Deletes draft [id], and Zema's copy of a file shared for it.
+Future<void> deleteDraft(WidgetRef ref, int id) async {
+  final dao = ref.read(databaseProvider).draftsDao;
+  final path = (await dao.get(id))?.draft.audioPath;
+  await dao.remove(id);
+  await deleteSharedAudio(path);
+}
 
 /// One draft being edited: loads it, applies each change at once, and saves
 /// it [draftSaveDelay] after the last change, at once when the app goes to

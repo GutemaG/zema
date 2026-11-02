@@ -18,6 +18,9 @@ import 'package:zema/app/theme/zema_theme.dart';
 import 'package:zema/app/zema_app.dart';
 import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
+import 'package:zema/features/contribute/application/recording.dart';
+import 'package:zema/features/contribute/data/shared_audio.dart';
+import 'package:zema/features/contribute/data/youtube_info.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/data/audio_share_service.dart';
 import 'package:zema/features/library/data/library_scanner.dart';
@@ -27,6 +30,7 @@ import 'package:zema/features/settings/application/settings_bootstrap.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 
 import 'fake_auth.dart';
+import 'fake_contribute.dart';
 import 'fake_library.dart';
 import 'fake_lyrics.dart';
 import 'fake_player.dart';
@@ -71,6 +75,8 @@ Future<void> pumpZemaApp(
   AvatarCache? avatars,
   BackupRepository? backups,
   bool Function()? onWifi,
+  YoutubeInfoService? youtube,
+  ShareReceiver? shareReceiver,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -104,6 +110,12 @@ Future<void> pumpZemaApp(
           backups: backups,
           onWifi: onWifi,
           backendConfigured: backendConfigured,
+        ),
+        youtubeInfoServiceProvider.overrideWithValue(
+          youtube ?? FakeYoutubeInfoService(),
+        ),
+        shareReceiverProvider.overrideWithValue(
+          shareReceiver ?? FakeShareReceiver(),
         ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(

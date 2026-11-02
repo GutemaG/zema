@@ -10,6 +10,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../application/drafts.dart';
 import 'contribute_screen.dart';
 import 'lyrics_step.dart';
+import 'recording_step.dart';
 
 /// The four-step flow (S19–S22) for draft [id], opened at its step. Every
 /// change is saved on the phone as it is made.
@@ -44,11 +45,27 @@ class ContributeFlowScreen extends ConsumerWidget {
         child: switch (draft) {
           AsyncData(value: final draft?) => Column(
             children: [
-              StepStrip(current: draft.step),
-              // Steps 2–4 come in later bolts; until then every draft shows
-              // the lyrics.
+              StepStrip(
+                current: draft.step,
+                onBack: (step) => ref
+                    .read(draftEditorProvider(id!).notifier)
+                    .edit((draft) => draft.copyWith(step: step)),
+              ),
               Expanded(
-                child: LyricsStep(id: id!, draft: draft),
+                child: switch (draft.step) {
+                  DraftStep.lyrics => LyricsStep(id: id!, draft: draft),
+                  DraftStep.recording => RecordingStep(id: id!, draft: draft),
+                  // Steps 3 and 4 come in the next bolts.
+                  _ => Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        l10n.contributeStepLater,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                },
               ),
             ],
           ),
@@ -70,9 +87,12 @@ class ContributeFlowScreen extends ConsumerWidget {
 
 /// The four steps across the top, done and current ones lit.
 class StepStrip extends StatelessWidget {
-  const StepStrip({super.key, required this.current});
+  const StepStrip({super.key, required this.current, this.onBack});
 
   final DraftStep current;
+
+  /// Goes back to an earlier step when it's tapped.
+  final ValueChanged<DraftStep>? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -93,29 +113,36 @@ class StepStrip extends StatelessWidget {
             Expanded(
               child: Semantics(
                 selected: step == current,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: step.index <= current.index
-                            ? colors.primary
-                            : colors.line,
-                        borderRadius: BorderRadius.circular(ZemaRadius.pill),
+                button: step.index < current.index,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: step.index < current.index && onBack != null
+                      ? () => onBack!(step)
+                      : null,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: step.index <= current.index
+                              ? colors.primary
+                              : colors.line,
+                          borderRadius: BorderRadius.circular(ZemaRadius.pill),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      draftStepName(l10n, step),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: step == current ? colors.text : colors.muted,
-                        fontWeight: step == current ? FontWeight.w700 : null,
+                      const SizedBox(height: 4),
+                      Text(
+                        draftStepName(l10n, step),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.labelSmall?.copyWith(
+                          color: step == current ? colors.text : colors.muted,
+                          fontWeight: step == current ? FontWeight.w700 : null,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
