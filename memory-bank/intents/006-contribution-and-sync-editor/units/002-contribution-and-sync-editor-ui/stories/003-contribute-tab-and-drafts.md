@@ -2,11 +2,11 @@
 id: 003-contribute-tab-and-drafts
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: must
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 043-contribution-and-sync-editor-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 003-contribute-tab-and-drafts
@@ -19,12 +19,12 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a guest, **When** they open the tab, **Then** S05 explains contributing; Add lyrics and My contributions open C09; after sign-in the action continues
-- [ ] **Given** a signed-in user, **When** they open the tab, **Then** S05 shows the steps, Add lyrics, their drafts (title, last changed, step) and My contributions
-- [ ] **Given** any change in the flow, **When** made, **Then** the draft is saved in Drift (schema v8) within a second; killing the app loses nothing
-- [ ] **Given** a draft, **When** opened or deleted (with confirmation), **Then** it continues at its step, or is removed
-- [ ] **Given** drafts exist, **When** the user signs out, **Then** a warning names them; confirming deletes them
-- [ ] **Given** no backend in the build, **When** the tab opens, **Then** the Contribute actions are hidden
+- [x] **Given** a guest, **When** they open the tab, **Then** S05 explains contributing; Add lyrics and My contributions open C09; after sign-in the action continues
+- [x] **Given** a signed-in user, **When** they open the tab, **Then** S05 shows the steps, Add lyrics, their drafts (title, last changed, step) and My contributions
+- [x] **Given** any change in the flow, **When** made, **Then** the draft is saved in Drift (schema v8) within a second; killing the app loses nothing
+- [x] **Given** a draft, **When** opened or deleted (with confirmation), **Then** it continues at its step, or is removed
+- [x] **Given** drafts exist, **When** the user signs out, **Then** a warning names them; confirming deletes them
+- [x] **Given** no backend in the build, **When** the tab opens, **Then** the Contribute actions are hidden
 
 ## Technical Notes
 

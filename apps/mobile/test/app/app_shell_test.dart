@@ -79,28 +79,10 @@ void main() {
       }
     });
 
-    testWidgets('each unbuilt tab shows a localized Coming soon message', (
-      tester,
-    ) async {
-      await pumpZemaApp(tester);
-      final l10n = lookupAppLocalizations(const Locale('en'));
-
-      final messages = {'Contribute': l10n.contributeComingSoonMessage};
-      for (final MapEntry(key: tab, value: message) in messages.entries) {
-        await tester.tap(_navLabel(tab));
-        await tester.pumpAndSettle();
-
-        final state = tester.widget<EmptyState>(find.byType(EmptyState));
-        expect(state.kind, EmptyStateKind.empty, reason: tab);
-        expect(state.title, l10n.comingSoonTitle, reason: tab);
-        expect(state.message, message, reason: tab);
-      }
-    });
-
     testWidgets('keeps a tab scroll position when switching away and back', (
       tester,
     ) async {
-      // Short screen so the Coming soon content has to scroll.
+      // Short screen so the Contribute tab's content has to scroll.
       useScreen(tester, size: const Size(360, 260));
       await pumpZemaApp(tester);
 

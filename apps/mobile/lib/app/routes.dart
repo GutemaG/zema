@@ -31,6 +31,13 @@ abstract final class AppRoutes {
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 
+  /// The contribution flow (S19–S22) for a draft, above the shell.
+  static const String draftPath = '/contribute-draft';
+
+  /// The flow for draft [id], at its step.
+  static String draft(int id) =>
+      Uri(path: draftPath, queryParameters: {'id': '$id'}).toString();
+
   /// Sub-paths of [library]; [albumPath] and [artistPath] also of [search].
   static const String folderPath = 'folder';
   static const String albumPath = 'album';

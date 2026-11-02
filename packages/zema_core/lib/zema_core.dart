@@ -11,6 +11,7 @@ export 'src/backup/track_identity.dart';
 export 'src/backup/unmatched_entry.dart';
 export 'src/catalog/catalog.dart';
 export 'src/contribute/contribution.dart';
+export 'src/contribute/contribution_draft.dart';
 export 'src/contribute/contribution_repository.dart';
 export 'src/contribute/contribution_rules.dart';
 export 'src/contribute/paste_lyrics.dart';

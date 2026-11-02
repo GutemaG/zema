@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../app/database/database_provider.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
@@ -247,12 +248,29 @@ class _AccountGroup extends ConsumerWidget {
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text(message)));
 
+  /// [message], followed by which drafts signing out deletes, if any.
+  static Future<String> _withDrafts(
+    BuildContext context,
+    WidgetRef ref,
+    String message,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final titles = await ref.read(databaseProvider).draftsDao.titles();
+    if (titles.isEmpty) return message;
+    final names = [
+      for (final t in titles) t.isEmpty ? l10n.contributeDraftUntitled : t,
+    ].join(', ');
+    return '$message\n\n${l10n.profileDraftsWarning(titles.length, names)}';
+  }
+
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
+    final message = await _withDrafts(context, ref, l10n.profileSignOutMessage);
+    if (!context.mounted) return;
     final confirmed = await _confirm(
       context,
       title: l10n.profileSignOutTitle,
-      message: l10n.profileSignOutMessage,
+      message: message,
       action: l10n.profileSignOut,
     );
     if (!confirmed || !context.mounted) return;
@@ -264,10 +282,12 @@ class _AccountGroup extends ConsumerWidget {
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
+    final warning = await _withDrafts(context, ref, l10n.profileDeleteMessage);
+    if (!context.mounted) return;
     final first = await _confirm(
       context,
       title: l10n.profileDeleteTitle,
-      message: l10n.profileDeleteMessage,
+      message: warning,
       action: l10n.profileDeleteContinue,
     );
     if (!first || !context.mounted) return;

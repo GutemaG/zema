@@ -252,12 +252,6 @@ abstract class AppLocalizations {
   /// **'Search by title, artist or album. Any keyboard works: “kidist” finds “ቅድስት”.'**
   String get searchHintMessage;
 
-  /// Message on the Contribute tab before it is built.
-  ///
-  /// In en, this message translates to:
-  /// **'Add lyrics and sync timings to help other listeners.'**
-  String get contributeComingSoonMessage;
-
   /// Heading of the explanation shown before asking for access to audio files.
   ///
   /// In en, this message translates to:
@@ -2477,6 +2471,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore from backup'**
   String get backupRestore;
+
+  /// Under the Contribute tab's title (S05).
+  ///
+  /// In en, this message translates to:
+  /// **'Help everyone sing along'**
+  String get contributeSubtitle;
+
+  /// Title of the steps card on S05.
+  ///
+  /// In en, this message translates to:
+  /// **'How contributing works'**
+  String get contributeHowTitle;
+
+  /// Step 1 of contributing.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the lyrics'**
+  String get contributeStepLyrics;
+
+  /// Explains step 1.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or paste the words. Mark verses and the chorus.'**
+  String get contributeStepLyricsBody;
+
+  /// Step 2 of contributing.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a recording'**
+  String get contributeStepRecording;
+
+  /// Explains step 2.
+  ///
+  /// In en, this message translates to:
+  /// **'A YouTube link, a Telegram audio, or a file on your phone.'**
+  String get contributeStepRecordingBody;
+
+  /// Step 3 of contributing.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync the lines'**
+  String get contributeStepSync;
+
+  /// Explains step 3.
+  ///
+  /// In en, this message translates to:
+  /// **'Play the song and tap when each line starts.'**
+  String get contributeStepSyncBody;
+
+  /// Step 4 of contributing.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get contributeStepReview;
+
+  /// Explains step 4.
+  ///
+  /// In en, this message translates to:
+  /// **'A moderator checks it, then everyone can sing along.'**
+  String get contributeStepReviewBody;
+
+  /// Starts a new contribution; also the flow's title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lyrics'**
+  String get contributeAddLyrics;
+
+  /// Why contributing needs an account (C09).
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google to add lyrics and timings for everyone. A moderator checks each contribution before it\'s shared.'**
+  String get contributeSignInReason;
+
+  /// S05 in a build without a backend.
+  ///
+  /// In en, this message translates to:
+  /// **'Contributing needs the online catalog, which this version of the app doesn\'t have.'**
+  String get contributeNoBackend;
+
+  /// Heading of the drafts list on S05.
+  ///
+  /// In en, this message translates to:
+  /// **'Drafts'**
+  String get contributeDraftsTitle;
+
+  /// A draft with no title yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled'**
+  String get contributeDraftUntitled;
+
+  /// A draft's step and when it last changed.
+  ///
+  /// In en, this message translates to:
+  /// **'{step} · {time}'**
+  String contributeDraftSubtitle(String step, String time);
+
+  /// Deletes a draft (button and tooltip).
+  ///
+  /// In en, this message translates to:
+  /// **'Delete draft'**
+  String get contributeDraftDelete;
+
+  /// Title of the confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this draft?'**
+  String get contributeDraftDeleteTitle;
+
+  /// Confirmation message.
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” will be deleted from this phone.'**
+  String contributeDraftDeleteMessage(String title);
+
+  /// Shown when a draft was deleted elsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'This draft no longer exists.'**
+  String get contributeDraftGone;
+
+  /// Song title field (S19).
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get contributeFieldTitle;
+
+  /// Transliteration field (S19).
+  ///
+  /// In en, this message translates to:
+  /// **'Title in Latin letters (optional)'**
+  String get contributeFieldTransliteration;
+
+  /// Artist field (S19).
+  ///
+  /// In en, this message translates to:
+  /// **'Artist or choir'**
+  String get contributeFieldArtist;
+
+  /// Album field (S19).
+  ///
+  /// In en, this message translates to:
+  /// **'Album (optional)'**
+  String get contributeFieldAlbum;
+
+  /// Error under an empty title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the song\'s title'**
+  String get contributeTitleRequired;
+
+  /// Error under a long title.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the title under 200 characters'**
+  String get contributeTitleTooLong;
+
+  /// Error when a detail is too long.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the transliteration, artist and album under 200 characters each.'**
+  String get contributeFieldTooLong;
+
+  /// Tells the user drafts save themselves.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone as you type'**
+  String get contributeSavedOnPhone;
+
+  /// Added to the sign-out and delete confirmations when drafts exist.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 draft on this phone will be deleted: {titles}.} other{{count} drafts on this phone will be deleted: {titles}.}}'**
+  String profileDraftsWarning(int count, String titles);
 }
 
 class _AppLocalizationsDelegate

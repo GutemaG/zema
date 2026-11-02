@@ -9,6 +9,7 @@ import '../features/account/presentation/profile_screen.dart';
 import '../features/account/presentation/restore_screen.dart';
 import '../features/account/presentation/sign_in_screen.dart';
 import '../features/lyrics/presentation/song_detail_screen.dart';
+import '../features/contribute/presentation/contribute_flow_screen.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/library/application/album_grouping.dart';
@@ -135,6 +136,12 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
         builder: (_, _) => const ProfileScreen(),
       ),
       GoRoute(path: AppRoutes.backup, builder: (_, _) => const BackupScreen()),
+      GoRoute(
+        path: AppRoutes.draftPath,
+        builder: (_, state) => ContributeFlowScreen(
+          id: int.tryParse(state.uri.queryParameters['id'] ?? ''),
+        ),
+      ),
       GoRoute(
         path: AppRoutes.restore,
         builder: (_, _) => const RestoreScreen(),

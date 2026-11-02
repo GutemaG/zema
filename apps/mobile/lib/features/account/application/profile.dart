@@ -161,8 +161,11 @@ class AccountActionsController extends Notifier<AccountAction?> {
 
   Future<void> _forget(String? userId) async {
     if (userId != null) await ref.read(profileCacheProvider).remove(userId);
-    // Songs not found at restore belong to that account's backup.
-    await ref.read(databaseProvider).unmatchedDao.clear();
+    final database = ref.read(databaseProvider);
+    // Songs not found at restore belong to that account's backup, and
+    // drafts to its contributions.
+    await database.unmatchedDao.clear();
+    await database.draftsDao.clear();
     try {
       await ref.read(avatarCacheProvider).clear();
     } on Object catch (e) {

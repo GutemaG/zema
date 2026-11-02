@@ -5,6 +5,7 @@ import 'backup_dao.dart';
 import 'cached_songs_dao.dart';
 import 'catalog_dao.dart';
 import 'collections_dao.dart';
+import 'drafts_dao.dart';
 import 'history_dao.dart';
 import 'library_dao.dart';
 import 'lyrics_links_dao.dart';
@@ -32,6 +33,7 @@ part 'zema_database.g.dart';
     CachedSongs,
     QueuedReports,
     UnmatchedEntries,
+    Drafts,
   ],
   daos: [
     LibraryDao,
@@ -44,6 +46,7 @@ part 'zema_database.g.dart';
     BackupDao,
     RestoreDao,
     UnmatchedDao,
+    DraftsDao,
   ],
 )
 class ZemaDatabase extends _$ZemaDatabase {
@@ -53,7 +56,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -81,6 +84,8 @@ class ZemaDatabase extends _$ZemaDatabase {
       ),
       // v7: backed-up entries whose song wasn't found at restore.
       from6To7: (m, schema) => m.createTable(schema.unmatchedEntries),
+      // v8: contributions in progress.
+      from7To8: (m, schema) => m.createTable(schema.drafts),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

@@ -194,3 +194,24 @@ class UnmatchedEntries extends Table {
   /// A lyrics choice's song; null is "no lyrics".
   TextColumn get songId => text().nullable()();
 }
+
+/// Contributions in progress (intent 006), saved as the user works. Kept on
+/// this phone only; deleted on sign-out, after a warning.
+@DataClassName('DraftRow')
+class Drafts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// [ContributionKind.wire].
+  TextColumn get kind => text()();
+
+  /// [DraftStep.name], for the list.
+  TextColumn get step => text()();
+
+  /// The song's title as typed, for the list; empty until typed.
+  TextColumn get title => text()();
+
+  /// The whole draft ([ContributionDraft.toJson]).
+  TextColumn get draft => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}

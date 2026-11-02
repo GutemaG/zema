@@ -4648,6 +4648,452 @@ class UnmatchedEntriesCompanion extends UpdateCompanion<UnmatchedEntryRow> {
   }
 }
 
+class $DraftsTable extends Drafts with TableInfo<$DraftsTable, DraftRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DraftsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stepMeta = const VerificationMeta('step');
+  @override
+  late final GeneratedColumn<String> step = GeneratedColumn<String>(
+    'step',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _draftMeta = const VerificationMeta('draft');
+  @override
+  late final GeneratedColumn<String> draft = GeneratedColumn<String>(
+    'draft',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    kind,
+    step,
+    title,
+    draft,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drafts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DraftRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('step')) {
+      context.handle(
+        _stepMeta,
+        step.isAcceptableOrUnknown(data['step']!, _stepMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stepMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('draft')) {
+      context.handle(
+        _draftMeta,
+        draft.isAcceptableOrUnknown(data['draft']!, _draftMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_draftMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DraftRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DraftRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      step: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}step'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      draft: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}draft'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DraftsTable createAlias(String alias) {
+    return $DraftsTable(attachedDatabase, alias);
+  }
+}
+
+class DraftRow extends DataClass implements Insertable<DraftRow> {
+  final int id;
+
+  /// [ContributionKind.wire].
+  final String kind;
+
+  /// [DraftStep.name], for the list.
+  final String step;
+
+  /// The song's title as typed, for the list; empty until typed.
+  final String title;
+
+  /// The whole draft ([ContributionDraft.toJson]).
+  final String draft;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const DraftRow({
+    required this.id,
+    required this.kind,
+    required this.step,
+    required this.title,
+    required this.draft,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['kind'] = Variable<String>(kind);
+    map['step'] = Variable<String>(step);
+    map['title'] = Variable<String>(title);
+    map['draft'] = Variable<String>(draft);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  DraftsCompanion toCompanion(bool nullToAbsent) {
+    return DraftsCompanion(
+      id: Value(id),
+      kind: Value(kind),
+      step: Value(step),
+      title: Value(title),
+      draft: Value(draft),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DraftRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DraftRow(
+      id: serializer.fromJson<int>(json['id']),
+      kind: serializer.fromJson<String>(json['kind']),
+      step: serializer.fromJson<String>(json['step']),
+      title: serializer.fromJson<String>(json['title']),
+      draft: serializer.fromJson<String>(json['draft']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'kind': serializer.toJson<String>(kind),
+      'step': serializer.toJson<String>(step),
+      'title': serializer.toJson<String>(title),
+      'draft': serializer.toJson<String>(draft),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  DraftRow copyWith({
+    int? id,
+    String? kind,
+    String? step,
+    String? title,
+    String? draft,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => DraftRow(
+    id: id ?? this.id,
+    kind: kind ?? this.kind,
+    step: step ?? this.step,
+    title: title ?? this.title,
+    draft: draft ?? this.draft,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DraftRow copyWithCompanion(DraftsCompanion data) {
+    return DraftRow(
+      id: data.id.present ? data.id.value : this.id,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      step: data.step.present ? data.step.value : this.step,
+      title: data.title.present ? data.title.value : this.title,
+      draft: data.draft.present ? data.draft.value : this.draft,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DraftRow(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('step: $step, ')
+          ..write('title: $title, ')
+          ..write('draft: $draft, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, kind, step, title, draft, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DraftRow &&
+          other.id == this.id &&
+          other.kind == this.kind &&
+          other.step == this.step &&
+          other.title == this.title &&
+          other.draft == this.draft &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DraftsCompanion extends UpdateCompanion<DraftRow> {
+  final Value<int> id;
+  final Value<String> kind;
+  final Value<String> step;
+  final Value<String> title;
+  final Value<String> draft;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const DraftsCompanion({
+    this.id = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.step = const Value.absent(),
+    this.title = const Value.absent(),
+    this.draft = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  DraftsCompanion.insert({
+    this.id = const Value.absent(),
+    required String kind,
+    required String step,
+    required String title,
+    required String draft,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : kind = Value(kind),
+       step = Value(step),
+       title = Value(title),
+       draft = Value(draft),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<DraftRow> custom({
+    Expression<int>? id,
+    Expression<String>? kind,
+    Expression<String>? step,
+    Expression<String>? title,
+    Expression<String>? draft,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (kind != null) 'kind': kind,
+      if (step != null) 'step': step,
+      if (title != null) 'title': title,
+      if (draft != null) 'draft': draft,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  DraftsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? kind,
+    Value<String>? step,
+    Value<String>? title,
+    Value<String>? draft,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return DraftsCompanion(
+      id: id ?? this.id,
+      kind: kind ?? this.kind,
+      step: step ?? this.step,
+      title: title ?? this.title,
+      draft: draft ?? this.draft,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (step.present) {
+      map['step'] = Variable<String>(step.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (draft.present) {
+      map['draft'] = Variable<String>(draft.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DraftsCompanion(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('step: $step, ')
+          ..write('title: $title, ')
+          ..write('draft: $draft, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -4667,6 +5113,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $UnmatchedEntriesTable unmatchedEntries = $UnmatchedEntriesTable(
     this,
   );
+  late final $DraftsTable drafts = $DraftsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -4699,6 +5146,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final BackupDao backupDao = BackupDao(this as ZemaDatabase);
   late final RestoreDao restoreDao = RestoreDao(this as ZemaDatabase);
   late final UnmatchedDao unmatchedDao = UnmatchedDao(this as ZemaDatabase);
+  late final DraftsDao draftsDao = DraftsDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4716,6 +5164,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     cachedSongs,
     queuedReports,
     unmatchedEntries,
+    drafts,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -8574,6 +9023,239 @@ typedef $$UnmatchedEntriesTableProcessedTableManager =
       UnmatchedEntryRow,
       PrefetchHooks Function()
     >;
+typedef $$DraftsTableCreateCompanionBuilder = DraftsCompanion Function({
+  Value<int> id,
+  required String kind,
+  required String step,
+  required String title,
+  required String draft,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+});
+typedef $$DraftsTableUpdateCompanionBuilder = DraftsCompanion Function({
+  Value<int> id,
+  Value<String> kind,
+  Value<String> step,
+  Value<String> title,
+  Value<String> draft,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+});
+
+class $$DraftsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $DraftsTable> {
+  $$DraftsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get step => $composableBuilder(
+    column: $table.step,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get draft => $composableBuilder(
+    column: $table.draft,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DraftsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $DraftsTable> {
+  $$DraftsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get step => $composableBuilder(
+    column: $table.step,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get draft => $composableBuilder(
+    column: $table.draft,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DraftsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $DraftsTable> {
+  $$DraftsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get step =>
+      $composableBuilder(column: $table.step, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get draft =>
+      $composableBuilder(column: $table.draft, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DraftsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $DraftsTable,
+          DraftRow,
+          $$DraftsTableFilterComposer,
+          $$DraftsTableOrderingComposer,
+          $$DraftsTableAnnotationComposer,
+          $$DraftsTableCreateCompanionBuilder,
+          $$DraftsTableUpdateCompanionBuilder,
+          (DraftRow, BaseReferences<_$ZemaDatabase, $DraftsTable, DraftRow>),
+          DraftRow,
+          PrefetchHooks Function()
+        > {
+  $$DraftsTableTableManager(_$ZemaDatabase db, $DraftsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DraftsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DraftsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DraftsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> step = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> draft = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => DraftsCompanion(
+                id: id,
+                kind: kind,
+                step: step,
+                title: title,
+                draft: draft,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String kind,
+                required String step,
+                required String title,
+                required String draft,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => DraftsCompanion.insert(
+                id: id,
+                kind: kind,
+                step: step,
+                title: title,
+                draft: draft,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DraftsTable, DraftRow>(table),
+                  BaseReferences<_$ZemaDatabase, $DraftsTable, DraftRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DraftsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $DraftsTable,
+      DraftRow,
+      $$DraftsTableFilterComposer,
+      $$DraftsTableOrderingComposer,
+      $$DraftsTableAnnotationComposer,
+      $$DraftsTableCreateCompanionBuilder,
+      $$DraftsTableUpdateCompanionBuilder,
+      (DraftRow, BaseReferences<_$ZemaDatabase, $DraftsTable, DraftRow>),
+      DraftRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -8602,4 +9284,6 @@ class $ZemaDatabaseManager {
       $$QueuedReportsTableTableManager(_db, _db.queuedReports);
   $$UnmatchedEntriesTableTableManager get unmatchedEntries =>
       $$UnmatchedEntriesTableTableManager(_db, _db.unmatchedEntries);
+  $$DraftsTableTableManager get drafts =>
+      $$DraftsTableTableManager(_db, _db.drafts);
 }

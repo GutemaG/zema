@@ -90,10 +90,6 @@ class AppLocalizationsTi extends AppLocalizations {
       'Search by title, artist or album. Any keyboard works: “kidist” finds “ቅድስት”.';
 
   @override
-  String get contributeComingSoonMessage =>
-      'Add lyrics and sync timings to help other listeners.';
-
-  @override
   String get libraryAccessTitle => 'Play the music on your phone';
 
   @override
@@ -1472,4 +1468,111 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get backupRestore => 'Restore from backup';
+
+  @override
+  String get contributeSubtitle => 'Help everyone sing along';
+
+  @override
+  String get contributeHowTitle => 'How contributing works';
+
+  @override
+  String get contributeStepLyrics => 'Write the lyrics';
+
+  @override
+  String get contributeStepLyricsBody =>
+      'Type or paste the words. Mark verses and the chorus.';
+
+  @override
+  String get contributeStepRecording => 'Link a recording';
+
+  @override
+  String get contributeStepRecordingBody =>
+      'A YouTube link, a Telegram audio, or a file on your phone.';
+
+  @override
+  String get contributeStepSync => 'Sync the lines';
+
+  @override
+  String get contributeStepSyncBody =>
+      'Play the song and tap when each line starts.';
+
+  @override
+  String get contributeStepReview => 'Review';
+
+  @override
+  String get contributeStepReviewBody =>
+      'A moderator checks it, then everyone can sing along.';
+
+  @override
+  String get contributeAddLyrics => 'Add lyrics';
+
+  @override
+  String get contributeSignInReason =>
+      'Sign in with Google to add lyrics and timings for everyone. A moderator checks each contribution before it\'s shared.';
+
+  @override
+  String get contributeNoBackend =>
+      'Contributing needs the online catalog, which this version of the app doesn\'t have.';
+
+  @override
+  String get contributeDraftsTitle => 'Drafts';
+
+  @override
+  String get contributeDraftUntitled => 'Untitled';
+
+  @override
+  String contributeDraftSubtitle(String step, String time) {
+    return '$step · $time';
+  }
+
+  @override
+  String get contributeDraftDelete => 'Delete draft';
+
+  @override
+  String get contributeDraftDeleteTitle => 'Delete this draft?';
+
+  @override
+  String contributeDraftDeleteMessage(String title) {
+    return '“$title” will be deleted from this phone.';
+  }
+
+  @override
+  String get contributeDraftGone => 'This draft no longer exists.';
+
+  @override
+  String get contributeFieldTitle => 'Title';
+
+  @override
+  String get contributeFieldTransliteration =>
+      'Title in Latin letters (optional)';
+
+  @override
+  String get contributeFieldArtist => 'Artist or choir';
+
+  @override
+  String get contributeFieldAlbum => 'Album (optional)';
+
+  @override
+  String get contributeTitleRequired => 'Enter the song\'s title';
+
+  @override
+  String get contributeTitleTooLong => 'Keep the title under 200 characters';
+
+  @override
+  String get contributeFieldTooLong =>
+      'Keep the transliteration, artist and album under 200 characters each.';
+
+  @override
+  String get contributeSavedOnPhone => 'Saved on this phone as you type';
+
+  @override
+  String profileDraftsWarning(int count, String titles) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count drafts on this phone will be deleted: $titles.',
+      one: '1 draft on this phone will be deleted: $titles.',
+    );
+    return '$_temp0';
+  }
 }
