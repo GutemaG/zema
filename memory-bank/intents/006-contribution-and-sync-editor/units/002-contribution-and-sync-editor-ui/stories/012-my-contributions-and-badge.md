@@ -2,11 +2,11 @@
 id: 012-my-contributions-and-badge
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: must
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 050-contribution-and-sync-editor-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 012-my-contributions-and-badge
@@ -19,10 +19,10 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** S23 (from S05 and Profile), **When** opened, **Then** tabs Pending / Approved / Needs changes / Rejected list cards with song, type, date and comment or reason
-- [ ] **Given** a Needs changes card, **When** Edit, **Then** the flow reopens with the submitted data; Submit resubmits the same contribution
-- [ ] **Given** the app opens or resumes, signed in and online, **When** statuses changed since the last check, **Then** a badge shows on Profile and S05's link, and one message per change; opening S23 clears the badge
-- [ ] **Given** Profile, **When** shown, **Then** stats lyrics added, synced, approved
+- [x] **Given** S23 (from S05 and Profile), **When** opened, **Then** tabs Pending / Approved / Needs changes / Rejected list cards with song, type, date and comment or reason
+- [x] **Given** a Needs changes card, **When** Edit, **Then** the flow reopens with the submitted data; Submit resubmits the same contribution
+- [x] **Given** the app opens or resumes, signed in and online, **When** statuses changed since the last check, **Then** a badge shows on Profile and S05's link, and one message per change; opening S23 clears the badge
+- [x] **Given** Profile, **When** shown, **Then** stats lyrics added, synced, approved
 
 ## Technical Notes
 

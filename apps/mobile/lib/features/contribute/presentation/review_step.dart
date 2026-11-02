@@ -12,6 +12,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../application/drafts.dart';
 import '../../catalog/data/catalog_lyrics_repository.dart';
 import '../../lyrics/application/lyrics_links.dart';
+import '../application/my_contributions.dart';
 import '../application/own_copies.dart';
 import 'correction_changes.dart';
 import 'lyrics_step.dart';
@@ -126,9 +127,18 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       }
       return;
     }
+    unawaited(ref.read(myContributionsProvider.notifier).check());
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(l10n.contributeSubmitSent)));
+      ..showSnackBar(
+        SnackBar(
+          content: Text(l10n.contributeSubmitSent),
+          action: SnackBarAction(
+            label: l10n.actionView,
+            onPressed: () => router.push(AppRoutes.myContributions),
+          ),
+        ),
+      );
     router.go(AppRoutes.contribute);
   }
 

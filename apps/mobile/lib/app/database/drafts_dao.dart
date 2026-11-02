@@ -38,6 +38,11 @@ class DraftsDao extends DatabaseAccessor<ZemaDatabase> with _$DraftsDaoMixin {
           .watch()
           .map((rows) => [for (final row in rows) ?_toSaved(row)]);
 
+  /// [watchAll] once.
+  Future<List<SavedDraft>> all() async => [
+    for (final row in await select(drafts).get()) ?_toSaved(row),
+  ];
+
   Future<SavedDraft?> get(int id) async {
     final row = await (select(
       drafts,

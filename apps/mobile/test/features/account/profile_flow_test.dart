@@ -63,6 +63,8 @@ void main() {
   }
 
   Future<void> tap(WidgetTester tester, Finder finder) async {
+    await tester.ensureVisible(finder);
+    await tester.pumpAndSettle();
     await tester.tap(finder);
     await tester.pumpAndSettle();
   }
@@ -497,7 +499,8 @@ void main() {
         );
         expect(name.overflow, TextOverflow.ellipsis);
         expect(name.maxLines, 1);
-        await tester.ensureVisible(find.text('Delete account'));
+        // The list builds lazily.
+        await tester.scrollUntilVisible(find.text('Delete account'), 200);
         await tester.pumpAndSettle();
         expect(find.text('Delete account').hitTestable(), findsOneWidget);
 

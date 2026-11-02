@@ -2031,4 +2031,95 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get contributeFlowSyncTitle => 'Sync a recording';
+
+  @override
+  String get myContributionsTitle => 'My contributions';
+
+  @override
+  String get myContributionsPending => 'Pending';
+
+  @override
+  String get myContributionsApproved => 'Approved';
+
+  @override
+  String get myContributionsNeedsChanges => 'Needs changes';
+
+  @override
+  String get myContributionsRejected => 'Rejected';
+
+  @override
+  String get myContributionsEmpty => 'Nothing here.';
+
+  @override
+  String get myContributionsOffline =>
+      'Couldn\'t load your contributions. Check your connection.';
+
+  @override
+  String myContributionsSent(String date) {
+    return 'Sent $date';
+  }
+
+  @override
+  String myContributionsReviewed(String date) {
+    return 'Reviewed $date';
+  }
+
+  @override
+  String myContributionsComment(String note) {
+    return 'Comment: $note';
+  }
+
+  @override
+  String myContributionsReason(String note) {
+    return 'Reason: $note';
+  }
+
+  @override
+  String get myContributionsEdit => 'Edit and resend';
+
+  @override
+  String get myContributionsEditUnavailable =>
+      'This one can only be edited on the phone it was sent from.';
+
+  @override
+  String get myContributionsNew => 'New updates';
+
+  @override
+  String get contributionKindNewSong => 'New song';
+
+  @override
+  String get contributionKindCorrection => 'Correction';
+
+  @override
+  String get contributionKindRecording => 'Recording';
+
+  @override
+  String get contributionKindSync => 'Sync';
+
+  @override
+  String contributionApprovedMessage(String title) {
+    return '“$title” was approved.';
+  }
+
+  @override
+  String contributionNeedsChangesMessage(String title) {
+    return '“$title” needs changes.';
+  }
+
+  @override
+  String contributionRejectedMessage(String title) {
+    return '“$title” was rejected.';
+  }
+
+  @override
+  String get actionView => 'View';
+
+  @override
+  String get profileStatLyrics => 'Lyrics added';
+
+  @override
+  String get profileStatSynced => 'Synced';
+
+  @override
+  String get profileStatApproved => 'Approved';
 }

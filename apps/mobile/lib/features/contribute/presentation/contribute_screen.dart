@@ -11,9 +11,11 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../account/application/account_providers.dart';
 import '../../account/presentation/backup_screen.dart';
 import '../application/drafts.dart';
+import 'my_contributions_screen.dart';
 import 'start_contribution.dart';
 
-/// S05: how contributing works, Add lyrics and the user's drafts. Guests are
+/// S05: how contributing works, Add lyrics, the user's drafts and My
+/// contributions. Guests are
 /// asked to sign in (C09) when they start; builds without a backend explain
 /// that contributing needs one.
 class ContributeScreen extends ConsumerWidget {
@@ -81,6 +83,18 @@ class ContributeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               for (final saved in drafts) _DraftTile(saved),
+            ],
+            if (signedIn) ...[
+              const SizedBox(height: 8),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const ContributionBadge(
+                  child: Icon(Icons.history_edu_outlined),
+                ),
+                title: Text(l10n.myContributionsTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push<void>(AppRoutes.myContributions),
+              ),
             ],
           ],
         ),

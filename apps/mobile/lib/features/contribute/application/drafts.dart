@@ -27,12 +27,15 @@ Future<int> startDraft(
   ContributionDraft draft = const ContributionDraft(),
 }) => ref.read(databaseProvider).draftsDao.create(draft, now: clock.now());
 
-/// Deletes draft [id], and Zema's copy of a file shared for it.
+/// Deletes draft [id], and Zema's copy of a file shared for it unless a
+/// contribution sent with it still keeps it.
 Future<void> deleteDraft(WidgetRef ref, int id) async {
-  final dao = ref.read(databaseProvider).draftsDao;
-  final path = (await dao.get(id))?.draft.audioPath;
-  await dao.remove(id);
-  await deleteSharedAudio(path);
+  final database = ref.read(databaseProvider);
+  final path = (await database.draftsDao.get(id))?.draft.audioPath;
+  await database.draftsDao.remove(id);
+  if (!(await database.ownCopiesDao.audioPaths()).contains(path)) {
+    await deleteSharedAudio(path);
+  }
 }
 
 /// One draft being edited: loads it, applies each change at once, and saves

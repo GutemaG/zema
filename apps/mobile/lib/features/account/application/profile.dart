@@ -10,6 +10,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/preferences_provider.dart';
+import '../../contribute/application/my_contributions.dart';
 import '../../contribute/data/shared_audio.dart';
 import '../data/avatar_cache.dart';
 import '../data/profile_cache.dart';
@@ -145,6 +146,7 @@ class AccountActionsController extends Notifier<AccountAction?> {
     // signing in again knows the cloud backup is this phone's.
     if (userId != null) {
       await ref.read(backupStatusStoreProvider).remove(userId);
+      await ref.read(contributionSeenStoreProvider).remove(userId);
     }
     await _forget(userId);
   });

@@ -10,6 +10,8 @@ import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/presentation/widgets/settings_group.dart';
 import '../../settings/presentation/widgets/settings_row.dart';
+import '../../contribute/application/my_contributions.dart';
+import '../../contribute/presentation/my_contributions_screen.dart';
 import '../application/profile.dart';
 import 'widgets/account_avatar.dart';
 import 'widgets/account_page.dart';
@@ -19,7 +21,7 @@ import 'widgets/rename_dialog.dart';
 /// Backup & sync, Settings, Sign out and Delete account; for a guest, a
 /// sign-in card and Settings.
 ///
-/// Stats and My contributions join in intent 006.
+/// With the user's contribution stats and My contributions (S23).
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -51,9 +53,18 @@ class ProfileScreen extends ConsumerWidget {
                   const _GuestHeader()
                 else
                   _ProfileHeader(profile: profile),
+                if (profile != null) const _Stats(),
                 SettingsGroup(
                   title: l10n.profileSectionGeneral,
                   children: [
+                    if (profile != null)
+                      SettingsRow(
+                        label: l10n.myContributionsTitle,
+                        trailing: const ContributionBadge(
+                          child: Icon(Icons.chevron_right),
+                        ),
+                        onTap: () => context.push(AppRoutes.myContributions),
+                      ),
                     if (profile != null)
                       SettingsRow(
                         label: l10n.backupTitle,
@@ -76,6 +87,47 @@ class ProfileScreen extends ConsumerWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Lyrics added, synced and approved, once the contributions are fetched.
+class _Stats extends ConsumerWidget {
+  const _Stats();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mine = ref.watch(myContributionsProvider.select((s) => s.mine));
+    if (mine == null) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final textTheme = Theme.of(context).textTheme;
+    final stats = contributionStats(mine);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          for (final (count, label) in [
+            (stats.lyrics, l10n.profileStatLyrics),
+            (stats.synced, l10n.profileStatSynced),
+            (stats.approved, l10n.profileStatApproved),
+          ])
+            Expanded(
+              child: MergeSemantics(
+                child: Column(
+                  children: [
+                    Text(count.toString(), style: textTheme.headlineSmall),
+                    Text(
+                      label,
+                      style: textTheme.bodySmall?.copyWith(color: colors.muted),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

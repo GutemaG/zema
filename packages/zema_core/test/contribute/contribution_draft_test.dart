@@ -51,8 +51,10 @@ void main() {
         audioPath: '/data/shared_audio/1-Selam.ogg',
         videoTitle: 'Selam (live)',
         step: DraftStep.sync,
+        resubmitId: 'c-7',
       );
       expect(roundTrip(draft), draft);
+      expect(draft.copyWith(step: DraftStep.review).resubmitId, 'c-7');
       expect(
         draft.copyWith(audioPath: () => null, videoTitle: () => null),
         isNot(draft),
@@ -167,5 +169,62 @@ void main() {
     expect(cleared.recording, isNull);
     expect(cleared.trackId, isNull);
     expect(draft.copyWith(step: DraftStep.review).recording, local);
+  });
+
+  group('resubmitDraft', () {
+    SubmittedContribution sent(Contribution c) => SubmittedContribution(
+      id: 'c-9',
+      contribution: c,
+      status: ContributionStatus.changesRequested,
+      createdAt: DateTime.utc(2026),
+      submittedAt: DateTime.utc(2026),
+    );
+
+    test('a new song opens at the lyrics with everything sent', () {
+      final c = const ContributionDraft(
+        song: lyrics,
+        recording: local,
+        starts: [Duration(seconds: 1), Duration(seconds: 2)],
+      ).toContribution();
+      final draft = resubmitDraft(sent(c), trackId: 3, audioPath: '/a.ogg');
+      expect(draft.resubmitId, 'c-9');
+      expect(draft.step, DraftStep.lyrics);
+      expect(draft.trackId, 3);
+      expect(draft.audioPath, '/a.ogg');
+      expect(draft.synced, isTrue);
+      expect(draft.toContribution(), c);
+    });
+
+    test('a timing opens at the sync step with the given song', () {
+      const song = Song(
+        id: 'selam',
+        title: 'Selam',
+        sections: [
+          LyricSection(
+            id: 'v1',
+            kind: SectionKind.verse,
+            lines: [LyricLine('a'), LyricLine('b')],
+          ),
+        ],
+      );
+      const c = Contribution.syncTiming(
+        songId: 'selam',
+        timing: SyncTiming(
+          recordingId: 'rec-1',
+          starts: [Duration(seconds: 1), Duration(seconds: 2)],
+        ),
+      );
+      final draft = resubmitDraft(sent(c), song: song, recording: local);
+      expect(draft.step, DraftStep.sync);
+      expect(draft.kind, ContributionKind.syncTiming);
+      expect(draft.song, song);
+      expect(draft.recording, local);
+      expect(draft.starts, c.timing!.starts);
+    });
+
+    test('a recording opens at the recording step', () {
+      const c = Contribution.recording(songId: 'selam', recording: local);
+      expect(resubmitDraft(sent(c)).step, DraftStep.recording);
+    });
   });
 }

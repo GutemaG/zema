@@ -3419,6 +3419,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync a recording'**
   String get contributeFlowSyncTitle;
+
+  /// S23's title, and its link on S05 and Profile
+  ///
+  /// In en, this message translates to:
+  /// **'My contributions'**
+  String get myContributionsTitle;
+
+  /// S23 tab: waiting for review
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get myContributionsPending;
+
+  /// S23 tab
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get myContributionsApproved;
+
+  /// S23 tab: a moderator sent it back
+  ///
+  /// In en, this message translates to:
+  /// **'Needs changes'**
+  String get myContributionsNeedsChanges;
+
+  /// S23 tab
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get myContributionsRejected;
+
+  /// S23: a tab with no contributions
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here.'**
+  String get myContributionsEmpty;
+
+  /// S23: the fetch failed and nothing was loaded before
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your contributions. Check your connection.'**
+  String get myContributionsOffline;
+
+  /// S23 card: when it was sent
+  ///
+  /// In en, this message translates to:
+  /// **'Sent {date}'**
+  String myContributionsSent(String date);
+
+  /// S23 card: when a moderator decided
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewed {date}'**
+  String myContributionsReviewed(String date);
+
+  /// S23 card: the moderator's comment
+  ///
+  /// In en, this message translates to:
+  /// **'Comment: {note}'**
+  String myContributionsComment(String note);
+
+  /// S23 card: why it was rejected
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {note}'**
+  String myContributionsReason(String note);
+
+  /// S23 Needs changes card: reopens the flow
+  ///
+  /// In en, this message translates to:
+  /// **'Edit and resend'**
+  String get myContributionsEdit;
+
+  /// S23: a recording or sync sent back for changes whose details this phone doesn't have
+  ///
+  /// In en, this message translates to:
+  /// **'This one can only be edited on the phone it was sent from.'**
+  String get myContributionsEditUnavailable;
+
+  /// Screen reader label for the badge on Profile and My contributions
+  ///
+  /// In en, this message translates to:
+  /// **'New updates'**
+  String get myContributionsNew;
+
+  /// Kind of contribution
+  ///
+  /// In en, this message translates to:
+  /// **'New song'**
+  String get contributionKindNewSong;
+
+  /// Kind of contribution
+  ///
+  /// In en, this message translates to:
+  /// **'Correction'**
+  String get contributionKindCorrection;
+
+  /// Kind of contribution
+  ///
+  /// In en, this message translates to:
+  /// **'Recording'**
+  String get contributionKindRecording;
+
+  /// Kind of contribution
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get contributionKindSync;
+
+  /// Message when a contribution was approved
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” was approved.'**
+  String contributionApprovedMessage(String title);
+
+  /// Message when a moderator sent a contribution back
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” needs changes.'**
+  String contributionNeedsChangesMessage(String title);
+
+  /// Message when a contribution was rejected
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” was rejected.'**
+  String contributionRejectedMessage(String title);
+
+  /// Snack bar action opening My contributions
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get actionView;
+
+  /// Profile stat: new songs sent
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics added'**
+  String get profileStatLyrics;
+
+  /// Profile stat: contributions sent with timings
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get profileStatSynced;
+
+  /// Profile stat: contributions approved
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get profileStatApproved;
 }
 
 class _AppLocalizationsDelegate

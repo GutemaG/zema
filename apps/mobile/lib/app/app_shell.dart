@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zema_core/zema_core.dart';
 
 import '../features/account/application/account_providers.dart';
 import '../features/account/presentation/widgets/sign_in_prompt.dart';
+import '../features/contribute/application/my_contributions.dart';
 import '../features/contribute/application/recording.dart';
+import '../features/contribute/presentation/my_contributions_screen.dart';
 import '../features/contribute/data/shared_audio.dart';
 import '../features/library/application/library_sync_controller.dart';
 import '../features/library/application/play_history.dart';
@@ -27,7 +30,8 @@ import 'zema_nav_bar.dart';
 /// The shell also keeps the library sync and the player session (restore and
 /// autosave of the queue) running from app start, shows the mini player above
 /// the navigation, and reports songs that couldn't be played. An audio file
-/// shared to Zema starts a contribution with it (after C09 for a guest).
+/// shared to Zema starts a contribution with it (after C09 for a guest), and
+/// a message tells about each contribution reviewed since the last check.
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -78,7 +82,33 @@ class AppShell extends ConsumerWidget {
     ref.listen(catalogStartupRefreshProvider, (_, _) {});
     ref.listen(reportStartupFlushProvider, (_, _) {});
     ref.listen(lyricsLinkSyncProvider, (_, _) {});
+    ref.listen(myContributionsProvider, (_, _) {});
     final l10n = AppLocalizations.of(context);
+    ref.listen(contributionChangesProvider, (_, next) {
+      if (next case AsyncData(:final value)) {
+        final messenger = ScaffoldMessenger.of(context);
+        for (final c in value) {
+          final title = contributionTitle(ref, c);
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(switch (c.status) {
+                ContributionStatus.approved => l10n.contributionApprovedMessage(
+                  title,
+                ),
+                ContributionStatus.rejected => l10n.contributionRejectedMessage(
+                  title,
+                ),
+                _ => l10n.contributionNeedsChangesMessage(title),
+              }),
+              action: SnackBarAction(
+                label: l10n.actionView,
+                onPressed: () => context.push(AppRoutes.myContributions),
+              ),
+            ),
+          );
+        }
+      }
+    });
     ref.listen(unplayableTrackProvider, (_, next) {
       if (next case AsyncData(value: SkippedTrack(:final track))) {
         ScaffoldMessenger.of(context)

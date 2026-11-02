@@ -24,6 +24,7 @@ class ContributionDraft {
     this.audioPath,
     this.videoTitle,
     this.step = DraftStep.lyrics,
+    this.resubmitId,
   });
 
   /// Reads [json] (see [toJson]). Throws [LyricsFormatFailure] when it is
@@ -54,6 +55,7 @@ class ContributionDraft {
       audioPath: json['audioPath'] as String?,
       videoTitle: json['videoTitle'] as String?,
       step: DraftStep.values.asNameMap()[json['step']] ?? DraftStep.lyrics,
+      resubmitId: json['resubmitId'] as String?,
     );
   }
 
@@ -81,6 +83,10 @@ class ContributionDraft {
   /// The YouTube video's title, shown on S20; not sent.
   final String? videoTitle;
   final DraftStep step;
+
+  /// The contribution a moderator sent back that this draft sends again;
+  /// null for a new one.
+  final String? resubmitId;
 
   /// The title as shown in lists; empty until typed.
   String get title => song.title.trim();
@@ -180,6 +186,7 @@ class ContributionDraft {
     audioPath: audioPath == null ? this.audioPath : audioPath(),
     videoTitle: videoTitle == null ? this.videoTitle : videoTitle(),
     step: step ?? this.step,
+    resubmitId: resubmitId,
   );
 
   Map<String, Object?> toJson() => {
@@ -195,6 +202,7 @@ class ContributionDraft {
     'audioPath': ?audioPath,
     'videoTitle': ?videoTitle,
     'step': step.name,
+    'resubmitId': ?resubmitId,
   };
 
   @override
@@ -209,7 +217,8 @@ class ContributionDraft {
       other.trackId == trackId &&
       other.audioPath == audioPath &&
       other.videoTitle == videoTitle &&
-      other.step == step;
+      other.step == step &&
+      other.resubmitId == resubmitId;
 
   @override
   int get hashCode => Object.hash(
@@ -223,6 +232,39 @@ class ContributionDraft {
     audioPath,
     videoTitle,
     step,
+    resubmitId,
+  );
+}
+
+/// A draft sending [submitted] (sent back for changes) again, with what
+/// was sent, at the step its kind starts at. [song] and [recording] stand in
+/// for what the contribution doesn't carry (the catalog's song for a
+/// recording or a timing; the recording a timing is for); [trackId] and
+/// [audioPath] are what the user chose when sending it.
+ContributionDraft resubmitDraft(
+  SubmittedContribution submitted, {
+  Song? song,
+  Recording? recording,
+  int? trackId,
+  String? audioPath,
+}) {
+  final c = submitted.contribution;
+  return ContributionDraft(
+    kind: c.kind,
+    songId: c.songId,
+    baseVersion: c.baseVersion,
+    song: c.song ?? song ?? const Song(id: '', title: '', sections: []),
+    recording: c.recording ?? recording,
+    starts: [...?c.timing?.starts],
+    trackId: trackId,
+    audioPath: audioPath,
+    step: switch (c.kind) {
+      ContributionKind.newSong ||
+      ContributionKind.editLyrics => DraftStep.lyrics,
+      ContributionKind.recording => DraftStep.recording,
+      ContributionKind.syncTiming => DraftStep.sync,
+    },
+    resubmitId: submitted.id,
   );
 }
 

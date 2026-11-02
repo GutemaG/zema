@@ -7,6 +7,7 @@ import '../../../../app/theme/zema_spacing.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../application/account_providers.dart';
 import '../../application/profile.dart';
+import '../../../contribute/presentation/my_contributions_screen.dart';
 import 'account_avatar.dart';
 
 /// The Home header's account button: the avatar, or a guest icon, opening
@@ -31,7 +32,12 @@ class ProfileButton extends ConsumerWidget {
       );
     }
     return IconButton(
-      icon: AccountAvatar(profile: ref.watch(profileProvider).value, size: 32),
+      icon: ContributionBadge(
+        child: AccountAvatar(
+          profile: ref.watch(profileProvider).value,
+          size: 32,
+        ),
+      ),
       tooltip: l10n.homeProfileTooltip,
       constraints: tap,
       onPressed: () => context.push(AppRoutes.profile),

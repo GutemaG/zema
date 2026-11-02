@@ -1,5 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
@@ -31,7 +32,8 @@ List<ContributionError> draftErrors(ContributionDraft draft) => {
   ...contributionErrors(draft.toContribution()),
 }.toList();
 
-/// Sends draft [id] ([draft]) for review and returns the contribution's id.
+/// Sends draft [id] ([draft]) for review, or again when it resubmits one
+/// sent back for changes, and returns the contribution's id.
 /// What was sent is kept as the user's own copy, and the draft is deleted;
 /// Zema's copy of a shared file stays with the own copy until the
 /// contribution is reviewed.
@@ -51,7 +53,14 @@ Future<String> submitDraft(
     throw ContributionFailure('Draft $id: ${error.code}', code: error.code);
   }
   final contribution = draft.toContribution();
-  final contributionId = await repository.submit(contribution);
+  final resubmitId = draft.resubmitId;
+  final String contributionId;
+  if (resubmitId == null) {
+    contributionId = await repository.submit(contribution);
+  } else {
+    await repository.resubmit(resubmitId, contribution);
+    contributionId = resubmitId;
+  }
   final database = ref.read(databaseProvider);
   await database.transaction(() async {
     await database.ownCopiesDao.add(
@@ -80,6 +89,8 @@ Future<String> submitDraft(
   });
   return contributionId;
 }
+
+final _log = Logger('OwnCopies');
 
 /// Applies reviews to the own copies (see [OwnCopyReconciler]).
 final ownCopyReconcilerProvider = Provider<OwnCopyReconciler>(
@@ -122,7 +133,12 @@ class OwnCopyReconciler {
       if (review.status == ContributionStatus.approved &&
           copy.trackId != null &&
           songId != null) {
-        await _links.setManual(copy.trackId!, songId);
+        try {
+          await _links.setManual(copy.trackId!, songId);
+        } on DatabaseFailure catch (e) {
+          // The track is gone from the phone; the copy goes all the same.
+          _log.info('Linking ${copy.trackId} to $songId failed', e);
+        }
       }
       await _copies.remove(copy.contributionId);
       await deleteSharedAudio(copy.audioPath);

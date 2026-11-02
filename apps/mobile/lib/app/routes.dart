@@ -31,6 +31,9 @@ abstract final class AppRoutes {
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 
+  /// S23, above the shell; opened from S05 and Profile.
+  static const String myContributions = '/my-contributions';
+
   /// The contribution flow (S19–S22) for a draft, above the shell.
   static const String draftPath = '/contribute-draft';
 

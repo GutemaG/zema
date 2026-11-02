@@ -2612,5 +2612,140 @@
   "contributeFlowSyncTitle": "Sync a recording",
   "@contributeFlowSyncTitle": {
     "description": "Title of the flow when syncing a catalog recording."
+  },
+  "myContributionsTitle": "My contributions",
+  "@myContributionsTitle": {
+    "description": "S23's title, and its link on S05 and Profile"
+  },
+  "myContributionsPending": "Pending",
+  "@myContributionsPending": {
+    "description": "S23 tab: waiting for review"
+  },
+  "myContributionsApproved": "Approved",
+  "@myContributionsApproved": {
+    "description": "S23 tab"
+  },
+  "myContributionsNeedsChanges": "Needs changes",
+  "@myContributionsNeedsChanges": {
+    "description": "S23 tab: a moderator sent it back"
+  },
+  "myContributionsRejected": "Rejected",
+  "@myContributionsRejected": {
+    "description": "S23 tab"
+  },
+  "myContributionsEmpty": "Nothing here.",
+  "@myContributionsEmpty": {
+    "description": "S23: a tab with no contributions"
+  },
+  "myContributionsOffline": "Couldn't load your contributions. Check your connection.",
+  "@myContributionsOffline": {
+    "description": "S23: the fetch failed and nothing was loaded before"
+  },
+  "myContributionsSent": "Sent {date}",
+  "@myContributionsSent": {
+    "description": "S23 card: when it was sent",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsReviewed": "Reviewed {date}",
+  "@myContributionsReviewed": {
+    "description": "S23 card: when a moderator decided",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsComment": "Comment: {note}",
+  "@myContributionsComment": {
+    "description": "S23 card: the moderator's comment",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsReason": "Reason: {note}",
+  "@myContributionsReason": {
+    "description": "S23 card: why it was rejected",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsEdit": "Edit and resend",
+  "@myContributionsEdit": {
+    "description": "S23 Needs changes card: reopens the flow"
+  },
+  "myContributionsEditUnavailable": "This one can only be edited on the phone it was sent from.",
+  "@myContributionsEditUnavailable": {
+    "description": "S23: a recording or sync sent back for changes whose details this phone doesn't have"
+  },
+  "myContributionsNew": "New updates",
+  "@myContributionsNew": {
+    "description": "Screen reader label for the badge on Profile and My contributions"
+  },
+  "contributionKindNewSong": "New song",
+  "@contributionKindNewSong": {
+    "description": "Kind of contribution"
+  },
+  "contributionKindCorrection": "Correction",
+  "@contributionKindCorrection": {
+    "description": "Kind of contribution"
+  },
+  "contributionKindRecording": "Recording",
+  "@contributionKindRecording": {
+    "description": "Kind of contribution"
+  },
+  "contributionKindSync": "Sync",
+  "@contributionKindSync": {
+    "description": "Kind of contribution"
+  },
+  "contributionApprovedMessage": "“{title}” was approved.",
+  "@contributionApprovedMessage": {
+    "description": "Message when a contribution was approved",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "contributionNeedsChangesMessage": "“{title}” needs changes.",
+  "@contributionNeedsChangesMessage": {
+    "description": "Message when a moderator sent a contribution back",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "contributionRejectedMessage": "“{title}” was rejected.",
+  "@contributionRejectedMessage": {
+    "description": "Message when a contribution was rejected",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "actionView": "View",
+  "@actionView": {
+    "description": "Snack bar action opening My contributions"
+  },
+  "profileStatLyrics": "Lyrics added",
+  "@profileStatLyrics": {
+    "description": "Profile stat: new songs sent"
+  },
+  "profileStatSynced": "Synced",
+  "@profileStatSynced": {
+    "description": "Profile stat: contributions sent with timings"
+  },
+  "profileStatApproved": "Approved",
+  "@profileStatApproved": {
+    "description": "Profile stat: contributions approved"
   }
 }
