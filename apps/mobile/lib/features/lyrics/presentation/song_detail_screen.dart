@@ -9,7 +9,10 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/format_duration.dart';
+import '../../account/application/account_providers.dart';
 import '../../catalog/application/report_sender.dart';
+import '../../contribute/application/contribution_starts.dart';
+import '../../contribute/presentation/start_contribution.dart';
 import '../../library/application/favorites.dart';
 import '../../library/presentation/add_to_playlist_sheet.dart';
 import '../../player/application/player_providers.dart';
@@ -22,7 +25,9 @@ import 'report_lyrics_sheet.dart';
 /// S07: one song's title, transliteration, artist and album, Play,
 /// favorite and add to playlist (for its first linked track), tabs with
 /// the full lyrics, the song's recordings and its info, and for catalog
-/// songs Report wrong lyrics in the menu. Opening it downloads the
+/// songs Report wrong lyrics in the menu, with Suggest a correction, Link a
+/// recording and (for a recording the phone plays that has no timing) Sync
+/// this recording when the build has accounts. Opening it downloads the
 /// lyrics if needed. An unknown [songId] shows C07 not found; lyrics that
 /// can't be downloaded show C07 with Try again.
 class SongDetailScreen extends ConsumerWidget {
@@ -60,6 +65,19 @@ class _SongDetail extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final display = ref.watch(lyricsDisplayProvider);
     final displayController = ref.read(lyricsDisplayProvider.notifier);
+    final canReport = ref.watch(canReportProvider(song.id));
+    // A catalog song in a build with accounts can be contributed to.
+    final entry = ref.watch(accountsAvailableProvider)
+        ? ref.watch(catalogEntryProvider(song.id))
+        : null;
+    final syncable = entry == null
+        ? null
+        : ref.watch(syncableRecordingProvider(song.id));
+    PopupMenuItem<void> item(String label, ContributionDraft draft) =>
+        PopupMenuItem(
+          onTap: () => unawaited(startContribution(context, ref, draft: draft)),
+          child: Text(label),
+        );
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -79,16 +97,36 @@ class _SongDetail extends ConsumerWidget {
                   ? () => unawaited(displayController.stepScale(1))
                   : null,
             ),
-            if (ref.watch(canReportProvider(song.id)))
+            if (canReport || entry != null)
               PopupMenuButton<void>(
                 tooltip: l10n.songDetailMoreOptions,
                 itemBuilder: (_) => [
-                  PopupMenuItem(
-                    onTap: () => unawaited(
-                      showReportLyricsSheet(context, songId: song.id),
+                  if (entry != null) ...[
+                    item(
+                      l10n.contributeCorrectionSuggest,
+                      correctionDraft(song, baseVersion: entry.version),
                     ),
-                    child: Text(l10n.reportLyrics),
-                  ),
+                    item(
+                      l10n.contributeEntryLinkRecording,
+                      recordingDraft(song),
+                    ),
+                    if (syncable != null)
+                      item(
+                        l10n.contributeEntrySyncRecording,
+                        syncDraft(
+                          song,
+                          syncable.recording,
+                          trackId: syncable.track.id,
+                        ),
+                      ),
+                  ],
+                  if (canReport)
+                    PopupMenuItem(
+                      onTap: () => unawaited(
+                        showReportLyricsSheet(context, songId: song.id),
+                      ),
+                      child: Text(l10n.reportLyrics),
+                    ),
                 ],
               ),
           ],

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
@@ -5,6 +7,9 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../lyrics/application/lyrics_links.dart';
+import '../../search/application/catalog_search.dart';
+import '../application/contribution_starts.dart';
 import '../application/drafts.dart';
 
 /// The label of a block: its kind, numbered when [sections] has more than
@@ -74,7 +79,16 @@ bool _defaultOrder(Song song) =>
         song.playOrder[i] == song.sections[i].id,
     ].every((same) => same);
 
-/// S19, step 1: the song's details, its blocks and their play order.
+/// How long S19 waits after the title is typed before looking for similar
+/// catalog songs.
+const similarSongDelay = Duration(milliseconds: 500);
+
+/// How many similar songs S19 names.
+const _similarShown = 3;
+
+/// S19, step 1: the song's details, its blocks and their play order. For a
+/// new song, catalog songs with a similar title are offered instead; a
+/// correction starts filled with the catalog's song and goes on to review.
 class LyricsStep extends ConsumerStatefulWidget {
   const LyricsStep({super.key, required this.id, required this.draft});
 
@@ -103,10 +117,43 @@ class _LyricsStepState extends ConsumerState<LyricsStep> {
   /// Changes when pasting replaces the blocks, so their fields start over.
   var _generation = 0;
 
+  /// Catalog songs whose title is like the one typed, and those the user
+  /// said aren't the same song.
+  Timer? _similarTimer;
+  var _similar = const <CatalogMatch>[];
+  final _notSame = <String>{};
+
   Song get _song => widget.draft.song;
+
+  bool get _newSong => widget.draft.kind == ContributionKind.newSong;
+
+  @override
+  void initState() {
+    super.initState();
+    // A title filled in before (from Search or a track) is checked too.
+    if (_title.text.trim().isNotEmpty) _titleChanged();
+  }
+
+  @override
+  void didUpdateWidget(LyricsStep oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Choosing a similar song to correct replaces everything typed.
+    if (oldWidget.draft.kind != widget.draft.kind ||
+        oldWidget.draft.songId != widget.draft.songId) {
+      final song = widget.draft.song;
+      _title.text = song.title;
+      _transliteration.text = song.transliteration ?? '';
+      _artist.text = song.artist ?? '';
+      _album.text = song.album ?? '';
+      _forgetFields();
+      _similarTimer?.cancel();
+      _similar = const [];
+    }
+  }
 
   @override
   void dispose() {
+    _similarTimer?.cancel();
     for (final c in [
       _title,
       _transliteration,
@@ -161,6 +208,60 @@ class _LyricsStepState extends ConsumerState<LyricsStep> {
   );
 
   void _detailsChanged() => _edit(_with);
+
+  /// Looks for similar catalog songs once typing pauses. Uses the phone's
+  /// copy of the index, so it works offline (and finds nothing before the
+  /// index has loaded).
+  void _titleChanged() {
+    _similarTimer?.cancel();
+    if (!_newSong) return;
+    _similarTimer = Timer(similarSongDelay, () {
+      if (!mounted) return;
+      final matches =
+          ref.read(catalogTitleIndexProvider)?.search(_title.text) ?? const [];
+      setState(() => _similar = matches.take(_similarShown).toList());
+    });
+  }
+
+  /// Turns this draft into a recording of, or a correction to, the catalog
+  /// song [match]. What was chosen for the recording carries over.
+  Future<void> _useSimilar(CatalogMatch match, ContributionKind kind) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    Song? song;
+    try {
+      song = await ref.read(songProvider(match.songId).future);
+    } on ZemaFailure {
+      song = null;
+    }
+    if (!mounted) return;
+    final entry = ref.read(catalogEntryProvider(match.songId));
+    if (song == null || entry == null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.contributeSimilarUnavailable)),
+      );
+      return;
+    }
+    final catalogSong = song;
+    ref
+        .read(draftEditorProvider(widget.id).notifier)
+        .edit(
+          (draft) => kind == ContributionKind.recording
+              ? recordingDraft(
+                  catalogSong,
+                  recording: draft.recording,
+                  trackId: draft.trackId,
+                  audioPath: draft.audioPath,
+                  videoTitle: draft.videoTitle,
+                )
+              : correctionDraft(
+                  catalogSong,
+                  baseVersion: entry.version,
+                  trackId: draft.trackId,
+                  audioPath: draft.audioPath,
+                ),
+        );
+  }
 
   /// Replaces the blocks with [sections]; while the play order is still the
   /// default, it follows them.
@@ -295,16 +396,27 @@ class _LyricsStepState extends ConsumerState<LyricsStep> {
     final song = _song;
     final errors = widget.draft.lyricsErrors;
     final titleTyped = _title.text.isNotEmpty;
+    // Kept loaded while typing, for the similar-song check.
+    ref.watch(catalogTitleIndexProvider);
+    final similar = [
+      for (final match in _similar)
+        if (!_notSame.contains(match.songId)) match,
+    ];
+    final correction = widget.draft.kind == ContributionKind.editLyrics;
 
     Widget field(
       TextEditingController controller,
       String label, {
       String? error,
+      VoidCallback? onChanged,
     }) => Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
-        onChanged: (_) => _detailsChanged(),
+        onChanged: (_) {
+          _detailsChanged();
+          onChanged?.call();
+        },
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -334,9 +446,18 @@ class _LyricsStepState extends ConsumerState<LyricsStep> {
               16,
             ),
             children: [
+              if (correction)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    l10n.contributeCorrectionNote,
+                    style: textTheme.bodyMedium?.copyWith(color: colors.muted),
+                  ),
+                ),
               field(
                 _title,
                 l10n.contributeFieldTitle,
+                onChanged: _titleChanged,
                 error: !titleTyped
                     ? null
                     : errors.contains(ContributionError.titleRequired)
@@ -345,6 +466,14 @@ class _LyricsStepState extends ConsumerState<LyricsStep> {
                     ? l10n.contributeTitleTooLong
                     : null,
               ),
+              if (similar.isNotEmpty)
+                _SimilarSongs(
+                  matches: similar,
+                  onUse: (match, kind) => unawaited(_useSimilar(match, kind)),
+                  onNotSame: () => setState(
+                    () => _notSame.addAll([for (final m in similar) m.songId]),
+                  ),
+                ),
               field(_transliteration, l10n.contributeFieldTransliteration),
               field(_artist, l10n.contributeFieldArtist),
               field(_album, l10n.contributeFieldAlbum),
@@ -453,14 +582,113 @@ class _LyricsStepState extends ConsumerState<LyricsStep> {
                   ? () => ref
                         .read(draftEditorProvider(widget.id).notifier)
                         .edit(
-                          (draft) => draft.copyWith(step: DraftStep.recording),
+                          // A correction has no recording to choose.
+                          (draft) => draft.copyWith(
+                            step: correction
+                                ? DraftStep.review
+                                : DraftStep.recording,
+                          ),
                         )
                   : null,
-              child: Text(l10n.contributeNextRecording),
+              child: Text(
+                correction
+                    ? l10n.contributeNextReview
+                    : l10n.contributeNextRecording,
+              ),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// "A similar song exists": the catalog songs whose title is like the one
+/// typed, each offering to add a recording to it or correct it instead.
+class _SimilarSongs extends StatelessWidget {
+  const _SimilarSongs({
+    required this.matches,
+    required this.onUse,
+    required this.onNotSame,
+  });
+
+  final List<CatalogMatch> matches;
+  final void Function(CatalogMatch match, ContributionKind kind) onUse;
+  final VoidCallback onNotSame;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 4, 4, 8),
+      decoration: BoxDecoration(
+        color: colors.soft,
+        borderRadius: BorderRadius.circular(ZemaRadius.small),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.info_outline, size: 20, color: colors.primaryText),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.contributeSimilarTitle,
+                  style: textTheme.titleSmall?.copyWith(color: colors.text),
+                ),
+              ),
+              IconButton(
+                tooltip: l10n.contributeSimilarIgnore,
+                icon: Icon(Icons.close, color: colors.muted),
+                onPressed: onNotSame,
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(end: 8),
+            child: Text(
+              l10n.contributeSimilarHelp,
+              style: textTheme.bodySmall?.copyWith(color: colors.muted),
+            ),
+          ),
+          for (final match in matches)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(top: 8, end: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    match.title,
+                    style: textTheme.bodyLarge?.copyWith(color: colors.text),
+                  ),
+                  Text(
+                    match.artist ?? l10n.unknownArtist,
+                    style: textTheme.bodySmall?.copyWith(color: colors.muted),
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      TextButton(
+                        onPressed: () =>
+                            onUse(match, ContributionKind.recording),
+                        child: Text(l10n.contributeSimilarAddRecording),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            onUse(match, ContributionKind.editLyrics),
+                        child: Text(l10n.contributeSimilarCorrect),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
