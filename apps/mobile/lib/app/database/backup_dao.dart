@@ -16,6 +16,7 @@ class BackupRows {
     required this.manualLinks,
     required this.hiddenFolders,
     required this.hiddenTracks,
+    this.songInfo = const [],
   });
 
   /// Oldest first.
@@ -26,6 +27,9 @@ class BackupRows {
   final List<({TrackRow track, String? songId})> manualLinks;
   final List<String> hiddenFolders;
   final List<TrackRow> hiddenTracks;
+
+  /// Song info edited on the phone, with the track's own tags.
+  final List<({TrackRow track, TrackOverrideRow edit})> songInfo;
 }
 
 /// Reads the user's library data for a backup.
@@ -38,6 +42,7 @@ class BackupRows {
     LyricsLinks,
     HiddenFolders,
     HiddenTracks,
+    TrackOverrides,
   ],
 )
 class BackupDao extends DatabaseAccessor<ZemaDatabase> with _$BackupDaoMixin {
@@ -98,6 +103,12 @@ class BackupDao extends DatabaseAccessor<ZemaDatabase> with _$BackupDaoMixin {
           row.path,
       ],
       hiddenTracks: [for (final row in hiddenTrackRows) row.readTable(tracks)],
+      songInfo: [
+        for (final row in await (select(trackOverrides).join([
+          innerJoin(tracks, tracks.id.equalsExp(trackOverrides.trackId)),
+        ])).get())
+          (track: row.readTable(tracks), edit: row.readTable(trackOverrides)),
+      ],
     );
   });
 }

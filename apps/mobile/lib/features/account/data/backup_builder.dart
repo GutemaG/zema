@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/backup_dao.dart';
 import '../../../app/database/unmatched_dao.dart';
 import '../../../app/database/zema_database.dart';
 import '../../../app/theme/zema_palette.dart';
+import '../../lyrics/application/lyrics_prefs.dart';
 import '../../settings/data/app_settings.dart';
 
 /// Builds the backup document from the database and the settings: library
@@ -16,10 +18,13 @@ import '../../settings/data/app_settings.dart';
 /// go back in too, so a backup from this phone doesn't lose them: a playlist
 /// entry at its old place in its playlist, if the playlist is still here.
 class BackupBuilder {
-  BackupBuilder(this._dao, this._unmatched);
+  BackupBuilder(this._dao, this._unmatched, [this._prefs]);
 
   final BackupDao _dao;
   final UnmatchedDao _unmatched;
+
+  /// Where the recordings' own sync offsets are kept.
+  final SharedPreferences? _prefs;
 
   Future<BackupDocument> build(AppSettings settings, {DateTime? now}) async {
     final rows = await _dao.read();
@@ -87,6 +92,24 @@ class BackupBuilder {
       ],
       hiddenTracks: hiddenTracks,
       settings: backupSettings(settings),
+      songInfo: [
+        for (final (:track, :edit) in rows.songInfo)
+          if (edit.title != null ||
+              edit.artist != null ||
+              edit.album != null ||
+              edit.trackNumber != null)
+            BackupSongInfo(
+              track: identityOf(track),
+              title: edit.title,
+              artist: edit.artist,
+              album: edit.album,
+              trackNumber: edit.trackNumber,
+            ),
+      ],
+      syncOffsets: switch (_prefs) {
+        final prefs? => savedSyncOffsets(prefs),
+        null => const {},
+      },
     );
   }
 
@@ -172,6 +195,8 @@ AppSettings settingsFromBackup(
   );
 }
 
-/// The builder over [database].
-BackupBuilder backupBuilderOf(ZemaDatabase database) =>
-    BackupBuilder(database.backupDao, database.unmatchedDao);
+/// The builder over [database], with the sync offsets kept in [prefs].
+BackupBuilder backupBuilderOf(
+  ZemaDatabase database, [
+  SharedPreferences? prefs,
+]) => BackupBuilder(database.backupDao, database.unmatchedDao, prefs);

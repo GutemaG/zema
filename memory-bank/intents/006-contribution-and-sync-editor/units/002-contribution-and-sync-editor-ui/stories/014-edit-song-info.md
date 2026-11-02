@@ -2,11 +2,11 @@
 id: 014-edit-song-info
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: should
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 052-contribution-and-sync-editor-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 014-edit-song-info
@@ -19,9 +19,9 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** Song detail's overflow or the track menu, **When** Edit song info, **Then** S09 shows the fields and a cover picker
-- [ ] **Given** saved changes, **When** anywhere the track is shown, sorted or searched, and in lyrics matching, **Then** the overrides are used; the file is never written
-- [ ] **Given** Reset to file's info, **When** pressed, **Then** the overrides are removed
+- [x] **Given** Song detail's overflow or the track menu, **When** Edit song info, **Then** S09 shows the fields and a cover picker
+- [x] **Given** saved changes, **When** anywhere the track is shown, sorted or searched, and in lyrics matching, **Then** the overrides are used; the file is never written
+- [x] **Given** Reset to file's info, **When** pressed, **Then** the overrides are removed
 
 ## Technical Notes
 

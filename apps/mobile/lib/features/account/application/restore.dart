@@ -6,7 +6,9 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/database/restore_dao.dart';
+import '../../../app/preferences_provider.dart';
 import '../../library/application/library_sync_controller.dart';
+import '../../lyrics/application/lyrics_prefs.dart';
 import '../../settings/application/settings_controller.dart';
 import '../data/backup_builder.dart';
 import 'account_providers.dart';
@@ -42,6 +44,11 @@ class BackupRestorer {
     await settings.replaceAll(
       settingsFromBackup(document.settings, _ref.read(settingsProvider)),
     );
+    await restoreSyncOffsets(
+      _ref.read(sharedPreferencesProvider),
+      document.syncOffsets,
+    );
+    _ref.invalidate(lyricsOffsetProvider);
     return report;
   }
 

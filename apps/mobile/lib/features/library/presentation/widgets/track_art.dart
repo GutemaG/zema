@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../../app/theme/zema_colors.dart';
 import '../../application/artwork_provider.dart';
+import '../../application/song_info.dart';
 
-/// A track's album art, loaded lazily. Until it loads, or when there is none,
+/// A track's cover picked on S09, or its album art, loaded lazily. Until it loads, or when there is none,
 /// a [LetterTile] of [label] (the title by default).
 class TrackArt extends ConsumerWidget {
   const TrackArt({
@@ -26,20 +29,43 @@ class TrackArt extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final image = ref.watch(artworkProvider(track.mediaStoreId)).value;
+    final cover = ref.watch(
+      coversProvider.select((covers) => covers.value?[track.id]),
+    );
+    final image = cover != null
+        ? null
+        : ref.watch(artworkProvider(track.mediaStoreId)).value;
     final pixels = (size * MediaQuery.devicePixelRatioOf(context)).round();
     final shape = BorderRadius.circular(radius);
+    final placeholder = LetterTile(
+      label: label ?? track.title,
+      size: size,
+      radius: radius,
+    );
+    if (cover != null) {
+      return ExcludeSemantics(
+        child: SizedBox.square(
+          dimension: size,
+          child: ClipRRect(
+            borderRadius: shape,
+            child: Image.file(
+              File(cover),
+              fit: BoxFit.cover,
+              cacheWidth: pixels,
+              gaplessPlayback: true,
+              errorBuilder: (_, _, _) => placeholder,
+            ),
+          ),
+        ),
+      );
+    }
     return ExcludeSemantics(
       child: SizedBox.square(
         dimension: size,
         child: image == null
             // A rounded box is cheaper to draw than a clip, and most rows in
             // a long list show the placeholder.
-            ? LetterTile(
-                label: label ?? track.title,
-                size: size,
-                radius: radius,
-              )
+            ? placeholder
             : ClipRRect(
                 borderRadius: shape,
                 child: Image.memory(

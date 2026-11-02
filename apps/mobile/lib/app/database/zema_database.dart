@@ -36,6 +36,7 @@ part 'zema_database.g.dart';
     UnmatchedEntries,
     Drafts,
     OwnCopies,
+    TrackOverrides,
   ],
   daos: [
     LibraryDao,
@@ -59,7 +60,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,6 +92,8 @@ class ZemaDatabase extends _$ZemaDatabase {
       from7To8: (m, schema) => m.createTable(schema.drafts),
       // v9: the user's own copies of contributions waiting for review.
       from8To9: (m, schema) => m.createTable(schema.ownCopies),
+      // v10: song info edited by the user (S09).
+      from9To10: (m, schema) => m.createTable(schema.trackOverrides),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

@@ -1,9 +1,9 @@
 ---
 intent: 006-contribution-and-sync-editor
 phase: inception
-status: units-defined
-created: 2026-10-23T22:16:40Z
-updated: 2026-11-02T07:00:52Z
+status: complete
+created: '2026-10-23T22:16:40Z'
+updated: '2026-11-02T07:00:52Z'
 ---
 
 # Requirements: Contribution and Sync Editor

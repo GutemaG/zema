@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/preferences_provider.dart';
 
@@ -123,6 +124,32 @@ final lyricsOffsetProvider =
       LyricsOffsetController.new,
     );
 
+/// Where recording [recordingId]'s own offset is kept.
+String _offsetKey(String recordingId) => '$_offsetPrefix$recordingId';
+const _offsetPrefix = 'lyricsOffset.';
+
+/// Every recording's own offset, by recording id (for the backup).
+Map<String, Duration> savedSyncOffsets(SharedPreferences prefs) => {
+  for (final key in prefs.getKeys())
+    if (key.startsWith(_offsetPrefix))
+      if (prefs.get(key) case final int ms)
+        key.substring(_offsetPrefix.length): clampOffset(
+          Duration(milliseconds: ms),
+        ),
+};
+
+/// Keeps [offsets] (from a backup) for recordings without their own offset
+/// on this phone.
+Future<void> restoreSyncOffsets(
+  SharedPreferences prefs,
+  Map<String, Duration> offsets,
+) async {
+  for (final MapEntry(key: id, value: offset) in offsets.entries) {
+    if (prefs.containsKey(_offsetKey(id))) continue;
+    await prefs.setInt(_offsetKey(id), clampOffset(offset).inMilliseconds);
+  }
+}
+
 class LyricsOffsetController extends Notifier<Duration?> {
   LyricsOffsetController(this.recordingId);
 
@@ -131,7 +158,7 @@ class LyricsOffsetController extends Notifier<Duration?> {
 
   final String recordingId;
 
-  String get _key => 'lyricsOffset.$recordingId';
+  String get _key => _offsetKey(recordingId);
 
   @override
   Duration? build() =>

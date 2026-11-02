@@ -5666,6 +5666,471 @@ class OwnCopiesCompanion extends UpdateCompanion<OwnCopyRow> {
   }
 }
 
+class $TrackOverridesTable extends TrackOverrides
+    with TableInfo<$TrackOverridesTable, TrackOverrideRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrackOverridesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tracks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _artistMeta = const VerificationMeta('artist');
+  @override
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+    'artist',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _albumMeta = const VerificationMeta('album');
+  @override
+  late final GeneratedColumn<String> album = GeneratedColumn<String>(
+    'album',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _trackNumberMeta = const VerificationMeta(
+    'trackNumber',
+  );
+  @override
+  late final GeneratedColumn<int> trackNumber = GeneratedColumn<int>(
+    'track_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _coverPathMeta = const VerificationMeta(
+    'coverPath',
+  );
+  @override
+  late final GeneratedColumn<String> coverPath = GeneratedColumn<String>(
+    'cover_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    trackId,
+    title,
+    artist,
+    album,
+    trackNumber,
+    coverPath,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'track_overrides';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrackOverrideRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('artist')) {
+      context.handle(
+        _artistMeta,
+        artist.isAcceptableOrUnknown(data['artist']!, _artistMeta),
+      );
+    }
+    if (data.containsKey('album')) {
+      context.handle(
+        _albumMeta,
+        album.isAcceptableOrUnknown(data['album']!, _albumMeta),
+      );
+    }
+    if (data.containsKey('track_number')) {
+      context.handle(
+        _trackNumberMeta,
+        trackNumber.isAcceptableOrUnknown(
+          data['track_number']!,
+          _trackNumberMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cover_path')) {
+      context.handle(
+        _coverPathMeta,
+        coverPath.isAcceptableOrUnknown(data['cover_path']!, _coverPathMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {trackId};
+  @override
+  TrackOverrideRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrackOverrideRow(
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      ),
+      artist: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}artist'],
+      ),
+      album: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}album'],
+      ),
+      trackNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_number'],
+      ),
+      coverPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cover_path'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TrackOverridesTable createAlias(String alias) {
+    return $TrackOverridesTable(attachedDatabase, alias);
+  }
+}
+
+class TrackOverrideRow extends DataClass
+    implements Insertable<TrackOverrideRow> {
+  final int trackId;
+  final String? title;
+  final String? artist;
+  final String? album;
+  final int? trackNumber;
+
+  /// A picked cover image, copied into the app's files.
+  final String? coverPath;
+  final DateTime updatedAt;
+  const TrackOverrideRow({
+    required this.trackId,
+    this.title,
+    this.artist,
+    this.album,
+    this.trackNumber,
+    this.coverPath,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['track_id'] = Variable<int>(trackId);
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
+    if (!nullToAbsent || album != null) {
+      map['album'] = Variable<String>(album);
+    }
+    if (!nullToAbsent || trackNumber != null) {
+      map['track_number'] = Variable<int>(trackNumber);
+    }
+    if (!nullToAbsent || coverPath != null) {
+      map['cover_path'] = Variable<String>(coverPath);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  TrackOverridesCompanion toCompanion(bool nullToAbsent) {
+    return TrackOverridesCompanion(
+      trackId: Value(trackId),
+      title: title == null && nullToAbsent
+          ? const Value.absent()
+          : Value(title),
+      artist: artist == null && nullToAbsent
+          ? const Value.absent()
+          : Value(artist),
+      album: album == null && nullToAbsent
+          ? const Value.absent()
+          : Value(album),
+      trackNumber: trackNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackNumber),
+      coverPath: coverPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(coverPath),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory TrackOverrideRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrackOverrideRow(
+      trackId: serializer.fromJson<int>(json['trackId']),
+      title: serializer.fromJson<String?>(json['title']),
+      artist: serializer.fromJson<String?>(json['artist']),
+      album: serializer.fromJson<String?>(json['album']),
+      trackNumber: serializer.fromJson<int?>(json['trackNumber']),
+      coverPath: serializer.fromJson<String?>(json['coverPath']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'trackId': serializer.toJson<int>(trackId),
+      'title': serializer.toJson<String?>(title),
+      'artist': serializer.toJson<String?>(artist),
+      'album': serializer.toJson<String?>(album),
+      'trackNumber': serializer.toJson<int?>(trackNumber),
+      'coverPath': serializer.toJson<String?>(coverPath),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  TrackOverrideRow copyWith({
+    int? trackId,
+    Value<String?> title = const Value.absent(),
+    Value<String?> artist = const Value.absent(),
+    Value<String?> album = const Value.absent(),
+    Value<int?> trackNumber = const Value.absent(),
+    Value<String?> coverPath = const Value.absent(),
+    DateTime? updatedAt,
+  }) => TrackOverrideRow(
+    trackId: trackId ?? this.trackId,
+    title: title.present ? title.value : this.title,
+    artist: artist.present ? artist.value : this.artist,
+    album: album.present ? album.value : this.album,
+    trackNumber: trackNumber.present ? trackNumber.value : this.trackNumber,
+    coverPath: coverPath.present ? coverPath.value : this.coverPath,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  TrackOverrideRow copyWithCompanion(TrackOverridesCompanion data) {
+    return TrackOverrideRow(
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      title: data.title.present ? data.title.value : this.title,
+      artist: data.artist.present ? data.artist.value : this.artist,
+      album: data.album.present ? data.album.value : this.album,
+      trackNumber: data.trackNumber.present
+          ? data.trackNumber.value
+          : this.trackNumber,
+      coverPath: data.coverPath.present ? data.coverPath.value : this.coverPath,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackOverrideRow(')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('trackNumber: $trackNumber, ')
+          ..write('coverPath: $coverPath, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    trackId,
+    title,
+    artist,
+    album,
+    trackNumber,
+    coverPath,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrackOverrideRow &&
+          other.trackId == this.trackId &&
+          other.title == this.title &&
+          other.artist == this.artist &&
+          other.album == this.album &&
+          other.trackNumber == this.trackNumber &&
+          other.coverPath == this.coverPath &&
+          other.updatedAt == this.updatedAt);
+}
+
+class TrackOverridesCompanion extends UpdateCompanion<TrackOverrideRow> {
+  final Value<int> trackId;
+  final Value<String?> title;
+  final Value<String?> artist;
+  final Value<String?> album;
+  final Value<int?> trackNumber;
+  final Value<String?> coverPath;
+  final Value<DateTime> updatedAt;
+  const TrackOverridesCompanion({
+    this.trackId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    this.trackNumber = const Value.absent(),
+    this.coverPath = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  TrackOverridesCompanion.insert({
+    this.trackId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    this.trackNumber = const Value.absent(),
+    this.coverPath = const Value.absent(),
+    required DateTime updatedAt,
+  }) : updatedAt = Value(updatedAt);
+  static Insertable<TrackOverrideRow> custom({
+    Expression<int>? trackId,
+    Expression<String>? title,
+    Expression<String>? artist,
+    Expression<String>? album,
+    Expression<int>? trackNumber,
+    Expression<String>? coverPath,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (trackId != null) 'track_id': trackId,
+      if (title != null) 'title': title,
+      if (artist != null) 'artist': artist,
+      if (album != null) 'album': album,
+      if (trackNumber != null) 'track_number': trackNumber,
+      if (coverPath != null) 'cover_path': coverPath,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  TrackOverridesCompanion copyWith({
+    Value<int>? trackId,
+    Value<String?>? title,
+    Value<String?>? artist,
+    Value<String?>? album,
+    Value<int?>? trackNumber,
+    Value<String?>? coverPath,
+    Value<DateTime>? updatedAt,
+  }) {
+    return TrackOverridesCompanion(
+      trackId: trackId ?? this.trackId,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      album: album ?? this.album,
+      trackNumber: trackNumber ?? this.trackNumber,
+      coverPath: coverPath ?? this.coverPath,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
+    if (album.present) {
+      map['album'] = Variable<String>(album.value);
+    }
+    if (trackNumber.present) {
+      map['track_number'] = Variable<int>(trackNumber.value);
+    }
+    if (coverPath.present) {
+      map['cover_path'] = Variable<String>(coverPath.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackOverridesCompanion(')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('trackNumber: $trackNumber, ')
+          ..write('coverPath: $coverPath, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -5687,6 +6152,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   );
   late final $DraftsTable drafts = $DraftsTable(this);
   late final $OwnCopiesTable ownCopies = $OwnCopiesTable(this);
+  late final $TrackOverridesTable trackOverrides = $TrackOverridesTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -5740,6 +6206,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     unmatchedEntries,
     drafts,
     ownCopies,
+    trackOverrides,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -5788,6 +6255,13 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('lyrics_links', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_overrides', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -5921,6 +6395,24 @@ final class $$TracksTableReferences
     ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_lyricsLinksRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TrackOverridesTable, List<TrackOverrideRow>>
+  _trackOverridesRefsTable(_$ZemaDatabase db) => MultiTypedResultKey.fromTable(
+    db.trackOverrides,
+    aliasName: 'tracks__id__track_overrides__track_id',
+  );
+
+  $$TrackOverridesTableProcessedTableManager get trackOverridesRefs {
+    final manager = $$TrackOverridesTableTableManager(
+      $_db,
+      $_db.trackOverrides,
+    ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_trackOverridesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -6127,6 +6619,31 @@ class $$TracksTableFilterComposer
           }) => $$LyricsLinksTableFilterComposer(
             $db: $db,
             $table: $db.lyricsLinks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> trackOverridesRefs(
+    Expression<bool> Function($$TrackOverridesTableFilterComposer f) f,
+  ) {
+    final $$TrackOverridesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackOverrides,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackOverridesTableFilterComposer(
+            $db: $db,
+            $table: $db.trackOverrides,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6408,6 +6925,31 @@ class $$TracksTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> trackOverridesRefs<T extends Object>(
+    Expression<T> Function($$TrackOverridesTableAnnotationComposer a) f,
+  ) {
+    final $$TrackOverridesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackOverrides,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackOverridesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.trackOverrides,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TracksTableTableManager
@@ -6429,6 +6971,7 @@ class $$TracksTableTableManager
             bool playlistEntriesRefs,
             bool playEventsRefs,
             bool lyricsLinksRefs,
+            bool trackOverridesRefs,
           })
         > {
   $$TracksTableTableManager(_$ZemaDatabase db, $TracksTable table)
@@ -6525,6 +7068,7 @@ class $$TracksTableTableManager
                 playlistEntriesRefs = false,
                 playEventsRefs = false,
                 lyricsLinksRefs = false,
+                trackOverridesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -6534,6 +7078,7 @@ class $$TracksTableTableManager
                     if (playlistEntriesRefs) db.playlistEntries,
                     if (playEventsRefs) db.playEvents,
                     if (lyricsLinksRefs) db.lyricsLinks,
+                    if (trackOverridesRefs) db.trackOverrides,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -6638,6 +7183,26 @@ class $$TracksTableTableManager
                           referencedColumn: 'track_id',
                           typedResults: items,
                         ),
+                      if (trackOverridesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TrackRow,
+                          $TracksTable,
+                          TrackOverrideRow,
+                          $TrackOverridesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TracksTableReferences
+                              ._trackOverridesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TracksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).trackOverridesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'track_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -6664,6 +7229,7 @@ typedef $$TracksTableProcessedTableManager =
         bool playlistEntriesRefs,
         bool playEventsRefs,
         bool lyricsLinksRefs,
+        bool trackOverridesRefs,
       })
     >;
 typedef $$HiddenFoldersTableCreateCompanionBuilder =
@@ -10109,6 +10675,362 @@ typedef $$OwnCopiesTableProcessedTableManager =
       OwnCopyRow,
       PrefetchHooks Function()
     >;
+typedef $$TrackOverridesTableCreateCompanionBuilder =
+    TrackOverridesCompanion Function({
+      Value<int> trackId,
+      Value<String?> title,
+      Value<String?> artist,
+      Value<String?> album,
+      Value<int?> trackNumber,
+      Value<String?> coverPath,
+      required DateTime updatedAt,
+    });
+typedef $$TrackOverridesTableUpdateCompanionBuilder =
+    TrackOverridesCompanion Function({
+      Value<int> trackId,
+      Value<String?> title,
+      Value<String?> artist,
+      Value<String?> album,
+      Value<int?> trackNumber,
+      Value<String?> coverPath,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$TrackOverridesTableReferences
+    extends
+        BaseReferences<_$ZemaDatabase, $TrackOverridesTable, TrackOverrideRow> {
+  $$TrackOverridesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
+      db.tracks.createAlias('track_overrides__track_id__tracks__id');
+
+  $$TracksTableProcessedTableManager get trackId {
+    final $_column = $_itemColumn<int>('track_id')!;
+
+    final manager = $$TracksTableTableManager(
+      $_db,
+      $_db.tracks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_trackIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TrackOverridesTableFilterComposer
+    extends Composer<_$ZemaDatabase, $TrackOverridesTable> {
+  $$TrackOverridesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get artist => $composableBuilder(
+    column: $table.artist,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get album => $composableBuilder(
+    column: $table.album,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get trackNumber => $composableBuilder(
+    column: $table.trackNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get coverPath => $composableBuilder(
+    column: $table.coverPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TracksTableFilterComposer get trackId {
+    final $$TracksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableFilterComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackOverridesTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $TrackOverridesTable> {
+  $$TrackOverridesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get artist => $composableBuilder(
+    column: $table.artist,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get album => $composableBuilder(
+    column: $table.album,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get trackNumber => $composableBuilder(
+    column: $table.trackNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get coverPath => $composableBuilder(
+    column: $table.coverPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TracksTableOrderingComposer get trackId {
+    final $$TracksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackOverridesTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $TrackOverridesTable> {
+  $$TrackOverridesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get artist =>
+      $composableBuilder(column: $table.artist, builder: (column) => column);
+
+  GeneratedColumn<String> get album =>
+      $composableBuilder(column: $table.album, builder: (column) => column);
+
+  GeneratedColumn<int> get trackNumber => $composableBuilder(
+    column: $table.trackNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get coverPath =>
+      $composableBuilder(column: $table.coverPath, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$TracksTableAnnotationComposer get trackId {
+    final $$TracksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackOverridesTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $TrackOverridesTable,
+          TrackOverrideRow,
+          $$TrackOverridesTableFilterComposer,
+          $$TrackOverridesTableOrderingComposer,
+          $$TrackOverridesTableAnnotationComposer,
+          $$TrackOverridesTableCreateCompanionBuilder,
+          $$TrackOverridesTableUpdateCompanionBuilder,
+          (TrackOverrideRow, $$TrackOverridesTableReferences),
+          TrackOverrideRow,
+          PrefetchHooks Function({bool trackId})
+        > {
+  $$TrackOverridesTableTableManager(
+    _$ZemaDatabase db,
+    $TrackOverridesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrackOverridesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrackOverridesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrackOverridesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> artist = const Value.absent(),
+                Value<String?> album = const Value.absent(),
+                Value<int?> trackNumber = const Value.absent(),
+                Value<String?> coverPath = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => TrackOverridesCompanion(
+                trackId: trackId,
+                title: title,
+                artist: artist,
+                album: album,
+                trackNumber: trackNumber,
+                coverPath: coverPath,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> artist = const Value.absent(),
+                Value<String?> album = const Value.absent(),
+                Value<int?> trackNumber = const Value.absent(),
+                Value<String?> coverPath = const Value.absent(),
+                required DateTime updatedAt,
+              }) => TrackOverridesCompanion.insert(
+                trackId: trackId,
+                title: title,
+                artist: artist,
+                album: album,
+                trackNumber: trackNumber,
+                coverPath: coverPath,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TrackOverridesTable, TrackOverrideRow>(table),
+                  $$TrackOverridesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (trackId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.trackId,
+                        referencedTable: $$TrackOverridesTableReferences
+                            ._trackIdTable(db),
+                        referencedColumn: $$TrackOverridesTableReferences
+                            ._trackIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TrackOverridesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $TrackOverridesTable,
+      TrackOverrideRow,
+      $$TrackOverridesTableFilterComposer,
+      $$TrackOverridesTableOrderingComposer,
+      $$TrackOverridesTableAnnotationComposer,
+      $$TrackOverridesTableCreateCompanionBuilder,
+      $$TrackOverridesTableUpdateCompanionBuilder,
+      (TrackOverrideRow, $$TrackOverridesTableReferences),
+      TrackOverrideRow,
+      PrefetchHooks Function({bool trackId})
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -10141,4 +11063,6 @@ class $ZemaDatabaseManager {
       $$DraftsTableTableManager(_db, _db.drafts);
   $$OwnCopiesTableTableManager get ownCopies =>
       $$OwnCopiesTableTableManager(_db, _db.ownCopies);
+  $$TrackOverridesTableTableManager get trackOverrides =>
+      $$TrackOverridesTableTableManager(_db, _db.trackOverrides);
 }

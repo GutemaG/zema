@@ -68,12 +68,46 @@ class BackupLyricsChoice {
   int get hashCode => Object.hash(track, songId);
 }
 
+/// Song info the user edited (S09) for a track, over its own tags; null
+/// fields keep the file's. The track is identified by its own tags.
+class BackupSongInfo {
+  const BackupSongInfo({
+    required this.track,
+    this.title,
+    this.artist,
+    this.album,
+    this.trackNumber,
+  });
+
+  final TrackIdentity track;
+  final String? title;
+  final String? artist;
+  final String? album;
+  final int? trackNumber;
+
+  @override
+  bool operator ==(Object other) =>
+      other is BackupSongInfo &&
+      other.track == track &&
+      other.title == title &&
+      other.artist == artist &&
+      other.album == album &&
+      other.trackNumber == trackNumber;
+
+  @override
+  int get hashCode => Object.hash(track, title, artist, album, trackNumber);
+}
+
 /// The user's library data and settings, as one versioned JSON document.
 ///
 /// Tracks are [TrackIdentity]s. In the JSON they are written once, in
 /// `tracks`, and the sections refer to them by index. Sections a newer app
 /// added are kept in [extras] and written back unchanged; unknown fields
 /// inside an entry are ignored. Dates are stored in UTC.
+///
+/// `songInfo` and `syncOffsets` came later: their entries carry the track
+/// itself, not an index, so an app that keeps them as [extras] writes them
+/// back still right.
 class BackupDocument {
   const BackupDocument({
     required this.createdAt,
@@ -83,6 +117,8 @@ class BackupDocument {
     this.hiddenFolders = const [],
     this.hiddenTracks = const [],
     this.settings = const {},
+    this.songInfo = const [],
+    this.syncOffsets = const {},
     this.extras = const {},
   });
 
@@ -141,6 +177,22 @@ class BackupDocument {
           null => const {},
           final Object settings => Map.unmodifiable(_map(settings)),
         },
+        songInfo: [
+          for (final entry in _list(json['songInfo']).map(_map))
+            BackupSongInfo(
+              track: TrackIdentity.fromJson(_map(entry['track'])),
+              title: entry['title'] as String?,
+              artist: entry['artist'] as String?,
+              album: entry['album'] as String?,
+              trackNumber: (entry['trackNumber'] as num?)?.toInt(),
+            ),
+        ],
+        syncOffsets: Map.unmodifiable({
+          for (final MapEntry(:key, :value) in _map(
+            json['syncOffsets'] ?? const <String, Object?>{},
+          ).entries)
+            key: Duration(milliseconds: (value! as num).toInt()),
+        }),
         extras: Map.unmodifiable({
           for (final MapEntry(:key, :value) in json.entries)
             if (!_knownKeys.contains(key)) key: value,
@@ -179,6 +231,8 @@ class BackupDocument {
     'hiddenFolders',
     'hiddenTracks',
     'settings',
+    'songInfo',
+    'syncOffsets',
   };
 
   /// Always [backupFormat]: an older document is upgraded when read.
@@ -196,6 +250,12 @@ class BackupDocument {
   /// The app's settings as plain JSON values, keyed by name. The app knows
   /// the keys; unknown ones are kept.
   final Map<String, Object?> settings;
+
+  /// Song info edited on the phone.
+  final List<BackupSongInfo> songInfo;
+
+  /// Each recording's own lyrics sync offset, by recording id.
+  final Map<String, Duration> syncOffsets;
 
   /// Top-level sections this app doesn't know, from a newer app.
   final Map<String, Object?> extras;
@@ -229,6 +289,20 @@ class BackupDocument {
       'hiddenFolders': hiddenFolders,
       'hiddenTracks': [for (final track in hiddenTracks) indexOf(track)],
       'settings': settings,
+      'songInfo': [
+        for (final info in songInfo)
+          {
+            'track': info.track.toJson(),
+            'title': ?info.title,
+            'artist': ?info.artist,
+            'album': ?info.album,
+            'trackNumber': ?info.trackNumber,
+          },
+      ],
+      'syncOffsets': {
+        for (final MapEntry(:key, :value) in syncOffsets.entries)
+          key: value.inMilliseconds,
+      },
     };
     return {
       ...extras,
@@ -252,6 +326,14 @@ class BackupDocument {
       _listEquals(other.hiddenFolders, hiddenFolders) &&
       _listEquals(other.hiddenTracks, hiddenTracks) &&
       _jsonEquals(other.settings, settings) &&
+      _listEquals(other.songInfo, songInfo) &&
+      _jsonEquals(
+        {
+          for (final e in other.syncOffsets.entries)
+            e.key: e.value.inMilliseconds,
+        },
+        {for (final e in syncOffsets.entries) e.key: e.value.inMilliseconds},
+      ) &&
       _jsonEquals(other.extras, extras);
 
   @override
@@ -263,6 +345,8 @@ class BackupDocument {
     Object.hashAll(hiddenFolders),
     Object.hashAll(hiddenTracks),
     settings.length,
+    Object.hashAll(songInfo),
+    syncOffsets.length,
     extras.length,
   );
 

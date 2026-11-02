@@ -137,8 +137,8 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **011-corrections** (contribution-and-sync-editor-ui): Suggest a correction - Must - ✅ COMPLETED
 - [x] **012-my-contributions-and-badge** (contribution-and-sync-editor-ui): My contributions (S23) and the status badge - Must - ✅ COMPLETED
 - [x] **013-moderator-queue** (contribution-and-sync-editor-ui): Moderator review queue (S23m) - Must - ✅ COMPLETED
-- [ ] **014-edit-song-info** (contribution-and-sync-editor-ui): Edit song info (S09) - Should - 📋 PLANNED
-- [ ] **015-backup-additions** (contribution-and-sync-editor-ui): Backup additions: overrides and sync offsets - Could - 📋 PLANNED
+- [x] **014-edit-song-info** (contribution-and-sync-editor-ui): Edit song info (S09) - Should - ✅ COMPLETED
+- [x] **015-backup-additions** (contribution-and-sync-editor-ui): Backup additions: overrides and sync offsets - Could - ✅ COMPLETED
 
 ### 007-background-detection-floating-lyrics … 012-ai-lyrics-from-audio
 
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 2
+- **Planned**: 0
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 95
+- **Completed**: 97

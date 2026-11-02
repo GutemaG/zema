@@ -2893,5 +2893,53 @@
   "reviewFailed": "Couldn't send the review. Try again.",
   "@reviewFailed": {
     "description": "S23m: the server refused or failed"
+  },
+  "songInfoTitle": "Edit song info",
+  "@songInfoTitle": {
+    "description": "S09's title, and the action opening it"
+  },
+  "songInfoFieldTitle": "Title",
+  "@songInfoFieldTitle": {
+    "description": "S09 field"
+  },
+  "songInfoFieldArtist": "Artist",
+  "@songInfoFieldArtist": {
+    "description": "S09 field"
+  },
+  "songInfoFieldAlbum": "Album",
+  "@songInfoFieldAlbum": {
+    "description": "S09 field"
+  },
+  "songInfoFieldTrackNumber": "Track number",
+  "@songInfoFieldTrackNumber": {
+    "description": "S09 field"
+  },
+  "songInfoTitleRequired": "A song needs a title.",
+  "@songInfoTitleRequired": {
+    "description": "S09: the title is empty"
+  },
+  "songInfoChooseCover": "Choose cover",
+  "@songInfoChooseCover": {
+    "description": "S09: picks a photo as the cover"
+  },
+  "songInfoRemoveCover": "Remove cover",
+  "@songInfoRemoveCover": {
+    "description": "S09: goes back to the file's own art"
+  },
+  "songInfoReset": "Reset to file's info",
+  "@songInfoReset": {
+    "description": "S09: forgets every edit and the picked cover"
+  },
+  "songInfoNote": "Changes stay in Zema. The file itself isn't changed.",
+  "@songInfoNote": {
+    "description": "S09: explains that tags aren't written"
+  },
+  "songInfoSaved": "Song info saved.",
+  "@songInfoSaved": {
+    "description": "S09: after saving"
+  },
+  "songInfoResetDone": "Back to the file's info.",
+  "@songInfoResetDone": {
+    "description": "S09: after Reset"
   }
 }

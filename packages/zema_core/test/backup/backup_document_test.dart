@@ -40,6 +40,10 @@ BackupDocument fullDocument() => BackupDocument(
   hiddenFolders: const ['Recordings', 'WhatsApp/Media/WhatsApp Audio'],
   hiddenTracks: const [ambassel],
   settings: const {'themeMode': 'dark', 'minTrackSeconds': 30, 'gapless': true},
+  songInfo: const [
+    BackupSongInfo(track: ambassel, title: 'Ambasel', trackNumber: 2),
+  ],
+  syncOffsets: const {'rec-1': Duration(milliseconds: -500)},
 );
 
 void main() {
@@ -124,14 +128,14 @@ void main() {
 
     test('unknown sections from a newer app are kept and written back', () {
       final json = fullDocument().toJson()
-        ..['syncOffsets'] = [
-          {'track': 0, 'offsetMs': -250},
+        ..['equalizer'] = [
+          {'track': 0, 'bass': 2},
         ]
         ..['floatingLyrics'] = {'opacity': 0.8};
       final document = BackupDocument.fromJson(json);
-      expect(document.extras.keys, {'syncOffsets', 'floatingLyrics'});
+      expect(document.extras.keys, {'equalizer', 'floatingLyrics'});
       final again = document.toJson();
-      expect(again['syncOffsets'], json['syncOffsets']);
+      expect(again['equalizer'], json['equalizer']);
       expect(again['floatingLyrics'], {'opacity': 0.8});
     });
 
@@ -155,7 +159,23 @@ void main() {
       expect(document.favorites, isEmpty);
       expect(document.playlists, isEmpty);
       expect(document.settings, isEmpty);
+      expect(document.songInfo, isEmpty);
+      expect(document.syncOffsets, isEmpty);
       expect(document.extras, isEmpty);
+    });
+
+    test('song info carries its track, not an index, so an older app that '
+        'keeps it unread writes it back still right', () {
+      final json = fullDocument().toJson();
+      final info = (json['songInfo']! as List).single as Map<String, Object?>;
+      expect(info['track'], ambassel.toJson());
+      expect(info['title'], 'Ambasel');
+      expect(info.containsKey('artist'), isFalse);
+      expect(json['syncOffsets'], {'rec-1': -500});
+      expect(
+        BackupDocument.decode(jsonEncode(json)).songInfo,
+        fullDocument().songInfo,
+      );
     });
 
     test('a newer format says so, so the app can ask for an update', () {

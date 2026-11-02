@@ -31,6 +31,11 @@ abstract final class AppRoutes {
   /// S18, above the shell so the mini player doesn't cover its button.
   static const String addSongsPath = '/playlist-add';
 
+  /// S09 for track [id], above the shell.
+  static const String songInfoPath = '/song-info';
+  static String songInfo(int id) =>
+      Uri(path: songInfoPath, queryParameters: {'id': '$id'}).toString();
+
   /// S23, above the shell; opened from S05 and Profile.
   static const String myContributions = '/my-contributions';
 

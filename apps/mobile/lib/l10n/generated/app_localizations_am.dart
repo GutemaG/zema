@@ -2233,4 +2233,41 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get reviewFailed => 'Couldn\'t send the review. Try again.';
+
+  @override
+  String get songInfoTitle => 'Edit song info';
+
+  @override
+  String get songInfoFieldTitle => 'Title';
+
+  @override
+  String get songInfoFieldArtist => 'Artist';
+
+  @override
+  String get songInfoFieldAlbum => 'Album';
+
+  @override
+  String get songInfoFieldTrackNumber => 'Track number';
+
+  @override
+  String get songInfoTitleRequired => 'A song needs a title.';
+
+  @override
+  String get songInfoChooseCover => 'Choose cover';
+
+  @override
+  String get songInfoRemoveCover => 'Remove cover';
+
+  @override
+  String get songInfoReset => 'Reset to file\'s info';
+
+  @override
+  String get songInfoNote =>
+      'Changes stay in Zema. The file itself isn\'t changed.';
+
+  @override
+  String get songInfoSaved => 'Song info saved.';
+
+  @override
+  String get songInfoResetDone => 'Back to the file\'s info.';
 }

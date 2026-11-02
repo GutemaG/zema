@@ -11,6 +11,7 @@ mixin _$RestoreDaoMixin on DatabaseAccessor<ZemaDatabase> {
   $LyricsLinksTable get lyricsLinks => attachedDatabase.lyricsLinks;
   $HiddenFoldersTable get hiddenFolders => attachedDatabase.hiddenFolders;
   $HiddenTracksTable get hiddenTracks => attachedDatabase.hiddenTracks;
+  $TrackOverridesTable get trackOverrides => attachedDatabase.trackOverrides;
   RestoreDaoManager get managers => RestoreDaoManager(this);
 }
 
@@ -34,4 +35,9 @@ class RestoreDaoManager {
       $$HiddenFoldersTableTableManager(_db.attachedDatabase, _db.hiddenFolders);
   $$HiddenTracksTableTableManager get hiddenTracks =>
       $$HiddenTracksTableTableManager(_db.attachedDatabase, _db.hiddenTracks);
+  $$TrackOverridesTableTableManager get trackOverrides =>
+      $$TrackOverridesTableTableManager(
+        _db.attachedDatabase,
+        _db.trackOverrides,
+      );
 }

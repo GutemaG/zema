@@ -3761,6 +3761,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t send the review. Try again.'**
   String get reviewFailed;
+
+  /// S09's title, and the action opening it
+  ///
+  /// In en, this message translates to:
+  /// **'Edit song info'**
+  String get songInfoTitle;
+
+  /// S09 field
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get songInfoFieldTitle;
+
+  /// S09 field
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get songInfoFieldArtist;
+
+  /// S09 field
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get songInfoFieldAlbum;
+
+  /// S09 field
+  ///
+  /// In en, this message translates to:
+  /// **'Track number'**
+  String get songInfoFieldTrackNumber;
+
+  /// S09: the title is empty
+  ///
+  /// In en, this message translates to:
+  /// **'A song needs a title.'**
+  String get songInfoTitleRequired;
+
+  /// S09: picks a photo as the cover
+  ///
+  /// In en, this message translates to:
+  /// **'Choose cover'**
+  String get songInfoChooseCover;
+
+  /// S09: goes back to the file's own art
+  ///
+  /// In en, this message translates to:
+  /// **'Remove cover'**
+  String get songInfoRemoveCover;
+
+  /// S09: forgets every edit and the picked cover
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to file\'s info'**
+  String get songInfoReset;
+
+  /// S09: explains that tags aren't written
+  ///
+  /// In en, this message translates to:
+  /// **'Changes stay in Zema. The file itself isn\'t changed.'**
+  String get songInfoNote;
+
+  /// S09: after saving
+  ///
+  /// In en, this message translates to:
+  /// **'Song info saved.'**
+  String get songInfoSaved;
+
+  /// S09: after Reset
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the file\'s info.'**
+  String get songInfoResetDone;
 }
 
 class _AppLocalizationsDelegate

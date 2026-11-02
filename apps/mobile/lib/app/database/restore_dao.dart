@@ -46,6 +46,7 @@ class RestoreReport {
     LyricsLinks,
     HiddenFolders,
     HiddenTracks,
+    TrackOverrides,
   ],
 )
 class RestoreDao extends DatabaseAccessor<ZemaDatabase> with _$RestoreDaoMixin {
@@ -57,7 +58,9 @@ class RestoreDao extends DatabaseAccessor<ZemaDatabase> with _$RestoreDaoMixin {
   /// - a playlist with the same name gets its missing songs at the end;
   ///   other playlists are created;
   /// - lyrics choices are added where the song has none made by hand;
-  /// - hidden folders and songs are added.
+  /// - hidden folders and songs are added;
+  /// - song info edits are added where the song has none (not kept when
+  ///   the song isn't found).
   ///
   /// [keepUnmatched] runs inside the transaction with the entries not
   /// found. If anything throws, nothing changes.
@@ -216,6 +219,24 @@ class RestoreDao extends DatabaseAccessor<ZemaDatabase> with _$RestoreDaoMixin {
         );
         hiddenAdded++;
       }
+    }
+
+    final edited = {
+      for (final row in await select(trackOverrides).get()) row.trackId,
+    };
+    for (final info in document.songInfo) {
+      final track = matcher.match(info.track);
+      if (track == null || !edited.add(track.id)) continue;
+      await into(trackOverrides).insert(
+        TrackOverridesCompanion.insert(
+          trackId: Value(track.id),
+          title: Value(info.title),
+          artist: Value(info.artist),
+          album: Value(info.album),
+          trackNumber: Value(info.trackNumber),
+          updatedAt: at,
+        ),
+      );
     }
 
     await keepUnmatched?.call(notFound);

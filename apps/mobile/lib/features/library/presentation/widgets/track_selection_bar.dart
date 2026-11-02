@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../../app/routes.dart';
 import '../../../../app/theme/zema_colors.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../player/application/player_providers.dart';
@@ -136,6 +138,14 @@ class TrackSelectionBar extends ConsumerWidget {
               favorite,
             ),
             action(Icons.visibility_off_outlined, l10n.songHide, hide),
+            if (selected.length == 1)
+              action(Icons.edit_outlined, l10n.songInfoTitle, () async {
+                // The bar goes once selection ends, so the router is read
+                // first.
+                final router = GoRouter.of(context);
+                selection.end();
+                await router.push<void>(AppRoutes.songInfo(selected.single.id));
+              }),
           ],
         ),
       ],

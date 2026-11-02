@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/not_found_screen.dart';
+import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -73,6 +75,7 @@ class _SongDetail extends ConsumerWidget {
     final syncable = entry == null
         ? null
         : ref.watch(syncableRecordingProvider(song.id));
+    final track = ref.watch(songTracksProvider(song.id)).firstOrNull;
     PopupMenuItem<void> item(String label, ContributionDraft draft) =>
         PopupMenuItem(
           onTap: () => unawaited(startContribution(context, ref, draft: draft)),
@@ -97,7 +100,7 @@ class _SongDetail extends ConsumerWidget {
                   ? () => unawaited(displayController.stepScale(1))
                   : null,
             ),
-            if (canReport || entry != null)
+            if (canReport || entry != null || track != null)
               PopupMenuButton<void>(
                 tooltip: l10n.songDetailMoreOptions,
                 itemBuilder: (_) => [
@@ -126,6 +129,13 @@ class _SongDetail extends ConsumerWidget {
                         showReportLyricsSheet(context, songId: song.id),
                       ),
                       child: Text(l10n.reportLyrics),
+                    ),
+                  if (track != null)
+                    PopupMenuItem(
+                      onTap: () => unawaited(
+                        context.push<void>(AppRoutes.songInfo(track.id)),
+                      ),
+                      child: Text(l10n.songInfoTitle),
                     ),
                 ],
               ),

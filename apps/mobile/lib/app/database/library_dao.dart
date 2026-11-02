@@ -6,14 +6,24 @@ import 'zema_database.dart';
 
 part 'library_dao.g.dart';
 
-/// Reads and writes the local library: tracks and hidden items.
-@DriftAccessor(tables: [Tracks, HiddenFolders, HiddenTracks])
+/// Reads and writes the local library: tracks, hidden items and the song
+/// info the user edited. Tracks come with that info applied, except
+/// [allTracks] (for rescans), which gives the files' own tags.
+@DriftAccessor(tables: [Tracks, HiddenFolders, HiddenTracks, TrackOverrides])
 class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
   LibraryDao(super.attachedDatabase);
 
   /// Every stored track, missing and hidden ones included (for rescans).
   Future<List<Track>> allTracks() async =>
       (await select(tracks).get()).map(_toTrack).toList();
+
+  /// Track [id] with its file's own tags, or null.
+  Future<Track?> fileTrack(int id) async {
+    final row = await (select(
+      tracks,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    return row == null ? null : _toTrack(row);
+  }
 
   /// The tracks with [ids] that still exist, in the order of [ids]
   /// (missing files and unknown IDs are left out).
@@ -22,9 +32,46 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
     final rows = await (select(
       tracks,
     )..where((t) => t.id.isIn(ids) & t.missing.not())).get();
-    final byId = {for (final row in rows) row.id: _toTrack(row)};
+    final edits = await _overridesFor(ids);
+    final byId = {
+      for (final row in rows) row.id: _edited(_toTrack(row), edits[row.id]),
+    };
     return [for (final id in ids) ?byId[id]];
   }
+
+  Future<Map<int, TrackOverrideRow>> _overridesFor(List<int> ids) async => {
+    for (final row in await (select(
+      trackOverrides,
+    )..where((o) => o.trackId.isIn(ids))).get())
+      row.trackId: row,
+  };
+
+  /// [track] with the user's edits in [edit] over its own tags.
+  static Track _edited(Track track, TrackOverrideRow? edit) => edit == null
+      ? track
+      : track.copyWith(
+          title: edit.title,
+          artist: edit.artist,
+          album: edit.album,
+          trackNumber: edit.trackNumber,
+        );
+
+  /// The user's edits to track [trackId], or null.
+  Future<TrackOverrideRow?> overrideFor(int trackId) => (select(
+    trackOverrides,
+  )..where((o) => o.trackId.equals(trackId))).getSingleOrNull();
+
+  /// Saves [edit] over its track's tags, replacing earlier edits.
+  Future<void> setOverride(TrackOverrideRow edit) =>
+      into(trackOverrides).insertOnConflictUpdate(edit);
+
+  /// Forgets the edits to track [trackId] (Reset to file's info).
+  Future<void> clearOverride(int trackId) =>
+      (delete(trackOverrides)..where((o) => o.trackId.equals(trackId))).go();
+
+  /// Every edit, for the backup and the covers.
+  Stream<List<TrackOverrideRow>> watchOverrides() =>
+      select(trackOverrides).watch();
 
   /// Which tracks the library shows: not missing, at least ?1 ms long, and
   /// neither hidden themselves nor inside a hidden folder (or one of its
@@ -46,14 +93,24 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
   Stream<List<Track>> watchVisibleTracks({required Duration minDuration}) {
     return customSelect(
       '''
-      SELECT t.* FROM tracks t
+      SELECT t.*, o.title AS o_title, o.artist AS o_artist,
+             o.album AS o_album, o.track_number AS o_track_number
+      FROM tracks t LEFT JOIN track_overrides o ON o.track_id = t.id
       WHERE $_visibleWhere
-      ORDER BY t.title COLLATE NOCASE, t.id
+      ORDER BY COALESCE(o.title, t.title) COLLATE NOCASE, t.id
       ''',
       variables: [Variable.withInt(minDuration.inMilliseconds)],
-      readsFrom: {tracks, hiddenTracks, hiddenFolders},
+      readsFrom: {tracks, hiddenTracks, hiddenFolders, trackOverrides},
     ).watch().map(
-      (rows) => [for (final row in rows) _toTrack(tracks.map(row.data))],
+      (rows) => [
+        for (final row in rows)
+          _toTrack(tracks.map(row.data)).copyWith(
+            title: row.readNullable<String>('o_title'),
+            artist: row.readNullable<String>('o_artist'),
+            album: row.readNullable<String>('o_album'),
+            trackNumber: row.readNullable<int>('o_track_number'),
+          ),
+      ],
     );
   }
 
@@ -134,6 +191,10 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
     final query =
         select(tracks).join([
             innerJoin(hiddenTracks, hiddenTracks.trackId.equalsExp(tracks.id)),
+            leftOuterJoin(
+              trackOverrides,
+              trackOverrides.trackId.equalsExp(tracks.id),
+            ),
           ])
           ..where(tracks.missing.not())
           ..orderBy([
@@ -141,7 +202,13 @@ class LibraryDao extends DatabaseAccessor<ZemaDatabase> with _$LibraryDaoMixin {
             OrderingTerm.asc(tracks.id),
           ]);
     return query.watch().map(
-      (rows) => [for (final row in rows) _toTrack(row.readTable(tracks))],
+      (rows) => [
+        for (final row in rows)
+          _edited(
+            _toTrack(row.readTable(tracks)),
+            row.readTableOrNull(trackOverrides),
+          ),
+      ],
     );
   }
 

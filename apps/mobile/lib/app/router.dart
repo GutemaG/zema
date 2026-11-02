@@ -17,6 +17,7 @@ import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/library/application/album_grouping.dart';
 import '../features/library/application/play_history.dart';
+import '../features/library/presentation/song_info_screen.dart';
 import '../features/library/presentation/add_songs_screen.dart';
 import '../features/library/presentation/album_screen.dart';
 import '../features/library/presentation/artist_screen.dart';
@@ -139,6 +140,12 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
         builder: (_, _) => const ProfileScreen(),
       ),
       GoRoute(path: AppRoutes.backup, builder: (_, _) => const BackupScreen()),
+      GoRoute(
+        path: AppRoutes.songInfoPath,
+        builder: (_, state) => SongInfoScreen(
+          trackId: int.tryParse(state.uri.queryParameters['id'] ?? ''),
+        ),
+      ),
       GoRoute(
         path: AppRoutes.myContributions,
         builder: (_, _) => const MyContributionsScreen(),

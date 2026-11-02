@@ -7,6 +7,7 @@ mixin _$LibraryDaoMixin on DatabaseAccessor<ZemaDatabase> {
   $TracksTable get tracks => attachedDatabase.tracks;
   $HiddenFoldersTable get hiddenFolders => attachedDatabase.hiddenFolders;
   $HiddenTracksTable get hiddenTracks => attachedDatabase.hiddenTracks;
+  $TrackOverridesTable get trackOverrides => attachedDatabase.trackOverrides;
   LibraryDaoManager get managers => LibraryDaoManager(this);
 }
 
@@ -19,4 +20,9 @@ class LibraryDaoManager {
       $$HiddenFoldersTableTableManager(_db.attachedDatabase, _db.hiddenFolders);
   $$HiddenTracksTableTableManager get hiddenTracks =>
       $$HiddenTracksTableTableManager(_db.attachedDatabase, _db.hiddenTracks);
+  $$TrackOverridesTableTableManager get trackOverrides =>
+      $$TrackOverridesTableTableManager(
+        _db.attachedDatabase,
+        _db.trackOverrides,
+      );
 }

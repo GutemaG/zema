@@ -245,3 +245,24 @@ class OwnCopies extends Table {
   TextColumn get audioPath => text().nullable()();
   DateTimeColumn get submittedAt => dateTime()();
 }
+
+/// Song info the user edited (S09) over a track's own tags: shown, sorted,
+/// searched and matched instead of them. Null fields keep the file's value.
+/// The file is never written, and backups still identify the track by its
+/// own tags.
+@DataClassName('TrackOverrideRow')
+class TrackOverrides extends Table {
+  IntColumn get trackId =>
+      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+  TextColumn get title => text().nullable()();
+  TextColumn get artist => text().nullable()();
+  TextColumn get album => text().nullable()();
+  IntColumn get trackNumber => integer().nullable()();
+
+  /// A picked cover image, copied into the app's files.
+  TextColumn get coverPath => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {trackId};
+}

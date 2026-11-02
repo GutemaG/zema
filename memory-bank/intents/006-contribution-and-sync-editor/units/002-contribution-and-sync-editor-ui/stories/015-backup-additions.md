@@ -2,11 +2,11 @@
 id: 015-backup-additions
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: could
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 052-contribution-and-sync-editor-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 015-backup-additions
@@ -19,8 +19,8 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a backup, **When** made, **Then** it holds S09 overrides and per-recording sync offsets as new sections; track identity still uses the file's own tags
-- [ ] **Given** an older backup or app, **When** restored / reading a newer backup, **Then** it still works, ignoring what it doesn't know
+- [x] **Given** a backup, **When** made, **Then** it holds S09 overrides and per-recording sync offsets as new sections; track identity still uses the file's own tags
+- [x] **Given** an older backup or app, **When** restored / reading a newer backup, **Then** it still works, ignoring what it doesn't know
 
 ## Technical Notes
 

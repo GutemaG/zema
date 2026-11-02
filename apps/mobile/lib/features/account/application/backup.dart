@@ -10,7 +10,10 @@ import 'account_providers.dart';
 import 'backup_service.dart';
 
 final backupBuilderProvider = Provider<BackupBuilder>(
-  (ref) => backupBuilderOf(ref.watch(databaseProvider)),
+  (ref) => backupBuilderOf(
+    ref.watch(databaseProvider),
+    ref.watch(sharedPreferencesProvider),
+  ),
 );
 
 final backupStatusStoreProvider = Provider<BackupStatusStore>(

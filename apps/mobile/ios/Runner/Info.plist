@@ -6,6 +6,8 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Zema uses a photo you choose as a song's cover.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Zema</string>
 	<key>CFBundleExecutable</key>

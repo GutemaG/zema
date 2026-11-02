@@ -21,6 +21,8 @@ import 'package:zema/features/account/application/account_providers.dart';
 import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema/features/contribute/application/moderation.dart';
+import 'package:zema/features/library/application/song_info.dart';
+import 'package:zema/features/library/data/cover_store.dart';
 import 'package:zema/features/contribute/application/recording.dart';
 import 'package:zema/features/contribute/data/shared_audio.dart';
 import 'package:zema/features/contribute/data/sync_player.dart';
@@ -59,7 +61,7 @@ import 'fake_player.dart';
 /// [onWifi] says so. With [settle]
 /// false only the first frame is pumped. Contributions go to
 /// [contributions], by default an empty fake; links open with [openUrl]
-/// (by default nowhere).
+/// (by default nowhere), and covers are picked from [covers].
 Future<void> pumpZemaApp(
   WidgetTester tester, {
   String location = AppRoutes.home,
@@ -88,6 +90,7 @@ Future<void> pumpZemaApp(
   bool settle = true,
   ContributionRepository? contributions,
   Future<bool> Function(Uri url)? openUrl,
+  CoverStore? covers,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
   addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
@@ -140,6 +143,7 @@ Future<void> pumpZemaApp(
           return router;
         }),
         openUrlProvider.overrideWithValue(openUrl ?? (_) async => true),
+        coverStoreProvider.overrideWithValue(covers ?? FakeCoverStore()),
         contributionRepositoryProvider.overrideWithValue(
           backendConfigured
               ? contributions ?? FakeContributionRepository()

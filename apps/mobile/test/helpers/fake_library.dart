@@ -10,6 +10,7 @@ import 'package:zema/features/library/application/library_providers.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/data/audio_share_service.dart';
 import 'package:zema/features/library/data/library_scanner.dart';
+import 'package:zema/features/library/data/cover_store.dart';
 import 'package:zema_core/zema_core.dart';
 
 /// A [LibraryScanner] that returns [files], or throws [error] when set.
@@ -161,4 +162,21 @@ ScannedAudio scannedAudio(
     sizeBytes: sizeBytes,
     dateAdded: dateAdded ?? DateTime.utc(2026, 10, 1),
   );
+}
+
+/// Covers "picked" at `cover-<trackId>-<n>.jpg` (no file); [deleted] lists
+/// the paths deleted. With [cancel], nothing is picked.
+class FakeCoverStore implements CoverStore {
+  bool cancel = false;
+  var _next = 0;
+  final deleted = <String>[];
+
+  @override
+  Future<String?> pick(int trackId) async =>
+      cancel ? null : 'cover-$trackId-${++_next}.jpg';
+
+  @override
+  Future<void> delete(String? path) async {
+    if (path != null) deleted.add(path);
+  }
 }

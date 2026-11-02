@@ -86,7 +86,7 @@ Future<void> runAutoBackupTask() async {
       userId: user?.id,
       service: BackupService(
         repository: SupabaseBackupRepository(auth),
-        builder: backupBuilderOf(database),
+        builder: backupBuilderOf(database, prefs),
         store: store,
         settings: () => settings,
       ),
