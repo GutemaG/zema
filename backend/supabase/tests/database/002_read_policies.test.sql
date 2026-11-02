@@ -5,7 +5,7 @@ create extension if not exists pgtap with schema extensions;
 -- Start from an empty catalog (the seed songs come back on rollback).
 delete from public.songs;
 
-select plan(32);
+select plan(33);
 
 -- Fixtures, as the table owner: one song per status, each with every part.
 insert into public.songs (id, title, status) values
@@ -96,15 +96,21 @@ reset role;
 select is(
   (select count(*)::int from pg_policies
    where schemaname = 'public' and cmd = 'SELECT'
-     and tablename not in ('profiles', 'user_roles', 'backups')),
+     and tablename not in ('profiles', 'user_roles', 'backups', 'contributions')),
   6,
   'six catalog read policies: songs and their five kinds of parts'
 );
 select is(
   (select count(*)::int from pg_policies
-   where schemaname = 'public' and tablename in ('reports', 'contributions')),
+   where schemaname = 'public' and tablename = 'reports'),
   0,
-  'no policy opens reports or contributions'
+  'no policy opens reports'
+);
+select is(
+  (select string_agg(format('%s %s', cmd, roles), ', ') from pg_policies
+   where schemaname = 'public' and tablename = 'contributions'),
+  'SELECT {authenticated}',
+  'contributions have one policy: authors read their own (tested in 013)'
 );
 select is(
   (select string_agg(format('%s %s', cmd, roles), ', ') from pg_policies

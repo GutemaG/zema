@@ -2,11 +2,11 @@
 id: 001-submit-contributions
 unit: 001-contribution-backend
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: must
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 039-contribution-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 001-submit-contributions
@@ -19,13 +19,13 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a signed-in user and a valid payload, **When** they call `submit_contribution(kind, song_id, base_version, payload)`, **Then** a `pending` row is made with them as author and its ID is returned
-- [ ] **Given** a payload breaking the shared rules (no title, no section, empty play order, unknown block, timings not strictly increasing or past the duration, bad video ID), **When** submitted, **Then** it is refused with a named error code
-- [ ] **Given** a user with 20 pending contributions, or 30 submitted today, or a payload over 256 KB, **When** they submit, **Then** it is refused with a limit error
-- [ ] **Given** the author and a `changes_requested` contribution, **When** they call `resubmit_contribution(id, payload)`, **Then** the payload is replaced, the status goes back to `pending` and the review note stays readable in history; any other status or user is refused
-- [ ] **Given** signed-in users and `anon`, **When** they read `contributions`, **Then** users see only their own rows; `anon` sees none; nobody can insert, update or delete directly
-- [ ] **Given** the new `recording` kind, **When** a recording is submitted for an existing approved song, **Then** it is accepted; `edit_lyrics`, `recording` and `sync_timing` need an existing approved `song_id`, `new_song` must not have one
-- [ ] **Given** pgTAP, **When** run, **Then** rules, limits, RLS and resubmit are tested
+- [x] **Given** a signed-in user and a valid payload, **When** they call `submit_contribution(kind, song_id, base_version, payload)`, **Then** a `pending` row is made with them as author and its ID is returned
+- [x] **Given** a payload breaking the shared rules (no title, no section, empty play order, unknown block, timings not strictly increasing or past the duration, bad video ID), **When** submitted, **Then** it is refused with a named error code
+- [x] **Given** a user with 20 pending contributions, or 30 submitted today, or a payload over 256 KB, **When** they submit, **Then** it is refused with a limit error
+- [x] **Given** the author and a `changes_requested` contribution, **When** they call `resubmit_contribution(id, payload)`, **Then** the payload is replaced, the status goes back to `pending` and the review note stays readable in history; any other status or user is refused
+- [x] **Given** signed-in users and `anon`, **When** they read `contributions`, **Then** users see only their own rows; `anon` sees none; nobody can insert, update or delete directly
+- [x] **Given** the new `recording` kind, **When** a recording is submitted for an existing approved song, **Then** it is accepted; `edit_lyrics`, `recording` and `sync_timing` need an existing approved `song_id`, `new_song` must not have one
+- [x] **Given** pgTAP, **When** run, **Then** rules, limits, RLS and resubmit are tested
 
 ## Technical Notes
 

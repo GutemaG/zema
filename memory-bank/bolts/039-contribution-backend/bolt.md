@@ -3,14 +3,23 @@ id: 039-contribution-backend
 unit: 001-contribution-backend
 intent: 006-contribution-and-sync-editor
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 001-submit-contributions
 created: '2026-11-02T07:00:52Z'
-started: null
-completed: null
+started: '2026-11-02T07:10:00Z'
+completed: '2026-11-02T07:25:44Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-11-02T07:30:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-11-02T07:45:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-11-02T07:25:36Z'
+    artifact: test-walkthrough.md
 requires_bolts: []
 enables_bolts:
   - 040-contribution-backend
@@ -31,7 +40,7 @@ Submit and resubmit RPCs, read policies and limits.
 
 ## Stories Included
 
-- [ ] **001-submit-contributions**: Submit and resubmit contributions - Priority: Must
+- [x] **001-submit-contributions**: Submit and resubmit contributions - Priority: Must
 
 ## Bolt Type
 
@@ -40,9 +49,9 @@ Submit and resubmit RPCs, read policies and limits.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -54,9 +63,9 @@ Submit and resubmit RPCs, read policies and limits.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked against the local backend
-- [ ] Key scan clean before commit
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked against the local backend
+- [x] Key scan clean before commit
