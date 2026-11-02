@@ -2,11 +2,11 @@
 id: 009-review-and-submit
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: must
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 048-contribution-and-sync-editor-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 009-review-and-submit

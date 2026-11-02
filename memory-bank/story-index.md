@@ -132,7 +132,7 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **006-telegram-share** (contribution-and-sync-editor-ui): Share audio from Telegram (Android) - Should - ✅ COMPLETED
 - [x] **007-sync-editor-list** (contribution-and-sync-editor-ui): Sync editor: List view (S21) - Must - ✅ COMPLETED
 - [x] **008-sync-editor-focus-and-preview** (contribution-and-sync-editor-ui): Sync editor: Focus view and Preview - Must - ✅ COMPLETED
-- [ ] **009-review-and-submit** (contribution-and-sync-editor-ui): Review & submit (S22) and the own copy - Must - 📋 PLANNED
+- [x] **009-review-and-submit** (contribution-and-sync-editor-ui): Review & submit (S22) and the own copy - Must - ✅ COMPLETED
 - [ ] **010-duplicate-check-and-entry-points** (contribution-and-sync-editor-ui): Duplicate check and entry points - Must - 📋 PLANNED
 - [ ] **011-corrections** (contribution-and-sync-editor-ui): Suggest a correction - Must - 📋 PLANNED
 - [ ] **012-my-contributions-and-badge** (contribution-and-sync-editor-ui): My contributions (S23) and the status badge - Must - 📋 PLANNED
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 7
+- **Planned**: 6
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 90
+- **Completed**: 91
