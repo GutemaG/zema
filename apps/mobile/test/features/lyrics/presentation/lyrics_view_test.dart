@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema/features/lyrics/application/lyrics_prefs.dart';
+import 'package:zema/app/database/own_copies_dao.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/routes.dart';
 import 'package:zema/app/theme/zema_colors.dart';
@@ -66,8 +67,9 @@ Future<_App> _pump(
   ZemaFailure? failAfterStart,
   ZemaDatabase? database,
   bool lyricsMode = true,
+  Size size = const Size(400, 860),
 }) async {
-  useScreen(tester, size: const Size(400, 860), textScale: textScale);
+  useScreen(tester, size: size, textScale: textScale);
   final backend = FakeAudioBackend();
   final handler = fakeAudioHandler(backend);
   final db = database ?? memoryDatabase();
@@ -499,5 +501,101 @@ void main() {
       expect(sent.recordingId, 'galatoomi');
       expect(sent.reason, ReportReason.wrongTiming);
     });
+  });
+
+  group('The user\'s own contribution', () {
+    const own = Song(
+      id: 'galatoomi-2',
+      title: 'Galatoomi',
+      sections: [
+        LyricSection(
+          id: 'v1',
+          kind: SectionKind.verse,
+          lines: [LyricLine('Own line one'), LyricLine('Own line two')],
+        ),
+      ],
+      playOrder: ['v1'],
+    );
+
+    Future<void> addCopy(
+      WidgetTester tester,
+      ZemaDatabase db,
+      String title,
+    ) async {
+      final tracks = (await tester.runAsync(db.libraryDao.allTracks))!;
+      await tester.runAsync(
+        () => db.ownCopiesDao.add(
+          OwnCopy(
+            contributionId: 'c-1',
+            kind: ContributionKind.newSong,
+            song: own,
+            recording: const Recording(
+              id: 'rec-own',
+              songId: 'galatoomi-2',
+              source: RecordingSource.localFile,
+              fileName: 'Galatoomi.mp3',
+            ),
+            timing: const SyncTiming(
+              recordingId: 'rec-own',
+              starts: [Duration(seconds: 1), Duration(seconds: 5)],
+            ),
+            trackId: tracks.firstWhere((t) => t.title == title).id,
+            submittedAt: DateTime.utc(2026, 11, 2),
+          ),
+        ),
+      );
+      await _settle(tester);
+    }
+
+    testWidgets('shows on its track, synced and marked Pending review, '
+        'until it is reviewed', (tester) async {
+      final db = memoryDatabase();
+      final app = await _pump(tester, database: db);
+      expect(find.text(_first), findsOneWidget);
+      expect(find.text(_l10n.lyricsPendingReview), findsNothing);
+
+      await addCopy(tester, db, 'Galatoomi');
+      expect(find.text(_first), findsNothing);
+      expect(find.text('Own line one'), findsOneWidget);
+      expect(find.text(_l10n.lyricsPendingReview), findsOneWidget);
+      await app.at(tester, 6000);
+      expect(
+        _style(tester, 'Own line two').color,
+        _colors(tester).primaryText,
+        reason: 'its own timings',
+      );
+
+      // Rejected: the track goes back to the catalog's song.
+      await tester.runAsync(() => db.ownCopiesDao.remove('c-1'));
+      await _settle(tester);
+      expect(find.text(_first), findsOneWidget);
+      expect(find.text(_l10n.lyricsPendingReview), findsNothing);
+    });
+
+    testWidgets('another track does not show it', (tester) async {
+      final db = memoryDatabase();
+      await _pump(tester, titles: const ['Galatoomi', 'Kidus'], database: db);
+      await addCopy(tester, db, 'Kidus');
+      expect(find.text(_first), findsOneWidget);
+      expect(find.text(_l10n.lyricsPendingReview), findsNothing);
+    });
+
+    for (final brightness in Brightness.values) {
+      testWidgets('the mark fits at 1.3× text in ${brightness.name} mode', (
+        tester,
+      ) async {
+        final db = memoryDatabase();
+        await _pump(
+          tester,
+          database: db,
+          size: const Size(360, 640),
+          textScale: 1.3,
+          phoneBrightness: brightness,
+        );
+        await addCopy(tester, db, 'Galatoomi');
+        expect(find.text(_l10n.lyricsPendingReview), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
   });
 }

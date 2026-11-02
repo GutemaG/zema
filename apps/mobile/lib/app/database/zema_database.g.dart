@@ -5094,6 +5094,578 @@ class DraftsCompanion extends UpdateCompanion<DraftRow> {
   }
 }
 
+class $OwnCopiesTable extends OwnCopies
+    with TableInfo<$OwnCopiesTable, OwnCopyRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OwnCopiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _contributionIdMeta = const VerificationMeta(
+    'contributionId',
+  );
+  @override
+  late final GeneratedColumn<String> contributionId = GeneratedColumn<String>(
+    'contribution_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _songMeta = const VerificationMeta('song');
+  @override
+  late final GeneratedColumn<String> song = GeneratedColumn<String>(
+    'song',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordingMeta = const VerificationMeta(
+    'recording',
+  );
+  @override
+  late final GeneratedColumn<String> recording = GeneratedColumn<String>(
+    'recording',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _timingMeta = const VerificationMeta('timing');
+  @override
+  late final GeneratedColumn<String> timing = GeneratedColumn<String>(
+    'timing',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _audioPathMeta = const VerificationMeta(
+    'audioPath',
+  );
+  @override
+  late final GeneratedColumn<String> audioPath = GeneratedColumn<String>(
+    'audio_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _submittedAtMeta = const VerificationMeta(
+    'submittedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> submittedAt = GeneratedColumn<DateTime>(
+    'submitted_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    contributionId,
+    kind,
+    song,
+    recording,
+    timing,
+    trackId,
+    audioPath,
+    submittedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'own_copies';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OwnCopyRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('contribution_id')) {
+      context.handle(
+        _contributionIdMeta,
+        contributionId.isAcceptableOrUnknown(
+          data['contribution_id']!,
+          _contributionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contributionIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('song')) {
+      context.handle(
+        _songMeta,
+        song.isAcceptableOrUnknown(data['song']!, _songMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_songMeta);
+    }
+    if (data.containsKey('recording')) {
+      context.handle(
+        _recordingMeta,
+        recording.isAcceptableOrUnknown(data['recording']!, _recordingMeta),
+      );
+    }
+    if (data.containsKey('timing')) {
+      context.handle(
+        _timingMeta,
+        timing.isAcceptableOrUnknown(data['timing']!, _timingMeta),
+      );
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    }
+    if (data.containsKey('audio_path')) {
+      context.handle(
+        _audioPathMeta,
+        audioPath.isAcceptableOrUnknown(data['audio_path']!, _audioPathMeta),
+      );
+    }
+    if (data.containsKey('submitted_at')) {
+      context.handle(
+        _submittedAtMeta,
+        submittedAt.isAcceptableOrUnknown(
+          data['submitted_at']!,
+          _submittedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_submittedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OwnCopyRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OwnCopyRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      contributionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}contribution_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      song: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song'],
+      )!,
+      recording: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recording'],
+      ),
+      timing: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}timing'],
+      ),
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      ),
+      audioPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_path'],
+      ),
+      submittedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}submitted_at'],
+      )!,
+    );
+  }
+
+  @override
+  $OwnCopiesTable createAlias(String alias) {
+    return $OwnCopiesTable(attachedDatabase, alias);
+  }
+}
+
+class OwnCopyRow extends DataClass implements Insertable<OwnCopyRow> {
+  final int id;
+
+  /// The contribution's id on the backend.
+  final String contributionId;
+
+  /// [ContributionKind.wire].
+  final String kind;
+
+  /// The lyrics as sent ([Song.toJson]).
+  final String song;
+
+  /// [Recording.toJson] and [SyncTiming.toJson], when sent.
+  final String? recording;
+  final String? timing;
+
+  /// The local track it was made for, if any.
+  final int? trackId;
+
+  /// Zema's copy of a file shared to it, kept until the contribution is
+  /// reviewed.
+  final String? audioPath;
+  final DateTime submittedAt;
+  const OwnCopyRow({
+    required this.id,
+    required this.contributionId,
+    required this.kind,
+    required this.song,
+    this.recording,
+    this.timing,
+    this.trackId,
+    this.audioPath,
+    required this.submittedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['contribution_id'] = Variable<String>(contributionId);
+    map['kind'] = Variable<String>(kind);
+    map['song'] = Variable<String>(song);
+    if (!nullToAbsent || recording != null) {
+      map['recording'] = Variable<String>(recording);
+    }
+    if (!nullToAbsent || timing != null) {
+      map['timing'] = Variable<String>(timing);
+    }
+    if (!nullToAbsent || trackId != null) {
+      map['track_id'] = Variable<int>(trackId);
+    }
+    if (!nullToAbsent || audioPath != null) {
+      map['audio_path'] = Variable<String>(audioPath);
+    }
+    map['submitted_at'] = Variable<DateTime>(submittedAt);
+    return map;
+  }
+
+  OwnCopiesCompanion toCompanion(bool nullToAbsent) {
+    return OwnCopiesCompanion(
+      id: Value(id),
+      contributionId: Value(contributionId),
+      kind: Value(kind),
+      song: Value(song),
+      recording: recording == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recording),
+      timing: timing == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timing),
+      trackId: trackId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackId),
+      audioPath: audioPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioPath),
+      submittedAt: Value(submittedAt),
+    );
+  }
+
+  factory OwnCopyRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OwnCopyRow(
+      id: serializer.fromJson<int>(json['id']),
+      contributionId: serializer.fromJson<String>(json['contributionId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      song: serializer.fromJson<String>(json['song']),
+      recording: serializer.fromJson<String?>(json['recording']),
+      timing: serializer.fromJson<String?>(json['timing']),
+      trackId: serializer.fromJson<int?>(json['trackId']),
+      audioPath: serializer.fromJson<String?>(json['audioPath']),
+      submittedAt: serializer.fromJson<DateTime>(json['submittedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'contributionId': serializer.toJson<String>(contributionId),
+      'kind': serializer.toJson<String>(kind),
+      'song': serializer.toJson<String>(song),
+      'recording': serializer.toJson<String?>(recording),
+      'timing': serializer.toJson<String?>(timing),
+      'trackId': serializer.toJson<int?>(trackId),
+      'audioPath': serializer.toJson<String?>(audioPath),
+      'submittedAt': serializer.toJson<DateTime>(submittedAt),
+    };
+  }
+
+  OwnCopyRow copyWith({
+    int? id,
+    String? contributionId,
+    String? kind,
+    String? song,
+    Value<String?> recording = const Value.absent(),
+    Value<String?> timing = const Value.absent(),
+    Value<int?> trackId = const Value.absent(),
+    Value<String?> audioPath = const Value.absent(),
+    DateTime? submittedAt,
+  }) => OwnCopyRow(
+    id: id ?? this.id,
+    contributionId: contributionId ?? this.contributionId,
+    kind: kind ?? this.kind,
+    song: song ?? this.song,
+    recording: recording.present ? recording.value : this.recording,
+    timing: timing.present ? timing.value : this.timing,
+    trackId: trackId.present ? trackId.value : this.trackId,
+    audioPath: audioPath.present ? audioPath.value : this.audioPath,
+    submittedAt: submittedAt ?? this.submittedAt,
+  );
+  OwnCopyRow copyWithCompanion(OwnCopiesCompanion data) {
+    return OwnCopyRow(
+      id: data.id.present ? data.id.value : this.id,
+      contributionId: data.contributionId.present
+          ? data.contributionId.value
+          : this.contributionId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      song: data.song.present ? data.song.value : this.song,
+      recording: data.recording.present ? data.recording.value : this.recording,
+      timing: data.timing.present ? data.timing.value : this.timing,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      audioPath: data.audioPath.present ? data.audioPath.value : this.audioPath,
+      submittedAt: data.submittedAt.present
+          ? data.submittedAt.value
+          : this.submittedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OwnCopyRow(')
+          ..write('id: $id, ')
+          ..write('contributionId: $contributionId, ')
+          ..write('kind: $kind, ')
+          ..write('song: $song, ')
+          ..write('recording: $recording, ')
+          ..write('timing: $timing, ')
+          ..write('trackId: $trackId, ')
+          ..write('audioPath: $audioPath, ')
+          ..write('submittedAt: $submittedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    contributionId,
+    kind,
+    song,
+    recording,
+    timing,
+    trackId,
+    audioPath,
+    submittedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OwnCopyRow &&
+          other.id == this.id &&
+          other.contributionId == this.contributionId &&
+          other.kind == this.kind &&
+          other.song == this.song &&
+          other.recording == this.recording &&
+          other.timing == this.timing &&
+          other.trackId == this.trackId &&
+          other.audioPath == this.audioPath &&
+          other.submittedAt == this.submittedAt);
+}
+
+class OwnCopiesCompanion extends UpdateCompanion<OwnCopyRow> {
+  final Value<int> id;
+  final Value<String> contributionId;
+  final Value<String> kind;
+  final Value<String> song;
+  final Value<String?> recording;
+  final Value<String?> timing;
+  final Value<int?> trackId;
+  final Value<String?> audioPath;
+  final Value<DateTime> submittedAt;
+  const OwnCopiesCompanion({
+    this.id = const Value.absent(),
+    this.contributionId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.song = const Value.absent(),
+    this.recording = const Value.absent(),
+    this.timing = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.audioPath = const Value.absent(),
+    this.submittedAt = const Value.absent(),
+  });
+  OwnCopiesCompanion.insert({
+    this.id = const Value.absent(),
+    required String contributionId,
+    required String kind,
+    required String song,
+    this.recording = const Value.absent(),
+    this.timing = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.audioPath = const Value.absent(),
+    required DateTime submittedAt,
+  }) : contributionId = Value(contributionId),
+       kind = Value(kind),
+       song = Value(song),
+       submittedAt = Value(submittedAt);
+  static Insertable<OwnCopyRow> custom({
+    Expression<int>? id,
+    Expression<String>? contributionId,
+    Expression<String>? kind,
+    Expression<String>? song,
+    Expression<String>? recording,
+    Expression<String>? timing,
+    Expression<int>? trackId,
+    Expression<String>? audioPath,
+    Expression<DateTime>? submittedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (contributionId != null) 'contribution_id': contributionId,
+      if (kind != null) 'kind': kind,
+      if (song != null) 'song': song,
+      if (recording != null) 'recording': recording,
+      if (timing != null) 'timing': timing,
+      if (trackId != null) 'track_id': trackId,
+      if (audioPath != null) 'audio_path': audioPath,
+      if (submittedAt != null) 'submitted_at': submittedAt,
+    });
+  }
+
+  OwnCopiesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? contributionId,
+    Value<String>? kind,
+    Value<String>? song,
+    Value<String?>? recording,
+    Value<String?>? timing,
+    Value<int?>? trackId,
+    Value<String?>? audioPath,
+    Value<DateTime>? submittedAt,
+  }) {
+    return OwnCopiesCompanion(
+      id: id ?? this.id,
+      contributionId: contributionId ?? this.contributionId,
+      kind: kind ?? this.kind,
+      song: song ?? this.song,
+      recording: recording ?? this.recording,
+      timing: timing ?? this.timing,
+      trackId: trackId ?? this.trackId,
+      audioPath: audioPath ?? this.audioPath,
+      submittedAt: submittedAt ?? this.submittedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (contributionId.present) {
+      map['contribution_id'] = Variable<String>(contributionId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (song.present) {
+      map['song'] = Variable<String>(song.value);
+    }
+    if (recording.present) {
+      map['recording'] = Variable<String>(recording.value);
+    }
+    if (timing.present) {
+      map['timing'] = Variable<String>(timing.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (audioPath.present) {
+      map['audio_path'] = Variable<String>(audioPath.value);
+    }
+    if (submittedAt.present) {
+      map['submitted_at'] = Variable<DateTime>(submittedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OwnCopiesCompanion(')
+          ..write('id: $id, ')
+          ..write('contributionId: $contributionId, ')
+          ..write('kind: $kind, ')
+          ..write('song: $song, ')
+          ..write('recording: $recording, ')
+          ..write('timing: $timing, ')
+          ..write('trackId: $trackId, ')
+          ..write('audioPath: $audioPath, ')
+          ..write('submittedAt: $submittedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -5114,6 +5686,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     this,
   );
   late final $DraftsTable drafts = $DraftsTable(this);
+  late final $OwnCopiesTable ownCopies = $OwnCopiesTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -5147,6 +5720,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final RestoreDao restoreDao = RestoreDao(this as ZemaDatabase);
   late final UnmatchedDao unmatchedDao = UnmatchedDao(this as ZemaDatabase);
   late final DraftsDao draftsDao = DraftsDao(this as ZemaDatabase);
+  late final OwnCopiesDao ownCopiesDao = OwnCopiesDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5165,6 +5739,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     queuedReports,
     unmatchedEntries,
     drafts,
+    ownCopies,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -9256,6 +9831,284 @@ typedef $$DraftsTableProcessedTableManager =
       DraftRow,
       PrefetchHooks Function()
     >;
+typedef $$OwnCopiesTableCreateCompanionBuilder = OwnCopiesCompanion Function({
+  Value<int> id,
+  required String contributionId,
+  required String kind,
+  required String song,
+  Value<String?> recording,
+  Value<String?> timing,
+  Value<int?> trackId,
+  Value<String?> audioPath,
+  required DateTime submittedAt,
+});
+typedef $$OwnCopiesTableUpdateCompanionBuilder = OwnCopiesCompanion Function({
+  Value<int> id,
+  Value<String> contributionId,
+  Value<String> kind,
+  Value<String> song,
+  Value<String?> recording,
+  Value<String?> timing,
+  Value<int?> trackId,
+  Value<String?> audioPath,
+  Value<DateTime> submittedAt,
+});
+
+class $$OwnCopiesTableFilterComposer
+    extends Composer<_$ZemaDatabase, $OwnCopiesTable> {
+  $$OwnCopiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contributionId => $composableBuilder(
+    column: $table.contributionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get song => $composableBuilder(
+    column: $table.song,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recording => $composableBuilder(
+    column: $table.recording,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timing => $composableBuilder(
+    column: $table.timing,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get trackId => $composableBuilder(
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioPath => $composableBuilder(
+    column: $table.audioPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get submittedAt => $composableBuilder(
+    column: $table.submittedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$OwnCopiesTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $OwnCopiesTable> {
+  $$OwnCopiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contributionId => $composableBuilder(
+    column: $table.contributionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get song => $composableBuilder(
+    column: $table.song,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recording => $composableBuilder(
+    column: $table.recording,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timing => $composableBuilder(
+    column: $table.timing,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get trackId => $composableBuilder(
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioPath => $composableBuilder(
+    column: $table.audioPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get submittedAt => $composableBuilder(
+    column: $table.submittedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OwnCopiesTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $OwnCopiesTable> {
+  $$OwnCopiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get contributionId => $composableBuilder(
+    column: $table.contributionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get song =>
+      $composableBuilder(column: $table.song, builder: (column) => column);
+
+  GeneratedColumn<String> get recording =>
+      $composableBuilder(column: $table.recording, builder: (column) => column);
+
+  GeneratedColumn<String> get timing =>
+      $composableBuilder(column: $table.timing, builder: (column) => column);
+
+  GeneratedColumn<int> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<String> get audioPath =>
+      $composableBuilder(column: $table.audioPath, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get submittedAt => $composableBuilder(
+    column: $table.submittedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$OwnCopiesTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $OwnCopiesTable,
+          OwnCopyRow,
+          $$OwnCopiesTableFilterComposer,
+          $$OwnCopiesTableOrderingComposer,
+          $$OwnCopiesTableAnnotationComposer,
+          $$OwnCopiesTableCreateCompanionBuilder,
+          $$OwnCopiesTableUpdateCompanionBuilder,
+          (
+            OwnCopyRow,
+            BaseReferences<_$ZemaDatabase, $OwnCopiesTable, OwnCopyRow>,
+          ),
+          OwnCopyRow,
+          PrefetchHooks Function()
+        > {
+  $$OwnCopiesTableTableManager(_$ZemaDatabase db, $OwnCopiesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OwnCopiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OwnCopiesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OwnCopiesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> contributionId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> song = const Value.absent(),
+                Value<String?> recording = const Value.absent(),
+                Value<String?> timing = const Value.absent(),
+                Value<int?> trackId = const Value.absent(),
+                Value<String?> audioPath = const Value.absent(),
+                Value<DateTime> submittedAt = const Value.absent(),
+              }) => OwnCopiesCompanion(
+                id: id,
+                contributionId: contributionId,
+                kind: kind,
+                song: song,
+                recording: recording,
+                timing: timing,
+                trackId: trackId,
+                audioPath: audioPath,
+                submittedAt: submittedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String contributionId,
+                required String kind,
+                required String song,
+                Value<String?> recording = const Value.absent(),
+                Value<String?> timing = const Value.absent(),
+                Value<int?> trackId = const Value.absent(),
+                Value<String?> audioPath = const Value.absent(),
+                required DateTime submittedAt,
+              }) => OwnCopiesCompanion.insert(
+                id: id,
+                contributionId: contributionId,
+                kind: kind,
+                song: song,
+                recording: recording,
+                timing: timing,
+                trackId: trackId,
+                audioPath: audioPath,
+                submittedAt: submittedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OwnCopiesTable, OwnCopyRow>(table),
+                  BaseReferences<_$ZemaDatabase, $OwnCopiesTable, OwnCopyRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$OwnCopiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $OwnCopiesTable,
+      OwnCopyRow,
+      $$OwnCopiesTableFilterComposer,
+      $$OwnCopiesTableOrderingComposer,
+      $$OwnCopiesTableAnnotationComposer,
+      $$OwnCopiesTableCreateCompanionBuilder,
+      $$OwnCopiesTableUpdateCompanionBuilder,
+      (OwnCopyRow, BaseReferences<_$ZemaDatabase, $OwnCopiesTable, OwnCopyRow>),
+      OwnCopyRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -9286,4 +10139,6 @@ class $ZemaDatabaseManager {
       $$UnmatchedEntriesTableTableManager(_db, _db.unmatchedEntries);
   $$DraftsTableTableManager get drafts =>
       $$DraftsTableTableManager(_db, _db.drafts);
+  $$OwnCopiesTableTableManager get ownCopies =>
+      $$OwnCopiesTableTableManager(_db, _db.ownCopies);
 }

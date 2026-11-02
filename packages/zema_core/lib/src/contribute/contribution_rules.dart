@@ -69,6 +69,11 @@ const maxFileNameLength = 255;
 const maxSlugLength = 120;
 const maxNoteLength = 1000;
 
+/// How many contributions a user can have waiting (pending or changes
+/// requested), and send in 24 hours.
+const maxOpenContributions = 20;
+const maxContributionsPerDay = 30;
+
 final _slug = RegExp(r'^[a-z0-9]+(-[a-z0-9]+)*$');
 final _videoId = RegExp(r'^[A-Za-z0-9_-]{11}$');
 

@@ -392,6 +392,21 @@ void main() {
           .toSet();
       expect(listed, {for (final e in ContributionError.values) e.code});
     });
+
+    test('the limits are the backend\'s', () {
+      final header = File(
+        '../../backend/supabase/migrations/'
+        '20261102000100_submit_contributions.sql',
+      ).readAsStringSync();
+      expect(
+        header,
+        contains('too_many_open ($maxOpenContributions pending or'),
+      );
+      expect(
+        header,
+        contains('too_many_today ($maxContributionsPerDay in 24 hours)'),
+      );
+    });
   });
 
   test('slugs and video ids', () {

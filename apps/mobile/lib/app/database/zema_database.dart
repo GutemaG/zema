@@ -9,6 +9,7 @@ import 'drafts_dao.dart';
 import 'history_dao.dart';
 import 'library_dao.dart';
 import 'lyrics_links_dao.dart';
+import 'own_copies_dao.dart';
 import 'reports_dao.dart';
 import 'restore_dao.dart';
 import 'tables.dart';
@@ -34,6 +35,7 @@ part 'zema_database.g.dart';
     QueuedReports,
     UnmatchedEntries,
     Drafts,
+    OwnCopies,
   ],
   daos: [
     LibraryDao,
@@ -47,6 +49,7 @@ part 'zema_database.g.dart';
     RestoreDao,
     UnmatchedDao,
     DraftsDao,
+    OwnCopiesDao,
   ],
 )
 class ZemaDatabase extends _$ZemaDatabase {
@@ -56,7 +59,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -86,6 +89,8 @@ class ZemaDatabase extends _$ZemaDatabase {
       from6To7: (m, schema) => m.createTable(schema.unmatchedEntries),
       // v8: contributions in progress.
       from7To8: (m, schema) => m.createTable(schema.drafts),
+      // v9: the user's own copies of contributions waiting for review.
+      from8To9: (m, schema) => m.createTable(schema.ownCopies),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

@@ -33,6 +33,12 @@ class LyricsView extends ConsumerWidget {
           Positioned.fill(
             child: _Lines(track: track, lyrics: lyrics),
           ),
+          if (lyrics.pending)
+            const PositionedDirectional(
+              top: 8,
+              start: ZemaSpacing.screenSide,
+              child: PendingReviewChip(),
+            ),
           PositionedDirectional(
             top: 0,
             end: 0,
@@ -103,6 +109,28 @@ class NoLyrics extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Marks lyrics the user sent that a moderator hasn't checked yet.
+class PendingReviewChip extends StatelessWidget {
+  const PendingReviewChip({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.zemaColors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      decoration: BoxDecoration(
+        color: colors.soft,
+        borderRadius: BorderRadius.circular(ZemaRadius.pill),
+      ),
+      child: Text(
+        AppLocalizations.of(context).lyricsPendingReview,
+        style: Theme.of(context).textTheme.labelSmall
+            ?.copyWith(color: colors.accentText),
       ),
     );
   }

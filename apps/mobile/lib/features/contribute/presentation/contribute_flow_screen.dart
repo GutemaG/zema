@@ -11,6 +11,7 @@ import '../application/drafts.dart';
 import 'contribute_screen.dart';
 import 'lyrics_step.dart';
 import 'recording_step.dart';
+import 'review_step.dart';
 import 'sync_step.dart';
 
 /// The four-step flow (S19–S22) for draft [id], opened at its step. Every
@@ -57,16 +58,7 @@ class ContributeFlowScreen extends ConsumerWidget {
                   DraftStep.lyrics => LyricsStep(id: id!, draft: draft),
                   DraftStep.recording => RecordingStep(id: id!, draft: draft),
                   DraftStep.sync => SyncStep(id: id!, draft: draft),
-                  // Step 4 comes in a later bolt.
-                  _ => Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        l10n.contributeStepLater,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                  DraftStep.review => ReviewStep(id: id!, draft: draft),
                 },
               ),
             ],

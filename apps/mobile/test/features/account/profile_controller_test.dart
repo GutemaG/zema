@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema/app/database/database_provider.dart';
+import 'package:zema/app/database/own_copies_dao.dart';
+import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/preferences_provider.dart';
 import 'package:zema/features/account/application/profile.dart';
 import 'package:zema/features/account/data/profile_cache.dart';
@@ -19,6 +22,7 @@ void main() {
   late FakeAvatarCache avatars;
   late SharedPreferences prefs;
   late ProviderContainer container;
+  late ZemaDatabase db;
 
   final server = Profile(
     userId: testUser.id,
@@ -36,10 +40,11 @@ void main() {
     profiles = FakeProfileRepository(auth, profile: server);
     picker = FakeGoogleAccountPicker();
     avatars = FakeAvatarCache();
+    db = memoryDatabase();
     container = ProviderContainer(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
-        databaseProvider.overrideWithValue(memoryDatabase()),
+        databaseProvider.overrideWithValue(db),
         ...accountOverrides(
           auth: auth,
           profiles: profiles,
@@ -151,6 +156,30 @@ void main() {
       expect(avatars.clearCalls, 1);
       expect(container.read(accountActionsProvider), isNull);
     });
+
+    test(
+      'forgets own copies of contributions and their shared files',
+      () async {
+        await start();
+        final files = await Directory.systemTemp.createTemp('own_copies');
+        addTearDown(() => files.delete(recursive: true));
+        final audio = File('${files.path}/shared_audio/a.ogg');
+        await audio.create(recursive: true);
+        await db.ownCopiesDao.add(
+          OwnCopy(
+            contributionId: 'c-1',
+            kind: ContributionKind.newSong,
+            song: const Song(id: 'selam', title: 'Selam', sections: []),
+            audioPath: audio.path,
+            submittedAt: DateTime.utc(2026, 11, 2),
+          ),
+        );
+
+        await actions().signOut();
+        expect(await db.ownCopiesDao.all(), isEmpty);
+        expect(audio.existsSync(), isFalse);
+      },
+    );
   });
 
   group('delete account', () {

@@ -7,6 +7,7 @@ import 'package:zema_core/zema_core.dart'
         AuthRepository,
         BackupRepository,
         CatalogRepository,
+        ContributionRepository,
         LyricsRepository,
         ProfileRepository;
 import 'package:zema/app/database/zema_database.dart';
@@ -16,6 +17,7 @@ import 'package:zema/app/routes.dart';
 import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/theme/zema_theme.dart';
 import 'package:zema/app/zema_app.dart';
+import 'package:zema/features/account/application/account_providers.dart';
 import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema/features/contribute/application/recording.dart';
@@ -32,6 +34,7 @@ import 'package:zema/l10n/generated/app_localizations.dart';
 
 import 'fake_auth.dart';
 import 'fake_contribute.dart';
+import 'fake_contributions.dart';
 import 'fake_library.dart';
 import 'fake_lyrics.dart';
 import 'fake_player.dart';
@@ -53,7 +56,8 @@ import 'fake_player.dart';
 /// so the account choice) is offered only with a [googlePicker]; avatars
 /// come from [avatars] and the cloud backup from [backups]; the phone is on Wi-Fi only when
 /// [onWifi] says so. With [settle]
-/// false only the first frame is pumped.
+/// false only the first frame is pumped. Contributions go to
+/// [contributions], by default an empty fake.
 Future<void> pumpZemaApp(
   WidgetTester tester, {
   String location = AppRoutes.home,
@@ -80,6 +84,7 @@ Future<void> pumpZemaApp(
   ShareReceiver? shareReceiver,
   SyncPlayer? syncPlayer,
   bool settle = true,
+  ContributionRepository? contributions,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
   addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
@@ -131,6 +136,11 @@ Future<void> pumpZemaApp(
           ref.onDispose(router.dispose);
           return router;
         }),
+        contributionRepositoryProvider.overrideWithValue(
+          backendConfigured
+              ? contributions ?? FakeContributionRepository()
+              : null,
+        ),
       ],
       child: const ZemaApp(),
     ),

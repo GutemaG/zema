@@ -1872,4 +1872,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contributeSyncMore => 'More';
+
+  @override
+  String get contributeReviewIntro =>
+      'Check everything, then send it. A moderator checks it before everyone can see it.';
+
+  @override
+  String get contributeReviewSong => 'Song';
+
+  @override
+  String get contributeReviewLyrics => 'Lyrics';
+
+  @override
+  String get contributeReviewRecording => 'Recording';
+
+  @override
+  String get contributeReviewSync => 'Timings';
+
+  @override
+  String get contributeReviewEdit => 'Edit';
+
+  @override
+  String get contributeReviewEditSong => 'Edit song details';
+
+  @override
+  String get contributeReviewEditLyrics => 'Edit lyrics';
+
+  @override
+  String get contributeReviewEditRecording => 'Edit recording';
+
+  @override
+  String get contributeReviewEditSync => 'Edit timings';
+
+  @override
+  String get contributeReviewNoRecording =>
+      'No recording. The lyrics are sent on their own.';
+
+  @override
+  String get contributeReviewYoutubeVideo => 'YouTube video';
+
+  @override
+  String get contributeReviewSynced => 'Synced';
+
+  @override
+  String get contributeReviewTextOnly => 'Text only';
+
+  @override
+  String get contributeReviewYoutube => 'YouTube — not synced';
+
+  @override
+  String get contributeSubmit => 'Submit for review';
+
+  @override
+  String get contributeSubmitSending => 'Sending';
+
+  @override
+  String get contributeSubmitSent =>
+      'Sent for review. Its lyrics show on this phone now, and for everyone once a moderator approves them.';
+
+  @override
+  String get contributeSubmitOffline =>
+      'You\'re offline, so it wasn\'t sent. Your draft is kept. Try again when you\'re online.';
+
+  @override
+  String get contributeSubmitFailed =>
+      'The server had a problem, so it wasn\'t sent. Your draft is kept. Try again.';
+
+  @override
+  String get contributeSubmitSignIn =>
+      'You\'re signed out, so it wasn\'t sent. Sign in again, then send it. Your draft is kept.';
+
+  @override
+  String contributeSubmitTooManyOpen(int max) {
+    return 'You already have $max contributions waiting for review, the most allowed. Send this one once some are reviewed. Your draft is kept.';
+  }
+
+  @override
+  String contributeSubmitTooManyToday(int max) {
+    return 'You can send up to $max contributions a day. Your draft is kept. Send it tomorrow.';
+  }
+
+  @override
+  String get contributeSubmitFixLyrics =>
+      'Something in the lyrics isn\'t right. Check them, then send again.';
+
+  @override
+  String get contributeSubmitFixRecording =>
+      'Something about the recording isn\'t right. Check it, then send again.';
+
+  @override
+  String get contributeSubmitFixSync =>
+      'The timings don\'t fit the lyrics or the recording. Sync again, then send.';
+
+  @override
+  String get contributeSubmitRefused =>
+      'The server didn\'t accept it. Your draft is kept. Check each step and try again.';
+
+  @override
+  String get lyricsPendingReview => 'Pending review';
 }

@@ -164,10 +164,14 @@ class AccountActionsController extends Notifier<AccountAction?> {
     if (userId != null) await ref.read(profileCacheProvider).remove(userId);
     final database = ref.read(databaseProvider);
     // Songs not found at restore belong to that account's backup, and
-    // drafts to its contributions.
+    // drafts and own copies to its contributions.
     await database.unmatchedDao.clear();
-    final shared = await database.draftsDao.audioPaths();
+    final shared = [
+      ...await database.draftsDao.audioPaths(),
+      ...await database.ownCopiesDao.audioPaths(),
+    ];
     await database.draftsDao.clear();
+    await database.ownCopiesDao.clear();
     await Future.wait(shared.map(deleteSharedAudio));
     try {
       await ref.read(avatarCacheProvider).clear();

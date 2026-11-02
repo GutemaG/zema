@@ -15,6 +15,7 @@ import 'generated/schema_v5.dart' as v5;
 import 'generated/schema_v6.dart' as v6;
 import 'generated/schema_v7.dart' as v7;
 import 'generated/schema_v8.dart' as v8;
+import 'generated/schema_v9.dart' as v9;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -329,6 +330,37 @@ void main() {
             hasLength(1),
           );
           expect(await newDb.select(newDb.drafts).get(), isEmpty);
+        },
+      );
+    },
+  );
+
+  test(
+    'migration from v8 to v9 keeps the drafts and starts with no own copies',
+    () async {
+      const draft = v8.DraftsData(
+        id: 1,
+        kind: 'new_song',
+        step: 'review',
+        title: 'Selam',
+        draft: '{}',
+        createdAt: '2026-11-02T00:00:00.000Z',
+        updatedAt: '2026-11-02T00:00:00.000Z',
+      );
+
+      await verifier.testWithDataIntegrity(
+        oldVersion: 8,
+        newVersion: 9,
+        createOld: v8.DatabaseAtV8.new,
+        createNew: v9.DatabaseAtV9.new,
+        openTestedDatabase: ZemaDatabase.new,
+        createItems: (batch, oldDb) => batch.insert(oldDb.drafts, draft),
+        validateItems: (newDb) async {
+          expect(
+            (await newDb.select(newDb.drafts).get()).single.title,
+            'Selam',
+          );
+          expect(await newDb.select(newDb.ownCopies).get(), isEmpty);
         },
       );
     },

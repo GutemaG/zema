@@ -215,3 +215,33 @@ class Drafts extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 }
+
+/// The user's own copy of each contribution they sent (intent 006), kept
+/// until it is reviewed: when its track plays, this phone shows its lyrics
+/// and timings marked Pending review. Other phones never see it. Cleared on
+/// sign-out and account deletion.
+@DataClassName('OwnCopyRow')
+class OwnCopies extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// The contribution's id on the backend.
+  TextColumn get contributionId => text().unique()();
+
+  /// [ContributionKind.wire].
+  TextColumn get kind => text()();
+
+  /// The lyrics as sent ([Song.toJson]).
+  TextColumn get song => text()();
+
+  /// [Recording.toJson] and [SyncTiming.toJson], when sent.
+  TextColumn get recording => text().nullable()();
+  TextColumn get timing => text().nullable()();
+
+  /// The local track it was made for, if any.
+  IntColumn get trackId => integer().nullable()();
+
+  /// Zema's copy of a file shared to it, kept until the contribution is
+  /// reviewed.
+  TextColumn get audioPath => text().nullable()();
+  DateTimeColumn get submittedAt => dateTime()();
+}

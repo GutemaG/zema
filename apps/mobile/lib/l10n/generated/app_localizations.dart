@@ -3137,6 +3137,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More'**
   String get contributeSyncMore;
+
+  /// S22 text above the parts of the contribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Check everything, then send it. A moderator checks it before everyone can see it.'**
+  String get contributeReviewIntro;
+
+  /// S22 part with the title, artist and album.
+  ///
+  /// In en, this message translates to:
+  /// **'Song'**
+  String get contributeReviewSong;
+
+  /// S22 part with the lyrics in play order.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics'**
+  String get contributeReviewLyrics;
+
+  /// S22 part with the linked recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording'**
+  String get contributeReviewRecording;
+
+  /// S22 part with the sync status.
+  ///
+  /// In en, this message translates to:
+  /// **'Timings'**
+  String get contributeReviewSync;
+
+  /// S22 button that goes back to a step.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get contributeReviewEdit;
+
+  /// Screen reader label of S22's Edit for the song.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit song details'**
+  String get contributeReviewEditSong;
+
+  /// Screen reader label of S22's Edit for the lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit lyrics'**
+  String get contributeReviewEditLyrics;
+
+  /// Screen reader label of S22's Edit for the recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit recording'**
+  String get contributeReviewEditRecording;
+
+  /// Screen reader label of S22's Edit for the timings.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit timings'**
+  String get contributeReviewEditSync;
+
+  /// S22 when no recording is linked.
+  ///
+  /// In en, this message translates to:
+  /// **'No recording. The lyrics are sent on their own.'**
+  String get contributeReviewNoRecording;
+
+  /// S22 recording title when the video's title isn't known.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube video'**
+  String get contributeReviewYoutubeVideo;
+
+  /// S22 sync status: every line has a time.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get contributeReviewSynced;
+
+  /// S22 sync status: sent without timings.
+  ///
+  /// In en, this message translates to:
+  /// **'Text only'**
+  String get contributeReviewTextOnly;
+
+  /// S22 sync status for a YouTube recording, which can't be synced.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube — not synced'**
+  String get contributeReviewYoutube;
+
+  /// S22 button that sends the contribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for review'**
+  String get contributeSubmit;
+
+  /// Screen reader label of the progress while sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending'**
+  String get contributeSubmitSending;
+
+  /// Message after sending a contribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent for review. Its lyrics show on this phone now, and for everyone once a moderator approves them.'**
+  String get contributeSubmitSent;
+
+  /// S22 when sending failed offline.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline, so it wasn\'t sent. Your draft is kept. Try again when you\'re online.'**
+  String get contributeSubmitOffline;
+
+  /// S22 when sending failed with a server error.
+  ///
+  /// In en, this message translates to:
+  /// **'The server had a problem, so it wasn\'t sent. Your draft is kept. Try again.'**
+  String get contributeSubmitFailed;
+
+  /// S22 when sending needs a sign-in.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re signed out, so it wasn\'t sent. Sign in again, then send it. Your draft is kept.'**
+  String get contributeSubmitSignIn;
+
+  /// S22 when the limit of open contributions is reached.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have {max} contributions waiting for review, the most allowed. Send this one once some are reviewed. Your draft is kept.'**
+  String contributeSubmitTooManyOpen(int max);
+
+  /// S22 when the daily limit is reached.
+  ///
+  /// In en, this message translates to:
+  /// **'You can send up to {max} contributions a day. Your draft is kept. Send it tomorrow.'**
+  String contributeSubmitTooManyToday(int max);
+
+  /// S22 when the lyrics break a rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Something in the lyrics isn\'t right. Check them, then send again.'**
+  String get contributeSubmitFixLyrics;
+
+  /// S22 when the recording breaks a rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Something about the recording isn\'t right. Check it, then send again.'**
+  String get contributeSubmitFixRecording;
+
+  /// S22 when the timings break a rule.
+  ///
+  /// In en, this message translates to:
+  /// **'The timings don\'t fit the lyrics or the recording. Sync again, then send.'**
+  String get contributeSubmitFixSync;
+
+  /// S22 when the backend refused for another reason.
+  ///
+  /// In en, this message translates to:
+  /// **'The server didn\'t accept it. Your draft is kept. Check each step and try again.'**
+  String get contributeSubmitRefused;
+
+  /// Chip on lyrics the user sent that a moderator hasn't checked yet; only this phone shows them.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending review'**
+  String get lyricsPendingReview;
 }
 
 class _AppLocalizationsDelegate

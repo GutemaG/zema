@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../app/database/own_copies_dao.dart';
+import '../../contribute/application/own_copies.dart';
 import '../../player/application/player_providers.dart';
 import '../../catalog/data/catalog_lyrics_repository.dart';
 import 'lyrics_links.dart';
@@ -19,6 +21,7 @@ class TrackLyrics {
     required this.lines,
     this.recording,
     this.synced,
+    this.pending = false,
   });
 
   final Song song;
@@ -31,17 +34,31 @@ class TrackLyrics {
 
   /// Null for plain lyrics (no timing, or timing that doesn't fit).
   final SyncedLyrics? synced;
+
+  /// Whether these are the user's own contribution, waiting for review
+  /// (shown on this phone only).
+  final bool pending;
 }
 
 /// The recording of a song whose timing the lyrics view uses.
 Recording? usedRecording(List<Recording> recordings) => recordings.firstOrNull;
 
 /// The lyrics of track [trackId], or null when it isn't linked to a song.
-/// Fails when the song can't be downloaded (see [songProvider]).
+/// The user's own contribution for the track, while it waits for review,
+/// comes before the linked song. Fails when the song can't be downloaded
+/// (see [songProvider]).
 final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   ref,
   trackId,
 ) async {
+  final own = switch (ref.watch(trackOwnCopyProvider(trackId))) {
+    AsyncData(:final value) => value,
+    // The linked song shows instead.
+    AsyncError() => null,
+    // Rebuilt when the copies load.
+    _ => await Completer<OwnCopy?>().future,
+  };
+  if (own != null) return _pendingLyrics(own);
   final song = switch (ref.watch(trackSongProvider(trackId))) {
     AsyncData(:final value) => value,
     AsyncError(:final error, :final stackTrace) => Error.throwWithStackTrace(
@@ -74,6 +91,26 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   );
   // A failure shows C07 at once; its Try again retries.
 }, retry: (_, _) => null);
+
+/// The lyrics of the user's own copy [own], marked pending.
+TrackLyrics _pendingLyrics(OwnCopy own) {
+  final song = own.song;
+  SyncedLyrics? synced;
+  if (own.timing case final timing?) {
+    try {
+      synced = SyncedLyrics.of(song, timing);
+    } on LyricsFormatFailure catch (e) {
+      _log.warning('Own timing does not fit ${own.contributionId}', e);
+    }
+  }
+  return TrackLyrics(
+    song: song,
+    lines: synced?.lines ?? expandPlayOrder(song).occurrences,
+    recording: own.recording,
+    synced: synced,
+    pending: true,
+  );
+}
 
 /// The total shift of [lyrics]' timing: the recording's own offset plus the
 /// user's correction for it, or the default correction.
