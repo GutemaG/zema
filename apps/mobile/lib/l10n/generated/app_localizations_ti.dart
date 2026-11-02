@@ -2122,4 +2122,115 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get profileStatApproved => 'Approved';
+
+  @override
+  String get reviewQueueTitle => 'Review queue';
+
+  @override
+  String reviewQueueCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count to review',
+      one: '1 to review',
+      zero: 'Nothing to review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewQueueAll => 'All';
+
+  @override
+  String get reviewQueueEmpty => 'Nothing waiting for review.';
+
+  @override
+  String get reviewQueueOffline =>
+      'Couldn\'t load the queue. Check your connection.';
+
+  @override
+  String reviewQueueBy(String name, String date) {
+    return '$name · $date';
+  }
+
+  @override
+  String get reviewQueueResent => 'Sent again after changes';
+
+  @override
+  String reviewItemPreviousNote(String note) {
+    return 'Last comment: $note';
+  }
+
+  @override
+  String get reviewItemOlderVersion =>
+      'Based on an older version of this song. Check the changes still fit.';
+
+  @override
+  String get reviewItemYoutube => 'YouTube video';
+
+  @override
+  String get reviewItemOpenYoutube => 'Open in YouTube';
+
+  @override
+  String get reviewItemPreview => 'Preview timing';
+
+  @override
+  String get reviewItemStop => 'Stop';
+
+  @override
+  String get reviewItemChecklist => 'Checklist';
+
+  @override
+  String get reviewCheckLyrics => 'The lyrics are complete and spelled right';
+
+  @override
+  String get reviewCheckDetails => 'The title and artist are right';
+
+  @override
+  String get reviewCheckContent => 'No ads, links or personal details';
+
+  @override
+  String get reviewCheckRecording => 'The recording is this song';
+
+  @override
+  String get reviewCheckTiming => 'Lines light up as they\'re sung';
+
+  @override
+  String get reviewApprove => 'Approve';
+
+  @override
+  String get reviewRequestChanges => 'Request changes';
+
+  @override
+  String get reviewReject => 'Reject';
+
+  @override
+  String get reviewNoteChangesTitle => 'What needs changing?';
+
+  @override
+  String get reviewNoteRejectTitle => 'Why reject it?';
+
+  @override
+  String get reviewNoteHint => 'The contributor sees this.';
+
+  @override
+  String get reviewSend => 'Send';
+
+  @override
+  String get reviewApproved => 'Approved.';
+
+  @override
+  String get reviewChangesRequested => 'Sent back for changes.';
+
+  @override
+  String get reviewRejected => 'Rejected.';
+
+  @override
+  String get reviewAlreadyReviewed => 'Someone else already reviewed this.';
+
+  @override
+  String get reviewOffline => 'No connection. Nothing was sent.';
+
+  @override
+  String get reviewFailed => 'Couldn\'t send the review. Try again.';
 }

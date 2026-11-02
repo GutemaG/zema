@@ -3569,6 +3569,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Approved'**
   String get profileStatApproved;
+
+  /// S23m's title, and its link on S05 and Profile for moderators
+  ///
+  /// In en, this message translates to:
+  /// **'Review queue'**
+  String get reviewQueueTitle;
+
+  /// S23m: how many contributions wait
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing to review} =1{1 to review} other{{count} to review}}'**
+  String reviewQueueCount(int count);
+
+  /// S23m filter: every kind
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get reviewQueueAll;
+
+  /// S23m: empty queue
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waiting for review.'**
+  String get reviewQueueEmpty;
+
+  /// S23m: the fetch failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the queue. Check your connection.'**
+  String get reviewQueueOffline;
+
+  /// S23m card: who sent it and when
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {date}'**
+  String reviewQueueBy(String name, String date);
+
+  /// S23m card: the contributor resent it
+  ///
+  /// In en, this message translates to:
+  /// **'Sent again after changes'**
+  String get reviewQueueResent;
+
+  /// S23m item: the comment from the last review
+  ///
+  /// In en, this message translates to:
+  /// **'Last comment: {note}'**
+  String reviewItemPreviousNote(String note);
+
+  /// S23m item: a correction based on an older catalog version
+  ///
+  /// In en, this message translates to:
+  /// **'Based on an older version of this song. Check the changes still fit.'**
+  String get reviewItemOlderVersion;
+
+  /// S23m item: the recording is a YouTube video
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube video'**
+  String get reviewItemYoutube;
+
+  /// S23m item: opens the video
+  ///
+  /// In en, this message translates to:
+  /// **'Open in YouTube'**
+  String get reviewItemOpenYoutube;
+
+  /// S23m item: lights up the lines as timed, without sound
+  ///
+  /// In en, this message translates to:
+  /// **'Preview timing'**
+  String get reviewItemPreview;
+
+  /// S23m item: stops the timing preview
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get reviewItemStop;
+
+  /// S23m item: things to check before deciding
+  ///
+  /// In en, this message translates to:
+  /// **'Checklist'**
+  String get reviewItemChecklist;
+
+  /// S23m checklist item
+  ///
+  /// In en, this message translates to:
+  /// **'The lyrics are complete and spelled right'**
+  String get reviewCheckLyrics;
+
+  /// S23m checklist item
+  ///
+  /// In en, this message translates to:
+  /// **'The title and artist are right'**
+  String get reviewCheckDetails;
+
+  /// S23m checklist item
+  ///
+  /// In en, this message translates to:
+  /// **'No ads, links or personal details'**
+  String get reviewCheckContent;
+
+  /// S23m checklist item
+  ///
+  /// In en, this message translates to:
+  /// **'The recording is this song'**
+  String get reviewCheckRecording;
+
+  /// S23m checklist item
+  ///
+  /// In en, this message translates to:
+  /// **'Lines light up as they\'re sung'**
+  String get reviewCheckTiming;
+
+  /// S23m item action
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get reviewApprove;
+
+  /// S23m item action
+  ///
+  /// In en, this message translates to:
+  /// **'Request changes'**
+  String get reviewRequestChanges;
+
+  /// S23m item action
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reviewReject;
+
+  /// S23m note dialog title for Request changes
+  ///
+  /// In en, this message translates to:
+  /// **'What needs changing?'**
+  String get reviewNoteChangesTitle;
+
+  /// S23m note dialog title for Reject
+  ///
+  /// In en, this message translates to:
+  /// **'Why reject it?'**
+  String get reviewNoteRejectTitle;
+
+  /// S23m note dialog hint
+  ///
+  /// In en, this message translates to:
+  /// **'The contributor sees this.'**
+  String get reviewNoteHint;
+
+  /// S23m note dialog: sends the decision
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get reviewSend;
+
+  /// S23m: after approving
+  ///
+  /// In en, this message translates to:
+  /// **'Approved.'**
+  String get reviewApproved;
+
+  /// S23m: after requesting changes
+  ///
+  /// In en, this message translates to:
+  /// **'Sent back for changes.'**
+  String get reviewChangesRequested;
+
+  /// S23m: after rejecting
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected.'**
+  String get reviewRejected;
+
+  /// S23m: another moderator decided first
+  ///
+  /// In en, this message translates to:
+  /// **'Someone else already reviewed this.'**
+  String get reviewAlreadyReviewed;
+
+  /// S23m: the decision couldn't be sent
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Nothing was sent.'**
+  String get reviewOffline;
+
+  /// S23m: the server refused or failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send the review. Try again.'**
+  String get reviewFailed;
 }
 
 class _AppLocalizationsDelegate

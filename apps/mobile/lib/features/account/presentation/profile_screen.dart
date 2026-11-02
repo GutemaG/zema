@@ -65,6 +65,11 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         onTap: () => context.push(AppRoutes.myContributions),
                       ),
+                    if (profile?.isModerator ?? false)
+                      SettingsRow(
+                        label: l10n.reviewQueueTitle,
+                        onTap: () => context.push(AppRoutes.reviewQueue),
+                      ),
                     if (profile != null)
                       SettingsRow(
                         label: l10n.backupTitle,

@@ -2747,5 +2747,151 @@
   "profileStatApproved": "Approved",
   "@profileStatApproved": {
     "description": "Profile stat: contributions approved"
+  },
+  "reviewQueueTitle": "Review queue",
+  "@reviewQueueTitle": {
+    "description": "S23m's title, and its link on S05 and Profile for moderators"
+  },
+  "reviewQueueCount": "{count, plural, =0{Nothing to review} =1{1 to review} other{{count} to review}}",
+  "@reviewQueueCount": {
+    "description": "S23m: how many contributions wait",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewQueueAll": "All",
+  "@reviewQueueAll": {
+    "description": "S23m filter: every kind"
+  },
+  "reviewQueueEmpty": "Nothing waiting for review.",
+  "@reviewQueueEmpty": {
+    "description": "S23m: empty queue"
+  },
+  "reviewQueueOffline": "Couldn't load the queue. Check your connection.",
+  "@reviewQueueOffline": {
+    "description": "S23m: the fetch failed"
+  },
+  "reviewQueueBy": "{name} · {date}",
+  "@reviewQueueBy": {
+    "description": "S23m card: who sent it and when",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewQueueResent": "Sent again after changes",
+  "@reviewQueueResent": {
+    "description": "S23m card: the contributor resent it"
+  },
+  "reviewItemPreviousNote": "Last comment: {note}",
+  "@reviewItemPreviousNote": {
+    "description": "S23m item: the comment from the last review",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewItemOlderVersion": "Based on an older version of this song. Check the changes still fit.",
+  "@reviewItemOlderVersion": {
+    "description": "S23m item: a correction based on an older catalog version"
+  },
+  "reviewItemYoutube": "YouTube video",
+  "@reviewItemYoutube": {
+    "description": "S23m item: the recording is a YouTube video"
+  },
+  "reviewItemOpenYoutube": "Open in YouTube",
+  "@reviewItemOpenYoutube": {
+    "description": "S23m item: opens the video"
+  },
+  "reviewItemPreview": "Preview timing",
+  "@reviewItemPreview": {
+    "description": "S23m item: lights up the lines as timed, without sound"
+  },
+  "reviewItemStop": "Stop",
+  "@reviewItemStop": {
+    "description": "S23m item: stops the timing preview"
+  },
+  "reviewItemChecklist": "Checklist",
+  "@reviewItemChecklist": {
+    "description": "S23m item: things to check before deciding"
+  },
+  "reviewCheckLyrics": "The lyrics are complete and spelled right",
+  "@reviewCheckLyrics": {
+    "description": "S23m checklist item"
+  },
+  "reviewCheckDetails": "The title and artist are right",
+  "@reviewCheckDetails": {
+    "description": "S23m checklist item"
+  },
+  "reviewCheckContent": "No ads, links or personal details",
+  "@reviewCheckContent": {
+    "description": "S23m checklist item"
+  },
+  "reviewCheckRecording": "The recording is this song",
+  "@reviewCheckRecording": {
+    "description": "S23m checklist item"
+  },
+  "reviewCheckTiming": "Lines light up as they're sung",
+  "@reviewCheckTiming": {
+    "description": "S23m checklist item"
+  },
+  "reviewApprove": "Approve",
+  "@reviewApprove": {
+    "description": "S23m item action"
+  },
+  "reviewRequestChanges": "Request changes",
+  "@reviewRequestChanges": {
+    "description": "S23m item action"
+  },
+  "reviewReject": "Reject",
+  "@reviewReject": {
+    "description": "S23m item action"
+  },
+  "reviewNoteChangesTitle": "What needs changing?",
+  "@reviewNoteChangesTitle": {
+    "description": "S23m note dialog title for Request changes"
+  },
+  "reviewNoteRejectTitle": "Why reject it?",
+  "@reviewNoteRejectTitle": {
+    "description": "S23m note dialog title for Reject"
+  },
+  "reviewNoteHint": "The contributor sees this.",
+  "@reviewNoteHint": {
+    "description": "S23m note dialog hint"
+  },
+  "reviewSend": "Send",
+  "@reviewSend": {
+    "description": "S23m note dialog: sends the decision"
+  },
+  "reviewApproved": "Approved.",
+  "@reviewApproved": {
+    "description": "S23m: after approving"
+  },
+  "reviewChangesRequested": "Sent back for changes.",
+  "@reviewChangesRequested": {
+    "description": "S23m: after requesting changes"
+  },
+  "reviewRejected": "Rejected.",
+  "@reviewRejected": {
+    "description": "S23m: after rejecting"
+  },
+  "reviewAlreadyReviewed": "Someone else already reviewed this.",
+  "@reviewAlreadyReviewed": {
+    "description": "S23m: another moderator decided first"
+  },
+  "reviewOffline": "No connection. Nothing was sent.",
+  "@reviewOffline": {
+    "description": "S23m: the decision couldn't be sent"
+  },
+  "reviewFailed": "Couldn't send the review. Try again.",
+  "@reviewFailed": {
+    "description": "S23m: the server refused or failed"
   }
 }

@@ -11,11 +11,12 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../account/application/account_providers.dart';
 import '../../account/presentation/backup_screen.dart';
 import '../application/drafts.dart';
+import '../application/moderation.dart';
 import 'my_contributions_screen.dart';
 import 'start_contribution.dart';
 
-/// S05: how contributing works, Add lyrics, the user's drafts and My
-/// contributions. Guests are
+/// S05: how contributing works, Add lyrics, the user's drafts, My
+/// contributions, and for moderators the review queue. Guests are
 /// asked to sign in (C09) when they start; builds without a backend explain
 /// that contributing needs one.
 class ContributeScreen extends ConsumerWidget {
@@ -95,6 +96,14 @@ class ContributeScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push<void>(AppRoutes.myContributions),
               ),
+              if (ref.watch(isModeratorProvider))
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.fact_check_outlined),
+                  title: Text(l10n.reviewQueueTitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push<void>(AppRoutes.reviewQueue),
+                ),
             ],
           ],
         ),

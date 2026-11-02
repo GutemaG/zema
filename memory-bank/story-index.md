@@ -136,7 +136,7 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **010-duplicate-check-and-entry-points** (contribution-and-sync-editor-ui): Duplicate check and entry points - Must - ✅ COMPLETED
 - [x] **011-corrections** (contribution-and-sync-editor-ui): Suggest a correction - Must - ✅ COMPLETED
 - [x] **012-my-contributions-and-badge** (contribution-and-sync-editor-ui): My contributions (S23) and the status badge - Must - ✅ COMPLETED
-- [ ] **013-moderator-queue** (contribution-and-sync-editor-ui): Moderator review queue (S23m) - Must - 📋 PLANNED
+- [x] **013-moderator-queue** (contribution-and-sync-editor-ui): Moderator review queue (S23m) - Must - ✅ COMPLETED
 - [ ] **014-edit-song-info** (contribution-and-sync-editor-ui): Edit song info (S09) - Should - 📋 PLANNED
 - [ ] **015-backup-additions** (contribution-and-sync-editor-ui): Backup additions: overrides and sync offsets - Could - 📋 PLANNED
 
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 3
+- **Planned**: 2
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 94
+- **Completed**: 95

@@ -15,7 +15,7 @@ import '../../lyrics/application/lyrics_links.dart';
 import '../application/my_contributions.dart';
 import '../application/own_copies.dart';
 import 'correction_changes.dart';
-import 'lyrics_step.dart';
+import 'song_lines.dart';
 
 /// How a draft's timings will be sent, as S22 shows them.
 enum SyncStatus { synced, textOnly, youtube }
@@ -219,34 +219,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 title: l10n.contributeReviewLyrics,
                 editLabel: l10n.contributeReviewEditLyrics,
                 onEdit: _sending ? null : () => _goTo(DraftStep.lyrics),
-                children: [
-                  for (final line in expandPlayOrder(song).occurrences) ...[
-                    if (line.startsSection)
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: line.index == 0 ? 0 : 12,
-                          bottom: 2,
-                        ),
-                        child: Text(
-                          switch (song.sections
-                              .where((s) => s.id == line.sectionId)
-                              .firstOrNull) {
-                            final section? => sectionLabel(
-                              l10n,
-                              song.sections,
-                              section,
-                            ).toUpperCase(),
-                            null => '',
-                          },
-                          style: textTheme.labelSmall?.copyWith(
-                            color: colors.accentText,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                      ),
-                    Text(line.line.text, style: textTheme.bodyLarge),
-                  ],
-                ],
+                children: [SongLines(song: song)],
               ),
               _Section(
                 title: l10n.contributeReviewRecording,

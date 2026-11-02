@@ -34,6 +34,16 @@ abstract final class AppRoutes {
   /// S23, above the shell; opened from S05 and Profile.
   static const String myContributions = '/my-contributions';
 
+  /// S23m, above the shell; moderators open it from S05 and Profile.
+  static const String reviewQueue = '/review-queue';
+  static const String reviewItemPath = 'item';
+
+  /// S23m's contribution [id].
+  static String reviewItem(String id) => Uri(
+    path: '$reviewQueue/$reviewItemPath',
+    queryParameters: {'id': id},
+  ).toString();
+
   /// The contribution flow (S19–S22) for a draft, above the shell.
   static const String draftPath = '/contribute-draft';
 

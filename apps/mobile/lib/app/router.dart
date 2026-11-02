@@ -11,6 +11,8 @@ import '../features/account/presentation/sign_in_screen.dart';
 import '../features/lyrics/presentation/song_detail_screen.dart';
 import '../features/contribute/presentation/contribute_flow_screen.dart';
 import '../features/contribute/presentation/my_contributions_screen.dart';
+import '../features/contribute/presentation/review_item_screen.dart';
+import '../features/contribute/presentation/review_queue_screen.dart';
 import '../features/contribute/presentation/contribute_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/library/application/album_grouping.dart';
@@ -140,6 +142,17 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.myContributions,
         builder: (_, _) => const MyContributionsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.reviewQueue,
+        builder: (_, _) => const ReviewQueueScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.reviewItemPath,
+            builder: (_, state) =>
+                ReviewItemScreen(id: state.uri.queryParameters['id']),
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.draftPath,
