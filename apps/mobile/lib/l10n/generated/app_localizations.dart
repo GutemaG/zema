@@ -3011,6 +3011,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contributing needs the online catalog, which this version of the app doesn\'t have.'**
   String get contributeShareNeedsBackend;
+
+  /// S21 when the track or shared file is gone.
+  ///
+  /// In en, this message translates to:
+  /// **'This recording isn\'t on this phone any more, so it can\'t be played for syncing.'**
+  String get contributeSyncNoAudio;
+
+  /// Goes back to S20 from S21.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another recording'**
+  String get contributeSyncChooseRecording;
+
+  /// Under the line the next tap times.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap when this line starts'**
+  String get contributeSyncTapHint;
+
+  /// Tooltip: nudges a line's start earlier.
+  ///
+  /// In en, this message translates to:
+  /// **'0.1 s earlier (hold to keep moving)'**
+  String get contributeSyncEarlier;
+
+  /// Tooltip: nudges a line's start later.
+  ///
+  /// In en, this message translates to:
+  /// **'0.1 s later (hold to keep moving)'**
+  String get contributeSyncLater;
+
+  /// Clears this line's time and later ones, and plays from just before it.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo from here'**
+  String get contributeSyncRedo;
+
+  /// Clears the last time tapped.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo last tap'**
+  String get contributeSyncUndo;
+
+  /// Leaves S21 without timings.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip, send text only'**
+  String get contributeSyncSkip;
+
+  /// The big button that times the next line.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap — next line'**
+  String get contributeSyncTap;
+
+  /// The big button while the recording is paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Press play, then tap as each line starts'**
+  String get contributeSyncPressPlay;
+
+  /// Moves playback back 5 seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'−5 s'**
+  String get contributeSyncBack5;
+
+  /// Playback speed button at normal speed; tap for 0.75×.
+  ///
+  /// In en, this message translates to:
+  /// **'1×'**
+  String get contributeSyncSpeedNormal;
+
+  /// Playback speed button at 0.75×; tap for normal speed.
+  ///
+  /// In en, this message translates to:
+  /// **'0.75×'**
+  String get contributeSyncSpeedSlow;
 }
 
 class _AppLocalizationsDelegate

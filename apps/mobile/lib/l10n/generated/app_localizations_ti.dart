@@ -1805,4 +1805,45 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get contributeShareNeedsBackend =>
       'Contributing needs the online catalog, which this version of the app doesn\'t have.';
+
+  @override
+  String get contributeSyncNoAudio =>
+      'This recording isn\'t on this phone any more, so it can\'t be played for syncing.';
+
+  @override
+  String get contributeSyncChooseRecording => 'Choose another recording';
+
+  @override
+  String get contributeSyncTapHint => 'Tap when this line starts';
+
+  @override
+  String get contributeSyncEarlier => '0.1 s earlier (hold to keep moving)';
+
+  @override
+  String get contributeSyncLater => '0.1 s later (hold to keep moving)';
+
+  @override
+  String get contributeSyncRedo => 'Redo from here';
+
+  @override
+  String get contributeSyncUndo => 'Undo last tap';
+
+  @override
+  String get contributeSyncSkip => 'Skip, send text only';
+
+  @override
+  String get contributeSyncTap => 'Tap — next line';
+
+  @override
+  String get contributeSyncPressPlay =>
+      'Press play, then tap as each line starts';
+
+  @override
+  String get contributeSyncBack5 => '−5 s';
+
+  @override
+  String get contributeSyncSpeedNormal => '1×';
+
+  @override
+  String get contributeSyncSpeedSlow => '0.75×';
 }

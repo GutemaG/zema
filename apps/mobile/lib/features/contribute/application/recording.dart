@@ -8,6 +8,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../data/shared_audio.dart';
+import '../data/sync_player.dart';
 import '../data/youtube_info.dart';
 
 /// Looks up YouTube videos. Tests override it.
@@ -59,3 +60,8 @@ Future<int> startSharedDraft(WidgetRef ref, SharedAudio audio) => ref
       ),
       now: clock.now(),
     );
+
+/// Makes the sync editor's own player. Tests override it.
+final syncPlayerProvider = Provider<SyncPlayer Function()>(
+  (ref) => JustAudioSyncPlayer.new,
+);

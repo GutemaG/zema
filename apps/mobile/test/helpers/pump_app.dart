@@ -20,6 +20,7 @@ import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema/features/contribute/application/recording.dart';
 import 'package:zema/features/contribute/data/shared_audio.dart';
+import 'package:zema/features/contribute/data/sync_player.dart';
 import 'package:zema/features/contribute/data/youtube_info.dart';
 import 'package:zema/features/library/data/audio_permission_service.dart';
 import 'package:zema/features/library/data/audio_share_service.dart';
@@ -77,6 +78,7 @@ Future<void> pumpZemaApp(
   bool Function()? onWifi,
   YoutubeInfoService? youtube,
   ShareReceiver? shareReceiver,
+  SyncPlayer? syncPlayer,
   bool settle = true,
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
@@ -116,6 +118,9 @@ Future<void> pumpZemaApp(
         ),
         shareReceiverProvider.overrideWithValue(
           shareReceiver ?? FakeShareReceiver(),
+        ),
+        syncPlayerProvider.overrideWithValue(
+          () => syncPlayer ?? FakeSyncPlayer(),
         ),
         deviceLocalesProvider.overrideWithValue(deviceLocales),
         appVersionProvider.overrideWith(

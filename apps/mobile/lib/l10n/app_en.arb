@@ -2325,5 +2325,57 @@
   "contributeShareNeedsBackend": "Contributing needs the online catalog, which this version of the app doesn't have.",
   "@contributeShareNeedsBackend": {
     "description": "Shown when an audio file is shared to an app without a backend."
+  },
+  "contributeSyncNoAudio": "This recording isn't on this phone any more, so it can't be played for syncing.",
+  "@contributeSyncNoAudio": {
+    "description": "S21 when the track or shared file is gone."
+  },
+  "contributeSyncChooseRecording": "Choose another recording",
+  "@contributeSyncChooseRecording": {
+    "description": "Goes back to S20 from S21."
+  },
+  "contributeSyncTapHint": "Tap when this line starts",
+  "@contributeSyncTapHint": {
+    "description": "Under the line the next tap times."
+  },
+  "contributeSyncEarlier": "0.1 s earlier (hold to keep moving)",
+  "@contributeSyncEarlier": {
+    "description": "Tooltip: nudges a line's start earlier."
+  },
+  "contributeSyncLater": "0.1 s later (hold to keep moving)",
+  "@contributeSyncLater": {
+    "description": "Tooltip: nudges a line's start later."
+  },
+  "contributeSyncRedo": "Redo from here",
+  "@contributeSyncRedo": {
+    "description": "Clears this line's time and later ones, and plays from just before it."
+  },
+  "contributeSyncUndo": "Undo last tap",
+  "@contributeSyncUndo": {
+    "description": "Clears the last time tapped."
+  },
+  "contributeSyncSkip": "Skip, send text only",
+  "@contributeSyncSkip": {
+    "description": "Leaves S21 without timings."
+  },
+  "contributeSyncTap": "Tap — next line",
+  "@contributeSyncTap": {
+    "description": "The big button that times the next line."
+  },
+  "contributeSyncPressPlay": "Press play, then tap as each line starts",
+  "@contributeSyncPressPlay": {
+    "description": "The big button while the recording is paused."
+  },
+  "contributeSyncBack5": "−5 s",
+  "@contributeSyncBack5": {
+    "description": "Moves playback back 5 seconds."
+  },
+  "contributeSyncSpeedNormal": "1×",
+  "@contributeSyncSpeedNormal": {
+    "description": "Playback speed button at normal speed; tap for 0.75×."
+  },
+  "contributeSyncSpeedSlow": "0.75×",
+  "@contributeSyncSpeedSlow": {
+    "description": "Playback speed button at 0.75×; tap for normal speed."
   }
 }

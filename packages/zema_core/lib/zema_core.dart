@@ -17,6 +17,7 @@ export 'src/contribute/contribution_rules.dart';
 export 'src/contribute/duration_text.dart';
 export 'src/contribute/paste_lyrics.dart';
 export 'src/contribute/song_slug.dart';
+export 'src/contribute/sync_editing.dart';
 export 'src/contribute/youtube.dart';
 export 'src/failures.dart';
 export 'src/library/playlist_order.dart';

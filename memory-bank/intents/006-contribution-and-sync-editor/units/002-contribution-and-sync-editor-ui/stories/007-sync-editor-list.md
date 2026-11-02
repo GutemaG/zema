@@ -2,11 +2,11 @@
 id: 007-sync-editor-list
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: must
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 046-contribution-and-sync-editor-ui
-implemented: false
+implemented: true
 ---
 
 # Story: 007-sync-editor-list
