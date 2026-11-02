@@ -122,8 +122,8 @@ Path: `memory-bank/intents/005-accounts-backup-restore/units/*/stories/`
 Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 
 - [x] **001-submit-contributions** (contribution-backend): Submit and resubmit contributions - Must - ✅ COMPLETED
-- [ ] **002-review-and-moderator-role** (contribution-backend): Review RPC and the moderator role - Must - 📋 PLANNED
-- [ ] **003-publish-on-approval** (contribution-backend): Publish approved contributions - Must - 📋 PLANNED
+- [x] **002-review-and-moderator-role** (contribution-backend): Review RPC and the moderator role - Must - ✅ COMPLETED
+- [x] **003-publish-on-approval** (contribution-backend): Publish approved contributions - Must - ✅ COMPLETED
 - [ ] **001-contribution-model-and-validation** (contribution-and-sync-editor-ui): Contribution model and shared validation - Must - 📋 PLANNED
 - [ ] **002-contribution-repository** (contribution-and-sync-editor-ui): Contribution repository - Must - 📋 PLANNED
 - [ ] **003-contribute-tab-and-drafts** (contribution-and-sync-editor-ui): Contribute tab (S05) and drafts - Must - 📋 PLANNED
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 17
+- **Planned**: 15
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 80
+- **Completed**: 82
