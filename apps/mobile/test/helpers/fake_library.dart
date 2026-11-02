@@ -143,6 +143,7 @@ ScannedAudio scannedAudio(
   int? year,
   int durationMs = 60000,
   int sizeBytes = 1000,
+  DateTime? dateAdded,
 }) {
   final name = path.substring(path.lastIndexOf('/') + 1);
   return ScannedAudio(
@@ -158,6 +159,6 @@ ScannedAudio scannedAudio(
     year: year,
     duration: Duration(milliseconds: durationMs),
     sizeBytes: sizeBytes,
-    dateAdded: DateTime.utc(2026, 10, 1),
+    dateAdded: dateAdded ?? DateTime.utc(2026, 10, 1),
   );
 }

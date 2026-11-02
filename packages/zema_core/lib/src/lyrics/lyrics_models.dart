@@ -189,6 +189,8 @@ class Recording {
     this.artist,
     this.duration,
     this.offset = Duration.zero,
+    this.youtubeId,
+    this.fileName,
   });
 
   factory Recording.fromJson(Object? json) {
@@ -204,6 +206,8 @@ class Recording {
       artist: _optionalString(map, 'artist'),
       duration: durationMs == null ? null : Duration(milliseconds: durationMs),
       offset: Duration(milliseconds: _optionalInt(map, 'offsetMs') ?? 0),
+      youtubeId: _optionalString(map, 'youtubeId'),
+      fileName: _optionalString(map, 'fileName'),
     );
   }
 
@@ -217,6 +221,13 @@ class Recording {
   /// listener's own adjustment adds to it.
   final Duration offset;
 
+  /// The video, for a [RecordingSource.youtube] recording.
+  final String? youtubeId;
+
+  /// The audio file's name, for a local or Telegram recording; how another
+  /// phone can find the same file.
+  final String? fileName;
+
   Map<String, Object?> toJson() => {
     'id': id,
     'songId': songId,
@@ -224,6 +235,8 @@ class Recording {
     'artist': ?artist,
     'durationMs': ?duration?.inMilliseconds,
     if (offset != Duration.zero) 'offsetMs': offset.inMilliseconds,
+    'youtubeId': ?youtubeId,
+    'fileName': ?fileName,
   };
 
   @override
@@ -234,10 +247,21 @@ class Recording {
       other.source == source &&
       other.artist == artist &&
       other.duration == duration &&
-      other.offset == offset;
+      other.offset == offset &&
+      other.youtubeId == youtubeId &&
+      other.fileName == fileName;
 
   @override
-  int get hashCode => Object.hash(id, songId, source, artist, duration, offset);
+  int get hashCode => Object.hash(
+    id,
+    songId,
+    source,
+    artist,
+    duration,
+    offset,
+    youtubeId,
+    fileName,
+  );
 
   @override
   String toString() => 'Recording($id of $songId)';

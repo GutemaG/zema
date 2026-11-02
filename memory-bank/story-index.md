@@ -124,8 +124,8 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **001-submit-contributions** (contribution-backend): Submit and resubmit contributions - Must - ✅ COMPLETED
 - [x] **002-review-and-moderator-role** (contribution-backend): Review RPC and the moderator role - Must - ✅ COMPLETED
 - [x] **003-publish-on-approval** (contribution-backend): Publish approved contributions - Must - ✅ COMPLETED
-- [ ] **001-contribution-model-and-validation** (contribution-and-sync-editor-ui): Contribution model and shared validation - Must - 📋 PLANNED
-- [ ] **002-contribution-repository** (contribution-and-sync-editor-ui): Contribution repository - Must - 📋 PLANNED
+- [x] **001-contribution-model-and-validation** (contribution-and-sync-editor-ui): Contribution model and shared validation - Must - ✅ COMPLETED
+- [x] **002-contribution-repository** (contribution-and-sync-editor-ui): Contribution repository - Must - ✅ COMPLETED
 - [ ] **003-contribute-tab-and-drafts** (contribution-and-sync-editor-ui): Contribute tab (S05) and drafts - Must - 📋 PLANNED
 - [ ] **004-add-lyrics-editor** (contribution-and-sync-editor-ui): Add lyrics (S19) - Must - 📋 PLANNED
 - [ ] **005-link-recording** (contribution-and-sync-editor-ui): Link recording (S20): local file and YouTube - Must - 📋 PLANNED
@@ -148,7 +148,7 @@ No stories yet (intents in draft).
 
 ## Stories by Status
 
-- **Planned**: 15
+- **Planned**: 13
 - **Generated**: 97
 - **In Progress**: 0
-- **Completed**: 82
+- **Completed**: 84

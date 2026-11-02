@@ -3,15 +3,24 @@ id: 042-contribution-and-sync-editor-ui
 unit: 002-contribution-and-sync-editor-ui
 intent: 006-contribution-and-sync-editor
 type: simple-construction-bolt
-status: planned
+status: complete
 stories:
   - 001-contribution-model-and-validation
   - 002-contribution-repository
 created: '2026-11-02T07:00:52Z'
-started: null
-completed: null
+started: '2026-11-02T09:55:00Z'
+completed: '2026-11-02T08:46:26Z'
 current_stage: null
-stages_completed: []
+stages_completed:
+  - name: plan
+    completed: '2026-11-02T10:00:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-11-02T11:00:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-11-02T11:30:00Z'
+    artifact: test-walkthrough.md
 requires_bolts:
   - 041-contribution-backend
 enables_bolts:
@@ -29,12 +38,14 @@ complexity:
 
 ## Overview
 
+Run with the owner's recommended options (checkpoints waived).
+
 Contribution model, shared validation and the repository.
 
 ## Stories Included
 
-- [ ] **001-contribution-model-and-validation**: Contribution model and shared validation - Priority: Must
-- [ ] **002-contribution-repository**: Contribution repository - Priority: Must
+- [x] **001-contribution-model-and-validation**: Contribution model and shared validation - Priority: Must
+- [x] **002-contribution-repository**: Contribution repository - Priority: Must
 
 ## Bolt Type
 
@@ -43,9 +54,9 @@ Contribution model, shared validation and the repository.
 
 ## Stages
 
-- [ ] **1. plan**: Pending → implementation-plan.md
-- [ ] **2. implement**: Pending → source code + implementation-walkthrough.md
-- [ ] **3. test**: Pending → tests + test-walkthrough.md
+- [x] **1. plan**: Complete → implementation-plan.md
+- [x] **2. implement**: Complete → source code + implementation-walkthrough.md
+- [x] **3. test**: Complete → tests + test-walkthrough.md
 
 ## Dependencies
 
@@ -57,9 +68,9 @@ Contribution model, shared validation and the repository.
 
 ## Success Criteria
 
-- [ ] All stories implemented
-- [ ] All acceptance criteria met
-- [ ] Analyze and format clean (Dart); `supabase test db` passes (backend)
-- [ ] Tests passing locally
-- [ ] Checked on the Android emulator against the local backend
-- [ ] Key scan clean before commit
+- [x] All stories implemented
+- [x] All acceptance criteria met
+- [x] Analyze and format clean (Dart); `supabase test db` passes (backend)
+- [x] Tests passing locally
+- [x] Checked on the Android emulator against the local backend
+- [x] Key scan clean before commit

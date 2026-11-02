@@ -82,3 +82,12 @@ final class BackupFormatFailure extends ZemaFailure {
   /// The backup's format is newer than this app knows.
   final bool newerFormat;
 }
+
+/// The backend refused a contribution or a review for a reason it names:
+/// [code] is one of the shared codes (see `ContributionError`), such as
+/// `timing_count`, `too_many_open` or `already_reviewed`.
+final class ContributionFailure extends ZemaFailure {
+  const ContributionFailure(super.message, {required this.code, super.cause});
+
+  final String code;
+}

@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(42);
+select plan(43);
 
 insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-0000000000a1', 'a@example.com', '{"full_name": "Abebe"}'),
@@ -197,9 +197,10 @@ select is(public.set_moderator('c@example.com', false), 'unchanged', 'removing a
 select throws_ok($$select public.set_moderator('nobody@example.com', true)$$,
   '22023', 'unknown_email', 'an unknown email');
 select ok(public.is_moderator('00000000-0000-0000-0000-0000000000e1'), 'admins count as moderators');
-select ok(
-  has_function_privilege('service_role', 'public.set_moderator(text, boolean)', 'execute'),
-  'service_role may run set_moderator');
+set local role service_role;
+select is(public.set_moderator('c@example.com', true), 'granted', 'service_role runs set_moderator');
+reset role;
+select ok(public.is_moderator('00000000-0000-0000-0000-0000000000c1'), 'and the role is granted');
 select ok(
   not has_function_privilege('authenticated', 'public.set_moderator(text, boolean)', 'execute')
     and not has_function_privilege('anon', 'public.set_moderator(text, boolean)', 'execute'),

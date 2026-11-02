@@ -28,3 +28,22 @@ String? localAnonKey() {
 const backendNotRunning =
     "Local backend not running: start it with 'npx supabase start' in "
     'backend/';
+
+/// The local backend's service key, or null when it isn't running. Tests use
+/// it only for what the app never does (granting the moderator role,
+/// removing what a test published); never print it.
+String? localServiceKey() {
+  try {
+    final result = Process.runSync('npx', [
+      'supabase',
+      'status',
+      '-o',
+      'json',
+    ], workingDirectory: backendDir.path);
+    if (result.exitCode != 0) return null;
+    final status = jsonDecode(result.stdout as String) as Map<String, Object?>;
+    return status['SERVICE_ROLE_KEY'] as String?;
+  } on Object {
+    return null;
+  }
+}

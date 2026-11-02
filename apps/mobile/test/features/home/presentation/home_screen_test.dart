@@ -21,10 +21,32 @@ import '../../../helpers/pump_app.dart';
 
 final _l10n = lookupAppLocalizations(const Locale('en'));
 
+// Added yesterday, so they stay in Recently added (the last 30 days)
+// whenever the tests run.
+final _added = DateTime.now().toUtc().subtract(const Duration(days: 1));
+
 List<ScannedAudio> _files() => [
-  scannedAudio(1, '/m/1.mp3', title: 'Amlak', artist: 'Zerfe'),
-  scannedAudio(2, '/m/2.mp3', title: 'Kidus', artist: 'Tewodros'),
-  scannedAudio(3, '/m/3.mp3', title: 'Tselot', artist: 'Meskerem'),
+  scannedAudio(
+    1,
+    '/m/1.mp3',
+    title: 'Amlak',
+    artist: 'Zerfe',
+    dateAdded: _added,
+  ),
+  scannedAudio(
+    2,
+    '/m/2.mp3',
+    title: 'Kidus',
+    artist: 'Tewodros',
+    dateAdded: _added,
+  ),
+  scannedAudio(
+    3,
+    '/m/3.mp3',
+    title: 'Tselot',
+    artist: 'Meskerem',
+    dateAdded: _added,
+  ),
 ];
 
 class _Home {
