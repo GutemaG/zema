@@ -2,11 +2,11 @@
 id: 002-review-and-moderator-role
 unit: 001-contribution-backend
 intent: 006-contribution-and-sync-editor
-status: planned
+status: complete
 priority: must
 created: '2026-11-02T07:00:52Z'
 assigned_bolt: 040-contribution-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 002-review-and-moderator-role
@@ -19,13 +19,13 @@ implemented: false
 
 ## Acceptance Criteria
 
-- [ ] **Given** a moderator, **When** they read the queue (`moderator_queue(kind?)`), **Then** pending contributions of all users come back oldest first with author display name, kind, payload and the current song document for edits
-- [ ] **Given** a moderator and a pending contribution by someone else, **When** they call `review_contribution(id, decision, note)`, **Then** the status, `review_note`, `reviewer_id` and `reviewed_at` are set
-- [ ] **Given** Request changes or Reject, **When** the note is empty, **Then** it is refused
-- [ ] **Given** a contributor without the role, or the moderator's own contribution, **When** they review, **Then** it is refused
-- [ ] **Given** two reviews of the same contribution, **When** the second runs, **Then** it fails with `already_reviewed` and nothing changes
-- [ ] **Given** the owner, **When** they run `backend/scripts/moderator.sh grant|revoke <email>` against the local (or later hosted) database, **Then** the `moderator` role is added or removed; an unknown email is reported; the service key is read from the environment and never written to a file
-- [ ] **Given** pgTAP, **When** run, **Then** role checks, no self-review, required notes and races are tested
+- [x] **Given** a moderator, **When** they read the queue (`moderator_queue(kind?)`), **Then** pending contributions of all users come back oldest first with author display name, kind, payload and the current song document for edits
+- [x] **Given** a moderator and a pending contribution by someone else, **When** they call `review_contribution(id, decision, note)`, **Then** the status, `review_note`, `reviewer_id` and `reviewed_at` are set
+- [x] **Given** Request changes or Reject, **When** the note is empty, **Then** it is refused
+- [x] **Given** a contributor without the role, or the moderator's own contribution, **When** they review, **Then** it is refused
+- [x] **Given** two reviews of the same contribution, **When** the second runs, **Then** it fails with `already_reviewed` and nothing changes
+- [x] **Given** the owner, **When** they run `backend/scripts/moderator.sh grant|revoke <email>` against the local (or later hosted) database, **Then** the `moderator` role is added or removed; an unknown email is reported; the service key is read from the environment and never written to a file
+- [x] **Given** pgTAP, **When** run, **Then** role checks, no self-review, required notes and races are tested
 
 ## Technical Notes
 
