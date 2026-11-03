@@ -231,6 +231,30 @@ void main() {
     );
   });
 
+  testWidgets('lyrics saved for a song without timings open with that song '
+      'chosen', (tester) async {
+    await start(tester);
+    final id = await trackId('Tizita');
+    await tester.pumpWidget(const SizedBox());
+    await openDraft(
+      tester,
+      draft: ContributionDraft(
+        song: lyrics,
+        trackId: id,
+        step: DraftStep.recording,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BottomSheet), findsNothing);
+    expect(find.text('Tizita.mp3 · 4:05'), findsOneWidget);
+    expect(enabled(tester, _l10n.contributeNextSync), isTrue);
+    final draft = await saved(tester);
+    expect(draft.recording?.source, RecordingSource.localFile);
+    expect(draft.recording?.fileName, 'Tizita.mp3');
+    expect(draft.trackId, id);
+  });
+
   testWidgets('a YouTube link: looked up, the channel fills the artist, and '
       'syncing is skipped', (tester) async {
     await openDraft(tester);

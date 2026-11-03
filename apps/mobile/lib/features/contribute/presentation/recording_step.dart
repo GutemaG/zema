@@ -34,7 +34,10 @@ class RecordingStep extends ConsumerStatefulWidget {
 }
 
 class _RecordingStepState extends ConsumerState<RecordingStep> {
-  late RecordingSource? _choice = widget.draft.recording?.source;
+  // Lyrics saved for a song on the phone without timings are still for it.
+  late RecordingSource? _choice =
+      widget.draft.recording?.source ??
+      (widget.draft.trackId == null ? null : RecordingSource.localFile);
   late final _link = TextEditingController(
     text: switch (widget.draft.recording) {
       Recording(source: RecordingSource.youtube, :final youtubeId?) =>
@@ -55,6 +58,34 @@ class _RecordingStepState extends ConsumerState<RecordingStep> {
   );
 
   ContributionDraft get _draft => widget.draft;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_draft.recording == null && _draft.trackId != null) {
+      // After the first frame: editing the draft during build is not allowed.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _useLinkedTrack();
+      });
+    }
+  }
+
+  /// Makes the song on the phone the lyrics are for the recording, once the
+  /// library has it, unless another recording was chosen meanwhile.
+  void _useLinkedTrack() {
+    late final ProviderSubscription<AsyncValue<List<Track>>> subscription;
+    subscription = ref.listenManual(libraryTracksProvider, (_, next) {
+      final tracks = next.value;
+      if (tracks == null) return;
+      subscription.close();
+      final track = tracks.where((t) => t.id == _draft.trackId).firstOrNull;
+      if (track != null &&
+          _draft.recording == null &&
+          _choice == RecordingSource.localFile) {
+        _useTrack(track);
+      }
+    }, fireImmediately: true);
+  }
 
   @override
   void dispose() {
@@ -91,6 +122,11 @@ class _RecordingStepState extends ConsumerState<RecordingStep> {
     setState(() => _choice = RecordingSource.localFile);
     final track = await pickTrack(context, selected: _draft.trackId);
     if (track == null || !mounted) return;
+    _useTrack(track);
+  }
+
+  /// Makes song [track] on the phone the recording.
+  void _useTrack(Track track) {
     _fillArtist(track.artist);
     _edit(
       (draft) => draft.copyWith(
@@ -655,9 +691,13 @@ class _TrackPickerState extends ConsumerState<_TrackPicker> {
   final _search = TextEditingController();
   var _query = '';
 
+  /// Opens the list at the marked track; made once the tracks are known.
+  ScrollController? _scroll;
+
   @override
   void dispose() {
     _search.dispose();
+    _scroll?.dispose();
     super.dispose();
   }
 
@@ -667,6 +707,12 @@ class _TrackPickerState extends ConsumerState<_TrackPicker> {
     final colors = context.zemaColors;
     final tracks = ref.watch(libraryTracksProvider).value ?? const [];
     final visible = filterTracks(tracks, _query);
+    if (_scroll == null && tracks.isNotEmpty) {
+      final index = visible.indexWhere((t) => t.id == widget.selected);
+      _scroll = ScrollController(
+        initialScrollOffset: index < 0 ? 0 : index * TrackRow.height,
+      );
+    }
     return Column(
       children: [
         Padding(
@@ -709,6 +755,7 @@ class _TrackPickerState extends ConsumerState<_TrackPicker> {
                   ),
                 )
               : ListView.builder(
+                  controller: _scroll,
                   itemExtent: TrackRow.height,
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
