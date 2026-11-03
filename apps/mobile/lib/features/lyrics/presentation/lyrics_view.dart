@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
@@ -21,31 +22,54 @@ import 'match_lyrics_sheet.dart';
 
 /// The lyrics of [track] (C06): the line being sung highlighted and kept in
 /// view, past lines faint, choruses marked; tapping a line seeks to it.
-/// Plain lyrics show without highlight; an unlinked track offers Match
-/// lyrics; lyrics that can't be downloaded show C07 with Try again.
+/// Above them, a row says whose lyrics they are and whether they're synced,
+/// with full screen ([onFullScreen]) and the options. Plain lyrics show
+/// without highlight; an unlinked track offers Match lyrics; lyrics that
+/// can't be downloaded show C07 with Try again.
 class LyricsView extends ConsumerWidget {
-  const LyricsView({super.key, required this.track});
+  const LyricsView({
+    super.key,
+    required this.track,
+    this.fullScreen = false,
+    this.onFullScreen,
+  });
 
   final Track track;
 
+  /// Whether the lyrics fill the screen; [onFullScreen] switches.
+  final bool fullScreen;
+  final VoidCallback? onFullScreen;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return switch (ref.watch(trackLyricsProvider(track.id))) {
-      AsyncData(value: final lyrics?) when lyrics.lines.isNotEmpty => Stack(
+      AsyncData(value: final lyrics?) when lyrics.lines.isNotEmpty => Column(
         children: [
-          Positioned.fill(
-            child: _Lines(track: track, lyrics: lyrics),
-          ),
-          if (lyrics.pending || lyrics.localDraftId != null)
-            PositionedDirectional(
-              top: 8,
+          Padding(
+            padding: const EdgeInsetsDirectional.only(
               start: ZemaSpacing.screenSide,
-              child: PendingReviewChip(local: !lyrics.pending),
             ),
-          PositionedDirectional(
-            top: 0,
-            end: 0,
-            child: _OptionsButton(lyrics: lyrics),
+            child: Row(
+              children: [
+                Expanded(child: _Status(lyrics: lyrics)),
+                if (onFullScreen case final onFullScreen?)
+                  IconButton(
+                    tooltip: fullScreen
+                        ? l10n.lyricsExitFullScreen
+                        : l10n.lyricsFullScreen,
+                    icon: Icon(
+                      fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                      color: context.zemaColors.muted,
+                    ),
+                    onPressed: onFullScreen,
+                  ),
+                _OptionsButton(lyrics: lyrics),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _Lines(track: track, lyrics: lyrics),
           ),
         ],
       ),
@@ -53,6 +77,32 @@ class LyricsView extends ConsumerWidget {
       AsyncError(:final error) => LyricsUnavailable(error: error),
       _ => const SizedBox.shrink(),
     };
+  }
+}
+
+/// Whose lyrics these are, when they aren't the catalog's (waiting for
+/// review, or on this phone only), and "Not synced" for plain lyrics.
+class _Status extends StatelessWidget {
+  const _Status({required this.lyrics});
+
+  final TrackLyrics lyrics;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    final parts = [
+      if (lyrics.pending) l10n.lyricsPendingReview,
+      if (lyrics.localDraftId != null) l10n.lyricsOnThisPhone,
+      if (lyrics.synced == null) l10n.lyricsNotSynced,
+    ];
+    return Text(
+      parts.join(' · '),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.labelMedium
+          ?.copyWith(color: colors.muted),
+    );
   }
 }
 
@@ -132,34 +182,6 @@ class NoLyrics extends ConsumerWidget {
   }
 }
 
-/// Marks lyrics the user sent that a moderator hasn't checked yet, or saved
-/// on this phone only.
-class PendingReviewChip extends StatelessWidget {
-  const PendingReviewChip({super.key, this.local = false});
-
-  /// Says the lyrics are saved on this phone only instead.
-  final bool local;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.zemaColors;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-      decoration: BoxDecoration(
-        color: colors.soft,
-        borderRadius: BorderRadius.circular(ZemaRadius.pill),
-      ),
-      child: Text(
-        local
-            ? AppLocalizations.of(context).lyricsOnThisPhone
-            : AppLocalizations.of(context).lyricsPendingReview,
-        style: Theme.of(context).textTheme.labelSmall
-            ?.copyWith(color: colors.accentText),
-      ),
-    );
-  }
-}
-
 class _OptionsButton extends StatelessWidget {
   const _OptionsButton({required this.lyrics});
 
@@ -190,6 +212,7 @@ class _Lines extends ConsumerWidget {
     return LyricsLines(
       lines: lyrics.lines,
       synced: synced != null,
+      focus: true,
       current: ref.watch(currentLineProvider(track.id)),
       display: ref.watch(lyricsDisplayProvider),
       onTapLine: synced == null
@@ -207,9 +230,11 @@ class _Lines extends ConsumerWidget {
   }
 }
 
-/// The shared lyrics view (C06): [lines] scrolled so the [current] one sits
-/// a third of the way down, past lines faint, choruses marked. Plain
-/// lyrics ([synced] false) show without highlight. Used for a playing song
+/// The shared lyrics view (C06): [lines], centered, scrolled so the
+/// [current] one sits a third of the way down, past lines faint, choruses
+/// marked. Plain lyrics ([synced] false) show without highlight. With
+/// [focus], the current line is larger and the others blur more the
+/// further they are, until the user scrolls. Used for a playing song
 /// and for the sync editor's preview.
 class LyricsLines extends StatefulWidget {
   const LyricsLines({
@@ -219,6 +244,7 @@ class LyricsLines extends StatefulWidget {
     required this.current,
     required this.display,
     this.onTapLine,
+    this.focus = false,
   });
 
   final List<LineOccurrence> lines;
@@ -226,6 +252,7 @@ class LyricsLines extends StatefulWidget {
   final int? current;
   final LyricsDisplay display;
   final ValueChanged<int>? onTapLine;
+  final bool focus;
 
   @override
   State<LyricsLines> createState() => _LyricsLinesState();
@@ -305,12 +332,14 @@ class _LyricsLinesState extends State<LyricsLines> {
     if (n.direction == ScrollDirection.idle) {
       _resume?.cancel();
       _resume = Timer(resumeAfter, () {
-        _userScrolling = false;
+        if (!mounted) return;
+        // Blurred lines sharpen while the user reads ahead.
+        setState(() => _userScrolling = false);
         _followSoon();
       });
     } else {
       _resume?.cancel();
-      _userScrolling = true;
+      if (!_userScrolling) setState(() => _userScrolling = true);
     }
     return false;
   }
@@ -350,6 +379,14 @@ class _LyricsLinesState extends State<LyricsLines> {
                       _Line(
                         key: _keys[i],
                         line: line,
+                        blur:
+                            !widget.focus ||
+                                !synced ||
+                                current == null ||
+                                _userScrolling
+                            ? 0
+                            : 0.9 * ((i - current).abs().clamp(0, 3)),
+                        large: widget.focus && synced && i == current,
                         state: !synced || current == null
                             ? (!synced ? _LineState.plain : _LineState.ahead)
                             : i == current
@@ -378,9 +415,17 @@ class _Line extends StatelessWidget {
     required this.state,
     required this.display,
     required this.onTap,
+    this.blur = 0,
+    this.large = false,
   });
 
   final LineOccurrence line;
+
+  /// How much the line is blurred (0: sharp).
+  final double blur;
+
+  /// Larger, for the current line in focus.
+  final bool large;
   final _LineState state;
   final LyricsDisplay display;
   final VoidCallback? onTap;
@@ -408,13 +453,13 @@ class _Line extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (chorusStart)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Text(
                     l10n.lyricsChorus,
+                    textAlign: TextAlign.center,
                     style: textTheme.labelMedium?.copyWith(
                       color: colors.muted,
                       fontStyle: FontStyle.italic,
@@ -425,16 +470,21 @@ class _Line extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 style: base.copyWith(
                   color: color,
-                  fontSize: base.fontSize! * display.textScale,
+                  fontSize:
+                      base.fontSize! * display.textScale * (large ? 1.2 : 1),
                   fontWeight: state == _LineState.current
                       ? FontWeight.w700
                       : FontWeight.w500,
                 ),
-                child: Text(line.line.text),
+                child: _Blurred(
+                  sigma: blur,
+                  child: Text(line.line.text, textAlign: TextAlign.center),
+                ),
               ),
               if (display.showTransliteration && transliteration != null)
                 Text(
                   transliteration,
+                  textAlign: TextAlign.center,
                   style: textTheme.bodyMedium?.copyWith(
                     color: color,
                     fontSize:
@@ -447,6 +497,22 @@ class _Line extends StatelessWidget {
       ),
     );
   }
+}
+
+/// [child] blurred by [sigma]; as is when it is 0.
+class _Blurred extends StatelessWidget {
+  const _Blurred({required this.sigma, required this.child});
+
+  final double sigma;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => sigma == 0
+      ? child
+      : ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+          child: child,
+        );
 }
 
 /// The line being sung, or the first line, for the small panel under the

@@ -2281,4 +2281,13 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get lyricsEditLocal => 'Edit or send these lyrics';
+
+  @override
+  String get lyricsNotSynced => 'Not synced';
+
+  @override
+  String get lyricsFullScreen => 'Full screen lyrics';
+
+  @override
+  String get lyricsExitFullScreen => 'Exit full screen';
 }

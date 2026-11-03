@@ -11,6 +11,7 @@ import '../../library/application/favorites.dart';
 import '../../library/presentation/add_to_playlist_sheet.dart';
 import '../../library/presentation/song_menu.dart';
 import '../../library/presentation/widgets/track_art.dart';
+import '../../lyrics/application/track_lyrics.dart';
 import '../../lyrics/presentation/lyrics_view.dart';
 import '../application/player_providers.dart';
 import '../../../shared/format_duration.dart';
@@ -21,16 +22,41 @@ import 'player_progress.dart';
 import 'queue_sheet.dart';
 import 'sleep_timer_sheet.dart';
 
-/// Whether Now Playing shows the lyrics instead of the artwork; lasts for
-/// the session.
+/// Whether Now Playing shows the lyrics instead of the artwork, as the user
+/// chose; null until they choose (see [nowPlayingShowsLyricsProvider]).
+/// Lasts for the session.
 final nowPlayingLyricsModeProvider =
-    NotifierProvider<NowPlayingLyricsMode, bool>(NowPlayingLyricsMode.new);
+    NotifierProvider<NowPlayingLyricsMode, bool?>(NowPlayingLyricsMode.new);
 
-class NowPlayingLyricsMode extends Notifier<bool> {
+class NowPlayingLyricsMode extends Notifier<bool?> {
+  @override
+  bool? build() => null;
+
+  void set({required bool lyrics}) {
+    state = lyrics;
+    if (!lyrics) ref.read(nowPlayingFullScreenProvider.notifier).set(on: false);
+  }
+}
+
+/// Whether Now Playing shows track [trackId]'s lyrics: as the user chose,
+/// otherwise whenever it has some.
+final nowPlayingShowsLyricsProvider = Provider.family<bool, int>(
+  (ref, trackId) =>
+      ref.watch(nowPlayingLyricsModeProvider) ??
+      (ref.watch(trackLyricsProvider(trackId)).value?.lines.isNotEmpty ??
+          false),
+);
+
+/// Whether the lyrics fill Now Playing, with only the transport controls
+/// under them.
+final nowPlayingFullScreenProvider =
+    NotifierProvider<NowPlayingFullScreen, bool>(NowPlayingFullScreen.new);
+
+class NowPlayingFullScreen extends Notifier<bool> {
   @override
   bool build() => false;
 
-  void set({required bool lyrics}) => state = lyrics;
+  void set({required bool on}) => state = on;
 }
 
 /// S08: art (or the lyrics view), title, artist, seek bar, transport
@@ -46,55 +72,69 @@ class NowPlayingScreen extends ConsumerWidget {
     final colors = context.zemaColors;
     final snapshot = ref.watch(playerStateProvider).value;
     final track = snapshot?.current;
+    final fullScreen =
+        track != null &&
+        ref.watch(nowPlayingShowsLyricsProvider(track.id)) &&
+        ref.watch(nowPlayingFullScreenProvider);
 
     void close() => Navigator.of(context).maybePop();
 
-    return Scaffold(
-      backgroundColor: colors.bg,
-      body: SafeArea(
-        child: GestureDetector(
-          onVerticalDragEnd: (details) {
-            if ((details.primaryVelocity ?? 0) > 400) close();
-          },
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      tooltip: l10n.playerClose,
-                      icon: Icon(
-                        Icons.keyboard_arrow_down,
-                        size: 30,
-                        color: colors.text,
-                      ),
-                      onPressed: close,
-                    ),
-                    Expanded(
-                      child: Semantics(
-                        header: true,
-                        child: Text(
-                          l10n.playerNowPlaying,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(color: colors.muted),
+    return PopScope(
+      // Back leaves full screen first.
+      canPop: !fullScreen,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          ref.read(nowPlayingFullScreenProvider.notifier).set(on: false);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: colors.bg,
+        body: SafeArea(
+          child: GestureDetector(
+            onVerticalDragEnd: (details) {
+              if ((details.primaryVelocity ?? 0) > 400) close();
+            },
+            child: Column(
+              children: [
+                if (!fullScreen)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          tooltip: l10n.playerClose,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 30,
+                            color: colors.text,
+                          ),
+                          onPressed: close,
                         ),
-                      ),
+                        Expanded(
+                          child: Semantics(
+                            header: true,
+                            child: Text(
+                              l10n.playerNowPlaying,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(color: colors.muted),
+                            ),
+                          ),
+                        ),
+                        if (track == null)
+                          const SizedBox(width: ZemaSpacing.minTap + 4)
+                        else
+                          SongMenuButton(track: track),
+                      ],
                     ),
-                    if (track == null)
-                      const SizedBox(width: ZemaSpacing.minTap + 4)
-                    else
-                      SongMenuButton(track: track),
-                  ],
+                  ),
+                Expanded(
+                  child: snapshot == null || track == null
+                      ? const SizedBox.shrink()
+                      : _Body(snapshot: snapshot, track: track),
                 ),
-              ),
-              Expanded(
-                child: snapshot == null || track == null
-                    ? const SizedBox.shrink()
-                    : _Body(snapshot: snapshot, track: track),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -113,7 +153,28 @@ class _Body extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
     final textTheme = Theme.of(context).textTheme;
-    final lyricsMode = ref.watch(nowPlayingLyricsModeProvider);
+    final lyricsMode = ref.watch(nowPlayingShowsLyricsProvider(track.id));
+    final fullScreen = lyricsMode && ref.watch(nowPlayingFullScreenProvider);
+    final lyrics = LyricsView(
+      // A new view per track, so it starts at the top.
+      key: ValueKey(track.id),
+      track: track,
+      fullScreen: fullScreen,
+      onFullScreen: () =>
+          ref.read(nowPlayingFullScreenProvider.notifier).set(on: !fullScreen),
+    );
+    if (fullScreen) {
+      return Column(
+        children: [
+          const SizedBox(height: 8),
+          Expanded(child: lyrics),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+            child: _Controls(snapshot: snapshot),
+          ),
+        ],
+      );
+    }
     final titles = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -140,10 +201,7 @@ class _Body extends ConsumerWidget {
       children: [
         if (lyricsMode) ...[
           titles,
-          Expanded(
-            // A new view per track, so it starts at the top.
-            child: LyricsView(key: ValueKey(track.id), track: track),
-          ),
+          Expanded(child: lyrics),
         ] else ...[
           Expanded(
             flex: 5,
@@ -273,7 +331,7 @@ class _SecondaryActions extends ConsumerWidget {
     final colors = context.zemaColors;
     final timer = ref.watch(sleepTimerProvider);
     final favorite = ref.watch(isFavoriteProvider(track.id));
-    final lyricsMode = ref.watch(nowPlayingLyricsModeProvider);
+    final lyricsMode = ref.watch(nowPlayingShowsLyricsProvider(track.id));
     final color = timer == null ? colors.muted : colors.primaryText;
     final label = switch (timer) {
       null => null,

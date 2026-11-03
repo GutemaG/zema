@@ -3863,6 +3863,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit or send these lyrics'**
   String get lyricsEditLocal;
+
+  /// Above lyrics without timings
+  ///
+  /// In en, this message translates to:
+  /// **'Not synced'**
+  String get lyricsNotSynced;
+
+  /// Shows only the lyrics, filling the screen
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen lyrics'**
+  String get lyricsFullScreen;
+
+  /// Leaves full-screen lyrics
+  ///
+  /// In en, this message translates to:
+  /// **'Exit full screen'**
+  String get lyricsExitFullScreen;
 }
 
 class _AppLocalizationsDelegate

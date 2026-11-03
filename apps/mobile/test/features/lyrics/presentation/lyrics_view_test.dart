@@ -14,6 +14,7 @@ import 'package:zema/features/lyrics/presentation/match_lyrics_sheet.dart';
 import 'package:zema/features/lyrics/presentation/report_lyrics_sheet.dart';
 import 'package:zema/features/player/data/zema_audio_handler.dart';
 import 'package:zema/features/player/presentation/mini_player.dart';
+import 'package:zema/features/player/presentation/now_playing_screen.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
@@ -97,8 +98,12 @@ Future<_App> _pump(
   await _settle(tester);
   await tester.tap(find.byType(MiniPlayer));
   await _settle(tester);
-  if (lyricsMode) {
-    await tester.tap(find.byTooltip(_l10n.playerShowLyrics));
+  // Lyrics show by default when the song has some; switch if needed.
+  final toggle = find.byTooltip(
+    lyricsMode ? _l10n.playerShowLyrics : _l10n.playerShowArtwork,
+  );
+  if (toggle.evaluate().isNotEmpty) {
+    await tester.tap(toggle);
     await _settle(tester);
   }
   return _App(handler, backend);
@@ -159,6 +164,41 @@ void main() {
       await _settle(tester);
       expect(find.byType(LyricsView), findsOneWidget);
       expect(find.text(_last), findsOneWidget);
+    });
+  });
+
+  group('Now Playing', () {
+    testWidgets('opens on the lyrics when the song has some', (tester) async {
+      await _pump(tester, lyricsMode: false);
+      await tester.tap(find.byTooltip(_l10n.playerShowLyrics));
+      await _settle(tester);
+      // A fresh session: no choice made yet.
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(LyricsView)),
+      );
+      container.invalidate(nowPlayingLyricsModeProvider);
+      await _settle(tester);
+      expect(find.byType(LyricsView), findsOneWidget);
+      expect(find.byType(LyricsPreview), findsNothing);
+      expect(find.text(_l10n.lyricsNotSynced), findsNothing);
+    });
+
+    testWidgets('full screen shows only the lyrics and the controls; back '
+        'leaves it', (tester) async {
+      await _pump(tester);
+      expect(find.text(_l10n.playerNowPlaying), findsOneWidget);
+
+      await tester.tap(find.byTooltip(_l10n.lyricsFullScreen));
+      await _settle(tester);
+      expect(find.text(_l10n.playerNowPlaying), findsNothing);
+      expect(find.byTooltip(_l10n.songFavorite), findsNothing);
+      expect(find.byTooltip(_l10n.playerPlay), findsOneWidget);
+      expect(find.text(_first), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await _settle(tester);
+      expect(find.text(_l10n.playerNowPlaying), findsOneWidget);
+      expect(find.byType(LyricsView), findsOneWidget);
     });
   });
 
@@ -349,6 +389,7 @@ void main() {
       final app = await _pump(tester, lyricsRepository: _PlainLyrics());
       await app.at(tester, 5000);
 
+      expect(find.text(_l10n.lyricsNotSynced), findsOneWidget);
       expect(_style(tester, 'Plain one').color, _colors(tester).text);
       expect(_style(tester, 'Plain two').color, _colors(tester).text);
       await tester.tap(find.text('Plain two'));

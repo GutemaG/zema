@@ -2958,5 +2958,17 @@
   "lyricsEditLocal": "Edit or send these lyrics",
   "@lyricsEditLocal": {
     "description": "Lyrics options: opens the draft of lyrics saved on this phone"
+  },
+  "lyricsNotSynced": "Not synced",
+  "@lyricsNotSynced": {
+    "description": "Above lyrics without timings"
+  },
+  "lyricsFullScreen": "Full screen lyrics",
+  "@lyricsFullScreen": {
+    "description": "Shows only the lyrics, filling the screen"
+  },
+  "lyricsExitFullScreen": "Exit full screen",
+  "@lyricsExitFullScreen": {
+    "description": "Leaves full-screen lyrics"
   }
 }
