@@ -292,6 +292,20 @@ void main() {
       expect(find.text(_l10n.contributeSubmitFixLyrics), findsOneWidget);
     });
 
+    testWidgets('lyrics started from a song save for it at once', (
+      tester,
+    ) async {
+      await open(
+        tester,
+        draft: syncedDraft.copyWith(recording: () => null, starts: const []),
+      );
+      await tap(tester, save());
+      expect(find.text(_l10n.contributeChooseSong), findsNothing);
+      final copy = (await copies()).single;
+      expect(copy.trackId, 7);
+      expect(copy.timing, isNull);
+    });
+
     testWidgets('without a song on the phone it asks which one', (
       tester,
     ) async {

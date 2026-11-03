@@ -294,9 +294,11 @@ void main() {
     await tap(tester, find.text(_l10n.contributeRecordingLocal));
     await tap(tester, find.text('Tizita'));
     expect((await saved(tester)).recording, isNotNull);
+    final trackId = (await saved(tester)).trackId;
     await tap(tester, find.text(_l10n.contributeSkipRecording));
     final draft = await saved(tester);
     expect(draft.recording, isNull);
+    expect(draft.trackId, trackId, reason: 'still for that song');
     expect(draft.step, DraftStep.review);
   });
 

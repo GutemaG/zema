@@ -201,10 +201,11 @@ class _RecordingStepState extends ConsumerState<RecordingStep> {
     );
   }
 
+  // The song on the phone the lyrics were started from stays: they are
+  // still for it, only without timings.
   void _skip() => _edit(
     (draft) => draft.copyWith(
       recording: () => null,
-      trackId: () => null,
       starts: const [],
       step: DraftStep.review,
     ),
