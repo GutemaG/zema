@@ -192,6 +192,36 @@ void main() {
     expect((await saved(tester)).starts[1], s(2.9), reason: 'stops before 3');
   });
 
+  testWidgets('tapping a timed line moves the recording to its time', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      draft: sharedDraft.copyWith(starts: [s(1), s(5), s(9), s(12)]),
+    );
+    await tap(tester, find.text('Verse line two'));
+    expect(player.seeks.last, s(5));
+    final seeks = player.seeks.length;
+    await tap(tester, find.text('Verse line two'));
+    expect(player.seeks, hasLength(seeks), reason: 'closing stays put');
+  });
+
+  testWidgets('a draft part-way synced opens a little before the next line', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      draft: sharedDraft.copyWith(starts: [s(1), s(8), null, null]),
+    );
+    expect(player.seeks, [s(5)]);
+    expect(player.isPlaying, isFalse);
+  });
+
+  testWidgets('an untimed draft opens at the start', (tester) async {
+    await open(tester);
+    expect(player.seeks, isEmpty);
+  });
+
   testWidgets('Redo from here clears it and later lines, and plays from 3 s '
       'before', (tester) async {
     await open(

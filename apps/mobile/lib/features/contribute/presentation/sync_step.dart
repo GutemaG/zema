@@ -110,11 +110,18 @@ class _SyncStepState extends ConsumerState<SyncStep> {
     }
     try {
       final duration = await _player.load(uri);
+      // Coming back to a draft part-way synced: ready a little before the
+      // next line to time.
+      final starts = _starts;
+      if (nextUntimed(starts) case final next? when next > 0) {
+        await _player.seek(redoPosition(starts, next));
+      }
       if (mounted) {
         setState(() {
           _duration = duration;
           _audio = _Audio.ready;
         });
+        _revealCurrent();
       }
     } on Object {
       if (mounted) setState(() => _audio = _Audio.missing);
@@ -154,6 +161,14 @@ class _SyncStepState extends ConsumerState<SyncStep> {
     _changeStarts(undoLastTap);
     _selected = null;
     _revealCurrent();
+  }
+
+  /// Opens the controls of timed line [index] and moves the recording to
+  /// its start, or closes them when they are open.
+  void _select(int index) {
+    if (_selected == index) return setState(() => _selected = null);
+    setState(() => _selected = index);
+    if (_starts[index] case final start?) unawaited(_player.seek(start));
   }
 
   void _nudge(int index, Duration by) =>
@@ -364,10 +379,7 @@ class _SyncStepState extends ConsumerState<SyncStep> {
                   children: [
                     InkWell(
                       borderRadius: BorderRadius.circular(ZemaRadius.small),
-                      onTap: start == null
-                          ? null
-                          : () =>
-                                setState(() => _selected = selected ? null : i),
+                      onTap: start == null ? null : () => _select(i),
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(
                           minHeight: ZemaSpacing.minTap + 8,
