@@ -4,9 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zema/app/database/own_copies_dao.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/routes.dart';
 import 'package:zema/features/account/application/sign_in.dart';
+import 'package:zema/features/account/presentation/widgets/sign_in_prompt.dart';
 import 'package:zema/features/contribute/application/drafts.dart';
 import 'package:zema/features/contribute/presentation/contribute_screen.dart';
 import 'package:zema/features/contribute/presentation/lyrics_step.dart';
@@ -97,6 +99,7 @@ void main() {
     Brightness brightness = Brightness.dark,
     double textScale = 1,
     Size size = const Size(400, 1200),
+    FakeAuthRepository? auth,
   }) async {
     useScreen(tester, size: size, textScale: textScale);
     final id = await db.draftsDao.create(
@@ -110,7 +113,7 @@ void main() {
     await pumpZemaApp(
       tester,
       location: location ?? AppRoutes.draft(id),
-      auth: FakeAuthRepository(user: testUser),
+      auth: auth ?? FakeAuthRepository(user: testUser),
       database: db,
       googlePicker: FakeGoogleAccountPicker(),
       phoneBrightness: brightness,
@@ -230,6 +233,112 @@ void main() {
       );
       await tap(tester, find.bySemanticsLabel(_l10n.contributeReviewEditSync));
       expect(find.byType(RecordingStep), findsOneWidget);
+    });
+  });
+
+  group('Save on this phone', () {
+    Finder save() =>
+        find.widgetWithText(OutlinedButton, _l10n.contributeSaveLocal);
+
+    testWidgets('a guest saves without signing in; the draft stays', (
+      tester,
+    ) async {
+      await open(tester, auth: FakeAuthRepository());
+      expect(find.text(_l10n.contributeReviewGuest), findsOneWidget);
+      await tap(tester, save());
+
+      expect(contributions.calls, 0);
+      expect(find.byType(SignInPrompt), findsNothing);
+      final draftId = (await db.select(db.drafts).get()).single.id;
+      final copy = (await copies()).single;
+      expect(copy.contributionId, localCopyId(draftId));
+      expect(copy.trackId, 7);
+      expect(Song.fromJson(jsonDecode(copy.song)).title, 'Selam');
+      expect(
+        SyncTiming.fromJson(jsonDecode(copy.timing!)).starts,
+        syncedDraft.starts,
+      );
+      expect(find.byType(ContributeScreen), findsOneWidget);
+      expect(find.text(_l10n.contributeSavedLocal), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining(_l10n.contributeDraftSavedLocal('')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('saving again replaces the saved lyrics', (tester) async {
+      await open(tester, auth: FakeAuthRepository());
+      await tap(tester, save());
+      await tap(tester, find.text('Selam'));
+      await tap(tester, save());
+      expect(await copies(), hasLength(1));
+    });
+
+    testWidgets('broken lyrics are not saved', (tester) async {
+      await open(
+        tester,
+        draft: syncedDraft.copyWith(
+          song: const Song(id: '', title: '', sections: [], playOrder: []),
+          starts: const [],
+        ),
+      );
+      await tap(tester, save());
+      expect(await copies(), isEmpty);
+      expect(find.text(_l10n.contributeSubmitFixLyrics), findsOneWidget);
+    });
+
+    testWidgets('is not offered without a song on the phone', (tester) async {
+      await open(tester, draft: syncedDraft.copyWith(trackId: () => null));
+      expect(save(), findsNothing);
+    });
+
+    testWidgets('sending it later removes the saved copy', (tester) async {
+      await open(tester);
+      await tap(tester, save());
+      await tap(tester, find.text('Selam'));
+      // The "saved" message would cover Submit.
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+      await tap(tester, submit());
+      final copy = (await copies()).single;
+      expect(copy.contributionId, contributions.all.single.id);
+    });
+
+    testWidgets('deleting the draft removes the saved copy', (tester) async {
+      await open(tester);
+      await tap(tester, save());
+      await tap(tester, find.byTooltip(_l10n.contributeDraftDelete));
+      await tap(
+        tester,
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text(_l10n.contributeDraftDelete),
+        ),
+      );
+      expect(await drafts(tester), isEmpty);
+      expect(await copies(), isEmpty);
+    });
+  });
+
+  group('a guest sending', () {
+    testWidgets('is asked to sign in; Not now sends nothing', (tester) async {
+      await open(tester, auth: FakeAuthRepository());
+      await tap(tester, submit());
+      expect(find.text(_l10n.contributeSendSignInReason), findsOneWidget);
+      await tap(tester, find.text(_l10n.signInPromptNotNow));
+      expect(contributions.calls, 0);
+      expect(await drafts(tester), hasLength(1));
+    });
+
+    testWidgets('who signs in sends it', (tester) async {
+      await open(tester, auth: FakeAuthRepository());
+      await tap(tester, submit());
+      await tap(tester, find.widgetWithText(FilledButton, _l10n.accountSignIn));
+      await tap(tester, find.text(_l10n.signInWithGoogle));
+      expect(contributions.calls, 1);
+      expect(await drafts(tester), isEmpty);
     });
   });
 

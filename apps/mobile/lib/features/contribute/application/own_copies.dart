@@ -10,8 +10,8 @@ import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/data/lyrics_links_repository.dart';
 import '../data/shared_audio.dart';
 
-/// The user's own copies of contributions waiting for review, last sent
-/// first.
+/// The user's own copies of contributions waiting for review, and lyrics
+/// saved on this phone only, last sent or saved first.
 final ownCopiesProvider = StreamProvider<List<OwnCopy>>(
   (ref) => ref.watch(databaseProvider).ownCopiesDao.watchAll(),
 );
@@ -32,11 +32,54 @@ List<ContributionError> draftErrors(ContributionDraft draft) => {
   ...contributionErrors(draft.toContribution()),
 }.toList();
 
+/// Saves draft [id] ([draft]) on this phone only, for its track: no account
+/// is needed, and the track shows the lyrics (marked as on this phone) until
+/// they are saved again or sent. The draft stays, to edit or send later.
+///
+/// Throws a [ContributionFailure] when the lyrics break a rule, or the draft
+/// has no track.
+Future<void> saveDraftLocally(
+  WidgetRef ref,
+  int id,
+  ContributionDraft draft,
+) async {
+  final trackId =
+      draft.trackId ??
+      (throw ContributionFailure(
+        'Draft $id: no track',
+        code: ContributionError.missingSong.code,
+      ));
+  if (draft.lyricsErrors case [final error, ...]) {
+    throw ContributionFailure('Draft $id: ${error.code}', code: error.code);
+  }
+  final recording = draft.recording;
+  await ref
+      .read(databaseProvider)
+      .ownCopiesDao
+      .add(
+        OwnCopy(
+          contributionId: localCopyId(id),
+          kind: draft.kind,
+          song: draft.song,
+          recording: recording,
+          timing: recording == null || !draft.synced
+              ? null
+              : SyncTiming(
+                  recordingId: recording.id,
+                  starts: [for (final s in draft.starts) s!],
+                ),
+          trackId: trackId,
+          audioPath: draft.audioPath,
+          submittedAt: clock.now(),
+        ),
+      );
+}
+
 /// Sends draft [id] ([draft]) for review, or again when it resubmits one
 /// sent back for changes, and returns the contribution's id.
-/// What was sent is kept as the user's own copy, and the draft is deleted;
-/// Zema's copy of a shared file stays with the own copy until the
-/// contribution is reviewed.
+/// What was sent is kept as the user's own copy, and the draft is deleted,
+/// with the lyrics saved from it on this phone only; Zema's copy of a
+/// shared file stays with the own copy until the contribution is reviewed.
 ///
 /// Throws a [ContributionFailure] for a rule the draft breaks (checked
 /// here first), an [AuthFailure] without a backend, and the repository's
@@ -85,6 +128,7 @@ Future<String> submitDraft(
         submittedAt: clock.now(),
       ),
     );
+    await database.ownCopiesDao.remove(localCopyId(id));
     await database.draftsDao.remove(id);
   });
   return contributionId;

@@ -165,16 +165,19 @@ class AccountActionsController extends Notifier<AccountAction?> {
   Future<void> _forget(String? userId) async {
     if (userId != null) await ref.read(profileCacheProvider).remove(userId);
     final database = ref.read(databaseProvider);
-    // Songs not found at restore belong to that account's backup, and
-    // drafts and own copies to its contributions.
+    // Songs not found at restore belong to that account's backup, and the
+    // copies of what it sent to its contributions. Drafts and lyrics saved
+    // on this phone need no account, so they stay.
     await database.unmatchedDao.clear();
-    final shared = [
+    final sent = await database.ownCopiesDao.sentAudioPaths();
+    await database.ownCopiesDao.clearSent();
+    final kept = {
       ...await database.draftsDao.audioPaths(),
       ...await database.ownCopiesDao.audioPaths(),
-    ];
-    await database.draftsDao.clear();
-    await database.ownCopiesDao.clear();
-    await Future.wait(shared.map(deleteSharedAudio));
+    };
+    await Future.wait(
+      sent.where((p) => !kept.contains(p)).map(deleteSharedAudio),
+    );
     try {
       await ref.read(avatarCacheProvider).clear();
     } on Object catch (e) {

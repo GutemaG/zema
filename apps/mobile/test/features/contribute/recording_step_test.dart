@@ -371,29 +371,12 @@ void main() {
       expect(find.text('Tizita.mp3'), findsOneWidget);
     });
 
-    testWidgets('a guest signs in first; Not now deletes the copy', (
-      tester,
-    ) async {
-      auth = FakeAuthRepository();
-      final audio = sharedFile('Selam.ogg');
-      await start(tester);
-      shares.share(audio);
-      await tester.pumpAndSettle();
-      expect(find.byType(SignInPrompt), findsOneWidget);
-
-      await tap(tester, find.text(_l10n.signInPromptNotNow));
-      await settleFiles(tester);
-      expect(File(audio.path).existsSync(), isFalse);
-      expect(await savedDrafts(tester), isEmpty);
-    });
-
-    testWidgets('a guest who signs in goes on to S20', (tester) async {
+    testWidgets('a guest goes on to S20 without signing in', (tester) async {
       auth = FakeAuthRepository();
       await start(tester);
       shares.share(sharedFile('Selam.ogg'));
       await tester.pumpAndSettle();
-      await tap(tester, find.widgetWithText(FilledButton, _l10n.accountSignIn));
-      await tap(tester, find.text(_l10n.signInWithGoogle));
+      expect(find.byType(SignInPrompt), findsNothing);
       expect(find.byType(RecordingStep), findsOneWidget);
     });
 
@@ -438,7 +421,7 @@ void main() {
       expect(File(audio.path).existsSync(), isFalse);
     });
 
-    testWidgets('signing out deletes the copies', (tester) async {
+    testWidgets("signing out keeps a draft's copy", (tester) async {
       final audio = sharedFile('Selam.ogg');
       await db.draftsDao.create(
         ContributionDraft(audioPath: audio.path),
@@ -446,7 +429,6 @@ void main() {
       );
       await start(tester, location: AppRoutes.profile);
       await tap(tester, find.text(_l10n.profileSignOut));
-      // Signing out waits on the file being deleted, which is real work.
       await tester.tap(
         find.descendant(
           of: find.byType(AlertDialog),
@@ -454,7 +436,7 @@ void main() {
         ),
       );
       await settleFiles(tester);
-      expect(File(audio.path).existsSync(), isFalse);
+      expect(File(audio.path).existsSync(), isTrue);
     });
   });
 

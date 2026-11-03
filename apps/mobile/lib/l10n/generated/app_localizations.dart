@@ -2538,12 +2538,6 @@ abstract class AppLocalizations {
   /// **'Add lyrics'**
   String get contributeAddLyrics;
 
-  /// Why contributing needs an account (C09).
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in with Google to add lyrics and timings for everyone. A moderator checks each contribution before it\'s shared.'**
-  String get contributeSignInReason;
-
   /// S05 in a build without a backend.
   ///
   /// In en, this message translates to:
@@ -2639,12 +2633,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved on this phone as you type'**
   String get contributeSavedOnPhone;
-
-  /// Added to the sign-out and delete confirmations when drafts exist.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 draft on this phone will be deleted: {titles}.} other{{count} drafts on this phone will be deleted: {titles}.}}'**
-  String profileDraftsWarning(int count, String titles);
 
   /// A verse block's label, numbered.
   ///
@@ -3833,6 +3821,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to the file\'s info.'**
   String get songInfoResetDone;
+
+  /// S22: saves the lyrics on this phone only, without an account
+  ///
+  /// In en, this message translates to:
+  /// **'Save on this phone'**
+  String get contributeSaveLocal;
+
+  /// Snack bar after saving lyrics on this phone
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone. The lyrics show when you play this song, and only you see them.'**
+  String get contributeSavedLocal;
+
+  /// S22: shown to a guest above the lyrics
+  ///
+  /// In en, this message translates to:
+  /// **'You can save these lyrics on this phone without an account. To share them with everyone, sign in and send them for review.'**
+  String get contributeReviewGuest;
+
+  /// C09 reason when a guest sends a draft for review
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google to send these lyrics for review. A moderator checks them before everyone can see them. Your draft is kept.'**
+  String get contributeSendSignInReason;
+
+  /// S05: a draft whose lyrics are saved on this phone
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone · {time}'**
+  String contributeDraftSavedLocal(String time);
+
+  /// Chip on lyrics saved on this phone only
+  ///
+  /// In en, this message translates to:
+  /// **'On this phone'**
+  String get lyricsOnThisPhone;
+
+  /// Lyrics options: opens the draft of lyrics saved on this phone
+  ///
+  /// In en, this message translates to:
+  /// **'Edit or send these lyrics'**
+  String get lyricsEditLocal;
 }
 
 class _AppLocalizationsDelegate

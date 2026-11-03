@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zema/app/database/own_copies_dao.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/routes.dart';
 import 'package:zema/features/account/application/sign_in.dart';
@@ -87,31 +88,20 @@ void main() {
   group('guests', () {
     setUp(() => auth = FakeAuthRepository());
 
-    testWidgets('see how it works; Add lyrics asks them to sign in', (
+    testWidgets('see how it works, and start a draft without signing in', (
       tester,
     ) async {
+      await db.draftsDao.create(titled('Kept'), now: t0);
       await start(tester);
       expect(find.text(_l10n.contributeHowTitle), findsOneWidget);
       expect(find.text(_l10n.contributeStepSync), findsOneWidget);
+      expect(find.text('Kept'), findsOneWidget);
+      expect(find.text(_l10n.myContributionsTitle), findsNothing);
 
       await tap(tester, addLyrics());
-      expect(find.byType(SignInPrompt), findsOneWidget);
-      expect(find.text(_l10n.contributeSignInReason), findsOneWidget);
-
-      await tap(tester, find.text(_l10n.signInPromptNotNow));
-      expect(find.byType(ContributeFlowScreen), findsNothing);
-      expect(await savedTitles(), isEmpty);
-    });
-
-    testWidgets('after signing in, the draft starts', (tester) async {
-      await start(tester);
-      await tap(tester, addLyrics());
-      await tap(tester, find.widgetWithText(FilledButton, _l10n.accountSignIn));
-      await tap(tester, find.text(_l10n.signInWithGoogle));
-
-      expect(auth.currentUser, isNotNull);
+      expect(find.byType(SignInPrompt), findsNothing);
       expect(find.byType(ContributeFlowScreen), findsOneWidget);
-      expect(await savedDrafts(), hasLength(1));
+      expect(await savedDrafts(), hasLength(2));
     });
   });
 
@@ -256,46 +246,34 @@ void main() {
   });
 
   group('signing out', () {
-    testWidgets('names the drafts, and confirming deletes them', (
-      tester,
-    ) async {
-      await db.draftsDao.create(titled('Selam'), now: t0);
-      await db.draftsDao.create(const ContributionDraft(), now: t0);
-      await start(tester, location: AppRoutes.profile);
-
-      await tap(tester, find.text(_l10n.profileSignOut));
-      expect(
-        find.textContaining(
-          _l10n.profileDraftsWarning(
-            2,
-            'Selam, ${_l10n.contributeDraftUntitled}',
-          ),
+    testWidgets('keeps drafts and lyrics saved on this phone', (tester) async {
+      final id = await db.draftsDao.create(titled('Selam'), now: t0);
+      await db.ownCopiesDao.add(
+        OwnCopy(
+          contributionId: localCopyId(id),
+          kind: ContributionKind.newSong,
+          song: titled('Selam').song,
+          trackId: 1,
+          submittedAt: t0,
         ),
-        findsOneWidget,
       );
-      await tap(tester, dialogButton(_l10n.profileSignOut));
-      expect(auth.currentUser, isNull);
-      expect(await savedTitles(), isEmpty);
-    });
-
-    testWidgets('with no drafts, the message is as before', (tester) async {
+      await db.ownCopiesDao.add(
+        OwnCopy(
+          contributionId: 'sent-1',
+          kind: ContributionKind.newSong,
+          song: titled('Sent').song,
+          submittedAt: t0,
+        ),
+      );
       await start(tester, location: AppRoutes.profile);
+
       await tap(tester, find.text(_l10n.profileSignOut));
       expect(find.text(_l10n.profileSignOutMessage), findsOneWidget);
-    });
-
-    testWidgets('deleting the account names them too', (tester) async {
-      await db.draftsDao.create(titled('Selam'), now: t0);
-      await start(tester, location: AppRoutes.profile);
-      await tester.scrollUntilVisible(
-        find.text(_l10n.profileDeleteAccount),
-        200,
-      );
-      await tap(tester, find.text(_l10n.profileDeleteAccount));
-      expect(
-        find.textContaining(_l10n.profileDraftsWarning(1, 'Selam')),
-        findsOneWidget,
-      );
+      await tap(tester, dialogButton(_l10n.profileSignOut));
+      expect(auth.currentUser, isNull);
+      expect(await savedTitles(), ['Selam']);
+      final copies = await db.select(db.ownCopies).get();
+      expect(copies.map((c) => c.contributionId), [localCopyId(id)]);
     });
   });
 

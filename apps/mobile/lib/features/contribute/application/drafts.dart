@@ -8,6 +8,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/database/drafts_dao.dart';
+import '../../../app/database/own_copies_dao.dart';
 import '../data/shared_audio.dart';
 
 final _log = Logger('contribute.drafts');
@@ -27,12 +28,16 @@ Future<int> startDraft(
   ContributionDraft draft = const ContributionDraft(),
 }) => ref.read(databaseProvider).draftsDao.create(draft, now: clock.now());
 
-/// Deletes draft [id], and Zema's copy of a file shared for it unless a
-/// contribution sent with it still keeps it.
+/// Deletes draft [id] with the lyrics saved from it on this phone only, and
+/// Zema's copy of a file shared for it unless a contribution sent with it
+/// still keeps it.
 Future<void> deleteDraft(WidgetRef ref, int id) async {
   final database = ref.read(databaseProvider);
   final path = (await database.draftsDao.get(id))?.draft.audioPath;
-  await database.draftsDao.remove(id);
+  await database.transaction(() async {
+    await database.ownCopiesDao.remove(localCopyId(id));
+    await database.draftsDao.remove(id);
+  });
   if (!(await database.ownCopiesDao.audioPaths()).contains(path)) {
     await deleteSharedAudio(path);
   }

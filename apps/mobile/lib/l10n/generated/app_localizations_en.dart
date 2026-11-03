@@ -1507,10 +1507,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contributeAddLyrics => 'Add lyrics';
 
   @override
-  String get contributeSignInReason =>
-      'Sign in with Google to add lyrics and timings for everyone. A moderator checks each contribution before it\'s shared.';
-
-  @override
   String get contributeNoBackend =>
       'Contributing needs the online catalog, which this version of the app doesn\'t have.';
 
@@ -1564,17 +1560,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contributeSavedOnPhone => 'Saved on this phone as you type';
-
-  @override
-  String profileDraftsWarning(int count, String titles) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count drafts on this phone will be deleted: $titles.',
-      one: '1 draft on this phone will be deleted: $titles.',
-    );
-    return '$_temp0';
-  }
 
   @override
   String contributeBlockVerse(int n) {
@@ -2270,4 +2255,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get songInfoResetDone => 'Back to the file\'s info.';
+
+  @override
+  String get contributeSaveLocal => 'Save on this phone';
+
+  @override
+  String get contributeSavedLocal =>
+      'Saved on this phone. The lyrics show when you play this song, and only you see them.';
+
+  @override
+  String get contributeReviewGuest =>
+      'You can save these lyrics on this phone without an account. To share them with everyone, sign in and send them for review.';
+
+  @override
+  String get contributeSendSignInReason =>
+      'Sign in with Google to send these lyrics for review. A moderator checks them before everyone can see them. Your draft is kept.';
+
+  @override
+  String contributeDraftSavedLocal(String time) {
+    return 'Saved on this phone · $time';
+  }
+
+  @override
+  String get lyricsOnThisPhone => 'On this phone';
+
+  @override
+  String get lyricsEditLocal => 'Edit or send these lyrics';
 }

@@ -12,13 +12,14 @@ import '../../account/application/account_providers.dart';
 import '../../account/presentation/backup_screen.dart';
 import '../application/drafts.dart';
 import '../application/moderation.dart';
+import '../application/own_copies.dart';
 import 'my_contributions_screen.dart';
 import 'start_contribution.dart';
 
-/// S05: how contributing works, Add lyrics, the user's drafts, My
-/// contributions, and for moderators the review queue. Guests are
-/// asked to sign in (C09) when they start; builds without a backend explain
-/// that contributing needs one.
+/// S05: how contributing works, Add lyrics, the drafts (guests' too, since
+/// drafts and lyrics saved on this phone need no account), and for signed-in
+/// users My contributions, and for moderators the review queue. Builds
+/// without a backend explain that contributing needs one.
 class ContributeScreen extends ConsumerWidget {
   const ContributeScreen({super.key});
 
@@ -27,9 +28,11 @@ class ContributeScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final available = ref.watch(accountsAvailableProvider);
     final signedIn = ref.watch(authUserProvider).value != null;
-    final drafts = signedIn
-        ? ref.watch(draftsProvider).value ?? const <SavedDraft>[]
-        : const <SavedDraft>[];
+    final drafts = ref.watch(draftsProvider).value ?? const <SavedDraft>[];
+    final savedLocally = {
+      for (final copy in ref.watch(ownCopiesProvider).value ?? const [])
+        ?copy.localDraftId,
+    };
     final colors = context.zemaColors;
     final textTheme = Theme.of(context).textTheme;
 
@@ -83,7 +86,11 @@ class ContributeScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              for (final saved in drafts) _DraftTile(saved),
+              for (final saved in drafts)
+                _DraftTile(
+                  saved,
+                  savedLocally: savedLocally.contains(saved.id),
+                ),
             ],
             if (signedIn) ...[
               const SizedBox(height: 8),
@@ -196,9 +203,12 @@ String draftStepName(AppLocalizations l10n, DraftStep step) => switch (step) {
 };
 
 class _DraftTile extends ConsumerWidget {
-  const _DraftTile(this.saved);
+  const _DraftTile(this.saved, {required this.savedLocally});
 
   final SavedDraft saved;
+
+  /// Whether its lyrics are saved on this phone.
+  final bool savedLocally;
 
   Future<void> _delete(
     BuildContext context,
@@ -243,10 +253,14 @@ class _DraftTile extends ConsumerWidget {
       ),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
-        l10n.contributeDraftSubtitle(
-          draftStepName(l10n, saved.draft.step),
-          formatBackupTime(context, saved.updatedAt),
-        ),
+        savedLocally
+            ? l10n.contributeDraftSavedLocal(
+                formatBackupTime(context, saved.updatedAt),
+              )
+            : l10n.contributeDraftSubtitle(
+                draftStepName(l10n, saved.draft.step),
+                formatBackupTime(context, saved.updatedAt),
+              ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),

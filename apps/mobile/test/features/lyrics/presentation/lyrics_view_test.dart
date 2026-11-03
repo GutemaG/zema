@@ -520,13 +520,14 @@ void main() {
     Future<void> addCopy(
       WidgetTester tester,
       ZemaDatabase db,
-      String title,
-    ) async {
+      String title, {
+      String contributionId = 'c-1',
+    }) async {
       final tracks = (await tester.runAsync(db.libraryDao.allTracks))!;
       await tester.runAsync(
         () => db.ownCopiesDao.add(
           OwnCopy(
-            contributionId: 'c-1',
+            contributionId: contributionId,
             kind: ContributionKind.newSong,
             song: own,
             recording: const Recording(
@@ -570,6 +571,22 @@ void main() {
       await _settle(tester);
       expect(find.text(_first), findsOneWidget);
       expect(find.text(_l10n.lyricsPendingReview), findsNothing);
+    });
+
+    testWidgets('saved on this phone: marked so, with Edit or send', (
+      tester,
+    ) async {
+      final db = memoryDatabase();
+      await _pump(tester, database: db);
+      await addCopy(tester, db, 'Galatoomi', contributionId: localCopyId(3));
+      expect(find.text('Own line one'), findsOneWidget);
+      expect(find.text(_l10n.lyricsOnThisPhone), findsOneWidget);
+      expect(find.text(_l10n.lyricsPendingReview), findsNothing);
+
+      await tester.tap(find.byTooltip(_l10n.lyricsOptions));
+      await _settle(tester);
+      expect(find.text(_l10n.lyricsEditLocal), findsOneWidget);
+      expect(find.text(_l10n.reportLyrics), findsNothing);
     });
 
     testWidgets('another track does not show it', (tester) async {

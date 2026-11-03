@@ -10,6 +10,8 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../application/drafts.dart';
+import '../../account/application/account_providers.dart';
+import '../../account/presentation/widgets/sign_in_prompt.dart';
 import '../../catalog/data/catalog_lyrics_repository.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../application/my_contributions.dart';
@@ -85,7 +87,9 @@ final correctionBaseProvider = FutureProvider.autoDispose
     });
 
 /// S22, step 4: the song, the lyrics in play order, the recording and the
-/// sync status, each with Edit, and Submit for review.
+/// sync status, each with Edit; Submit for review (a guest signs in first),
+/// and for a draft made for a song on the phone, Save on this phone, which
+/// needs no account.
 class ReviewStep extends ConsumerStatefulWidget {
   const ReviewStep({super.key, required this.id, required this.draft});
 
@@ -106,11 +110,49 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       .read(draftEditorProvider(widget.id).notifier)
       .edit((draft) => draft.copyWith(step: step));
 
+  Future<void> _saveLocally() async {
+    if (_sending) return;
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+    setState(() {
+      _sending = true;
+      _problem = null;
+    });
+    try {
+      await ref.read(draftEditorProvider(widget.id).notifier).flush();
+      await saveDraftLocally(ref, widget.id, widget.draft);
+    } on Object catch (e) {
+      if (mounted) {
+        setState(() {
+          _sending = false;
+          _problem = submitProblem(l10n, e);
+        });
+      }
+      return;
+    }
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.contributeSavedLocal)));
+    if (router.canPop()) {
+      router.pop();
+    } else {
+      router.go(AppRoutes.contribute);
+    }
+  }
+
   Future<void> _submit() async {
     if (_sending) return;
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final router = GoRouter.of(context);
+    if (ref.read(authRepositoryProvider)?.currentUser == null) {
+      final signedIn = await showSignInPrompt(
+        context,
+        reason: l10n.contributeSendSignInReason,
+      );
+      if (!signedIn || !mounted) return;
+    }
     setState(() {
       _sending = true;
       _problem = null;
@@ -155,6 +197,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         draft.kind == ContributionKind.editLyrics && draft.songId != null
         ? ref.watch(correctionBaseProvider(draft.songId!)).value
         : null;
+    final guest = ref.watch(authUserProvider).value == null;
     // A correction that changes nothing has nothing to send.
     final unchanged =
         correction != null && !songChanged(correction.song, draft.song);
@@ -175,7 +218,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
             ),
             children: [
               Text(
-                l10n.contributeReviewIntro,
+                guest ? l10n.contributeReviewGuest : l10n.contributeReviewIntro,
                 style: textTheme.bodyMedium?.copyWith(color: colors.muted),
               ),
               const SizedBox(height: 12),
@@ -317,6 +360,26 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                       borderRadius: BorderRadius.circular(ZemaRadius.small),
                     ),
                     child: Text(problem),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (draft.trackId != null) ...[
+                SizedBox(
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: _sending
+                        ? null
+                        : () => unawaited(_saveLocally()),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(ZemaRadius.large),
+                      ),
+                    ),
+                    child: Text(
+                      l10n.contributeSaveLocal,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),

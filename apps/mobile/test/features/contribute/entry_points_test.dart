@@ -9,7 +9,6 @@ import 'package:zema/features/account/application/sign_in.dart';
 import 'package:zema/features/account/presentation/widgets/sign_in_prompt.dart';
 import 'package:zema/features/contribute/application/contribution_starts.dart';
 import 'package:zema/features/contribute/application/drafts.dart';
-import 'package:zema/features/contribute/presentation/contribute_flow_screen.dart';
 import 'package:zema/features/contribute/presentation/lyrics_step.dart';
 import 'package:zema/features/contribute/presentation/recording_step.dart';
 import 'package:zema/features/contribute/presentation/sync_step.dart';
@@ -235,21 +234,12 @@ void main() {
       );
     });
 
-    testWidgets('a guest is asked to sign in first', (tester) async {
+    testWidgets('a guest starts without signing in', (tester) async {
       auth = FakeAuthRepository();
       await start(tester, location: AppRoutes.search);
       await search(tester, 'Mezmur zelealem');
       await tap(tester, addSong());
-      expect(find.byType(SignInPrompt), findsOneWidget);
-      expect(find.text(_l10n.contributeSignInReason), findsOneWidget);
-
-      await tap(tester, find.text(_l10n.signInPromptNotNow));
-      expect(find.byType(ContributeFlowScreen), findsNothing);
-      expect(await savedDrafts(tester), isEmpty);
-
-      await tap(tester, addSong());
-      await tap(tester, find.widgetWithText(FilledButton, _l10n.accountSignIn));
-      await tap(tester, find.text(_l10n.signInWithGoogle));
+      expect(find.byType(SignInPrompt), findsNothing);
       expect(find.byType(LyricsStep), findsOneWidget);
       expect((await savedDrafts(tester)).single.title, 'Mezmur zelealem');
     });
@@ -300,13 +290,12 @@ void main() {
       expect(draft.recording!.fileName, 'Kidus.mp3');
     });
 
-    testWidgets('a guest is asked to sign in first', (tester) async {
+    testWidgets('a guest starts without signing in', (tester) async {
       auth = FakeAuthRepository();
       await nowPlaying(tester);
       await tap(tester, addLyrics());
-      expect(find.byType(SignInPrompt), findsOneWidget);
-      await tap(tester, find.text(_l10n.signInPromptNotNow));
-      expect(await savedDrafts(tester), isEmpty);
+      expect(find.byType(SignInPrompt), findsNothing);
+      expect(await savedDrafts(tester), hasLength(1));
     });
 
     testWidgets('without a backend only Match lyrics is offered', (
@@ -417,13 +406,12 @@ void main() {
       expect(find.text(_l10n.contributeEntrySyncRecording), findsNothing);
     });
 
-    testWidgets('a guest is asked to sign in first', (tester) async {
+    testWidgets('a guest starts without signing in', (tester) async {
       auth = FakeAuthRepository();
       await detail(tester);
       await tap(tester, find.text(_l10n.contributeEntryLinkRecording));
-      expect(find.byType(SignInPrompt), findsOneWidget);
-      await tap(tester, find.text(_l10n.signInPromptNotNow));
-      expect(await savedDrafts(tester), isEmpty);
+      expect(find.byType(SignInPrompt), findsNothing);
+      expect(await savedDrafts(tester), hasLength(1));
     });
 
     for (final brightness in Brightness.values) {

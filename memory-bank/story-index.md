@@ -2,9 +2,9 @@
 
 ## Overview
 
-- **Total stories**: 97
-- **Generated**: 97
-- **Last updated**: 2026-11-02T07:00:52Z
+- **Total stories**: 98
+- **Generated**: 98
+- **Last updated**: 2026-11-03T09:00:00Z
 
 ---
 
@@ -139,6 +139,7 @@ Path: `memory-bank/intents/006-contribution-and-sync-editor/units/*/stories/`
 - [x] **013-moderator-queue** (contribution-and-sync-editor-ui): Moderator review queue (S23m) - Must - ✅ COMPLETED
 - [x] **014-edit-song-info** (contribution-and-sync-editor-ui): Edit song info (S09) - Should - ✅ COMPLETED
 - [x] **015-backup-additions** (contribution-and-sync-editor-ui): Backup additions: overrides and sync offsets - Could - ✅ COMPLETED
+- [x] **016-local-lyrics-without-account** (contribution-and-sync-editor-ui): Lyrics on the phone without an account - Must - ✅ COMPLETED
 
 ### 007-background-detection-floating-lyrics … 012-ai-lyrics-from-audio
 
@@ -149,6 +150,6 @@ No stories yet (intents in draft).
 ## Stories by Status
 
 - **Planned**: 0
-- **Generated**: 97
+- **Generated**: 98
 - **In Progress**: 0
-- **Completed**: 97
+- **Completed**: 98

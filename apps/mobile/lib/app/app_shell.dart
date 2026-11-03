@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../features/account/application/account_providers.dart';
-import '../features/account/presentation/widgets/sign_in_prompt.dart';
 import '../features/contribute/application/my_contributions.dart';
 import '../features/contribute/application/recording.dart';
 import '../features/contribute/presentation/my_contributions_screen.dart';
@@ -57,10 +56,6 @@ class AppShell extends ConsumerWidget {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.contributeShareNeedsBackend)));
-      return deleteSharedAudio(audio.path);
-    }
-    if (ref.read(authRepositoryProvider)?.currentUser == null &&
-        !await showSignInPrompt(context, reason: l10n.contributeSignInReason)) {
       return deleteSharedAudio(audio.path);
     }
     final id = await startSharedDraft(ref, audio);

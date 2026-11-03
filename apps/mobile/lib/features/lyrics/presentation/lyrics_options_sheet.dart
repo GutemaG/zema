@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -139,7 +141,18 @@ class LyricsOptionsSheet extends ConsumerWidget {
                   );
                 },
               ),
-            if (ref.watch(canReportProvider(lyrics.song.id)))
+            if (lyrics.localDraftId case final draftId?)
+              ListTile(
+                leading: const Icon(Icons.edit_note),
+                title: Text(l10n.lyricsEditLocal),
+                onTap: () {
+                  final router = GoRouter.of(context);
+                  Navigator.of(context).pop();
+                  unawaited(router.push<void>(AppRoutes.draft(draftId)));
+                },
+              ),
+            if (lyrics.localDraftId == null &&
+                ref.watch(canReportProvider(lyrics.song.id)))
               ListTile(
                 leading: const Icon(Icons.flag_outlined),
                 title: Text(l10n.reportLyrics),

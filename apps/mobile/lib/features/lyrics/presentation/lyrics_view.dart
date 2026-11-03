@@ -36,11 +36,11 @@ class LyricsView extends ConsumerWidget {
           Positioned.fill(
             child: _Lines(track: track, lyrics: lyrics),
           ),
-          if (lyrics.pending)
-            const PositionedDirectional(
+          if (lyrics.pending || lyrics.localDraftId != null)
+            PositionedDirectional(
               top: 8,
               start: ZemaSpacing.screenSide,
-              child: PendingReviewChip(),
+              child: PendingReviewChip(local: !lyrics.pending),
             ),
           PositionedDirectional(
             top: 0,
@@ -132,9 +132,13 @@ class NoLyrics extends ConsumerWidget {
   }
 }
 
-/// Marks lyrics the user sent that a moderator hasn't checked yet.
+/// Marks lyrics the user sent that a moderator hasn't checked yet, or saved
+/// on this phone only.
 class PendingReviewChip extends StatelessWidget {
-  const PendingReviewChip({super.key});
+  const PendingReviewChip({super.key, this.local = false});
+
+  /// Says the lyrics are saved on this phone only instead.
+  final bool local;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +150,9 @@ class PendingReviewChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(ZemaRadius.pill),
       ),
       child: Text(
-        AppLocalizations.of(context).lyricsPendingReview,
+        local
+            ? AppLocalizations.of(context).lyricsOnThisPhone
+            : AppLocalizations.of(context).lyricsPendingReview,
         style: Theme.of(context).textTheme.labelSmall
             ?.copyWith(color: colors.accentText),
       ),

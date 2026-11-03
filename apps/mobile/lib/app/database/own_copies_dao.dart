@@ -8,8 +8,16 @@ import 'zema_database.dart';
 
 part 'own_copies_dao.g.dart';
 
+/// The start of the [OwnCopy.contributionId] of lyrics saved on this phone
+/// only, followed by the id of the draft they were saved from.
+const localCopyPrefix = 'local-';
+
+/// The [OwnCopy.contributionId] of lyrics saved from draft [draftId].
+String localCopyId(int draftId) => '$localCopyPrefix$draftId';
+
 /// The user's own copy of a contribution waiting for review (see
-/// [OwnCopies]).
+/// [OwnCopies]), or of lyrics saved on this phone only (see
+/// [localDraftId]).
 class OwnCopy {
   const OwnCopy({
     required this.contributionId,
@@ -36,6 +44,12 @@ class OwnCopy {
   /// Zema's copy of a file shared to it, if any.
   final String? audioPath;
   final DateTime submittedAt;
+
+  /// The draft lyrics saved on this phone only were saved from; null for a
+  /// contribution sent for review.
+  int? get localDraftId => contributionId.startsWith(localCopyPrefix)
+      ? int.tryParse(contributionId.substring(localCopyPrefix.length))
+      : null;
 }
 
 /// Own copies of contributions waiting for review (see [OwnCopies]).
@@ -73,6 +87,19 @@ class OwnCopiesDao extends DatabaseAccessor<ZemaDatabase>
   )..where((c) => c.contributionId.equals(contributionId))).go();
 
   Future<void> clear() => delete(ownCopies).go();
+
+  /// Removes the copies of contributions sent for review; lyrics saved on
+  /// this phone only stay.
+  Future<void> clearSent() => (delete(
+    ownCopies,
+  )..where((c) => c.contributionId.like('$localCopyPrefix%').not())).go();
+
+  /// Zema's copies of shared audio files the copies of sent contributions
+  /// keep.
+  Future<List<String>> sentAudioPaths() async => [
+    for (final row in await select(ownCopies).get())
+      if (!row.contributionId.startsWith(localCopyPrefix)) ?row.audioPath,
+  ];
 
   /// Zema's copies of shared audio files the copies keep.
   Future<List<String>> audioPaths() async => [

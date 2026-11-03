@@ -22,6 +22,7 @@ class TrackLyrics {
     this.recording,
     this.synced,
     this.pending = false,
+    this.localDraftId,
   });
 
   final Song song;
@@ -38,6 +39,9 @@ class TrackLyrics {
   /// Whether these are the user's own contribution, waiting for review
   /// (shown on this phone only).
   final bool pending;
+
+  /// For lyrics saved on this phone only, the draft they were saved from.
+  final int? localDraftId;
 }
 
 /// The recording of a song whose timing the lyrics view uses.
@@ -45,7 +49,7 @@ Recording? usedRecording(List<Recording> recordings) => recordings.firstOrNull;
 
 /// The lyrics of track [trackId], or null when it isn't linked to a song.
 /// The user's own contribution for the track, while it waits for review,
-/// comes before the linked song. Fails when the song can't be downloaded
+/// or lyrics saved for it on this phone only, come before the linked song. Fails when the song can't be downloaded
 /// (see [songProvider]).
 final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   ref,
@@ -92,7 +96,8 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   // A failure shows C07 at once; its Try again retries.
 }, retry: (_, _) => null);
 
-/// The lyrics of the user's own copy [own], marked pending.
+/// The lyrics of the user's own copy [own], marked pending, or as saved on
+/// this phone.
 TrackLyrics _pendingLyrics(OwnCopy own) {
   final song = own.song;
   SyncedLyrics? synced;
@@ -108,7 +113,8 @@ TrackLyrics _pendingLyrics(OwnCopy own) {
     lines: synced?.lines ?? expandPlayOrder(song).occurrences,
     recording: own.recording,
     synced: synced,
-    pending: true,
+    pending: own.localDraftId == null,
+    localDraftId: own.localDraftId,
   );
 }
 
