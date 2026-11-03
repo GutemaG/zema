@@ -82,6 +82,12 @@ class OwnCopiesDao extends DatabaseAccessor<ZemaDatabase>
     );
   }
 
+  Future<bool> has(String contributionId) async =>
+      await (select(ownCopies)
+            ..where((c) => c.contributionId.equals(contributionId)))
+          .getSingleOrNull() !=
+      null;
+
   Future<void> remove(String contributionId) => (delete(
     ownCopies,
   )..where((c) => c.contributionId.equals(contributionId))).go();

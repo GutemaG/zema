@@ -45,4 +45,5 @@ Change request: lyrics without an account. Guests add lyrics and keep them on th
 - Sending or deleting the draft removes its saved copy. Sign-out and delete account keep drafts and saved lyrics (the drafts warning on Profile is gone); sent copies still go.
 - No schema or core change. Saved lyrics aren't in the backup yet.
 - Skip on S20 keeps the draft's song (it used to drop it, so lyrics started from a song lost it).
-- App tests 1,221 pass; 5 of 5 planted bugs caught.
+- Saved lyrics keep partial timings (the lines timed so far, in order) and play them; core SyncedLyrics.of(partial: true). Once saved, the copy follows every draft save, so syncing shows in the player as it goes.
+- App tests 1,225 pass, core 324; 5 of 5 planted bugs caught.

@@ -145,4 +145,67 @@ void main() {
     expect(await db.ownCopiesDao.all(), isEmpty);
     expect(await currentLinks(), isEmpty);
   });
+
+  group('lyrics saved on this phone', () {
+    const lyrics = Song(
+      id: '',
+      title: 'Selam',
+      sections: [
+        LyricSection(
+          id: 'v1',
+          kind: SectionKind.verse,
+          lines: [LyricLine('One'), LyricLine('Two'), LyricLine('Three')],
+        ),
+      ],
+      playOrder: ['v1'],
+    );
+    const recording = Recording(
+      id: 'rec',
+      songId: '',
+      source: RecordingSource.localFile,
+      fileName: 'Selam.mp3',
+    );
+    ContributionDraft draft(List<Duration?> starts) => ContributionDraft(
+      song: lyrics,
+      recording: recording,
+      starts: starts,
+      trackId: track,
+    );
+    const s1 = Duration(seconds: 1);
+    const s4 = Duration(seconds: 4);
+
+    test('keep the lines timed so far, in order', () {
+      expect(localCopyOf(3, draft([s1, s4, null]))!.timing!.starts, [s1, s4]);
+      expect(localCopyOf(3, draft([null, null, null]))!.timing, isNull);
+      expect(
+        localCopyOf(3, draft(const []))!.timing,
+        isNull,
+        reason: 'starts that no longer fit the lyrics',
+      );
+      expect(localCopyOf(3, draft([s1]).copyWith(trackId: () => null)), isNull);
+    });
+
+    test('follow the draft once saved, and only then', () async {
+      await refreshLocalCopy(db, 3, draft([s1, null, null]));
+      expect(await db.ownCopiesDao.all(), isEmpty);
+
+      await db.ownCopiesDao.add(localCopyOf(3, draft([null, null, null]))!);
+      await refreshLocalCopy(db, 3, draft([s1, s4, null]));
+      final copy = (await db.ownCopiesDao.all()).single;
+      expect(copy.timing!.starts, [s1, s4]);
+
+      await refreshLocalCopy(
+        db,
+        3,
+        draft([s1, s4, null]).copyWith(
+          song: const Song(id: '', title: '', sections: []),
+        ),
+      );
+      expect(
+        (await db.ownCopiesDao.all()).single.song.title,
+        'Selam',
+        reason: 'broken lyrics are not saved',
+      );
+    });
+  });
 }

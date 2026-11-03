@@ -9,7 +9,9 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/database/database_provider.dart';
 import '../../../app/database/drafts_dao.dart';
 import '../../../app/database/own_copies_dao.dart';
+import '../../../app/database/zema_database.dart';
 import '../data/shared_audio.dart';
+import 'own_copies.dart';
 
 final _log = Logger('contribute.drafts');
 
@@ -60,7 +62,7 @@ class DraftEditor extends AsyncNotifier<ContributionDraft?> {
 
   @override
   Future<ContributionDraft?> build() async {
-    final dao = ref.read(databaseProvider).draftsDao;
+    final database = ref.read(databaseProvider);
     final lifecycle = AppLifecycleListener(onPause: () => unawaited(flush()));
     ref.onDispose(() {
       lifecycle.dispose();
@@ -69,10 +71,10 @@ class DraftEditor extends AsyncNotifier<ContributionDraft?> {
       // The provider is gone; save what's left without it.
       if (unsaved != null) {
         _unsaved = null;
-        unawaited(_write(dao, unsaved));
+        unawaited(_write(database, unsaved));
       }
     });
-    return (await dao.get(id))?.draft;
+    return (await database.draftsDao.get(id))?.draft;
   }
 
   /// Applies [change] to the draft; it is saved shortly after.
@@ -93,13 +95,15 @@ class DraftEditor extends AsyncNotifier<ContributionDraft?> {
     final unsaved = _unsaved;
     if (unsaved == null) return _saving;
     _unsaved = null;
-    return _write(ref.read(databaseProvider).draftsDao, unsaved);
+    return _write(ref.read(databaseProvider), unsaved);
   }
 
-  Future<void> _write(DraftsDao dao, ContributionDraft draft) =>
+  /// Saves [draft], and the lyrics saved on this phone from it.
+  Future<void> _write(ZemaDatabase database, ContributionDraft draft) =>
       _saving = _saving.then(
-        (_) => dao
+        (_) => database.draftsDao
             .save(id, draft, now: clock.now())
+            .then((_) => refreshLocalCopy(database, id, draft))
             .then<void>(
               (_) {},
               onError: (Object e) => _log.warning('Saving draft $id failed', e),

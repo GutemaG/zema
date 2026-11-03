@@ -149,6 +149,30 @@ void main() {
       }
     });
 
+    test('partial: times the first lines; the rest are never current', () {
+      final lyrics = SyncedLyrics.of(
+        song,
+        SyncTiming(recordingId: 'r', starts: [_s(1), _s(3)]),
+        partial: true,
+      );
+      expect(lyrics.lines, hasLength(4));
+      expect(lyrics.engine.at(_s(2)).current, 0);
+      expect(lyrics.engine.at(_s(60)).current, 1);
+      expect(lyrics.isTimed(1), isTrue);
+      expect(lyrics.isTimed(2), isFalse);
+      expect(
+        () => SyncedLyrics.of(
+          song,
+          SyncTiming(
+            recordingId: 'r',
+            starts: [for (var i = 0; i < 5; i++) _s(i)],
+          ),
+          partial: true,
+        ),
+        throwsA(isA<LyricsFormatFailure>()),
+      );
+    });
+
     test('rejects timing that goes backwards', () {
       expect(
         () => SyncedLyrics.of(

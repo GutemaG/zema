@@ -80,10 +80,18 @@ class SyncedLyrics {
   SyncedLyrics._(this.song, this.lines, this.engine);
 
   /// Throws [LyricsFormatFailure] when [timing] doesn't have exactly one
-  /// start per sung line, or its starts go backwards.
-  factory SyncedLyrics.of(Song song, SyncTiming timing) {
+  /// start per sung line, or its starts go backwards. With [partial],
+  /// [timing] may time only the first lines (lyrics still being synced); the
+  /// lines after them are never current.
+  factory SyncedLyrics.of(
+    Song song,
+    SyncTiming timing, {
+    bool partial = false,
+  }) {
     final lines = expandPlayOrder(song).occurrences;
-    if (timing.starts.length != lines.length) {
+    if (partial
+        ? timing.starts.length > lines.length
+        : timing.starts.length != lines.length) {
       throw LyricsFormatFailure(
         'Timing ${timing.recordingId} has ${timing.starts.length} starts '
         'for ${lines.length} sung lines of ${song.id}',
@@ -95,4 +103,7 @@ class SyncedLyrics {
   final Song song;
   final List<LineOccurrence> lines;
   final SyncEngine engine;
+
+  /// Whether line [index] has a start (all do unless partial).
+  bool isTimed(int index) => index < engine.lineCount;
 }

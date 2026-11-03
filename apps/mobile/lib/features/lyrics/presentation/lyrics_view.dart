@@ -194,11 +194,15 @@ class _Lines extends ConsumerWidget {
       display: ref.watch(lyricsDisplayProvider),
       onTapLine: synced == null
           ? null
-          : (i) => unawaited(
-              ref
-                  .read(playerControllerProvider)
-                  .seek(synced.engine.startOf(i, offset: shift)),
-            ),
+          : (i) {
+              // Lines not timed yet have nowhere to seek to.
+              if (!synced.isTimed(i)) return;
+              unawaited(
+                ref
+                    .read(playerControllerProvider)
+                    .seek(synced.engine.startOf(i, offset: shift)),
+              );
+            },
     );
   }
 }

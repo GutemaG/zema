@@ -522,6 +522,10 @@ void main() {
       ZemaDatabase db,
       String title, {
       String contributionId = 'c-1',
+      List<Duration> starts = const [
+        Duration(seconds: 1),
+        Duration(seconds: 5),
+      ],
     }) async {
       final tracks = (await tester.runAsync(db.libraryDao.allTracks))!;
       await tester.runAsync(
@@ -536,10 +540,7 @@ void main() {
               source: RecordingSource.localFile,
               fileName: 'Galatoomi.mp3',
             ),
-            timing: const SyncTiming(
-              recordingId: 'rec-own',
-              starts: [Duration(seconds: 1), Duration(seconds: 5)],
-            ),
+            timing: SyncTiming(recordingId: 'rec-own', starts: starts),
             trackId: tracks.firstWhere((t) => t.title == title).id,
             submittedAt: DateTime.utc(2026, 11, 2),
           ),
@@ -587,6 +588,27 @@ void main() {
       await _settle(tester);
       expect(find.text(_l10n.lyricsEditLocal), findsOneWidget);
       expect(find.text(_l10n.reportLyrics), findsNothing);
+    });
+
+    testWidgets('saved part-way synced: the timed lines follow the song', (
+      tester,
+    ) async {
+      final db = memoryDatabase();
+      final app = await _pump(tester, database: db);
+      await addCopy(
+        tester,
+        db,
+        'Galatoomi',
+        contributionId: localCopyId(3),
+        starts: const [Duration(seconds: 1)],
+      );
+      await app.at(tester, 6000);
+      expect(_style(tester, 'Own line one').color, _colors(tester).primaryText);
+      expect(
+        _style(tester, 'Own line two').color,
+        isNot(_colors(tester).primaryText),
+        reason: 'not timed yet',
+      );
     });
 
     testWidgets('another track does not show it', (tester) async {

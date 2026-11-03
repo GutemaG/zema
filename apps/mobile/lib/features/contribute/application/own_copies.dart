@@ -5,6 +5,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
 import '../../../app/database/own_copies_dao.dart';
+import '../../../app/database/zema_database.dart';
 import '../../account/application/account_providers.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/data/lyrics_links_repository.dart';
@@ -33,8 +34,9 @@ List<ContributionError> draftErrors(ContributionDraft draft) => {
 }.toList();
 
 /// Saves draft [id] ([draft]) on this phone only, for its track: no account
-/// is needed, and the track shows the lyrics (marked as on this phone) until
-/// they are saved again or sent. The draft stays, to edit or send later.
+/// is needed, and the track shows the lyrics (marked as on this phone),
+/// synced as far as they are timed. The draft stays, to edit or send later,
+/// and the saved lyrics follow its changes (see [refreshLocalCopy]).
 ///
 /// Throws a [ContributionFailure] when the lyrics break a rule, or the draft
 /// has no track.
@@ -43,36 +45,55 @@ Future<void> saveDraftLocally(
   int id,
   ContributionDraft draft,
 ) async {
-  final trackId =
-      draft.trackId ??
-      (throw ContributionFailure(
-        'Draft $id: no track',
-        code: ContributionError.missingSong.code,
-      ));
+  if (draft.trackId == null) {
+    throw ContributionFailure(
+      'Draft $id: no track',
+      code: ContributionError.missingSong.code,
+    );
+  }
   if (draft.lyricsErrors case [final error, ...]) {
     throw ContributionFailure('Draft $id: ${error.code}', code: error.code);
   }
+  await ref.read(databaseProvider).ownCopiesDao.add(localCopyOf(id, draft)!);
+}
+
+/// Updates the lyrics saved on this phone from draft [id] to [draft], when
+/// there are some and [draft]'s lyrics are fine; so syncing shows in the
+/// player as it goes.
+Future<void> refreshLocalCopy(
+  ZemaDatabase database,
+  int id,
+  ContributionDraft draft,
+) async {
+  if (draft.lyricsErrors.isNotEmpty) return;
+  final copy = localCopyOf(id, draft);
+  if (copy == null || !await database.ownCopiesDao.has(copy.contributionId)) {
+    return;
+  }
+  await database.ownCopiesDao.add(copy);
+}
+
+/// The lyrics saved on this phone from draft [id]: its lyrics, and with a
+/// recording the starts of the lines timed so far, in order (a partial
+/// timing). Null without a track.
+OwnCopy? localCopyOf(int id, ContributionDraft draft) {
+  final trackId = draft.trackId;
+  if (trackId == null) return null;
   final recording = draft.recording;
-  await ref
-      .read(databaseProvider)
-      .ownCopiesDao
-      .add(
-        OwnCopy(
-          contributionId: localCopyId(id),
-          kind: draft.kind,
-          song: draft.song,
-          recording: recording,
-          timing: recording == null || !draft.synced
-              ? null
-              : SyncTiming(
-                  recordingId: recording.id,
-                  starts: [for (final s in draft.starts) s!],
-                ),
-          trackId: trackId,
-          audioPath: draft.audioPath,
-          submittedAt: clock.now(),
-        ),
-      );
+  final starts = startsFor(draft.starts, sungLineCount(draft.song));
+  final timed = [for (final s in starts.takeWhile((s) => s != null)) s!];
+  return OwnCopy(
+    contributionId: localCopyId(id),
+    kind: draft.kind,
+    song: draft.song,
+    recording: recording,
+    timing: recording == null || timed.isEmpty
+        ? null
+        : SyncTiming(recordingId: recording.id, starts: timed),
+    trackId: trackId,
+    audioPath: draft.audioPath,
+    submittedAt: clock.now(),
+  );
 }
 
 /// Sends draft [id] ([draft]) for review, or again when it resubmits one

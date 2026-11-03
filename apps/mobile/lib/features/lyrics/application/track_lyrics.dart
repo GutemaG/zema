@@ -103,7 +103,8 @@ TrackLyrics _pendingLyrics(OwnCopy own) {
   SyncedLyrics? synced;
   if (own.timing case final timing?) {
     try {
-      synced = SyncedLyrics.of(song, timing);
+      // Lyrics saved on this phone may be timed only part of the way.
+      synced = SyncedLyrics.of(song, timing, partial: own.localDraftId != null);
     } on LyricsFormatFailure catch (e) {
       _log.warning('Own timing does not fit ${own.contributionId}', e);
     }
