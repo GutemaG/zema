@@ -47,8 +47,19 @@ final nowPlayingShowsLyricsProvider = Provider.family<bool, int>(
           false),
 );
 
+/// Whether Now Playing's lyrics fill the screen for track [trackId]: chosen,
+/// showing its lyrics, and it has some (a next song without lyrics doesn't
+/// leave the user on an empty screen).
+final nowPlayingIsFullScreenProvider = Provider.family<bool, int>(
+  (ref, trackId) =>
+      ref.watch(nowPlayingFullScreenProvider) &&
+      ref.watch(nowPlayingShowsLyricsProvider(trackId)) &&
+      (ref.watch(trackLyricsProvider(trackId)).value?.lines.isNotEmpty ??
+          false),
+);
+
 /// Whether the lyrics fill Now Playing, with only the transport controls
-/// under them.
+/// under them (see [nowPlayingIsFullScreenProvider]).
 final nowPlayingFullScreenProvider =
     NotifierProvider<NowPlayingFullScreen, bool>(NowPlayingFullScreen.new);
 
@@ -73,9 +84,7 @@ class NowPlayingScreen extends ConsumerWidget {
     final snapshot = ref.watch(playerStateProvider).value;
     final track = snapshot?.current;
     final fullScreen =
-        track != null &&
-        ref.watch(nowPlayingShowsLyricsProvider(track.id)) &&
-        ref.watch(nowPlayingFullScreenProvider);
+        track != null && ref.watch(nowPlayingIsFullScreenProvider(track.id));
 
     void close() => Navigator.of(context).maybePop();
 
@@ -154,7 +163,7 @@ class _Body extends ConsumerWidget {
     final colors = context.zemaColors;
     final textTheme = Theme.of(context).textTheme;
     final lyricsMode = ref.watch(nowPlayingShowsLyricsProvider(track.id));
-    final fullScreen = lyricsMode && ref.watch(nowPlayingFullScreenProvider);
+    final fullScreen = ref.watch(nowPlayingIsFullScreenProvider(track.id));
     final lyrics = LyricsView(
       // A new view per track, so it starts at the top.
       key: ValueKey(track.id),

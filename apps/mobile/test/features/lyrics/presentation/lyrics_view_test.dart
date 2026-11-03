@@ -183,6 +183,24 @@ void main() {
       expect(find.text(_l10n.lyricsNotSynced), findsNothing);
     });
 
+    testWidgets('full screen ends for a next song without lyrics', (
+      tester,
+    ) async {
+      final app = await _pump(tester, titles: const ['Galatoomi', 'Kidus']);
+      // Lyrics chosen with the button, so they stay on for the next song.
+      await tester.tap(find.byTooltip(_l10n.playerShowArtwork));
+      await _settle(tester);
+      await tester.tap(find.byTooltip(_l10n.playerShowLyrics));
+      await _settle(tester);
+      await tester.tap(find.byTooltip(_l10n.lyricsFullScreen));
+      await _settle(tester);
+      expect(find.text(_l10n.playerNowPlaying), findsNothing);
+
+      await app.handler.skipToNext();
+      await _settle(tester);
+      expect(find.text(_l10n.playerNowPlaying), findsOneWidget);
+    });
+
     testWidgets('full screen shows only the lyrics and the controls; back '
         'leaves it', (tester) async {
       await _pump(tester);
