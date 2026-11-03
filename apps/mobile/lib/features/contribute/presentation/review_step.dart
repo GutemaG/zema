@@ -17,6 +17,7 @@ import '../../lyrics/application/lyrics_links.dart';
 import '../application/my_contributions.dart';
 import '../application/own_copies.dart';
 import 'correction_changes.dart';
+import 'recording_step.dart';
 import 'song_lines.dart';
 
 /// How a draft's timings will be sent, as S22 shows them.
@@ -88,8 +89,8 @@ final correctionBaseProvider = FutureProvider.autoDispose
 
 /// S22, step 4: the song, the lyrics in play order, the recording and the
 /// sync status, each with Edit; Submit for review (a guest signs in first),
-/// and for a draft made for a song on the phone, Save on this phone, which
-/// needs no account.
+/// and Save on this phone, which needs no account and asks for the song
+/// when the draft has none.
 class ReviewStep extends ConsumerStatefulWidget {
   const ReviewStep({super.key, required this.id, required this.draft});
 
@@ -115,13 +116,22 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final router = GoRouter.of(context);
+    final editor = ref.read(draftEditorProvider(widget.id).notifier);
+    var draft = widget.draft;
+    // Lyrics without a recording on the phone are kept for the song chosen.
+    if (draft.trackId == null) {
+      final track = await pickTrack(context);
+      if (track == null || !mounted) return;
+      draft = draft.copyWith(trackId: () => track.id);
+      editor.edit((d) => d.copyWith(trackId: () => track.id));
+    }
     setState(() {
       _sending = true;
       _problem = null;
     });
     try {
-      await ref.read(draftEditorProvider(widget.id).notifier).flush();
-      await saveDraftLocally(ref, widget.id, widget.draft);
+      await editor.flush();
+      await saveDraftLocally(ref, widget.id, draft);
     } on Object catch (e) {
       if (mounted) {
         setState(() {
@@ -364,26 +374,22 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 ),
                 const SizedBox(height: 8),
               ],
-              if (draft.trackId != null) ...[
-                SizedBox(
-                  height: 48,
-                  child: OutlinedButton(
-                    onPressed: _sending
-                        ? null
-                        : () => unawaited(_saveLocally()),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(ZemaRadius.large),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.contributeSaveLocal,
-                      textAlign: TextAlign.center,
+              SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: _sending ? null : () => unawaited(_saveLocally()),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(ZemaRadius.large),
                     ),
                   ),
+                  child: Text(
+                    l10n.contributeSaveLocal,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                const SizedBox(height: 8),
-              ],
+              ),
+              const SizedBox(height: 8),
               SizedBox(
                 height: 56,
                 child: FilledButton(

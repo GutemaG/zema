@@ -121,6 +121,9 @@ void main() {
       syncPlayer: FakeSyncPlayer(),
       contributions: contributions,
       catalog: catalog,
+      libraryScanner: FakeLibraryScanner([
+        scannedAudio(1, '/music/Tizita.mp3', title: 'Tizita', artist: 'Mulatu'),
+      ]),
     );
   }
 
@@ -289,9 +292,36 @@ void main() {
       expect(find.text(_l10n.contributeSubmitFixLyrics), findsOneWidget);
     });
 
-    testWidgets('is not offered without a song on the phone', (tester) async {
+    testWidgets('without a song on the phone it asks which one', (
+      tester,
+    ) async {
+      await open(
+        tester,
+        auth: FakeAuthRepository(),
+        draft: syncedDraft.copyWith(
+          trackId: () => null,
+          recording: () => null,
+          starts: const [],
+        ),
+      );
+      await tap(tester, save());
+      expect(find.text(_l10n.contributeChooseSong), findsOneWidget);
+      await tap(tester, find.text('Tizita'));
+
+      final tracks = (await tester.runAsync(db.libraryDao.allTracks))!;
+      final copy = (await copies()).single;
+      expect(copy.trackId, tracks.single.id);
+      expect(copy.timing, isNull);
+      expect((await drafts(tester)).single.trackId, tracks.single.id);
+    });
+
+    testWidgets('closing the song list saves nothing', (tester) async {
       await open(tester, draft: syncedDraft.copyWith(trackId: () => null));
-      expect(save(), findsNothing);
+      await tap(tester, save());
+      await tester.tapAt(const Offset(200, 20));
+      await tester.pumpAndSettle();
+      expect(await copies(), isEmpty);
+      expect(contributions.calls, 0);
     });
 
     testWidgets('sending it later removes the saved copy', (tester) async {

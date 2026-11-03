@@ -89,12 +89,7 @@ class _RecordingStepState extends ConsumerState<RecordingStep> {
 
   Future<void> _chooseLocal() async {
     setState(() => _choice = RecordingSource.localFile);
-    final track = await showModalBottomSheet<Track>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (context) => _TrackPicker(selected: _draft.trackId),
-    );
+    final track = await pickTrack(context, selected: _draft.trackId);
     if (track == null || !mounted) return;
     _fillArtist(track.artist);
     _edit(
@@ -635,6 +630,16 @@ class _VideoInfo extends ConsumerWidget {
 }
 
 /// A searchable list of the phone's songs; returns the one tapped.
+/// Asks which song on the phone to use, [selected] marked; null when none
+/// is chosen.
+Future<Track?> pickTrack(BuildContext context, {int? selected}) =>
+    showModalBottomSheet<Track>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => _TrackPicker(selected: selected),
+    );
+
 class _TrackPicker extends ConsumerStatefulWidget {
   const _TrackPicker({required this.selected});
 

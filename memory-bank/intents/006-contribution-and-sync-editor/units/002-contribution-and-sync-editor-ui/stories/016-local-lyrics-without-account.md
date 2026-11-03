@@ -20,7 +20,7 @@ implemented: true
 ## Acceptance Criteria
 
 - [x] **Given** a guest, **When** they start lyrics from any entry point or share a file, **Then** a draft opens with no sign-in prompt, and S05 lists their drafts
-- [x] **Given** a draft for a song on the phone, **When** Save on this phone is tapped, **Then** the track shows the lyrics (synced when timed), marked "On this phone"; the draft stays, to edit or send later
+- [x] **Given** a draft, **When** Save on this phone is tapped (choosing the song on the phone if the draft has none), **Then** the track shows the lyrics (synced when timed), marked "On this phone"; the draft stays, to edit or send later
 - [x] **Given** a guest on S22, **When** Submit for review is tapped, **Then** C09 asks them to sign in, and the draft is sent only after they do
 - [x] **Given** saved lyrics, **When** the draft is sent or deleted, **Then** the saved copy goes
 - [x] **Given** sign-out or account deletion, **When** it runs, **Then** drafts and saved lyrics stay; only copies of sent contributions go
