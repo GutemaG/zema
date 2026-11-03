@@ -73,18 +73,26 @@ class _RecordingStepState extends ConsumerState<RecordingStep> {
   /// Makes the song on the phone the lyrics are for the recording, once the
   /// library has it, unless another recording was chosen meanwhile.
   void _useLinkedTrack() {
-    late final ProviderSubscription<AsyncValue<List<Track>>> subscription;
-    subscription = ref.listenManual(libraryTracksProvider, (_, next) {
-      final tracks = next.value;
-      if (tracks == null) return;
-      subscription.close();
+    void use(List<Track> tracks) {
       final track = tracks.where((t) => t.id == _draft.trackId).firstOrNull;
       if (track != null &&
           _draft.recording == null &&
           _choice == RecordingSource.localFile) {
         _useTrack(track);
       }
-    }, fireImmediately: true);
+    }
+
+    // Usually the library is loaded already; otherwise wait for it.
+    if (ref.read(libraryTracksProvider).value case final tracks?) {
+      return use(tracks);
+    }
+    late final ProviderSubscription<AsyncValue<List<Track>>> subscription;
+    subscription = ref.listenManual(libraryTracksProvider, (_, next) {
+      if (next.value case final tracks?) {
+        subscription.close();
+        if (mounted) use(tracks);
+      }
+    });
   }
 
   @override

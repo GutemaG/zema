@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as p;
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/routes.dart';
@@ -253,6 +255,27 @@ void main() {
     expect(draft.recording?.source, RecordingSource.localFile);
     expect(draft.recording?.fileName, 'Tizita.mp3');
     expect(draft.trackId, id);
+  });
+
+  testWidgets('with the library already loaded, the song is chosen too', (
+    tester,
+  ) async {
+    await start(tester, location: AppRoutes.library);
+    expect(find.text('Tizita'), findsOneWidget, reason: 'library loaded');
+    final id = await trackId('Tizita');
+    final draftId = await db.draftsDao.create(
+      ContributionDraft(song: lyrics, trackId: id, step: DraftStep.recording),
+      now: DateTime.utc(2026, 11, 2),
+    );
+    unawaited(
+      GoRouter.of(tester.element(find.text('Tizita')))
+          .push<void>(AppRoutes.draft(draftId)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tizita.mp3 · 4:05'), findsOneWidget);
+    expect(enabled(tester, _l10n.contributeNextSync), isTrue);
+    expect((await saved(tester)).recording?.fileName, 'Tizita.mp3');
   });
 
   testWidgets('a YouTube link: looked up, the channel fills the artist, and '
