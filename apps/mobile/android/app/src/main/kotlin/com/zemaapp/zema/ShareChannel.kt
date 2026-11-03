@@ -20,12 +20,15 @@ import java.util.concurrent.Executors
  * `AndroidShareReceiver`. Each file is copied into `files/shared_audio`, so it
  * stays readable after the sharing app's permission ends.
  *
+ * One per Flutter engine (see [MainActivity]): the engine outlives activities, since
+ * it keeps playing music, and a share from another app may open a new activity on it.
+ *
  * Methods:
- * - `takeShared` → the file that started the app, once ({path, name, durationMs}),
- *   or null; waits for its copy to finish
+ * - `takeShared` → the file shared before Dart first asked, once ({path, name,
+ *   durationMs}), or null; waits for its copy to finish
  *
  * Calls to Dart:
- * - `shared` {path, name, durationMs} for files shared while the app runs
+ * - `shared` {path, name, durationMs} for files shared after that
  */
 class ShareChannel(private val context: Context, messenger: BinaryMessenger) :
     MethodChannel.MethodCallHandler {
@@ -33,6 +36,9 @@ class ShareChannel(private val context: Context, messenger: BinaryMessenger) :
     private val channel = MethodChannel(messenger, NAME)
     private val executor = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
+
+    // Whether Dart has asked for the initial share; later shares are sent to it.
+    private var asked = false
 
     // The share that started the app: copying, then ready to hand over once.
     private var initialCopying = false
@@ -50,21 +56,28 @@ class ShareChannel(private val context: Context, messenger: BinaryMessenger) :
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "takeShared" -> if (initialCopying) {
-                waiting = result
-            } else {
-                result.success(initial)
-                initial = null
+            "takeShared" -> {
+                asked = true
+                if (initialCopying) {
+                    waiting = result
+                } else {
+                    result.success(initial)
+                    initial = null
+                }
             }
             else -> result.notImplemented()
         }
     }
 
-    /** Copies the audio file [intent] shares, if any; [started] for the intent that started the app. */
-    fun handle(intent: Intent?, started: Boolean) {
+    /**
+     * Copies the audio file [intent] shares, if any: kept for `takeShared` until Dart has
+     * asked for it, sent to Dart after that, whichever activity [intent] came to.
+     */
+    fun handle(intent: Intent?) {
         if (intent?.action != Intent.ACTION_SEND) return
         if (intent.type?.startsWith("audio/") != true) return
         val uri = streamOf(intent) ?: return
+        val started = !asked
         if (started) initialCopying = true
         executor.execute {
             val copied = try {
