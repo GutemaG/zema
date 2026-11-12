@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -15,6 +17,7 @@ import '../../lyrics/application/track_lyrics.dart';
 import '../../lyrics/presentation/lyrics_view.dart';
 import '../application/player_providers.dart';
 import '../../../shared/format_duration.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../data/player_snapshot.dart';
 import '../data/sleep_timer.dart';
 import 'mini_player.dart';
@@ -139,7 +142,14 @@ class NowPlayingScreen extends ConsumerWidget {
                   ),
                 Expanded(
                   child: snapshot == null || track == null
-                      ? const SizedBox.shrink()
+                      ? EmptyState(
+                          kind: EmptyStateKind.empty,
+                          icon: Icons.music_off_rounded,
+                          title: l10n.playerNothingTitle,
+                          message: l10n.playerNothingMessage,
+                          actionLabel: l10n.listenTitle,
+                          onAction: () => context.push(AppRoutes.listen),
+                        )
                       : _Body(snapshot: snapshot, track: track),
                 ),
               ],

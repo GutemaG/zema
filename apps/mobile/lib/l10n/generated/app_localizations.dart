@@ -4157,6 +4157,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The song has ended'**
   String get listenSongEnded;
+
+  /// Now Playing with no song loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is playing'**
+  String get playerNothingTitle;
+
+  /// Now Playing with no song loaded; the button below opens Listen
+  ///
+  /// In en, this message translates to:
+  /// **'Play a song from your library, or let Zema listen to find the song playing around you.'**
+  String get playerNothingMessage;
 }
 
 class _AppLocalizationsDelegate

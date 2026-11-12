@@ -168,7 +168,7 @@ online lookup) and Part B are not started.
 | FR-2 Fingerprints in the catalog | Not started | Needs the backend. |
 | FR-3 Online lookup | Not started | Needs FR-2. |
 | FR-4 Offline index | Partly | Every library song is fingerprinted on the phone (Kotlin decoder, saved in Drift, searched in a worker isolate). Left: catalog recordings, favorites, budget setting, Wi-Fi updates. |
-| FR-5 Listen | Partly | Listen from Home: permission, listening state, checkpoints at 3/6/10 s, found / not found / failed. Left: Listen on Search and Now playing, server lookup, offline queue, "Show floating lyrics". |
+| FR-5 Listen | Done offline | Listen from Home, Search, and Now playing when nothing is playing: permission, listening state, checkpoints at 3/6/10 s, found / not found / failed. Left, with other FRs: server lookup and the offline queue (FR-3), "Show floating lyrics" (FR-14). |
 | FR-6 Lock screen and home screen | Not started | |
 | FR-7 Synced lyrics from a match | Done for library songs | Show lyrics follows the music by clock, Re-sync, end of song → Listen again, plain lyrics when not synced, Play on this phone from the matched place. An unsure place (repeated chorus) is flagged. Left: share the view with FR-15; file offset from FR-8. |
 | FR-8 Identify library files | Not started | Library songs are fingerprinted, but not yet matched to catalog recordings. |

@@ -2460,4 +2460,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listenSongEnded => 'The song has ended';
+
+  @override
+  String get playerNothingTitle => 'Nothing is playing';
+
+  @override
+  String get playerNothingMessage =>
+      'Play a song from your library, or let Zema listen to find the song playing around you.';
 }

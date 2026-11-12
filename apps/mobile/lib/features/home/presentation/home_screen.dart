@@ -10,6 +10,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/tab_page.dart';
 import '../../account/presentation/widgets/profile_button.dart';
+import '../../identify/presentation/listen_button.dart';
 import '../../library/application/library_providers.dart';
 import '../../library/application/library_sync_controller.dart';
 import '../../library/presentation/library_access_gate.dart';
@@ -32,12 +33,7 @@ class HomeScreen extends StatelessWidget {
     return TabPage(
       title: l10n.appTitle,
       actions: [
-        IconButton(
-          icon: const Icon(Icons.mic_none_rounded),
-          tooltip: l10n.listenTooltip,
-          constraints: tap,
-          onPressed: () => context.push(AppRoutes.listen),
-        ),
+        const ListenButton(),
         IconButton(
           icon: const Icon(Icons.search),
           tooltip: l10n.homeSearchTooltip,

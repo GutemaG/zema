@@ -14,6 +14,7 @@ import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/tab_page.dart';
+import '../../identify/presentation/listen_button.dart';
 import '../../library/application/album_grouping.dart';
 import '../../library/presentation/library_access_gate.dart';
 import '../../library/presentation/song_menu.dart';
@@ -42,6 +43,7 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return TabPage(
       title: AppLocalizations.of(context).navSearch,
+      actions: const [ListenButton()],
       child: const LibraryAccessGate(child: _SearchBody()),
     );
   }

@@ -3196,5 +3196,13 @@
   "listenSongEnded": "The song has ended",
   "@listenSongEnded": {
     "description": "Lyrics from a match: the matched song is over"
+  },
+  "playerNothingTitle": "Nothing is playing",
+  "@playerNothingTitle": {
+    "description": "Now Playing with no song loaded"
+  },
+  "playerNothingMessage": "Play a song from your library, or let Zema listen to find the song playing around you.",
+  "@playerNothingMessage": {
+    "description": "Now Playing with no song loaded; the button below opens Listen"
   }
 }
