@@ -265,7 +265,9 @@ class ListenController extends Notifier<ListenState> {
         _log.fine('At $heard: $matches');
         final sure = matches.isNotEmpty && !matches.first.ambiguousPosition;
         if (sure || (last && matches.isNotEmpty)) {
-          state = _found(matches.first, startedAt!, sure: sure);
+          final found = _found(matches.first, startedAt!, sure: sure);
+          state = found;
+          if (found is ListenFound) _remember(found.track);
           await _stopRecording();
         } else if (last) {
           state = const ListenNotFound();
@@ -314,6 +316,18 @@ class ListenController extends Notifier<ListenState> {
     }
     // Fingerprinted, then removed from the library.
     return const ListenNotFound();
+  }
+
+  void _remember(Track track) {
+    unawaited(
+      ref
+          .read(databaseProvider)
+          .identifiedDao
+          .add(track.id, clock.now())
+          .catchError((Object e, StackTrace s) {
+            _log.warning('Could not save to History', e, s);
+          }),
+    );
   }
 
   /// Runs [work] after the microphone work already asked for, even if some of

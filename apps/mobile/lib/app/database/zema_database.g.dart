@@ -6498,6 +6498,266 @@ class TrackFingerprintsCompanion extends UpdateCompanion<TrackFingerprintRow> {
   }
 }
 
+class $IdentifiedSongsTable extends IdentifiedSongs
+    with TableInfo<$IdentifiedSongsTable, IdentifiedSongRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $IdentifiedSongsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tracks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _identifiedAtMeta = const VerificationMeta(
+    'identifiedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> identifiedAt = GeneratedColumn<DateTime>(
+    'identified_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, trackId, identifiedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'identified_songs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<IdentifiedSongRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('identified_at')) {
+      context.handle(
+        _identifiedAtMeta,
+        identifiedAt.isAcceptableOrUnknown(
+          data['identified_at']!,
+          _identifiedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_identifiedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  IdentifiedSongRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return IdentifiedSongRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      )!,
+      identifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}identified_at'],
+      )!,
+    );
+  }
+
+  @override
+  $IdentifiedSongsTable createAlias(String alias) {
+    return $IdentifiedSongsTable(attachedDatabase, alias);
+  }
+}
+
+class IdentifiedSongRow extends DataClass
+    implements Insertable<IdentifiedSongRow> {
+  final int id;
+  final int trackId;
+  final DateTime identifiedAt;
+  const IdentifiedSongRow({
+    required this.id,
+    required this.trackId,
+    required this.identifiedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['track_id'] = Variable<int>(trackId);
+    map['identified_at'] = Variable<DateTime>(identifiedAt);
+    return map;
+  }
+
+  IdentifiedSongsCompanion toCompanion(bool nullToAbsent) {
+    return IdentifiedSongsCompanion(
+      id: Value(id),
+      trackId: Value(trackId),
+      identifiedAt: Value(identifiedAt),
+    );
+  }
+
+  factory IdentifiedSongRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return IdentifiedSongRow(
+      id: serializer.fromJson<int>(json['id']),
+      trackId: serializer.fromJson<int>(json['trackId']),
+      identifiedAt: serializer.fromJson<DateTime>(json['identifiedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trackId': serializer.toJson<int>(trackId),
+      'identifiedAt': serializer.toJson<DateTime>(identifiedAt),
+    };
+  }
+
+  IdentifiedSongRow copyWith({int? id, int? trackId, DateTime? identifiedAt}) =>
+      IdentifiedSongRow(
+        id: id ?? this.id,
+        trackId: trackId ?? this.trackId,
+        identifiedAt: identifiedAt ?? this.identifiedAt,
+      );
+  IdentifiedSongRow copyWithCompanion(IdentifiedSongsCompanion data) {
+    return IdentifiedSongRow(
+      id: data.id.present ? data.id.value : this.id,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      identifiedAt: data.identifiedAt.present
+          ? data.identifiedAt.value
+          : this.identifiedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IdentifiedSongRow(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('identifiedAt: $identifiedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, trackId, identifiedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is IdentifiedSongRow &&
+          other.id == this.id &&
+          other.trackId == this.trackId &&
+          other.identifiedAt == this.identifiedAt);
+}
+
+class IdentifiedSongsCompanion extends UpdateCompanion<IdentifiedSongRow> {
+  final Value<int> id;
+  final Value<int> trackId;
+  final Value<DateTime> identifiedAt;
+  const IdentifiedSongsCompanion({
+    this.id = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.identifiedAt = const Value.absent(),
+  });
+  IdentifiedSongsCompanion.insert({
+    this.id = const Value.absent(),
+    required int trackId,
+    required DateTime identifiedAt,
+  }) : trackId = Value(trackId),
+       identifiedAt = Value(identifiedAt);
+  static Insertable<IdentifiedSongRow> custom({
+    Expression<int>? id,
+    Expression<int>? trackId,
+    Expression<DateTime>? identifiedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trackId != null) 'track_id': trackId,
+      if (identifiedAt != null) 'identified_at': identifiedAt,
+    });
+  }
+
+  IdentifiedSongsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? trackId,
+    Value<DateTime>? identifiedAt,
+  }) {
+    return IdentifiedSongsCompanion(
+      id: id ?? this.id,
+      trackId: trackId ?? this.trackId,
+      identifiedAt: identifiedAt ?? this.identifiedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (identifiedAt.present) {
+      map['identified_at'] = Variable<DateTime>(identifiedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('IdentifiedSongsCompanion(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('identifiedAt: $identifiedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -6522,6 +6782,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $TrackOverridesTable trackOverrides = $TrackOverridesTable(this);
   late final $TrackFingerprintsTable trackFingerprints =
       $TrackFingerprintsTable(this);
+  late final $IdentifiedSongsTable identifiedSongs = $IdentifiedSongsTable(
+    this,
+  );
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -6559,6 +6822,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final FingerprintsDao fingerprintsDao = FingerprintsDao(
     this as ZemaDatabase,
   );
+  late final IdentifiedDao identifiedDao = IdentifiedDao(this as ZemaDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6580,6 +6844,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     ownCopies,
     trackOverrides,
     trackFingerprints,
+    identifiedSongs,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -6642,6 +6907,13 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('track_fingerprints', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('identified_songs', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -6813,6 +7085,26 @@ final class $$TracksTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _trackFingerprintsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$IdentifiedSongsTable, List<IdentifiedSongRow>>
+  _identifiedSongsRefsTable(_$ZemaDatabase db) => MultiTypedResultKey.fromTable(
+    db.identifiedSongs,
+    aliasName: 'tracks__id__identified_songs__track_id',
+  );
+
+  $$IdentifiedSongsTableProcessedTableManager get identifiedSongsRefs {
+    final manager = $$IdentifiedSongsTableTableManager(
+      $_db,
+      $_db.identifiedSongs,
+    ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _identifiedSongsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -7070,6 +7362,31 @@ class $$TracksTableFilterComposer
           }) => $$TrackFingerprintsTableFilterComposer(
             $db: $db,
             $table: $db.trackFingerprints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> identifiedSongsRefs(
+    Expression<bool> Function($$IdentifiedSongsTableFilterComposer f) f,
+  ) {
+    final $$IdentifiedSongsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.identifiedSongs,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IdentifiedSongsTableFilterComposer(
+            $db: $db,
+            $table: $db.identifiedSongs,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7402,6 +7719,31 @@ class $$TracksTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> identifiedSongsRefs<T extends Object>(
+    Expression<T> Function($$IdentifiedSongsTableAnnotationComposer a) f,
+  ) {
+    final $$IdentifiedSongsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.identifiedSongs,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$IdentifiedSongsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.identifiedSongs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TracksTableTableManager
@@ -7425,6 +7767,7 @@ class $$TracksTableTableManager
             bool lyricsLinksRefs,
             bool trackOverridesRefs,
             bool trackFingerprintsRefs,
+            bool identifiedSongsRefs,
           })
         > {
   $$TracksTableTableManager(_$ZemaDatabase db, $TracksTable table)
@@ -7523,6 +7866,7 @@ class $$TracksTableTableManager
                 lyricsLinksRefs = false,
                 trackOverridesRefs = false,
                 trackFingerprintsRefs = false,
+                identifiedSongsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -7534,6 +7878,7 @@ class $$TracksTableTableManager
                     if (lyricsLinksRefs) db.lyricsLinks,
                     if (trackOverridesRefs) db.trackOverrides,
                     if (trackFingerprintsRefs) db.trackFingerprints,
+                    if (identifiedSongsRefs) db.identifiedSongs,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -7678,6 +8023,26 @@ class $$TracksTableTableManager
                           referencedColumn: 'track_id',
                           typedResults: items,
                         ),
+                      if (identifiedSongsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TrackRow,
+                          $TracksTable,
+                          IdentifiedSongRow,
+                          $IdentifiedSongsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TracksTableReferences
+                              ._identifiedSongsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TracksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).identifiedSongsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'track_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -7706,6 +8071,7 @@ typedef $$TracksTableProcessedTableManager =
         bool lyricsLinksRefs,
         bool trackOverridesRefs,
         bool trackFingerprintsRefs,
+        bool identifiedSongsRefs,
       })
     >;
 typedef $$HiddenFoldersTableCreateCompanionBuilder =
@@ -11832,6 +12198,290 @@ typedef $$TrackFingerprintsTableProcessedTableManager =
       TrackFingerprintRow,
       PrefetchHooks Function({bool trackId})
     >;
+typedef $$IdentifiedSongsTableCreateCompanionBuilder =
+    IdentifiedSongsCompanion Function({
+      Value<int> id,
+      required int trackId,
+      required DateTime identifiedAt,
+    });
+typedef $$IdentifiedSongsTableUpdateCompanionBuilder =
+    IdentifiedSongsCompanion Function({
+      Value<int> id,
+      Value<int> trackId,
+      Value<DateTime> identifiedAt,
+    });
+
+final class $$IdentifiedSongsTableReferences
+    extends
+        BaseReferences<
+          _$ZemaDatabase,
+          $IdentifiedSongsTable,
+          IdentifiedSongRow
+        > {
+  $$IdentifiedSongsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
+      db.tracks.createAlias('identified_songs__track_id__tracks__id');
+
+  $$TracksTableProcessedTableManager get trackId {
+    final $_column = $_itemColumn<int>('track_id')!;
+
+    final manager = $$TracksTableTableManager(
+      $_db,
+      $_db.tracks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_trackIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$IdentifiedSongsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $IdentifiedSongsTable> {
+  $$IdentifiedSongsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get identifiedAt => $composableBuilder(
+    column: $table.identifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TracksTableFilterComposer get trackId {
+    final $$TracksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableFilterComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IdentifiedSongsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $IdentifiedSongsTable> {
+  $$IdentifiedSongsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get identifiedAt => $composableBuilder(
+    column: $table.identifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TracksTableOrderingComposer get trackId {
+    final $$TracksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IdentifiedSongsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $IdentifiedSongsTable> {
+  $$IdentifiedSongsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get identifiedAt => $composableBuilder(
+    column: $table.identifiedAt,
+    builder: (column) => column,
+  );
+
+  $$TracksTableAnnotationComposer get trackId {
+    final $$TracksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$IdentifiedSongsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $IdentifiedSongsTable,
+          IdentifiedSongRow,
+          $$IdentifiedSongsTableFilterComposer,
+          $$IdentifiedSongsTableOrderingComposer,
+          $$IdentifiedSongsTableAnnotationComposer,
+          $$IdentifiedSongsTableCreateCompanionBuilder,
+          $$IdentifiedSongsTableUpdateCompanionBuilder,
+          (IdentifiedSongRow, $$IdentifiedSongsTableReferences),
+          IdentifiedSongRow,
+          PrefetchHooks Function({bool trackId})
+        > {
+  $$IdentifiedSongsTableTableManager(
+    _$ZemaDatabase db,
+    $IdentifiedSongsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$IdentifiedSongsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$IdentifiedSongsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$IdentifiedSongsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> trackId = const Value.absent(),
+                Value<DateTime> identifiedAt = const Value.absent(),
+              }) => IdentifiedSongsCompanion(
+                id: id,
+                trackId: trackId,
+                identifiedAt: identifiedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int trackId,
+                required DateTime identifiedAt,
+              }) => IdentifiedSongsCompanion.insert(
+                id: id,
+                trackId: trackId,
+                identifiedAt: identifiedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$IdentifiedSongsTable, IdentifiedSongRow>(table),
+                  $$IdentifiedSongsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (trackId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.trackId,
+                        referencedTable: $$IdentifiedSongsTableReferences
+                            ._trackIdTable(db),
+                        referencedColumn: $$IdentifiedSongsTableReferences
+                            ._trackIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$IdentifiedSongsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $IdentifiedSongsTable,
+      IdentifiedSongRow,
+      $$IdentifiedSongsTableFilterComposer,
+      $$IdentifiedSongsTableOrderingComposer,
+      $$IdentifiedSongsTableAnnotationComposer,
+      $$IdentifiedSongsTableCreateCompanionBuilder,
+      $$IdentifiedSongsTableUpdateCompanionBuilder,
+      (IdentifiedSongRow, $$IdentifiedSongsTableReferences),
+      IdentifiedSongRow,
+      PrefetchHooks Function({bool trackId})
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -11868,4 +12518,6 @@ class $ZemaDatabaseManager {
       $$TrackOverridesTableTableManager(_db, _db.trackOverrides);
   $$TrackFingerprintsTableTableManager get trackFingerprints =>
       $$TrackFingerprintsTableTableManager(_db, _db.trackFingerprints);
+  $$IdentifiedSongsTableTableManager get identifiedSongs =>
+      $$IdentifiedSongsTableTableManager(_db, _db.identifiedSongs);
 }

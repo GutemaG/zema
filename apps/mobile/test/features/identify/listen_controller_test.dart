@@ -264,6 +264,8 @@ void main() {
       );
       expect(found.sure, isTrue);
       expect(microphone.stopped, 1);
+      final history = await db.identifiedDao.watchAll().first;
+      expect(history.map((r) => r.trackId), [found.track.id]);
     },
   );
 
@@ -322,6 +324,7 @@ void main() {
 
     expect(await listenUntilDone(), isA<ListenNotFound>());
     expect(microphone.stopped, 1);
+    expect(await db.identifiedDao.watchAll().first, isEmpty);
   });
 
   test('without fingerprints there is nothing to match', () async {

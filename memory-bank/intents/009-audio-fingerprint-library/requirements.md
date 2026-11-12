@@ -172,7 +172,7 @@ online lookup) and Part B are not started.
 | FR-6 Lock screen and home screen | Not started | |
 | FR-7 Synced lyrics from a match | Done for library songs | Show lyrics follows the music by clock, Re-sync, end of song → Listen again, plain lyrics when not synced, Play on this phone from the matched place. An unsure place (repeated chorus) is flagged. Left: share the view with FR-15; file offset from FR-8. |
 | FR-8 Identify library files | Not started | Library songs are fingerprinted, but not yet matched to catalog recordings. |
-| FR-9 History | Not started | |
+| FR-9 History | Done | Opened from Listen; newest first with date and time; tap plays the song; remove one or clear all; the same song again within 10 minutes stays one entry; kept on the phone only (schema v12). Left: the home-screen widget's latest song (FR-6). |
 | FR-10 Song not in the catalog | Not started | |
 | FR-11 – FR-18 (Part B) | Not started | |
 

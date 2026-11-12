@@ -41,6 +41,8 @@ abstract final class AppRoutes {
 
   static const String listenLyrics = '/listen/lyrics';
 
+  static const String listenHistory = '/listen/history';
+
   /// S23, above the shell; opened from S05 and Profile.
   static const String myContributions = '/my-contributions';
 

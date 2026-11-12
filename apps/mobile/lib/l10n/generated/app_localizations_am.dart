@@ -2467,4 +2467,32 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get playerNothingMessage =>
       'Play a song from your library, or let Zema listen to find the song playing around you.';
+
+  @override
+  String get listenHistoryTitle => 'History';
+
+  @override
+  String get listenHistoryEmptyTitle => 'No songs yet';
+
+  @override
+  String get listenHistoryEmptyMessage =>
+      'Songs Listen identifies show here. They stay on this phone.';
+
+  @override
+  String get listenHistoryClear => 'Clear all';
+
+  @override
+  String get listenHistoryClearTitle => 'Clear History?';
+
+  @override
+  String get listenHistoryClearMessage =>
+      'Every song is removed from History. The songs stay in your library.';
+
+  @override
+  String get listenHistoryRemove => 'Remove from History';
+
+  @override
+  String listenHistoryAt(String date, String time) {
+    return '$date, $time';
+  }
 }

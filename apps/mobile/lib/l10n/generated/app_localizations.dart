@@ -4169,6 +4169,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Play a song from your library, or let Zema listen to find the song playing around you.'**
   String get playerNothingMessage;
+
+  /// Songs identified by Listen; title and the Listen screen's button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get listenHistoryTitle;
+
+  /// History with nothing in it
+  ///
+  /// In en, this message translates to:
+  /// **'No songs yet'**
+  String get listenHistoryEmptyTitle;
+
+  /// History with nothing in it
+  ///
+  /// In en, this message translates to:
+  /// **'Songs Listen identifies show here. They stay on this phone.'**
+  String get listenHistoryEmptyMessage;
+
+  /// History: removes every entry
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get listenHistoryClear;
+
+  /// Confirmation before clearing History
+  ///
+  /// In en, this message translates to:
+  /// **'Clear History?'**
+  String get listenHistoryClearTitle;
+
+  /// Confirmation before clearing History
+  ///
+  /// In en, this message translates to:
+  /// **'Every song is removed from History. The songs stay in your library.'**
+  String get listenHistoryClearMessage;
+
+  /// History: removes one entry
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from History'**
+  String get listenHistoryRemove;
+
+  /// When a song was identified, e.g. 'Nov 12, 2026, 2:15 PM'
+  ///
+  /// In en, this message translates to:
+  /// **'{date}, {time}'**
+  String listenHistoryAt(String date, String time);
 }
 
 class _AppLocalizationsDelegate

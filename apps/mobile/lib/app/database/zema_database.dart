@@ -8,6 +8,7 @@ import 'collections_dao.dart';
 import 'drafts_dao.dart';
 import 'fingerprints_dao.dart';
 import 'history_dao.dart';
+import 'identified_dao.dart';
 import 'library_dao.dart';
 import 'lyrics_links_dao.dart';
 import 'own_copies_dao.dart';
@@ -39,6 +40,7 @@ part 'zema_database.g.dart';
     OwnCopies,
     TrackOverrides,
     TrackFingerprints,
+    IdentifiedSongs,
   ],
   daos: [
     LibraryDao,
@@ -54,6 +56,7 @@ part 'zema_database.g.dart';
     DraftsDao,
     OwnCopiesDao,
     FingerprintsDao,
+    IdentifiedDao,
   ],
 )
 class ZemaDatabase extends _$ZemaDatabase {
@@ -63,7 +66,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -99,6 +102,8 @@ class ZemaDatabase extends _$ZemaDatabase {
       from9To10: (m, schema) => m.createTable(schema.trackOverrides),
       // v11: audio fingerprints of library files.
       from10To11: (m, schema) => m.createTable(schema.trackFingerprints),
+      // v12: songs identified by Listen.
+      from11To12: (m, schema) => m.createTable(schema.identifiedSongs),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

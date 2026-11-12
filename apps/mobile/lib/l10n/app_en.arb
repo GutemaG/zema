@@ -3204,5 +3204,45 @@
   "playerNothingMessage": "Play a song from your library, or let Zema listen to find the song playing around you.",
   "@playerNothingMessage": {
     "description": "Now Playing with no song loaded; the button below opens Listen"
+  },
+  "listenHistoryTitle": "History",
+  "@listenHistoryTitle": {
+    "description": "Songs identified by Listen; title and the Listen screen's button tooltip"
+  },
+  "listenHistoryEmptyTitle": "No songs yet",
+  "@listenHistoryEmptyTitle": {
+    "description": "History with nothing in it"
+  },
+  "listenHistoryEmptyMessage": "Songs Listen identifies show here. They stay on this phone.",
+  "@listenHistoryEmptyMessage": {
+    "description": "History with nothing in it"
+  },
+  "listenHistoryClear": "Clear all",
+  "@listenHistoryClear": {
+    "description": "History: removes every entry"
+  },
+  "listenHistoryClearTitle": "Clear History?",
+  "@listenHistoryClearTitle": {
+    "description": "Confirmation before clearing History"
+  },
+  "listenHistoryClearMessage": "Every song is removed from History. The songs stay in your library.",
+  "@listenHistoryClearMessage": {
+    "description": "Confirmation before clearing History"
+  },
+  "listenHistoryRemove": "Remove from History",
+  "@listenHistoryRemove": {
+    "description": "History: removes one entry"
+  },
+  "listenHistoryAt": "{date}, {time}",
+  "@listenHistoryAt": {
+    "description": "When a song was identified, e.g. 'Nov 12, 2026, 2:15 PM'",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

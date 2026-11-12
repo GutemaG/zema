@@ -53,6 +53,13 @@ class _ListenScreenState extends ConsumerState<ListenScreen> {
         backgroundColor: Colors.transparent,
         title: Text(l10n.listenTitle),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: l10n.listenHistoryTitle,
+            icon: const Icon(Icons.history_rounded),
+            onPressed: () => context.push(AppRoutes.listenHistory),
+          ),
+        ],
       ),
       body: AnimatedContainer(
         duration: const Duration(milliseconds: 600),

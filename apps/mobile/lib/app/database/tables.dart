@@ -288,3 +288,12 @@ class TrackFingerprints extends Table {
   @override
   Set<Column<Object>> get primaryKey => {trackId};
 }
+
+/// Songs Listen identified (intent 009 FR-9), newest last.
+@DataClassName('IdentifiedSongRow')
+class IdentifiedSongs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get trackId =>
+      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+  DateTimeColumn get identifiedAt => dateTime()();
+}
