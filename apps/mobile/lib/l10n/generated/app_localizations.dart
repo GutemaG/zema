@@ -4217,6 +4217,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{date}, {time}'**
   String listenHistoryAt(String date, String time);
+
+  /// Listen over the lock screen: opens the song in the full app (asks to unlock)
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Zema'**
+  String get listenOpenInApp;
 }
 
 class _AppLocalizationsDelegate

@@ -11,12 +11,16 @@ import 'app/l10n/app_language.dart';
 import 'app/licenses.dart';
 import 'app/zema_app.dart';
 import 'features/account/application/auto_backup_task.dart';
+import 'features/identify/presentation/quick_listen_app.dart';
 import 'features/player/application/player_providers.dart';
 import 'features/player/data/audio_backend.dart';
 import 'features/player/data/zema_audio_handler.dart';
 import 'features/settings/application/settings_bootstrap.dart';
 import 'features/settings/application/settings_controller.dart';
 import 'l10n/generated/app_localizations.dart';
+
+@pragma('vm:entry-point')
+Future<void> listenMain() => runQuickListen();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

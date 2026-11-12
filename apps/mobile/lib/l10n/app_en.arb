@@ -3244,5 +3244,9 @@
         "type": "String"
       }
     }
+  },
+  "listenOpenInApp": "Open in Zema",
+  "@listenOpenInApp": {
+    "description": "Listen over the lock screen: opens the song in the full app (asks to unlock)"
   }
 }

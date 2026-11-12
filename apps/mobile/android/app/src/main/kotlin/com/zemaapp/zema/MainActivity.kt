@@ -11,19 +11,24 @@ import java.util.WeakHashMap
 // engine, not to an activity: made once, and disposed when it is destroyed.
 class MainActivity : AudioServiceActivity() {
     private var share: ShareChannel? = null
+    private var launch: LaunchChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        share = channelsOf(flutterEngine).share.also { it.handle(intent) }
+        val channels = channelsOf(flutterEngine)
+        share = channels.share.also { it.handle(intent) }
+        launch = channels.launch.also { it.handle(intent) }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         share?.handle(intent)
+        launch?.handle(intent)
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         share = null
+        launch = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 
@@ -34,6 +39,8 @@ class MainActivity : AudioServiceActivity() {
                 LibraryChannel(applicationContext, messenger),
                 ShareChannel(applicationContext, messenger),
                 AudioDecodeChannel(applicationContext, messenger),
+                LaunchChannel(messenger),
+                WidgetChannel(applicationContext, messenger),
             )
             engine.addEngineLifecycleListener(object : FlutterEngine.EngineLifecycleListener {
                 override fun onPreEngineRestart() {}
@@ -42,6 +49,8 @@ class MainActivity : AudioServiceActivity() {
                     made.library.dispose()
                     made.share.dispose()
                     made.audio.dispose()
+                    made.launch.dispose()
+                    made.widget.dispose()
                     channels.remove(engine)
                 }
             })
@@ -52,6 +61,8 @@ class MainActivity : AudioServiceActivity() {
         val library: LibraryChannel,
         val share: ShareChannel,
         val audio: AudioDecodeChannel,
+        val launch: LaunchChannel,
+        val widget: WidgetChannel,
     )
 
     companion object {

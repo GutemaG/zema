@@ -10,6 +10,10 @@ import '../features/contribute/application/my_contributions.dart';
 import '../features/contribute/application/recording.dart';
 import '../features/contribute/presentation/my_contributions_screen.dart';
 import '../features/contribute/data/shared_audio.dart';
+import '../features/identify/application/listen_controller.dart';
+import '../features/identify/application/quick_listen.dart';
+import '../features/identify/data/quick_launch.dart';
+import '../features/library/application/library_providers.dart';
 import '../features/library/application/library_sync_controller.dart';
 import '../features/library/application/play_history.dart';
 import '../features/catalog/application/catalog_index.dart';
@@ -62,8 +66,46 @@ class AppShell extends ConsumerWidget {
     if (context.mounted) await context.push<void>(AppRoutes.draft(id));
   }
 
+  static Future<void> _openLaunch(
+    BuildContext context,
+    WidgetRef ref,
+    LaunchRequest request,
+  ) async {
+    switch (request) {
+      case OpenListenHistory():
+        await context.push<void>(AppRoutes.listenHistory);
+      case final OpenListenMatch match:
+        final tracks = await ref.read(libraryTracksProvider.future);
+        final track = tracks.where((t) => t.id == match.trackId).firstOrNull;
+        if (track == null || !context.mounted) return;
+        ref
+            .read(pendingMatchProvider.notifier)
+            .set(
+              ListenFound(
+                track: track,
+                match: AudioMatch(
+                  recordingId: '${track.id}',
+                  position: match.position,
+                  score: match.score,
+                  playbackSpeed: match.speed,
+                  ambiguousPosition: !match.sure,
+                ),
+                startedAt: match.startedAt,
+                sure: match.sure,
+              ),
+            );
+        await context.push<void>(AppRoutes.listen);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(incomingLaunchesProvider, (_, next) {
+      if (next case AsyncData(:final value)) {
+        unawaited(_openLaunch(context, ref, value));
+      }
+    });
+    ref.listen(homeWidgetSyncProvider, (_, _) {});
     ref.listen(incomingSharesProvider, (_, next) {
       if (next case AsyncData(:final value)) {
         unawaited(_contributeShared(context, ref, value));

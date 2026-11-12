@@ -15,6 +15,7 @@ import '../../../shared/format_duration.dart';
 import '../../library/presentation/widgets/track_art.dart';
 import '../application/library_fingerprints.dart';
 import '../application/listen_controller.dart';
+import '../application/quick_listen.dart';
 import 'listen_lyrics_screen.dart';
 import 'listen_visuals.dart';
 
@@ -35,9 +36,14 @@ class _ListenScreenState extends ConsumerState<ListenScreen> {
   @override
   void initState() {
     super.initState();
+    final controller = ref.read(listenControllerProvider.notifier);
+    if (ref.read(quickListenHostProvider) != null) {
+      unawaited(controller.listen());
+      return;
+    }
     // Songs added since the last visit get their fingerprints.
     unawaited(ref.read(libraryFingerprintsProvider.notifier).start());
-    unawaited(ref.read(listenControllerProvider.notifier).prepare());
+    unawaited(controller.prepare());
   }
 
   @override
@@ -53,12 +59,21 @@ class _ListenScreenState extends ConsumerState<ListenScreen> {
         backgroundColor: Colors.transparent,
         title: Text(l10n.listenTitle),
         centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: l10n.listenHistoryTitle,
-            icon: const Icon(Icons.history_rounded),
-            onPressed: () => context.push(AppRoutes.listenHistory),
+        leading: switch (ref.watch(quickListenHostProvider)) {
+          final host? => IconButton(
+            tooltip: l10n.playerClose,
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () => unawaited(host.close()),
           ),
+          null => null,
+        },
+        actions: [
+          if (ref.watch(quickListenHostProvider) == null)
+            IconButton(
+              tooltip: l10n.listenHistoryTitle,
+              icon: const Icon(Icons.history_rounded),
+              onPressed: () => context.push(AppRoutes.listenHistory),
+            ),
         ],
       ),
       body: AnimatedContainer(
@@ -82,57 +97,73 @@ class _ListenScreenState extends ConsumerState<ListenScreen> {
             padding: const EdgeInsets.symmetric(
               horizontal: ZemaSpacing.screenSide,
             ),
-            child: Column(
-              children: [
-                const SizedBox(height: 8),
-                const _LibraryChip(),
-                const Spacer(),
-                _Stage(
-                  state: state,
-                  // At rest while songs are being prepared, so the
-                  // animation doesn't take the CPU they need.
-                  calm: ref.watch(
-                    libraryFingerprintsProvider.select((p) => p.running),
+            child: LayoutBuilder(
+              builder: (context, box) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: box.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 8),
+                        const _LibraryChip(),
+                        const Spacer(),
+                        _Stage(
+                          state: state,
+                          // At rest while songs are being prepared, so the
+                          // animation doesn't take the CPU they need.
+                          calm: ref.watch(
+                            libraryFingerprintsProvider.select(
+                              (p) => p.running,
+                            ),
+                          ),
+                          onTap: state is Listening || state is ListenLoading
+                              ? controller.cancel
+                              : controller.listen,
+                        ),
+                        const SizedBox(height: 24),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 210),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 420),
+                            // The old words leave in the first part and the new
+                            // ones arrive after, so they never overlap.
+                            transitionBuilder: (child, animation) =>
+                                FadeTransition(
+                                  opacity: CurvedAnimation(
+                                    parent: animation,
+                                    curve: const Interval(
+                                      0.45,
+                                      1,
+                                      curve: Curves.easeOut,
+                                    ),
+                                  ),
+                                  child: SlideTransition(
+                                    position: Tween(
+                                      begin: const Offset(0, 0.08),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  ),
+                                ),
+                            layoutBuilder: (current, previous) => Stack(
+                              alignment: Alignment.topCenter,
+                              children: [...previous, ?current],
+                            ),
+                            child: _Words(
+                              key: ValueKey(_wordsKey(state)),
+                              state: state,
+                              onListen: controller.listen,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        _Privacy(text: l10n.listenPrivacy),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
                   ),
-                  onTap: state is Listening || state is ListenLoading
-                      ? controller.cancel
-                      : controller.listen,
                 ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  height: 210,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 420),
-                    // The old words leave in the first part and the new
-                    // ones arrive after, so they never overlap.
-                    transitionBuilder: (child, animation) => FadeTransition(
-                      opacity: CurvedAnimation(
-                        parent: animation,
-                        curve: const Interval(0.45, 1, curve: Curves.easeOut),
-                      ),
-                      child: SlideTransition(
-                        position: Tween(
-                          begin: const Offset(0, 0.08),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      ),
-                    ),
-                    layoutBuilder: (current, previous) => Stack(
-                      alignment: Alignment.topCenter,
-                      children: [...previous, ?current],
-                    ),
-                    child: _Words(
-                      key: ValueKey(_wordsKey(state)),
-                      state: state,
-                      onListen: controller.listen,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                _Privacy(text: l10n.listenPrivacy),
-                const SizedBox(height: 12),
-              ],
+              ),
             ),
           ),
         ),
@@ -194,6 +225,12 @@ class _StageState extends State<_Stage> with TickerProviderStateMixin {
 
   /// The level eases toward the latest reading, so ripples don't jump.
   double _level = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.state is ListenFound) _found.value = 1;
+  }
 
   @override
   void didChangeDependencies() {
@@ -550,16 +587,25 @@ class _Found extends ConsumerWidget {
           spacing: 12,
           runSpacing: 8,
           children: [
-            FilledButton.icon(
-              onPressed: () => unawaited(context.push(AppRoutes.listenLyrics)),
-              icon: const Icon(Icons.lyrics_rounded),
-              label: Text(l10n.listenShowLyrics),
-            ),
-            FilledButton.tonalIcon(
-              onPressed: playFromHere,
-              icon: const Icon(Icons.play_arrow_rounded),
-              label: Text(l10n.listenPlayFromHere),
-            ),
+            if (ref.watch(quickListenHostProvider) case final host?)
+              FilledButton.icon(
+                onPressed: () => unawaited(host.openApp(found.toLaunch())),
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: Text(l10n.listenOpenInApp),
+              )
+            else ...[
+              FilledButton.icon(
+                onPressed: () =>
+                    unawaited(context.push(AppRoutes.listenLyrics)),
+                icon: const Icon(Icons.lyrics_rounded),
+                label: Text(l10n.listenShowLyrics),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: playFromHere,
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: Text(l10n.listenPlayFromHere),
+              ),
+            ],
             OutlinedButton.icon(
               onPressed: onListen,
               style: OutlinedButton.styleFrom(

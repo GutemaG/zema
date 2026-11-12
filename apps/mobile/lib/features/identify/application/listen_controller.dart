@@ -10,7 +10,9 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/database/database_provider.dart';
 import '../../library/application/library_providers.dart';
 import '../data/microphone.dart';
+import '../data/quick_launch.dart';
 import 'library_search.dart';
+import 'quick_listen.dart';
 
 final _log = Logger('identify.listen');
 
@@ -59,6 +61,15 @@ class ListenFound extends ListenState {
     return match.position +
         Duration(microseconds: (since * match.playbackSpeed).round());
   }
+
+  OpenListenMatch toLaunch() => OpenListenMatch(
+    trackId: track.id,
+    position: match.position,
+    startedAt: startedAt,
+    speed: match.playbackSpeed,
+    score: match.score,
+    sure: sure,
+  );
 
   bool endedAt(DateTime now) =>
       track.duration > Duration.zero && positionAt(now) >= track.duration;
@@ -151,6 +162,20 @@ class ListenController extends Notifier<ListenState> {
       _library = null;
       unawaited(_stopRecording());
     });
+    ref.listen(pendingMatchProvider, (_, next) {
+      if (next == null) return;
+      _session++;
+      unawaited(_stopRecording());
+      state = next;
+      ref.read(pendingMatchProvider.notifier).set(null);
+    });
+    final pending = ref.read(pendingMatchProvider);
+    if (pending != null) {
+      Future.microtask(() {
+        if (!_closed) ref.read(pendingMatchProvider.notifier).set(null);
+      });
+      return pending;
+    }
     return const ListenIdle();
   }
 

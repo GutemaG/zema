@@ -10,6 +10,7 @@ import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/features/identify/application/library_fingerprints.dart';
 import 'package:zema/features/identify/application/listen_controller.dart';
+import 'package:zema/features/identify/application/quick_listen.dart';
 import 'package:zema/features/identify/data/audio_decoder.dart';
 import 'package:zema/features/identify/data/microphone.dart';
 import 'package:zema/features/library/application/library_providers.dart';
@@ -290,6 +291,38 @@ void main() {
     final found = state as ListenFound;
     expect(found.track.title, 'Broken');
     expect(found.sure, isFalse);
+  });
+
+  test('a match handed over from the lock screen is shown', () async {
+    final track = tracks.first;
+    ListenFound handed(Duration position) => ListenFound(
+      track: track,
+      match: AudioMatch(
+        recordingId: '${track.id}',
+        position: position,
+        score: 20,
+        playbackSpeed: 1,
+        ambiguousPosition: false,
+      ),
+      startedAt: DateTime(2026),
+    );
+    container
+        .read(pendingMatchProvider.notifier)
+        .set(handed(const Duration(seconds: 5)));
+    final sub = container.listen(listenControllerProvider, (_, _) {});
+    addTearDown(sub.close);
+
+    final first = container.read(listenControllerProvider);
+    expect((first as ListenFound).match.position, const Duration(seconds: 5));
+    await Future<void>.delayed(Duration.zero);
+    expect(container.read(pendingMatchProvider), isNull);
+
+    container
+        .read(pendingMatchProvider.notifier)
+        .set(handed(const Duration(seconds: 9)));
+    final next = container.read(listenControllerProvider);
+    expect((next as ListenFound).match.position, const Duration(seconds: 9));
+    expect(container.read(pendingMatchProvider), isNull);
   });
 
   test('playing a match starts inside the song', () {

@@ -63,7 +63,12 @@ class ZemaDatabase extends _$ZemaDatabase {
   ZemaDatabase(super.executor);
 
   /// The app's database file, opened in a background isolate.
-  factory ZemaDatabase.open() => ZemaDatabase(driftDatabase(name: 'zema'));
+  factory ZemaDatabase.open() => ZemaDatabase(
+    driftDatabase(
+      name: 'zema',
+      native: const DriftNativeOptions(shareAcrossIsolates: true),
+    ),
+  );
 
   @override
   int get schemaVersion => 12;

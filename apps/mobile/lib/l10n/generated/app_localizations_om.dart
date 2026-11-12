@@ -2495,4 +2495,7 @@ class AppLocalizationsOm extends AppLocalizations {
   String listenHistoryAt(String date, String time) {
     return '$date, $time';
   }
+
+  @override
+  String get listenOpenInApp => 'Open in Zema';
 }

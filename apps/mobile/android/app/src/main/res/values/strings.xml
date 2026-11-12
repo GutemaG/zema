@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="listen_tile_label">Identify song</string>
+    <string name="listen_widget_label">Identify a song</string>
+    <string name="listen_widget_title">Identify a song</string>
+    <string name="listen_widget_none">Tap the mic to find the song playing</string>
+    <string name="listen_widget_last">Last song identified</string>
+    <string name="listen_widget_last_by">Last song identified · %1$s</string>
+    <string name="listen_widget_mic">Identify a song</string>
+</resources>
