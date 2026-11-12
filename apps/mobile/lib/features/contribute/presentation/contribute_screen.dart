@@ -58,24 +58,25 @@ class ContributeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             const _HowItWorks(),
             const SizedBox(height: 16),
-            if (available)
-              FilledButton.icon(
-                onPressed: () => startContribution(context, ref),
-                icon: const Icon(Icons.edit_note),
-                label: Text(l10n.contributeAddLyrics),
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.primary,
-                  foregroundColor: colors.onPrimary,
-                  minimumSize: const Size.fromHeight(52),
-                  shape: const StadiumBorder(),
-                ),
-              )
-            else
+            FilledButton.icon(
+              onPressed: () => startContribution(context, ref),
+              icon: const Icon(Icons.edit_note),
+              label: Text(l10n.contributeAddLyrics),
+              style: FilledButton.styleFrom(
+                backgroundColor: colors.primary,
+                foregroundColor: colors.onPrimary,
+                minimumSize: const Size.fromHeight(52),
+                shape: const StadiumBorder(),
+              ),
+            ),
+            if (!available) ...[
+              const SizedBox(height: 8),
               Text(
                 l10n.contributeNoBackend,
                 style: textTheme.bodyMedium?.copyWith(color: colors.muted),
                 textAlign: TextAlign.center,
               ),
+            ],
             if (drafts.isNotEmpty) ...[
               const SizedBox(height: 24),
               Text(

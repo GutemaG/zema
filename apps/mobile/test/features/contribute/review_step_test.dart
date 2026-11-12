@@ -100,6 +100,7 @@ void main() {
     double textScale = 1,
     Size size = const Size(400, 1200),
     FakeAuthRepository? auth,
+    bool backendConfigured = true,
   }) async {
     useScreen(tester, size: size, textScale: textScale);
     final id = await db.draftsDao.create(
@@ -115,6 +116,7 @@ void main() {
       location: location ?? AppRoutes.draft(id),
       auth: auth ?? FakeAuthRepository(user: testUser),
       database: db,
+      backendConfigured: backendConfigured,
       googlePicker: FakeGoogleAccountPicker(),
       phoneBrightness: brightness,
       savedPrefs: {AccountChoiceController.key: true},
@@ -269,6 +271,25 @@ void main() {
         find.textContaining(_l10n.contributeDraftSavedLocal('')),
         findsOneWidget,
       );
+    });
+
+    testWidgets('without a backend it saves, and nothing can be sent', (
+      tester,
+    ) async {
+      await open(tester, backendConfigured: false);
+      expect(
+        find.widgetWithText(FilledButton, _l10n.contributeSubmit),
+        findsNothing,
+      );
+      expect(find.text(_l10n.contributeNoBackend), findsOneWidget);
+      expect(find.text(_l10n.contributeReviewGuest), findsNothing);
+      await tap(tester, save());
+
+      final copy = (await copies()).single;
+      expect(copy.trackId, 7);
+      expect(Song.fromJson(jsonDecode(copy.song)).title, 'Selam');
+      expect(find.text(_l10n.contributeSavedLocal), findsOneWidget);
+      expect(contributions.calls, 0);
     });
 
     testWidgets('saving again replaces the saved lyrics', (tester) async {

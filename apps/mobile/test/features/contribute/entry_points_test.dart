@@ -244,11 +244,11 @@ void main() {
       expect((await savedDrafts(tester)).single.title, 'Mezmur zelealem');
     });
 
-    testWidgets('without a backend it isn\'t offered', (tester) async {
+    testWidgets('without a backend it is still offered', (tester) async {
       await start(tester, location: AppRoutes.search, backendConfigured: false);
       await search(tester, 'Mezmur zelealem');
-      expect(find.text(_l10n.libraryNoResultsTitle), findsOneWidget);
-      expect(addSong(), findsNothing);
+      await tap(tester, addSong());
+      expect(find.byType(LyricsStep), findsOneWidget);
     });
   });
 
@@ -298,12 +298,11 @@ void main() {
       expect(await savedDrafts(tester), hasLength(1));
     });
 
-    testWidgets('without a backend only Match lyrics is offered', (
-      tester,
-    ) async {
+    testWidgets('without a backend lyrics can still be added', (tester) async {
       await nowPlaying(tester, backendConfigured: false);
       expect(find.text(_l10n.songMatchLyrics), findsOneWidget);
-      expect(addLyrics(), findsNothing);
+      await tap(tester, addLyrics());
+      expect(await savedDrafts(tester), hasLength(1));
     });
   });
 

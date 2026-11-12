@@ -105,11 +105,15 @@ void main() {
     });
   });
 
-  testWidgets('without a backend: no actions, a note instead', (tester) async {
+  testWidgets('without a backend: lyrics can be added, with a note', (
+    tester,
+  ) async {
     await start(tester, backendConfigured: false);
     expect(find.text(_l10n.contributeHowTitle), findsOneWidget);
     expect(find.text(_l10n.contributeNoBackend), findsOneWidget);
-    expect(addLyrics(), findsNothing);
+    await tap(tester, addLyrics());
+    expect(find.byType(ContributeFlowScreen), findsOneWidget);
+    expect(await savedDrafts(), hasLength(1));
   });
 
   group('drafts', () {

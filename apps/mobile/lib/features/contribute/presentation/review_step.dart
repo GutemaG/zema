@@ -228,7 +228,11 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
             ),
             children: [
               Text(
-                guest ? l10n.contributeReviewGuest : l10n.contributeReviewIntro,
+                !ref.watch(accountsAvailableProvider)
+                    ? l10n.contributeNoBackend
+                    : guest
+                    ? l10n.contributeReviewGuest
+                    : l10n.contributeReviewIntro,
                 style: textTheme.bodyMedium?.copyWith(color: colors.muted),
               ),
               const SizedBox(height: 12),
@@ -389,33 +393,35 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 56,
-                child: FilledButton(
-                  onPressed: _sending || unchanged
-                      ? null
-                      : () => unawaited(_submit()),
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(ZemaRadius.large),
+              if (ref.watch(accountsAvailableProvider)) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 56,
+                  child: FilledButton(
+                    onPressed: _sending || unchanged
+                        ? null
+                        : () => unawaited(_submit()),
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(ZemaRadius.large),
+                      ),
+                      textStyle: textTheme.titleMedium,
                     ),
-                    textStyle: textTheme.titleMedium,
-                  ),
-                  child: _sending
-                      ? SizedBox.square(
-                          dimension: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            semanticsLabel: l10n.contributeSubmitSending,
+                    child: _sending
+                        ? SizedBox.square(
+                            dimension: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              semanticsLabel: l10n.contributeSubmitSending,
+                            ),
+                          )
+                        : Text(
+                            l10n.contributeSubmit,
+                            textAlign: TextAlign.center,
                           ),
-                        )
-                      : Text(
-                          l10n.contributeSubmit,
-                          textAlign: TextAlign.center,
-                        ),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

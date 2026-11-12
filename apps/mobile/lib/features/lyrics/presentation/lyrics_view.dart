@@ -10,7 +10,6 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../../account/application/account_providers.dart';
 import '../../contribute/application/contribution_starts.dart';
 import '../../contribute/presentation/start_contribution.dart';
 import '../../player/application/player_providers.dart';
@@ -161,20 +160,14 @@ class NoLyrics extends ConsumerWidget {
               label: Text(l10n.songMatchLyrics),
               onPressed: () => unawaited(showMatchLyricsSheet(context, track)),
             ),
-            if (ref.watch(accountsAvailableProvider)) ...[
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.edit_note),
-                label: Text(l10n.contributeAddLyrics),
-                onPressed: () => unawaited(
-                  startContribution(
-                    context,
-                    ref,
-                    draft: newSongDraftFor(track),
-                  ),
-                ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.edit_note),
+              label: Text(l10n.contributeAddLyrics),
+              onPressed: () => unawaited(
+                startContribution(context, ref, draft: newSongDraftFor(track)),
               ),
-            ],
+            ),
           ],
         ),
       ),

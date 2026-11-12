@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../account/application/account_providers.dart';
 import '../../catalog/application/catalog_index.dart';
 import '../../contribute/presentation/start_contribution.dart';
 import '../../lyrics/application/lyrics_links.dart';
@@ -209,9 +208,7 @@ class _SearchBodyState extends ConsumerState<_SearchBody> {
         title: l10n.libraryNoResultsTitle,
         message: l10n.libraryNoResultsMessage,
         // Not in the catalog either: it can be added.
-        actionLabel: ref.watch(accountsAvailableProvider)
-            ? l10n.contributeEntryAddSongLyrics
-            : null,
+        actionLabel: l10n.contributeEntryAddSongLyrics,
         onAction: () => startContribution(
           context,
           ref,
