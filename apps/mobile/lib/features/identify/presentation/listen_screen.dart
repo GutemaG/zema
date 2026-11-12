@@ -12,6 +12,7 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/format_duration.dart';
+import '../../contribute/presentation/start_contribution.dart';
 import '../../library/presentation/widgets/track_art.dart';
 import '../application/library_fingerprints.dart';
 import '../application/listen_controller.dart';
@@ -504,10 +505,27 @@ class _Words extends ConsumerWidget {
       ListenNotFound() => message(
         l10n.listenNotFoundTitle,
         l10n.listenNotFoundMessage,
-        action: FilledButton.tonalIcon(
-          onPressed: onListen,
-          icon: const Icon(Icons.refresh_rounded),
-          label: Text(l10n.actionTryAgain),
+        action: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            FilledButton.tonalIcon(
+              onPressed: onListen,
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text(l10n.actionTryAgain),
+            ),
+            if (ref.watch(quickListenHostProvider) == null)
+              OutlinedButton.icon(
+                onPressed: () => unawaited(startContribution(context, ref)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: colors.text,
+                  side: BorderSide(color: colors.line),
+                ),
+                icon: const Icon(Icons.edit_note_rounded),
+                label: Text(l10n.listenAddThisSong),
+              ),
+          ],
         ),
       ),
       ListenDenied() => message(

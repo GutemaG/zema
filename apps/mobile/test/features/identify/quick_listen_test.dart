@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/app/routes.dart';
+import 'package:zema/features/contribute/presentation/lyrics_step.dart';
 import 'package:zema/features/identify/application/listen_controller.dart';
 import 'package:zema/features/identify/application/quick_listen.dart';
 import 'package:zema/features/identify/data/microphone.dart';
@@ -234,5 +235,42 @@ void main() {
     await settle(tester);
     expect(find.text(_l10n.listenShowLyrics), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a song not found can be added', (tester) async {
+    await open(
+      tester,
+      overrides: [
+        listenControllerProvider.overrideWith(
+          () => _FakeListen(() => const ListenNotFound()),
+        ),
+      ],
+    );
+    push(tester, AppRoutes.listen);
+    await settle(tester);
+
+    await tester.tap(find.text(_l10n.listenAddThisSong));
+    await settle(tester);
+    expect(find.byType(LyricsStep), findsOneWidget);
+    final drafts = (await tester.runAsync(() => db.select(db.drafts).get()))!;
+    expect(drafts, hasLength(1));
+  });
+
+  testWidgets('over the lock screen, a song not found is not offered to add', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      overrides: [
+        quickListenHostProvider.overrideWithValue(_Host()),
+        listenControllerProvider.overrideWith(
+          () => _FakeListen(() => const ListenNotFound()),
+        ),
+      ],
+    );
+    push(tester, AppRoutes.listen);
+    await settle(tester);
+    expect(find.text(_l10n.actionTryAgain), findsOneWidget);
+    expect(find.text(_l10n.listenAddThisSong), findsNothing);
   });
 }

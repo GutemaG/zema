@@ -2498,4 +2498,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get listenOpenInApp => 'Open in Zema';
+
+  @override
+  String get listenAddThisSong => 'Add this song';
 }

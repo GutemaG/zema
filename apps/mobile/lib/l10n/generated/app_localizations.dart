@@ -4223,6 +4223,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open in Zema'**
   String get listenOpenInApp;
+
+  /// Listen found nothing: starts writing the song's lyrics (a contribution draft)
+  ///
+  /// In en, this message translates to:
+  /// **'Add this song'**
+  String get listenAddThisSong;
 }
 
 class _AppLocalizationsDelegate

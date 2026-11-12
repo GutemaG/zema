@@ -3248,5 +3248,9 @@
   "listenOpenInApp": "Open in Zema",
   "@listenOpenInApp": {
     "description": "Listen over the lock screen: opens the song in the full app (asks to unlock)"
+  },
+  "listenAddThisSong": "Add this song",
+  "@listenAddThisSong": {
+    "description": "Listen found nothing: starts writing the song's lyrics (a contribution draft)"
   }
 }
