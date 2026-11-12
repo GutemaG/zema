@@ -156,6 +156,54 @@ hashes for 10 s.
 
 ---
 
+## FR-11 spike results (2026-11-13, emulator, Android 16)
+
+Prototype: `apps/mobile/android/app/src/debug/kotlin/com/zemaapp/zema/spike/` (debug
+builds only). A `NotificationListenerService` reads every active media session and logs
+each change in the `docs/flutter-build-notes.md` event format (logcat tag `ZemaSpike`
+and `files/spike_events.jsonl`); a plain native overlay shows the title and a live
+position.
+
+**What YouTube exposes** (`com.google.android.youtube`): title, artist (the channel
+name), duration, position with its update time, speed, and play state (buffering,
+playing, paused). **No video ID**: media ID and media URI are empty, so matching a
+YouTube source falls back to title and channel (FR-13 step 2 needs another source for
+the ID, or none).
+
+**After the process is killed** (`kill -9`, as the low-memory killer does):
+
+| Measure | Result |
+|---------|--------|
+| System restarts Zema's process for the listener | ~1 s after the kill, no app opened |
+| Listener connected after process start (profile build) | 0.4–3.9 s |
+| Overlay added (native view) | 34–130 ms (1.7 s in a debug build) |
+| Third kill in a row | restarted after ~40 s: the system backs off |
+
+**Memory (PSS)**:
+
+| Process | PSS |
+|---------|-----|
+| Zema with only the listener and the native overlay | ~61 MB |
+| Zema with only a Flutter engine (the lock-screen Listen) | ~124 MB |
+| A second Flutter engine added to the running app | +4 MB |
+
+**Other findings**:
+- Android hides other apps' overlays over some system screens (Settings, permission
+  dialogs: `mIsForceHiddenNonSystemOverlayWindow`). The overlay comes back by itself
+  after.
+- A force-stopped app stays stopped: its tile isn't delivered until the app is opened
+  again. Expected to apply to the listener too (not measured).
+
+**Decision: native Kotlin overlay UI.** It starts in well under a second from a killed
+process and costs half the memory of a Flutter engine, which matters on the low-end
+phones Zema targets. Dart still owns matching and lyrics; how the service gets them
+(a timing cache written by Dart, or a headless engine started on a song change) is
+decided in FR-12/FR-13.
+
+**Still to check on a real phone**: Telegram (not on the emulator), YouTube Music, a
+Pixel or an OEM phone with a battery saver killing the process, and whether YouTube's
+notification carries the video ID.
+
 ## Build progress (2026-11-12)
 
 Part A works offline against the songs on the phone. The catalog side (server index and
@@ -174,7 +222,8 @@ online lookup) and Part B are not started.
 | FR-8 Identify library files | Not started | Library songs are fingerprinted, but not yet matched to catalog recordings. |
 | FR-9 History | Done | Opened from Listen and from the widget; newest first with date and time; tap plays the song; remove one or clear all; the same song again within 10 minutes stays one entry; kept on the phone only (schema v12). |
 | FR-10 Song not in the catalog | Done | Not found offers "Add this song", which starts a lyrics draft without a recording (not over the lock screen). |
-| FR-11 – FR-18 (Part B) | Not started | |
+| FR-11 Detection and overlay spike | Done on the emulator | Results above; decision: native Kotlin overlay. Left: Telegram and a real phone. |
+| FR-12 – FR-18 (Part B) | Not started | |
 
 Known gaps in what's built: files below 11,025 Hz decode wrongly (the Kotlin resampler
 can't upsample); microphone delay and MP3/AAC priming aren't corrected (under 0.1 s).
