@@ -4,6 +4,9 @@
 library;
 
 export 'src/account/account.dart';
+export 'src/audio/audio_fingerprint.dart';
+export 'src/audio/fingerprint_index.dart';
+export 'src/audio/fingerprinter.dart';
 export 'src/backup/backup_document.dart';
 export 'src/backup/backup_matcher.dart';
 export 'src/backup/backup_repository.dart';

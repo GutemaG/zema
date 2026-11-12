@@ -2538,10 +2538,10 @@ abstract class AppLocalizations {
   /// **'Add lyrics'**
   String get contributeAddLyrics;
 
-  /// S05 in a build without a backend.
+  /// S05 in a build without a backend: lyrics can only be saved on the phone.
   ///
   /// In en, this message translates to:
-  /// **'Contributing needs the online catalog, which this version of the app doesn\'t have.'**
+  /// **'Your lyrics stay on this phone. This version of the app can\'t send them to the online catalog.'**
   String get contributeNoBackend;
 
   /// Heading of the drafts list on S05.
@@ -3189,7 +3189,7 @@ abstract class AppLocalizations {
   /// S22 when no recording is linked.
   ///
   /// In en, this message translates to:
-  /// **'No recording. The lyrics are sent on their own.'**
+  /// **'No recording. Lyrics only.'**
   String get contributeReviewNoRecording;
 
   /// S22 recording title when the video's title isn't known.
@@ -3881,6 +3881,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exit full screen'**
   String get lyricsExitFullScreen;
+
+  /// Home: opens Listen, which identifies the song playing nearby
+  ///
+  /// In en, this message translates to:
+  /// **'Identify a song'**
+  String get listenTooltip;
+
+  /// Listen screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Identify a song'**
+  String get listenTitle;
+
+  /// Listen button, for screen readers
+  ///
+  /// In en, this message translates to:
+  /// **'Start listening'**
+  String get listenStart;
+
+  /// Listen button while listening, for screen readers
+  ///
+  /// In en, this message translates to:
+  /// **'Stop listening'**
+  String get listenStop;
+
+  /// Listen, before listening
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s playing?'**
+  String get listenIdleTitle;
+
+  /// Listen, before listening
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button. Zema listens for a few seconds and finds the song among the ones on this phone.'**
+  String get listenIdleMessage;
+
+  /// Listen, while the microphone is on
+  ///
+  /// In en, this message translates to:
+  /// **'Listening…'**
+  String get listenListening;
+
+  /// Listen found nothing
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t identify this song'**
+  String get listenNotFoundTitle;
+
+  /// Listen found nothing
+  ///
+  /// In en, this message translates to:
+  /// **'Move closer to the sound or try where it\'s quieter. Only songs on this phone can be found for now.'**
+  String get listenNotFoundMessage;
+
+  /// Listen without the microphone permission
+  ///
+  /// In en, this message translates to:
+  /// **'Zema can\'t use the microphone'**
+  String get listenDeniedTitle;
+
+  /// Listen without the microphone permission
+  ///
+  /// In en, this message translates to:
+  /// **'Allow the microphone in the system settings to identify songs.'**
+  String get listenDeniedMessage;
+
+  /// Opens the app's system settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get listenOpenSettings;
+
+  /// Listen before any song has been prepared
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your songs ready'**
+  String get listenNothingTitle;
+
+  /// Listen before any song has been prepared
+  ///
+  /// In en, this message translates to:
+  /// **'Zema is preparing the songs on this phone so it can recognise them. Try again in a moment.'**
+  String get listenNothingMessage;
+
+  /// Plays the identified song on this phone from the moment it was heard
+  ///
+  /// In en, this message translates to:
+  /// **'Play from here'**
+  String get listenPlayFromHere;
+
+  /// Listen: how many library songs have been prepared
+  ///
+  /// In en, this message translates to:
+  /// **'{ready} of {total} songs ready to identify'**
+  String listenLibraryReady(int ready, int total);
+
+  /// Listen: songs prepared so far and about how many minutes the rest will take
+  ///
+  /// In en, this message translates to:
+  /// **'{ready} of {total} songs ready · about {minutes, plural, =1{1 min} other{{minutes} min}} left'**
+  String listenLibraryReadyLeft(int ready, int total, int minutes);
+
+  /// Listen: hint after a few seconds
+  ///
+  /// In en, this message translates to:
+  /// **'Hold your phone near the sound'**
+  String get listenHintCloser;
+
+  /// Listen: hint near the end of listening
+  ///
+  /// In en, this message translates to:
+  /// **'Almost there…'**
+  String get listenHintAlmost;
+
+  /// Listen: starts listening again after a result
+  ///
+  /// In en, this message translates to:
+  /// **'Listen again'**
+  String get listenAgain;
+
+  /// Listen: privacy line at the bottom
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is recorded or sent'**
+  String get listenPrivacy;
+
+  /// Listen: where the identified song is now, ticking, e.g. 1:47
+  ///
+  /// In en, this message translates to:
+  /// **'Now at {position}'**
+  String listenNowAt(String position);
+
+  /// Listen: all library songs are prepared
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song ready to identify} other{{count} songs ready to identify}}'**
+  String listenLibraryAllReady(int count);
+
+  /// Listen details sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Getting songs ready'**
+  String get listenDetailsTitle;
+
+  /// Listen details: what preparing means
+  ///
+  /// In en, this message translates to:
+  /// **'Zema reads each song once to learn how it sounds. You can leave this page; it keeps going while Zema is open.'**
+  String get listenDetailsMessage;
+
+  /// Listen details: how many songs are prepared
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get listenDetailsReady;
+
+  /// Listen details: average time to decode one song
+  ///
+  /// In en, this message translates to:
+  /// **'Reading each song'**
+  String get listenDetailsReading;
+
+  /// Listen details: average time to fingerprint one song
+  ///
+  /// In en, this message translates to:
+  /// **'Learning each song'**
+  String get listenDetailsFingerprinting;
+
+  /// Listen details: songs prepared in parallel
+  ///
+  /// In en, this message translates to:
+  /// **'Songs at a time'**
+  String get listenDetailsAtOnce;
+
+  /// Listen details: the phone's CPU cores
+  ///
+  /// In en, this message translates to:
+  /// **'Processor cores'**
+  String get listenDetailsCores;
+
+  /// Listen details: whether battery saver is on
+  ///
+  /// In en, this message translates to:
+  /// **'Battery saver'**
+  String get listenDetailsBatterySaver;
+
+  /// Listen details: a setting is on
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get listenDetailsOn;
+
+  /// Listen details: a setting is off
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get listenDetailsOff;
+
+  /// Listen details: the phone's audio decoder name
+  ///
+  /// In en, this message translates to:
+  /// **'Decoder'**
+  String get listenDetailsDecoder;
+
+  /// Listen details: tip when battery saver is on
+  ///
+  /// In en, this message translates to:
+  /// **'Battery saver slows this down. Charging the phone or turning battery saver off makes it faster.'**
+  String get listenDetailsBatterySaverTip;
+
+  /// Listen details: a time in seconds, e.g. 9.2 s
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String listenDetailsSeconds(String seconds);
+
+  /// Listen details: songs prepared out of all, e.g. 12 of 95
+  ///
+  /// In en, this message translates to:
+  /// **'{ready} of {total}'**
+  String listenDetailsReadyCount(int ready, int total);
+
+  /// Listen: loading the song index before the microphone starts
+  ///
+  /// In en, this message translates to:
+  /// **'Getting ready…'**
+  String get listenLoading;
+
+  /// Listen details: how many songs could not be read
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read'**
+  String get listenDetailsUnreadable;
+
+  /// Listen: the microphone or the search failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t listen'**
+  String get listenFailedTitle;
+
+  /// Listen: the microphone or the search failed
+  ///
+  /// In en, this message translates to:
+  /// **'Another app may be using the microphone. Try again in a moment.'**
+  String get listenFailedMessage;
+
+  /// Listen: button on a match that shows the song's lyrics following the music
+  ///
+  /// In en, this message translates to:
+  /// **'Show lyrics'**
+  String get listenShowLyrics;
+
+  /// Lyrics from a match: listens again to correct the place in the song
+  ///
+  /// In en, this message translates to:
+  /// **'Re-sync'**
+  String get listenResync;
+
+  /// Lyrics from a match: re-sync found nothing
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t hear the song. The lyrics keep their place.'**
+  String get listenResyncFailed;
+
+  /// Listen: the match is sure of the song but not of the place in it
+  ///
+  /// In en, this message translates to:
+  /// **'This part repeats in the song, so the place may be off. Re-sync to check.'**
+  String get listenUnsure;
+
+  /// Lyrics from a match: the matched song is over
+  ///
+  /// In en, this message translates to:
+  /// **'The song has ended'**
+  String get listenSongEnded;
 }
 
 class _AppLocalizationsDelegate

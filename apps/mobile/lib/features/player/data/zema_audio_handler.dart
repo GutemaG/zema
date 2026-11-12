@@ -87,10 +87,11 @@ class ZemaAudioHandler extends BaseAudioHandler with SeekHandler {
     List<Track> tracks, {
     int start = 0,
     bool shuffle = false,
+    Duration position = Duration.zero,
   }) async {
     if (tracks.isEmpty) return;
     _queue.load(tracks, start: start, shuffle: shuffle);
-    await _loadCurrent(play: true);
+    await _loadCurrent(play: true, position: position);
   }
 
   /// Loads a saved queue without playing (on app start). [tracks] are in

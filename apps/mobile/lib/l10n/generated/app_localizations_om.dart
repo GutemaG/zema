@@ -1508,7 +1508,7 @@ class AppLocalizationsOm extends AppLocalizations {
 
   @override
   String get contributeNoBackend =>
-      'Contributing needs the online catalog, which this version of the app doesn\'t have.';
+      'Your lyrics stay on this phone. This version of the app can\'t send them to the online catalog.';
 
   @override
   String get contributeDraftsTitle => 'Drafts';
@@ -1890,8 +1890,7 @@ class AppLocalizationsOm extends AppLocalizations {
   String get contributeReviewEditSync => 'Edit timings';
 
   @override
-  String get contributeReviewNoRecording =>
-      'No recording. The lyrics are sent on their own.';
+  String get contributeReviewNoRecording => 'No recording. Lyrics only.';
 
   @override
   String get contributeReviewYoutubeVideo => 'YouTube video';
@@ -2290,4 +2289,175 @@ class AppLocalizationsOm extends AppLocalizations {
 
   @override
   String get lyricsExitFullScreen => 'Exit full screen';
+
+  @override
+  String get listenTooltip => 'Identify a song';
+
+  @override
+  String get listenTitle => 'Identify a song';
+
+  @override
+  String get listenStart => 'Start listening';
+
+  @override
+  String get listenStop => 'Stop listening';
+
+  @override
+  String get listenIdleTitle => 'What\'s playing?';
+
+  @override
+  String get listenIdleMessage =>
+      'Tap the button. Zema listens for a few seconds and finds the song among the ones on this phone.';
+
+  @override
+  String get listenListening => 'Listening…';
+
+  @override
+  String get listenNotFoundTitle => 'Couldn\'t identify this song';
+
+  @override
+  String get listenNotFoundMessage =>
+      'Move closer to the sound or try where it\'s quieter. Only songs on this phone can be found for now.';
+
+  @override
+  String get listenDeniedTitle => 'Zema can\'t use the microphone';
+
+  @override
+  String get listenDeniedMessage =>
+      'Allow the microphone in the system settings to identify songs.';
+
+  @override
+  String get listenOpenSettings => 'Open settings';
+
+  @override
+  String get listenNothingTitle => 'Getting your songs ready';
+
+  @override
+  String get listenNothingMessage =>
+      'Zema is preparing the songs on this phone so it can recognise them. Try again in a moment.';
+
+  @override
+  String get listenPlayFromHere => 'Play from here';
+
+  @override
+  String listenLibraryReady(int ready, int total) {
+    return '$ready of $total songs ready to identify';
+  }
+
+  @override
+  String listenLibraryReadyLeft(int ready, int total, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+      one: '1 min',
+    );
+    return '$ready of $total songs ready · about $_temp0 left';
+  }
+
+  @override
+  String get listenHintCloser => 'Hold your phone near the sound';
+
+  @override
+  String get listenHintAlmost => 'Almost there…';
+
+  @override
+  String get listenAgain => 'Listen again';
+
+  @override
+  String get listenPrivacy => 'Nothing is recorded or sent';
+
+  @override
+  String listenNowAt(String position) {
+    return 'Now at $position';
+  }
+
+  @override
+  String listenLibraryAllReady(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs ready to identify',
+      one: '1 song ready to identify',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get listenDetailsTitle => 'Getting songs ready';
+
+  @override
+  String get listenDetailsMessage =>
+      'Zema reads each song once to learn how it sounds. You can leave this page; it keeps going while Zema is open.';
+
+  @override
+  String get listenDetailsReady => 'Ready';
+
+  @override
+  String get listenDetailsReading => 'Reading each song';
+
+  @override
+  String get listenDetailsFingerprinting => 'Learning each song';
+
+  @override
+  String get listenDetailsAtOnce => 'Songs at a time';
+
+  @override
+  String get listenDetailsCores => 'Processor cores';
+
+  @override
+  String get listenDetailsBatterySaver => 'Battery saver';
+
+  @override
+  String get listenDetailsOn => 'On';
+
+  @override
+  String get listenDetailsOff => 'Off';
+
+  @override
+  String get listenDetailsDecoder => 'Decoder';
+
+  @override
+  String get listenDetailsBatterySaverTip =>
+      'Battery saver slows this down. Charging the phone or turning battery saver off makes it faster.';
+
+  @override
+  String listenDetailsSeconds(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String listenDetailsReadyCount(int ready, int total) {
+    return '$ready of $total';
+  }
+
+  @override
+  String get listenLoading => 'Getting ready…';
+
+  @override
+  String get listenDetailsUnreadable => 'Couldn\'t read';
+
+  @override
+  String get listenFailedTitle => 'Couldn\'t listen';
+
+  @override
+  String get listenFailedMessage =>
+      'Another app may be using the microphone. Try again in a moment.';
+
+  @override
+  String get listenShowLyrics => 'Show lyrics';
+
+  @override
+  String get listenResync => 'Re-sync';
+
+  @override
+  String get listenResyncFailed =>
+      'Couldn\'t hear the song. The lyrics keep their place.';
+
+  @override
+  String get listenUnsure =>
+      'This part repeats in the song, so the place may be off. Re-sync to check.';
+
+  @override
+  String get listenSongEnded => 'The song has ended';
 }

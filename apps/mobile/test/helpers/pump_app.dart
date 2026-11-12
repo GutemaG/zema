@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema_core/zema_core.dart'
@@ -91,6 +92,7 @@ Future<void> pumpZemaApp(
   ContributionRepository? contributions,
   Future<bool> Function(Uri url)? openUrl,
   CoverStore? covers,
+  List<Override> overrides = const [],
 }) async {
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
   addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
@@ -149,6 +151,7 @@ Future<void> pumpZemaApp(
               ? contributions ?? FakeContributionRepository()
               : null,
         ),
+        ...overrides,
       ],
       child: const ZemaApp(),
     ),

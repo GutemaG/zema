@@ -33,6 +33,7 @@ class MainActivity : AudioServiceActivity() {
             val made = Channels(
                 LibraryChannel(applicationContext, messenger),
                 ShareChannel(applicationContext, messenger),
+                AudioDecodeChannel(applicationContext, messenger),
             )
             engine.addEngineLifecycleListener(object : FlutterEngine.EngineLifecycleListener {
                 override fun onPreEngineRestart() {}
@@ -40,13 +41,18 @@ class MainActivity : AudioServiceActivity() {
                 override fun onEngineWillDestroy() {
                     made.library.dispose()
                     made.share.dispose()
+                    made.audio.dispose()
                     channels.remove(engine)
                 }
             })
             made
         }
 
-    private class Channels(val library: LibraryChannel, val share: ShareChannel)
+    private class Channels(
+        val library: LibraryChannel,
+        val share: ShareChannel,
+        val audio: AudioDecodeChannel,
+    )
 
     companion object {
         private val channels = WeakHashMap<FlutterEngine, Channels>()

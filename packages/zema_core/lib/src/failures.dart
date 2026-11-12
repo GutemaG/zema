@@ -83,6 +83,12 @@ final class BackupFormatFailure extends ZemaFailure {
   final bool newerFormat;
 }
 
+/// Fingerprint bytes that can't be read: damaged, or made by another
+/// fingerprint version.
+final class FingerprintFormatFailure extends ZemaFailure {
+  const FingerprintFormatFailure(super.message, {super.cause});
+}
+
 /// The backend refused a contribution or a review for a reason it names:
 /// [code] is one of the shared codes (see `ContributionError`), such as
 /// `timing_count`, `too_many_open` or `already_reviewed`.

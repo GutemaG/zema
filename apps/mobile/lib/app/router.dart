@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/identify/presentation/listen_lyrics_screen.dart';
+import '../features/identify/presentation/listen_screen.dart';
 import '../features/account/application/sign_in.dart';
 import '../features/account/presentation/account_choice_screen.dart';
 import '../features/account/presentation/backup_screen.dart';
@@ -140,6 +142,11 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
         builder: (_, _) => const ProfileScreen(),
       ),
       GoRoute(path: AppRoutes.backup, builder: (_, _) => const BackupScreen()),
+      GoRoute(path: AppRoutes.listen, builder: (_, _) => const ListenScreen()),
+      GoRoute(
+        path: AppRoutes.listenLyrics,
+        builder: (_, _) => const ListenLyricsScreen(),
+      ),
       GoRoute(
         path: AppRoutes.songInfoPath,
         builder: (_, state) => SongInfoScreen(

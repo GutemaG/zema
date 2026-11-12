@@ -33,6 +33,12 @@ class HomeScreen extends StatelessWidget {
       title: l10n.appTitle,
       actions: [
         IconButton(
+          icon: const Icon(Icons.mic_none_rounded),
+          tooltip: l10n.listenTooltip,
+          constraints: tap,
+          onPressed: () => context.push(AppRoutes.listen),
+        ),
+        IconButton(
           icon: const Icon(Icons.search),
           tooltip: l10n.homeSearchTooltip,
           constraints: tap,

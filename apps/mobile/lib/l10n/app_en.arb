@@ -1939,9 +1939,9 @@
   "@contributeAddLyrics": {
     "description": "Starts a new contribution; also the flow's title."
   },
-  "contributeNoBackend": "Contributing needs the online catalog, which this version of the app doesn't have.",
+  "contributeNoBackend": "Your lyrics stay on this phone. This version of the app can't send them to the online catalog.",
   "@contributeNoBackend": {
-    "description": "S05 in a build without a backend."
+    "description": "S05 in a build without a backend: lyrics can only be saved on the phone."
   },
   "contributeDraftsTitle": "Drafts",
   "@contributeDraftsTitle": {
@@ -2439,7 +2439,7 @@
   "@contributeReviewEditSync": {
     "description": "Screen reader label of S22's Edit for the timings."
   },
-  "contributeReviewNoRecording": "No recording. The lyrics are sent on their own.",
+  "contributeReviewNoRecording": "No recording. Lyrics only.",
   "@contributeReviewNoRecording": {
     "description": "S22 when no recording is linked."
   },
@@ -2970,5 +2970,231 @@
   "lyricsExitFullScreen": "Exit full screen",
   "@lyricsExitFullScreen": {
     "description": "Leaves full-screen lyrics"
+  },
+  "listenTooltip": "Identify a song",
+  "@listenTooltip": {
+    "description": "Home: opens Listen, which identifies the song playing nearby"
+  },
+  "listenTitle": "Identify a song",
+  "@listenTitle": {
+    "description": "Listen screen title"
+  },
+  "listenStart": "Start listening",
+  "@listenStart": {
+    "description": "Listen button, for screen readers"
+  },
+  "listenStop": "Stop listening",
+  "@listenStop": {
+    "description": "Listen button while listening, for screen readers"
+  },
+  "listenIdleTitle": "What's playing?",
+  "@listenIdleTitle": {
+    "description": "Listen, before listening"
+  },
+  "listenIdleMessage": "Tap the button. Zema listens for a few seconds and finds the song among the ones on this phone.",
+  "@listenIdleMessage": {
+    "description": "Listen, before listening"
+  },
+  "listenListening": "Listening…",
+  "@listenListening": {
+    "description": "Listen, while the microphone is on"
+  },
+  "listenNotFoundTitle": "Couldn't identify this song",
+  "@listenNotFoundTitle": {
+    "description": "Listen found nothing"
+  },
+  "listenNotFoundMessage": "Move closer to the sound or try where it's quieter. Only songs on this phone can be found for now.",
+  "@listenNotFoundMessage": {
+    "description": "Listen found nothing"
+  },
+  "listenDeniedTitle": "Zema can't use the microphone",
+  "@listenDeniedTitle": {
+    "description": "Listen without the microphone permission"
+  },
+  "listenDeniedMessage": "Allow the microphone in the system settings to identify songs.",
+  "@listenDeniedMessage": {
+    "description": "Listen without the microphone permission"
+  },
+  "listenOpenSettings": "Open settings",
+  "@listenOpenSettings": {
+    "description": "Opens the app's system settings"
+  },
+  "listenNothingTitle": "Getting your songs ready",
+  "@listenNothingTitle": {
+    "description": "Listen before any song has been prepared"
+  },
+  "listenNothingMessage": "Zema is preparing the songs on this phone so it can recognise them. Try again in a moment.",
+  "@listenNothingMessage": {
+    "description": "Listen before any song has been prepared"
+  },
+  "listenPlayFromHere": "Play from here",
+  "@listenPlayFromHere": {
+    "description": "Plays the identified song on this phone from the moment it was heard"
+  },
+  "listenLibraryReady": "{ready} of {total} songs ready to identify",
+  "@listenLibraryReady": {
+    "description": "Listen: how many library songs have been prepared",
+    "placeholders": {
+      "ready": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "listenLibraryReadyLeft": "{ready} of {total} songs ready · about {minutes, plural, =1{1 min} other{{minutes} min}} left",
+  "@listenLibraryReadyLeft": {
+    "description": "Listen: songs prepared so far and about how many minutes the rest will take",
+    "placeholders": {
+      "ready": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "listenHintCloser": "Hold your phone near the sound",
+  "@listenHintCloser": {
+    "description": "Listen: hint after a few seconds"
+  },
+  "listenHintAlmost": "Almost there…",
+  "@listenHintAlmost": {
+    "description": "Listen: hint near the end of listening"
+  },
+  "listenAgain": "Listen again",
+  "@listenAgain": {
+    "description": "Listen: starts listening again after a result"
+  },
+  "listenPrivacy": "Nothing is recorded or sent",
+  "@listenPrivacy": {
+    "description": "Listen: privacy line at the bottom"
+  },
+  "listenNowAt": "Now at {position}",
+  "@listenNowAt": {
+    "description": "Listen: where the identified song is now, ticking, e.g. 1:47",
+    "placeholders": {
+      "position": {
+        "type": "String"
+      }
+    }
+  },
+  "listenLibraryAllReady": "{count, plural, =1{1 song ready to identify} other{{count} songs ready to identify}}",
+  "@listenLibraryAllReady": {
+    "description": "Listen: all library songs are prepared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "listenDetailsTitle": "Getting songs ready",
+  "@listenDetailsTitle": {
+    "description": "Listen details sheet title"
+  },
+  "listenDetailsMessage": "Zema reads each song once to learn how it sounds. You can leave this page; it keeps going while Zema is open.",
+  "@listenDetailsMessage": {
+    "description": "Listen details: what preparing means"
+  },
+  "listenDetailsReady": "Ready",
+  "@listenDetailsReady": {
+    "description": "Listen details: how many songs are prepared"
+  },
+  "listenDetailsReading": "Reading each song",
+  "@listenDetailsReading": {
+    "description": "Listen details: average time to decode one song"
+  },
+  "listenDetailsFingerprinting": "Learning each song",
+  "@listenDetailsFingerprinting": {
+    "description": "Listen details: average time to fingerprint one song"
+  },
+  "listenDetailsAtOnce": "Songs at a time",
+  "@listenDetailsAtOnce": {
+    "description": "Listen details: songs prepared in parallel"
+  },
+  "listenDetailsCores": "Processor cores",
+  "@listenDetailsCores": {
+    "description": "Listen details: the phone's CPU cores"
+  },
+  "listenDetailsBatterySaver": "Battery saver",
+  "@listenDetailsBatterySaver": {
+    "description": "Listen details: whether battery saver is on"
+  },
+  "listenDetailsOn": "On",
+  "@listenDetailsOn": {
+    "description": "Listen details: a setting is on"
+  },
+  "listenDetailsOff": "Off",
+  "@listenDetailsOff": {
+    "description": "Listen details: a setting is off"
+  },
+  "listenDetailsDecoder": "Decoder",
+  "@listenDetailsDecoder": {
+    "description": "Listen details: the phone's audio decoder name"
+  },
+  "listenDetailsBatterySaverTip": "Battery saver slows this down. Charging the phone or turning battery saver off makes it faster.",
+  "@listenDetailsBatterySaverTip": {
+    "description": "Listen details: tip when battery saver is on"
+  },
+  "listenDetailsSeconds": "{seconds} s",
+  "@listenDetailsSeconds": {
+    "description": "Listen details: a time in seconds, e.g. 9.2 s",
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "listenDetailsReadyCount": "{ready} of {total}",
+  "@listenDetailsReadyCount": {
+    "description": "Listen details: songs prepared out of all, e.g. 12 of 95",
+    "placeholders": {
+      "ready": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "listenLoading": "Getting ready…",
+  "@listenLoading": {
+    "description": "Listen: loading the song index before the microphone starts"
+  },
+  "listenDetailsUnreadable": "Couldn't read",
+  "@listenDetailsUnreadable": {
+    "description": "Listen details: how many songs could not be read"
+  },
+  "listenFailedTitle": "Couldn't listen",
+  "@listenFailedTitle": {
+    "description": "Listen: the microphone or the search failed"
+  },
+  "listenFailedMessage": "Another app may be using the microphone. Try again in a moment.",
+  "@listenFailedMessage": {
+    "description": "Listen: the microphone or the search failed"
+  },
+  "listenShowLyrics": "Show lyrics",
+  "@listenShowLyrics": {
+    "description": "Listen: button on a match that shows the song's lyrics following the music"
+  },
+  "listenResync": "Re-sync",
+  "@listenResync": {
+    "description": "Lyrics from a match: listens again to correct the place in the song"
+  },
+  "listenResyncFailed": "Couldn't hear the song. The lyrics keep their place.",
+  "@listenResyncFailed": {
+    "description": "Lyrics from a match: re-sync found nothing"
+  },
+  "listenUnsure": "This part repeats in the song, so the place may be off. Re-sync to check.",
+  "@listenUnsure": {
+    "description": "Listen: the match is sure of the song but not of the place in it"
+  },
+  "listenSongEnded": "The song has ended",
+  "@listenSongEnded": {
+    "description": "Lyrics from a match: the matched song is over"
   }
 }

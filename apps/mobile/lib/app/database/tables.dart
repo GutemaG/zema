@@ -266,3 +266,25 @@ class TrackOverrides extends Table {
   @override
   Set<Column<Object>> get primaryKey => {trackId};
 }
+
+/// The audio fingerprint of a library file (intent 009), at the offline
+/// density, so Listen can identify songs on the phone without the network.
+/// [sizeBytes] and [version] tell when to fingerprint the file again.
+@DataClassName('TrackFingerprintRow')
+class TrackFingerprints extends Table {
+  IntColumn get trackId =>
+      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+
+  /// `fingerprintVersion` the bytes were made with.
+  IntColumn get version => integer()();
+
+  /// The file's size when fingerprinted.
+  IntColumn get sizeBytes => integer()();
+
+  /// `AudioFingerprint.toBytes`.
+  BlobColumn get data => blob()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {trackId};
+}

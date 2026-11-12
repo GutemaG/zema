@@ -36,6 +36,11 @@ abstract final class AppRoutes {
   static String songInfo(int id) =>
       Uri(path: songInfoPath, queryParameters: {'id': '$id'}).toString();
 
+  /// Listen (intent 009), above the shell; opened from Home.
+  static const String listen = '/listen';
+
+  static const String listenLyrics = '/listen/lyrics';
+
   /// S23, above the shell; opened from S05 and Profile.
   static const String myContributions = '/my-contributions';
 

@@ -6131,6 +6131,373 @@ class TrackOverridesCompanion extends UpdateCompanion<TrackOverrideRow> {
   }
 }
 
+class $TrackFingerprintsTable extends TrackFingerprints
+    with TableInfo<$TrackFingerprintsTable, TrackFingerprintRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrackFingerprintsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tracks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<Uint8List> data = GeneratedColumn<Uint8List>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    trackId,
+    version,
+    sizeBytes,
+    data,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'track_fingerprints';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrackFingerprintRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeBytesMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {trackId};
+  @override
+  TrackFingerprintRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrackFingerprintRow(
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}data'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TrackFingerprintsTable createAlias(String alias) {
+    return $TrackFingerprintsTable(attachedDatabase, alias);
+  }
+}
+
+class TrackFingerprintRow extends DataClass
+    implements Insertable<TrackFingerprintRow> {
+  final int trackId;
+
+  /// `fingerprintVersion` the bytes were made with.
+  final int version;
+
+  /// The file's size when fingerprinted.
+  final int sizeBytes;
+
+  /// `AudioFingerprint.toBytes`.
+  final Uint8List data;
+  final DateTime updatedAt;
+  const TrackFingerprintRow({
+    required this.trackId,
+    required this.version,
+    required this.sizeBytes,
+    required this.data,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['track_id'] = Variable<int>(trackId);
+    map['version'] = Variable<int>(version);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    map['data'] = Variable<Uint8List>(data);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  TrackFingerprintsCompanion toCompanion(bool nullToAbsent) {
+    return TrackFingerprintsCompanion(
+      trackId: Value(trackId),
+      version: Value(version),
+      sizeBytes: Value(sizeBytes),
+      data: Value(data),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory TrackFingerprintRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrackFingerprintRow(
+      trackId: serializer.fromJson<int>(json['trackId']),
+      version: serializer.fromJson<int>(json['version']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      data: serializer.fromJson<Uint8List>(json['data']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'trackId': serializer.toJson<int>(trackId),
+      'version': serializer.toJson<int>(version),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'data': serializer.toJson<Uint8List>(data),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  TrackFingerprintRow copyWith({
+    int? trackId,
+    int? version,
+    int? sizeBytes,
+    Uint8List? data,
+    DateTime? updatedAt,
+  }) => TrackFingerprintRow(
+    trackId: trackId ?? this.trackId,
+    version: version ?? this.version,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    data: data ?? this.data,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  TrackFingerprintRow copyWithCompanion(TrackFingerprintsCompanion data) {
+    return TrackFingerprintRow(
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      version: data.version.present ? data.version.value : this.version,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      data: data.data.present ? data.data.value : this.data,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackFingerprintRow(')
+          ..write('trackId: $trackId, ')
+          ..write('version: $version, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('data: $data, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    trackId,
+    version,
+    sizeBytes,
+    $driftBlobEquality.hash(data),
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrackFingerprintRow &&
+          other.trackId == this.trackId &&
+          other.version == this.version &&
+          other.sizeBytes == this.sizeBytes &&
+          $driftBlobEquality.equals(other.data, this.data) &&
+          other.updatedAt == this.updatedAt);
+}
+
+class TrackFingerprintsCompanion extends UpdateCompanion<TrackFingerprintRow> {
+  final Value<int> trackId;
+  final Value<int> version;
+  final Value<int> sizeBytes;
+  final Value<Uint8List> data;
+  final Value<DateTime> updatedAt;
+  const TrackFingerprintsCompanion({
+    this.trackId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.data = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  TrackFingerprintsCompanion.insert({
+    this.trackId = const Value.absent(),
+    required int version,
+    required int sizeBytes,
+    required Uint8List data,
+    required DateTime updatedAt,
+  }) : version = Value(version),
+       sizeBytes = Value(sizeBytes),
+       data = Value(data),
+       updatedAt = Value(updatedAt);
+  static Insertable<TrackFingerprintRow> custom({
+    Expression<int>? trackId,
+    Expression<int>? version,
+    Expression<int>? sizeBytes,
+    Expression<Uint8List>? data,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (trackId != null) 'track_id': trackId,
+      if (version != null) 'version': version,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (data != null) 'data': data,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  TrackFingerprintsCompanion copyWith({
+    Value<int>? trackId,
+    Value<int>? version,
+    Value<int>? sizeBytes,
+    Value<Uint8List>? data,
+    Value<DateTime>? updatedAt,
+  }) {
+    return TrackFingerprintsCompanion(
+      trackId: trackId ?? this.trackId,
+      version: version ?? this.version,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      data: data ?? this.data,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<Uint8List>(data.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackFingerprintsCompanion(')
+          ..write('trackId: $trackId, ')
+          ..write('version: $version, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('data: $data, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -6153,6 +6520,8 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $DraftsTable drafts = $DraftsTable(this);
   late final $OwnCopiesTable ownCopies = $OwnCopiesTable(this);
   late final $TrackOverridesTable trackOverrides = $TrackOverridesTable(this);
+  late final $TrackFingerprintsTable trackFingerprints =
+      $TrackFingerprintsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -6187,6 +6556,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final UnmatchedDao unmatchedDao = UnmatchedDao(this as ZemaDatabase);
   late final DraftsDao draftsDao = DraftsDao(this as ZemaDatabase);
   late final OwnCopiesDao ownCopiesDao = OwnCopiesDao(this as ZemaDatabase);
+  late final FingerprintsDao fingerprintsDao = FingerprintsDao(
+    this as ZemaDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6207,6 +6579,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     drafts,
     ownCopies,
     trackOverrides,
+    trackFingerprints,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -6262,6 +6635,13 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('track_overrides', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_fingerprints', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -6413,6 +6793,27 @@ final class $$TracksTableReferences
     ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_trackOverridesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TrackFingerprintsTable, List<TrackFingerprintRow>>
+  _trackFingerprintsRefsTable(_$ZemaDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.trackFingerprints,
+        aliasName: 'tracks__id__track_fingerprints__track_id',
+      );
+
+  $$TrackFingerprintsTableProcessedTableManager get trackFingerprintsRefs {
+    final manager = $$TrackFingerprintsTableTableManager(
+      $_db,
+      $_db.trackFingerprints,
+    ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _trackFingerprintsRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -6644,6 +7045,31 @@ class $$TracksTableFilterComposer
           }) => $$TrackOverridesTableFilterComposer(
             $db: $db,
             $table: $db.trackOverrides,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> trackFingerprintsRefs(
+    Expression<bool> Function($$TrackFingerprintsTableFilterComposer f) f,
+  ) {
+    final $$TrackFingerprintsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackFingerprints,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackFingerprintsTableFilterComposer(
+            $db: $db,
+            $table: $db.trackFingerprints,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6950,6 +7376,32 @@ class $$TracksTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> trackFingerprintsRefs<T extends Object>(
+    Expression<T> Function($$TrackFingerprintsTableAnnotationComposer a) f,
+  ) {
+    final $$TrackFingerprintsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.trackFingerprints,
+          getReferencedColumn: (t) => t.trackId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TrackFingerprintsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.trackFingerprints,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$TracksTableTableManager
@@ -6972,6 +7424,7 @@ class $$TracksTableTableManager
             bool playEventsRefs,
             bool lyricsLinksRefs,
             bool trackOverridesRefs,
+            bool trackFingerprintsRefs,
           })
         > {
   $$TracksTableTableManager(_$ZemaDatabase db, $TracksTable table)
@@ -7069,6 +7522,7 @@ class $$TracksTableTableManager
                 playEventsRefs = false,
                 lyricsLinksRefs = false,
                 trackOverridesRefs = false,
+                trackFingerprintsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -7079,6 +7533,7 @@ class $$TracksTableTableManager
                     if (playEventsRefs) db.playEvents,
                     if (lyricsLinksRefs) db.lyricsLinks,
                     if (trackOverridesRefs) db.trackOverrides,
+                    if (trackFingerprintsRefs) db.trackFingerprints,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -7203,6 +7658,26 @@ class $$TracksTableTableManager
                           referencedColumn: 'track_id',
                           typedResults: items,
                         ),
+                      if (trackFingerprintsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TrackRow,
+                          $TracksTable,
+                          TrackFingerprintRow,
+                          $TrackFingerprintsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TracksTableReferences
+                              ._trackFingerprintsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TracksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).trackFingerprintsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'track_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -7230,6 +7705,7 @@ typedef $$TracksTableProcessedTableManager =
         bool playEventsRefs,
         bool lyricsLinksRefs,
         bool trackOverridesRefs,
+        bool trackFingerprintsRefs,
       })
     >;
 typedef $$HiddenFoldersTableCreateCompanionBuilder =
@@ -11031,6 +11507,331 @@ typedef $$TrackOverridesTableProcessedTableManager =
       TrackOverrideRow,
       PrefetchHooks Function({bool trackId})
     >;
+typedef $$TrackFingerprintsTableCreateCompanionBuilder =
+    TrackFingerprintsCompanion Function({
+      Value<int> trackId,
+      required int version,
+      required int sizeBytes,
+      required Uint8List data,
+      required DateTime updatedAt,
+    });
+typedef $$TrackFingerprintsTableUpdateCompanionBuilder =
+    TrackFingerprintsCompanion Function({
+      Value<int> trackId,
+      Value<int> version,
+      Value<int> sizeBytes,
+      Value<Uint8List> data,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$TrackFingerprintsTableReferences
+    extends
+        BaseReferences<
+          _$ZemaDatabase,
+          $TrackFingerprintsTable,
+          TrackFingerprintRow
+        > {
+  $$TrackFingerprintsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
+      db.tracks.createAlias('track_fingerprints__track_id__tracks__id');
+
+  $$TracksTableProcessedTableManager get trackId {
+    final $_column = $_itemColumn<int>('track_id')!;
+
+    final manager = $$TracksTableTableManager(
+      $_db,
+      $_db.tracks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_trackIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TrackFingerprintsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $TrackFingerprintsTable> {
+  $$TrackFingerprintsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TracksTableFilterComposer get trackId {
+    final $$TracksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableFilterComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackFingerprintsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $TrackFingerprintsTable> {
+  $$TrackFingerprintsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TracksTableOrderingComposer get trackId {
+    final $$TracksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackFingerprintsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $TrackFingerprintsTable> {
+  $$TrackFingerprintsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$TracksTableAnnotationComposer get trackId {
+    final $$TracksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackFingerprintsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $TrackFingerprintsTable,
+          TrackFingerprintRow,
+          $$TrackFingerprintsTableFilterComposer,
+          $$TrackFingerprintsTableOrderingComposer,
+          $$TrackFingerprintsTableAnnotationComposer,
+          $$TrackFingerprintsTableCreateCompanionBuilder,
+          $$TrackFingerprintsTableUpdateCompanionBuilder,
+          (TrackFingerprintRow, $$TrackFingerprintsTableReferences),
+          TrackFingerprintRow,
+          PrefetchHooks Function({bool trackId})
+        > {
+  $$TrackFingerprintsTableTableManager(
+    _$ZemaDatabase db,
+    $TrackFingerprintsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrackFingerprintsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrackFingerprintsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrackFingerprintsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<Uint8List> data = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => TrackFingerprintsCompanion(
+                trackId: trackId,
+                version: version,
+                sizeBytes: sizeBytes,
+                data: data,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                required int version,
+                required int sizeBytes,
+                required Uint8List data,
+                required DateTime updatedAt,
+              }) => TrackFingerprintsCompanion.insert(
+                trackId: trackId,
+                version: version,
+                sizeBytes: sizeBytes,
+                data: data,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TrackFingerprintsTable, TrackFingerprintRow>(
+                    table,
+                  ),
+                  $$TrackFingerprintsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (trackId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.trackId,
+                        referencedTable: $$TrackFingerprintsTableReferences
+                            ._trackIdTable(db),
+                        referencedColumn: $$TrackFingerprintsTableReferences
+                            ._trackIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TrackFingerprintsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $TrackFingerprintsTable,
+      TrackFingerprintRow,
+      $$TrackFingerprintsTableFilterComposer,
+      $$TrackFingerprintsTableOrderingComposer,
+      $$TrackFingerprintsTableAnnotationComposer,
+      $$TrackFingerprintsTableCreateCompanionBuilder,
+      $$TrackFingerprintsTableUpdateCompanionBuilder,
+      (TrackFingerprintRow, $$TrackFingerprintsTableReferences),
+      TrackFingerprintRow,
+      PrefetchHooks Function({bool trackId})
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -11065,4 +11866,6 @@ class $ZemaDatabaseManager {
       $$OwnCopiesTableTableManager(_db, _db.ownCopies);
   $$TrackOverridesTableTableManager get trackOverrides =>
       $$TrackOverridesTableTableManager(_db, _db.trackOverrides);
+  $$TrackFingerprintsTableTableManager get trackFingerprints =>
+      $$TrackFingerprintsTableTableManager(_db, _db.trackFingerprints);
 }

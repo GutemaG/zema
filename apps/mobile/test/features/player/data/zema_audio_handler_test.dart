@@ -49,6 +49,17 @@ void main() {
       expect(backend.loaded, [tracks[1].uri]);
     });
 
+    test('plays a list from a position in the first track', () async {
+      final tracks = _tracks(2);
+
+      await handler.playTracks(tracks, position: const Duration(seconds: 42));
+      await pumpEventQueue();
+
+      expect(snap().playing, isTrue);
+      expect(backend.loaded, [tracks[0].uri]);
+      expect(handler.position, const Duration(seconds: 42));
+    });
+
     test('ignores an empty list', () async {
       await handler.playTracks(const []);
       await pumpEventQueue();

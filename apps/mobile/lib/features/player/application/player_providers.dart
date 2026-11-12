@@ -71,13 +71,19 @@ class PlayerController {
 
   final ZemaAudioHandler _handler;
 
-  /// Plays [tracks] from [start]; with [shuffle], that track first and the
-  /// rest shuffled.
+  /// Plays [tracks] from [start], at [position] in it; with [shuffle], that
+  /// track first and the rest shuffled.
   Future<void> playList(
     List<Track> tracks, {
     int start = 0,
     bool shuffle = false,
-  }) => _handler.playTracks(tracks, start: start, shuffle: shuffle);
+    Duration position = Duration.zero,
+  }) => _handler.playTracks(
+    tracks,
+    start: start,
+    shuffle: shuffle,
+    position: position,
+  );
 
   /// Plays [tracks] shuffled, starting from a random one.
   Future<void> shuffleList(List<Track> tracks) async {
