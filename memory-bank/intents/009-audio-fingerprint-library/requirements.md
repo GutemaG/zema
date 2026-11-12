@@ -158,8 +158,8 @@ hashes for 10 s.
 
 ## FR-11 spike results (2026-11-13, emulator, Android 16)
 
-Prototype: `apps/mobile/android/app/src/debug/kotlin/com/zemaapp/zema/spike/` (debug
-builds only). A `NotificationListenerService` reads every active media session and logs
+Prototype: commit `c50adf8`, `android/app/src/debug/kotlin/.../spike/` (removed in FR-12;
+the overlay there is a starting point for FR-14). A `NotificationListenerService` reads every active media session and logs
 each change in the `docs/flutter-build-notes.md` event format (logcat tag `ZemaSpike`
 and `files/spike_events.jsonl`); a plain native overlay shows the title and a live
 position.
@@ -223,7 +223,8 @@ online lookup) and Part B are not started.
 | FR-9 History | Done | Opened from Listen and from the widget; newest first with date and time; tap plays the song; remove one or clear all; the same song again within 10 minutes stays one entry; kept on the phone only (schema v12). |
 | FR-10 Song not in the catalog | Done | Not found offers "Add this song", which starts a lyrics draft without a recording (not over the lock screen). |
 | FR-11 Detection and overlay spike | Done on the emulator | Results above; decision: native Kotlin overlay. Left: Telegram and a real phone. |
-| FR-12 – FR-18 (Part B) | Not started | |
+| FR-12 Playback detection | Done (Android) | `MediaWatchService` → `PlaybackHub` → `zema/detection` channels → `detectedPlaybacksProvider` / `currentDetectionProvider`. Default apps: YouTube, YouTube Music, Telegram, Telegram X. Checked on the emulator: play, pause, already playing at app start, access turned off. Nothing shows it yet (FR-15). |
+| FR-13 – FR-18 (Part B) | Not started | |
 
 Known gaps in what's built: files below 11,025 Hz decode wrongly (the Kotlin resampler
 can't upsample); microphone delay and MP3/AAC priming aren't corrected (under 0.1 s).

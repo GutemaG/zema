@@ -41,6 +41,7 @@ class MainActivity : AudioServiceActivity() {
                 AudioDecodeChannel(applicationContext, messenger),
                 LaunchChannel(messenger),
                 WidgetChannel(applicationContext, messenger),
+                DetectionChannel(applicationContext, messenger),
             )
             engine.addEngineLifecycleListener(object : FlutterEngine.EngineLifecycleListener {
                 override fun onPreEngineRestart() {}
@@ -51,6 +52,7 @@ class MainActivity : AudioServiceActivity() {
                     made.audio.dispose()
                     made.launch.dispose()
                     made.widget.dispose()
+                    made.detection.dispose()
                     channels.remove(engine)
                 }
             })
@@ -63,6 +65,7 @@ class MainActivity : AudioServiceActivity() {
         val audio: AudioDecodeChannel,
         val launch: LaunchChannel,
         val widget: WidgetChannel,
+        val detection: DetectionChannel,
     )
 
     companion object {

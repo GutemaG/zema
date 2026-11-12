@@ -7,4 +7,5 @@
     <string name="listen_widget_last">Last song identified</string>
     <string name="listen_widget_last_by">Last song identified · %1$s</string>
     <string name="listen_widget_mic">Identify a song</string>
+    <string name="detection_service_label">Lyrics for songs in other apps</string>
 </resources>
