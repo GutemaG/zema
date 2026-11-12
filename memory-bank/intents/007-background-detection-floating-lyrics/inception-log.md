@@ -2,7 +2,7 @@
 intent: 007-background-detection-floating-lyrics
 created: 2026-10-23T22:16:40Z
 completed: null
-status: in-progress
+status: merged
 ---
 
 # Inception Log: 007-background-detection-floating-lyrics
@@ -44,6 +44,7 @@ status: in-progress
 | Date | Decision | Rationale | Approved |
 |------|----------|-----------|----------|
 | 2026-10-23T22:16:40Z | Intent created as draft from roadmap stage | All 8 roadmap stages created up front; elaborated in order | Yes |
+| 2026-11-03T12:40:00Z | Merged into 009 (Part B) | Product owner: related to identification, built together | Yes |
 
 ## Scope Changes
 

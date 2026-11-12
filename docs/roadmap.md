@@ -102,9 +102,9 @@ Full list in `docs/flutter-build-notes.md` → "Core domain model".
 | 4 | `004-cloud-lyrics-catalog` | Yes | No | ★★★☆☆ |
 | 5 | `005-accounts-backup-restore` | Yes | No | ★★★☆☆ |
 | 6 | `006-contribution-and-sync-editor` | Yes | Small (share intent) | ★★★★☆ |
-| 7 | `007-background-detection-floating-lyrics` | No | **Yes** | ★★★★★ |
+| 7 | ~~`007-background-detection-floating-lyrics`~~ merged into 009 | — | — | — |
 | 8 | `008-admin-website` | Yes | No | ★★★☆☆ |
-| 9 | `009-audio-fingerprint-library` | Yes | Maybe (spike decides) | ★★★★☆ |
+| 9 | `009-audio-fingerprint-library` (+ former 007) | Yes | **Yes** | ★★★★★ |
 | 10 | `010-listen-to-identify` | Yes | Yes (microphone service) | ★★★★★ |
 | 11 | `011-share-lyrics-clips` | No | Maybe (spike decides) | ★★★★☆ |
 | 12 | `012-ai-lyrics-from-audio` | Yes | No | ★★★★☆ |
@@ -274,32 +274,9 @@ for moderators until stage 8), S09 Edit song info, S07 "Link a recording" entry.
 
 ---
 
-### Stage 7 — `007-background-detection-floating-lyrics` ★★★★★
+### Stage 7 — merged into Stage 9 (2026-11-03)
 
-**Goal:** lyrics over YouTube / Telegram / other players, even when Zema is closed.
-
-**Screens:** S01 Welcome, S02 How it works, S03 Permissions setup, S05 "Now detected" card,
-S27 Floating lyrics overlay (bubble, compact bar, expanded panel, match confirmation, no
-lyrics), S27s Floating lyrics & detection settings.
-
-**Key requirements**
-- Kotlin `NotificationListenerService` + `MediaSessionManager` read title, artist,
-  duration, position, play state and package of enabled apps; events sent to Dart via
-  EventChannel (format in `docs/flutter-build-notes.md`).
-- Matching order: remembered match → exact recording (YouTube video ID / file) → fuzzy
-  normalized title; low confidence asks the user ("Is this the song?") and remembers the
-  answer.
-- Overlay follows play / pause / seek; hides when playback stops; position, size,
-  opacity remembered; does not show while Zema is in the foreground (configurable).
-- Works when Zema is closed; guide users through OEM battery-saver settings.
-- Privacy: only media metadata is read, never notification text.
-
-**Done when**
-- With Zema closed, playing a matched mezmur in YouTube opens the floating lyrics within
-  3 s, in sync within ±0.5 s, on at least two phone brands.
-
-**Spike first:** prove listener → overlay launch with the app process killed, on a real
-phone, and decide Flutter vs native overlay UI.
+Background detection and floating lyrics are now Part B of `009-audio-fingerprint-library`.
 
 ---
 
@@ -317,26 +294,28 @@ Deployed as static files (Vercel or similar) via GitHub Actions.
 
 ---
 
-### Stage 9 — `009-audio-fingerprint-library` ★★★★☆
+### Stage 9 — `009-audio-fingerprint-library` ★★★★★ (includes former 007)
 
-**Goal:** identify library songs by their sound, not only by their tags.
+**Goal:** know which song is playing and show its lyrics at the current line, in Zema or
+in a floating window over other apps.
 
-**Key requirements**
-- Every catalog recording has an audio fingerprint; only fingerprints are stored and
-  sent, never audio (a fingerprint can't be turned back into sound).
-- Fingerprinting and matching in pure Dart in `zema_core`, shared by the app, the seed
-  tool and the backend lookup.
-- The app fingerprints library files in the background (charging by default) and asks
-  the backend which recording each is and where its audio starts; manual link >
-  fingerprint match > title match.
-- Contributors (006) fingerprint their file on the phone and submit the fingerprint.
+**Key requirements** (full list in the intent's requirements.md)
+- Identify a song from a few seconds of audio at any point, through the microphone or
+  from a file, with its position. Offline index on the phone; online lookup otherwise.
+- Listen from the app, a lock-screen tile/control and a home-screen widget.
+- Fingerprints only, never audio; catalog fingerprints from the seed tool,
+  contributions and opted-in libraries.
+- Android: detect YouTube/Telegram playback via media sessions; floating lyrics window,
+  even when Zema is closed; listening as fallback when the title doesn't match.
 
 **Done when**
-- A catalog recording with no tags, named "Track 01", links to its song and uses that
-  recording's timing, in sync within ±0.5 s.
+- A catalog recording played from a speaker 2 m away, starting anywhere, is identified
+  within 10 s (also offline) and its lyrics show at the right line.
+- With Zema closed, a matched mezmur in YouTube opens floating lyrics within 3 s, in sync
+  within ±0.5 s, on two phone brands.
 
-**Spike first:** compare a whole-file (Chromaprint-style) and a peak-pair (Shazam-style)
-method on real mezmur files; decide whether one serves both 009 and 010.
+**Spikes first:** peak-pair fingerprint on real mezmur files and microphone recordings;
+listener → overlay launch with the app process killed, on a real phone.
 
 ---
 
@@ -346,8 +325,6 @@ method on real mezmur files; decide whether one serves both 009 and 010.
 sync.
 
 **Key requirements**
-- "Listen" records ~10 s, fingerprints on the phone (noise-tolerant method from 009),
-  and looks it up; the match's position starts the lyrics at the right line.
 - "Keep listening": started by the user, listens in bursts with a visible notification,
   stops by itself (default 1 hour). No always-on listening; iOS only while Zema is open.
 - Audio is never uploaded or saved.

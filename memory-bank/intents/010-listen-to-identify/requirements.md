@@ -3,7 +3,7 @@ intent: 010-listen-to-identify
 phase: inception
 status: draft
 created: 2026-10-29T08:29:54Z
-updated: 2026-10-29T08:29:54Z
+updated: 2026-11-12T12:30:00Z
 ---
 
 # Requirements: Listen to Identify
@@ -13,46 +13,39 @@ updated: 2026-10-29T08:29:54Z
 
 ## Intent Overview
 
-Identify a song playing nearby (another phone, a speaker, a church service) through the
-microphone, and show its synced lyrics at the right line. The phone listens for a few
-seconds, makes a noise-tolerant fingerprint on the phone, and asks the backend; the
-answer includes the position in the recording, so lyrics start in sync. Listening is on
-request, with an optional "keep listening" mode that the user turns on and that stops
-by itself.
+Keep identifying songs through the microphone without the user tapping Listen each
+time, for example during a service. Builds on 009, which already provides tap-to-listen,
+lookup from any point in the song, synced lyrics from a match, and History. This intent
+adds a "keep listening" mode that follows song changes and ends by itself.
+
+> Scope change 2026-11-03: the Listen button, synced lyrics from a match and History
+> moved to 009 (FR-4, FR-5, FR-7).
+
+> Plan for FR-1 and FR-2, and how they compare with Pixel's Now Playing:
+> `keep-listening-plan.md` (2026-11-12).
 
 ## Business Goals
 
 | Goal | Success Metric | Priority |
 |------|----------------|----------|
-| Identify by listening | A catalog recording played from a speaker 2 m away is found within 10 s | Must |
-| Lyrics in sync | Lyrics start at the right line, within ±0.5 s | Must |
+| Follow a service hands-free | Each new song in a 1-hour playlist is shown within 15 s of starting | Must |
 | Trustworthy | No audio leaves the phone; the user always sees when the microphone is on | Must |
 
 ---
 
 ## Functional Requirements
 
-### FR-1: Listen button
-- **Description**: A "Listen" action (Home and Search) records up to ~10 s, fingerprints
-  on the phone and looks it up (009 FR-3). Results: the song with "Show lyrics", "Not
-  found" with "Try again", or "No internet" (the fingerprint is kept and looked up later).
-- **Priority**: Must
-
-### FR-2: Synced lyrics from listening
-- **Description**: The match's position starts the lyrics at the right line, then a
-  clock keeps them moving; a new listen re-syncs. View-only Now Playing (like 007 FR-6).
-- **Priority**: Must
-
-### FR-3: Keep listening
+### FR-1: Keep listening
 - **Description**: A mode the user switches on (e.g. for a service): listens in short
-  bursts and follows song changes, shown by a persistent notification (Android foreground
-  service with the microphone indicator). Stops after a chosen time (default 1 hour) or
-  when the user stops it. iOS: only while Zema is open.
-- **Priority**: Should
+  bursts with 009's engine and follows song changes, shown by a persistent notification
+  (Android foreground service with the microphone indicator). Stops after a chosen time
+  (default 1 hour) or when the user stops it. iOS: only while Zema is open.
+- **Priority**: Must
 
-### FR-4: History
-- **Description**: A list of identified songs with time; tap to open the song.
-- **Priority**: Could
+### FR-2: Follow song changes
+- **Description**: While keep listening is on, the view-only lyrics (009 FR-5) switch
+  to the new song when it changes, and re-sync if the position drifts.
+- **Priority**: Must
 
 ---
 
@@ -84,7 +77,7 @@ by itself.
 **Project-wide standards**: Required standards will be loaded from memory-bank standards folder by Construction Agent
 
 **Intent-specific constraints**:
-- Uses the noise-tolerant (peak-pair) fingerprint chosen in 009's spike.
+- Uses 009's fingerprint engine and lookup.
 - No always-on background listening: iOS does not allow it and app stores restrict it.
   "Keep listening" is started by the user and has an end time.
 
@@ -107,4 +100,3 @@ by itself.
 | Question | Owner | Due Date | Resolution |
 |----------|-------|----------|------------|
 | Default length of "keep listening"? | Product owner | Requirements review | Pending |
-| Identify songs not in the catalog (offer to contribute)? | Product owner | Requirements review | Pending |
