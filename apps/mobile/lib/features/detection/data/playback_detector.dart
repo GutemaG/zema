@@ -83,6 +83,10 @@ abstract interface class PlaybackDetector {
 
   Future<void> openAccessSettings();
 
+  Future<bool> enabled();
+
+  Future<void> setEnabled(bool on);
+
   Future<Set<String>> sources();
 
   Future<void> setSources(Set<String> sources);
@@ -99,6 +103,12 @@ class NoPlaybackDetector implements PlaybackDetector {
 
   @override
   Future<void> openAccessSettings() async {}
+
+  @override
+  Future<bool> enabled() async => false;
+
+  @override
+  Future<void> setEnabled(bool on) async {}
 
   @override
   Future<Set<String>> sources() async => const {};
@@ -146,6 +156,22 @@ class AndroidPlaybackDetector implements PlaybackDetector {
       return;
     }
   }
+
+  @override
+  Future<bool> enabled() async {
+    try {
+      return await _methods.invokeMethod<bool>('enabled') ?? true;
+    } on PlatformException catch (e) {
+      _log.warning('Reading the detection switch failed', e);
+      return true;
+    } on MissingPluginException {
+      return false;
+    }
+  }
+
+  @override
+  Future<void> setEnabled(bool on) =>
+      _methods.invokeMethod<void>('setEnabled', on);
 
   @override
   Future<Set<String>> sources() async {

@@ -4235,6 +4235,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Which song is playing?'**
   String get detectedChooseTitle;
+
+  /// Settings section heading for detecting songs playing in other apps
+  ///
+  /// In en, this message translates to:
+  /// **'Other apps'**
+  String get settingsSectionOtherApps;
+
+  /// Settings row and screen title for detecting songs in YouTube or Telegram and floating their lyrics
+  ///
+  /// In en, this message translates to:
+  /// **'Detection & floating lyrics'**
+  String get detectionSettingsTitle;
+
+  /// Heading of the permissions the detection screen needs
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get detectionSectionPermissions;
+
+  /// Permission row; lets Zema see what YouTube or Telegram is playing
+  ///
+  /// In en, this message translates to:
+  /// **'Notification access'**
+  String get detectionPermissionNotifications;
+
+  /// Permission row; lets Zema float lyrics over other apps
+  ///
+  /// In en, this message translates to:
+  /// **'Display over other apps'**
+  String get detectionPermissionOverlay;
+
+  /// Permission row; lets Zema identify a song by listening
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get detectionPermissionMicrophone;
+
+  /// Status of a permission that is granted
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get detectionPermissionAllowed;
+
+  /// Button that opens the system screen to grant a missing permission
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get detectionPermissionFix;
+
+  /// Heading of the detection switches
+  ///
+  /// In en, this message translates to:
+  /// **'Detection'**
+  String get detectionSectionDetection;
+
+  /// Main switch for detecting songs playing in other apps
+  ///
+  /// In en, this message translates to:
+  /// **'Detect songs in other apps'**
+  String get detectionEnabled;
+
+  /// Row choosing how floating lyrics first appear
+  ///
+  /// In en, this message translates to:
+  /// **'Show lyrics as'**
+  String get detectionShowAs;
+
+  /// Floating lyrics start as a bubble, tapped to open
+  ///
+  /// In en, this message translates to:
+  /// **'A small bubble'**
+  String get detectionShowBubble;
+
+  /// Floating lyrics start as the bar with the current line
+  ///
+  /// In en, this message translates to:
+  /// **'The lyrics bar'**
+  String get detectionShowBar;
+
+  /// Heading of the floating lyrics' text size and opacity, with a preview
+  ///
+  /// In en, this message translates to:
+  /// **'Floating lyrics'**
+  String get detectionSectionAppearance;
+
+  /// Slider label for how see-through the floating lyrics are
+  ///
+  /// In en, this message translates to:
+  /// **'Opacity'**
+  String get detectionOpacity;
+
+  /// Heading of the matching options
+  ///
+  /// In en, this message translates to:
+  /// **'Matching'**
+  String get detectionSectionMatching;
+
+  /// Row that forgets the songs chosen for videos
+  ///
+  /// In en, this message translates to:
+  /// **'Clear remembered matches'**
+  String get detectionClearMatches;
+
+  /// Dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Clear remembered matches?'**
+  String get detectionClearMatchesTitle;
+
+  /// Dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Your answers and timing changes for videos are forgotten, so Zema may ask again.'**
+  String get detectionClearMatchesMessage;
+
+  /// Heading of the identify-by-listening options
+  ///
+  /// In en, this message translates to:
+  /// **'Identification'**
+  String get detectionSectionIdentification;
+
+  /// Row that removes songs identified by listening from the history
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Listen history'**
+  String get detectionClearListenHistory;
+
+  /// Dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Listen history?'**
+  String get detectionClearListenHistoryTitle;
+
+  /// Dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Songs you identified by listening are removed from the history.'**
+  String get detectionClearListenHistoryMessage;
+
+  /// Confirm button of a clear dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get detectionClear;
+
+  /// Snack bar after clearing
+  ///
+  /// In en, this message translates to:
+  /// **'Cleared'**
+  String get detectionCleared;
+
+  /// Privacy note at the bottom of the detection settings
+  ///
+  /// In en, this message translates to:
+  /// **'Zema reads only the title and position of what plays in these apps. When identifying by sound, only fingerprints leave your phone, never the recording.'**
+  String get detectionPrivacy;
+
+  /// Sample current line in the floating lyrics preview
+  ///
+  /// In en, this message translates to:
+  /// **'The line being sung'**
+  String get detectionPreviewLine;
+
+  /// Sample next line in the floating lyrics preview
+  ///
+  /// In en, this message translates to:
+  /// **'The next line'**
+  String get detectionPreviewNext;
 }
 
 class _AppLocalizationsDelegate

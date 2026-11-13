@@ -21,6 +21,11 @@ class DetectionChannel(private val context: Context, messenger: BinaryMessenger)
                     openAccessSettings()
                     result.success(null)
                 }
+                "enabled" -> result.success(PlaybackHub.enabled(context))
+                "setEnabled" -> {
+                    PlaybackHub.setEnabled(context, call.arguments == true)
+                    result.success(null)
+                }
                 "sources" -> result.success(PlaybackHub.sources(context).toList())
                 "setSources" -> {
                     val sources = (call.arguments as? List<*>)?.filterIsInstance<String>()?.toSet()

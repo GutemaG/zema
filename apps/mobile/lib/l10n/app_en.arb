@@ -3256,5 +3256,117 @@
   "detectedChooseTitle": "Which song is playing?",
   "@detectedChooseTitle": {
     "description": "Title of the sheet for choosing the song playing in another app (YouTube, Telegram), opened from the floating lyrics' Choose another"
+  },
+  "settingsSectionOtherApps": "Other apps",
+  "@settingsSectionOtherApps": {
+    "description": "Settings section heading for detecting songs playing in other apps"
+  },
+  "detectionSettingsTitle": "Detection & floating lyrics",
+  "@detectionSettingsTitle": {
+    "description": "Settings row and screen title for detecting songs in YouTube or Telegram and floating their lyrics"
+  },
+  "detectionSectionPermissions": "Permissions",
+  "@detectionSectionPermissions": {
+    "description": "Heading of the permissions the detection screen needs"
+  },
+  "detectionPermissionNotifications": "Notification access",
+  "@detectionPermissionNotifications": {
+    "description": "Permission row; lets Zema see what YouTube or Telegram is playing"
+  },
+  "detectionPermissionOverlay": "Display over other apps",
+  "@detectionPermissionOverlay": {
+    "description": "Permission row; lets Zema float lyrics over other apps"
+  },
+  "detectionPermissionMicrophone": "Microphone",
+  "@detectionPermissionMicrophone": {
+    "description": "Permission row; lets Zema identify a song by listening"
+  },
+  "detectionPermissionAllowed": "Allowed",
+  "@detectionPermissionAllowed": {
+    "description": "Status of a permission that is granted"
+  },
+  "detectionPermissionFix": "Fix",
+  "@detectionPermissionFix": {
+    "description": "Button that opens the system screen to grant a missing permission"
+  },
+  "detectionSectionDetection": "Detection",
+  "@detectionSectionDetection": {
+    "description": "Heading of the detection switches"
+  },
+  "detectionEnabled": "Detect songs in other apps",
+  "@detectionEnabled": {
+    "description": "Main switch for detecting songs playing in other apps"
+  },
+  "detectionShowAs": "Show lyrics as",
+  "@detectionShowAs": {
+    "description": "Row choosing how floating lyrics first appear"
+  },
+  "detectionShowBubble": "A small bubble",
+  "@detectionShowBubble": {
+    "description": "Floating lyrics start as a bubble, tapped to open"
+  },
+  "detectionShowBar": "The lyrics bar",
+  "@detectionShowBar": {
+    "description": "Floating lyrics start as the bar with the current line"
+  },
+  "detectionSectionAppearance": "Floating lyrics",
+  "@detectionSectionAppearance": {
+    "description": "Heading of the floating lyrics' text size and opacity, with a preview"
+  },
+  "detectionOpacity": "Opacity",
+  "@detectionOpacity": {
+    "description": "Slider label for how see-through the floating lyrics are"
+  },
+  "detectionSectionMatching": "Matching",
+  "@detectionSectionMatching": {
+    "description": "Heading of the matching options"
+  },
+  "detectionClearMatches": "Clear remembered matches",
+  "@detectionClearMatches": {
+    "description": "Row that forgets the songs chosen for videos"
+  },
+  "detectionClearMatchesTitle": "Clear remembered matches?",
+  "@detectionClearMatchesTitle": {
+    "description": "Dialog title"
+  },
+  "detectionClearMatchesMessage": "Your answers and timing changes for videos are forgotten, so Zema may ask again.",
+  "@detectionClearMatchesMessage": {
+    "description": "Dialog message"
+  },
+  "detectionSectionIdentification": "Identification",
+  "@detectionSectionIdentification": {
+    "description": "Heading of the identify-by-listening options"
+  },
+  "detectionClearListenHistory": "Clear Listen history",
+  "@detectionClearListenHistory": {
+    "description": "Row that removes songs identified by listening from the history"
+  },
+  "detectionClearListenHistoryTitle": "Clear Listen history?",
+  "@detectionClearListenHistoryTitle": {
+    "description": "Dialog title"
+  },
+  "detectionClearListenHistoryMessage": "Songs you identified by listening are removed from the history.",
+  "@detectionClearListenHistoryMessage": {
+    "description": "Dialog message"
+  },
+  "detectionClear": "Clear",
+  "@detectionClear": {
+    "description": "Confirm button of a clear dialog"
+  },
+  "detectionCleared": "Cleared",
+  "@detectionCleared": {
+    "description": "Snack bar after clearing"
+  },
+  "detectionPrivacy": "Zema reads only the title and position of what plays in these apps. When identifying by sound, only fingerprints leave your phone, never the recording.",
+  "@detectionPrivacy": {
+    "description": "Privacy note at the bottom of the detection settings"
+  },
+  "detectionPreviewLine": "The line being sung",
+  "@detectionPreviewLine": {
+    "description": "Sample current line in the floating lyrics preview"
+  },
+  "detectionPreviewNext": "The next line",
+  "@detectionPreviewNext": {
+    "description": "Sample next line in the floating lyrics preview"
   }
 }

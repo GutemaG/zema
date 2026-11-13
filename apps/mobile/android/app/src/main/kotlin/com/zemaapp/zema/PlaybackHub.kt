@@ -5,6 +5,7 @@ import android.content.Context
 object PlaybackHub {
     private const val PREFS = "zema_detection"
     private const val SOURCES = "sources"
+    private const val ENABLED = "enabled"
 
     val defaultSources = setOf(
         "com.google.android.youtube",
@@ -28,6 +29,18 @@ object PlaybackHub {
         for (source in latest.keys.filter { it !in sources }) gone(source)
         onSourcesChanged?.invoke()
     }
+
+    fun enabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(ENABLED, true)
+
+    fun setEnabled(context: Context, on: Boolean) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putBoolean(ENABLED, on).apply()
+        if (!on) for (source in latest.keys.toList()) gone(source)
+        onSourcesChanged?.invoke()
+    }
+
+    fun watched(context: Context): Set<String> = if (enabled(context)) sources(context) else emptySet()
 
     fun publish(event: Map<String, Any?>) {
         val source = event["sourcePackage"] as? String ?: return

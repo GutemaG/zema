@@ -221,3 +221,9 @@ extension ZemaColorsContext on BuildContext {
     return colors!;
   }
 }
+
+abstract final class OverlayColors {
+  static const surface = Color(0xFF1C1613);
+  static const text = Color(0xFFF2E8D7);
+  static const muted = Color(0xFFA39586);
+}

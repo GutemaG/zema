@@ -57,7 +57,7 @@ class MediaWatchService : NotificationListenerService() {
 
     private fun attach(controllers: List<MediaController>) {
         detachAll()
-        val sources = PlaybackHub.sources(this)
+        val sources = PlaybackHub.watched(this)
         val seen = mutableSetOf<String>()
         for (controller in controllers) {
             val source = controller.packageName

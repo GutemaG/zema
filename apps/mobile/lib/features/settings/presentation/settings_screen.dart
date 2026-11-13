@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -253,6 +254,17 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
           const LyricsSettingsGroup(),
+          if (Platform.isAndroid)
+            SettingsGroup(
+              title: l10n.settingsSectionOtherApps,
+              children: [
+                SettingsRow(
+                  label: l10n.detectionSettingsTitle,
+                  onTap: () =>
+                      unawaited(context.push(AppRoutes.detectionSettings)),
+                ),
+              ],
+            ),
           SettingsGroup(
             title: l10n.settingsSectionAbout,
             children: [

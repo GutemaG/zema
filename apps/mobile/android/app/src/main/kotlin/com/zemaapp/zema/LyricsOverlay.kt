@@ -97,7 +97,7 @@ object LyricsOverlay {
             previous?.key != next.key || (root == null && !suspended) -> {
                 removeHandle()
                 locked = false
-                mode = wanted ?: Mode.BUBBLE
+                mode = wanted ?: startMode()
                 build()
             }
             wanted != null && wanted != mode -> switchTo(wanted)
@@ -606,6 +606,27 @@ object LyricsOverlay {
         prefs.edit().putFloat("text_sp", (textSp() + delta).coerceIn(12f, 30f)).apply()
         build()
     }
+
+    fun appearance(context: Context): Map<String, Any> {
+        attach(context)
+        return mapOf(
+            "textSp" to textSp().toDouble(),
+            "opacity" to opacity().toDouble(),
+            "start" to if (startMode() == Mode.BAR) "bar" else "bubble",
+        )
+    }
+
+    fun setAppearance(context: Context, textSp: Float?, opacity: Float?, start: Mode?) {
+        attach(context)
+        prefs.edit().apply {
+            textSp?.let { putFloat("text_sp", it.coerceIn(12f, 30f)) }
+            opacity?.let { putFloat("opacity", it.coerceIn(0.4f, 1f)) }
+            start?.let { putString("start", if (it == Mode.BAR) "bar" else "bubble") }
+        }.apply()
+        if (root != null) build()
+    }
+
+    private fun startMode() = if (prefs.getString("start", null) == "bar") Mode.BAR else Mode.BUBBLE
 
     private fun textSp() = prefs.getFloat("text_sp", 18f)
 

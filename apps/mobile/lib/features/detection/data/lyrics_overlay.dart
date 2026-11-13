@@ -188,6 +188,62 @@ class OverlayNotMezmur extends OverlayAction {
   const OverlayNotMezmur(super.key);
 }
 
+enum OverlayStart { bubble, bar }
+
+@immutable
+class OverlayAppearance {
+  const OverlayAppearance({
+    this.textSize = 18,
+    this.opacity = 1,
+    this.start = OverlayStart.bubble,
+  });
+
+  static const minText = 12.0;
+  static const maxText = 30.0;
+  static const minOpacity = 0.4;
+
+  final double textSize;
+  final double opacity;
+  final OverlayStart start;
+
+  OverlayAppearance copyWith({
+    double? textSize,
+    double? opacity,
+    OverlayStart? start,
+  }) => OverlayAppearance(
+    textSize: textSize ?? this.textSize,
+    opacity: opacity ?? this.opacity,
+    start: start ?? this.start,
+  );
+
+  Map<String, Object?> toMap() => {
+    'textSp': textSize,
+    'opacity': opacity,
+    'start': start.name,
+  };
+
+  static OverlayAppearance fromMap(Object? value) {
+    if (value is! Map) return const OverlayAppearance();
+    return OverlayAppearance(
+      textSize: (value['textSp'] as num?)?.toDouble() ?? 18,
+      opacity: (value['opacity'] as num?)?.toDouble() ?? 1,
+      start:
+          OverlayStart.values.asNameMap()[value['start']] ??
+          OverlayStart.bubble,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is OverlayAppearance &&
+      other.textSize == textSize &&
+      other.opacity == opacity &&
+      other.start == start;
+
+  @override
+  int get hashCode => Object.hash(textSize, opacity, start);
+}
+
 abstract interface class LyricsOverlay {
   Future<bool> canShow();
 
@@ -196,6 +252,10 @@ abstract interface class LyricsOverlay {
   Future<bool> show(OverlayContent content);
 
   Future<void> hide();
+
+  Future<OverlayAppearance> appearance();
+
+  Future<void> setAppearance(OverlayAppearance appearance);
 
   Stream<OverlayAction> get actions;
 }
@@ -214,6 +274,12 @@ class NoLyricsOverlay implements LyricsOverlay {
 
   @override
   Future<void> hide() async {}
+
+  @override
+  Future<OverlayAppearance> appearance() async => const OverlayAppearance();
+
+  @override
+  Future<void> setAppearance(OverlayAppearance appearance) async {}
 
   @override
   Stream<OverlayAction> get actions => const Stream.empty();
@@ -242,6 +308,15 @@ class AndroidLyricsOverlay implements LyricsOverlay {
 
   @override
   Future<void> hide() => _call<void>('hide', 'Hiding lyrics');
+
+  @override
+  Future<OverlayAppearance> appearance() async => OverlayAppearance.fromMap(
+    await _call<Map<Object?, Object?>>('appearance', 'Reading the appearance'),
+  );
+
+  @override
+  Future<void> setAppearance(OverlayAppearance appearance) =>
+      _call<void>('setAppearance', 'Saving the appearance', appearance.toMap());
 
   @override
   Stream<OverlayAction> get actions => _events

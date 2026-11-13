@@ -2504,4 +2504,91 @@ class AppLocalizationsOm extends AppLocalizations {
 
   @override
   String get detectedChooseTitle => 'Which song is playing?';
+
+  @override
+  String get settingsSectionOtherApps => 'Other apps';
+
+  @override
+  String get detectionSettingsTitle => 'Detection & floating lyrics';
+
+  @override
+  String get detectionSectionPermissions => 'Permissions';
+
+  @override
+  String get detectionPermissionNotifications => 'Notification access';
+
+  @override
+  String get detectionPermissionOverlay => 'Display over other apps';
+
+  @override
+  String get detectionPermissionMicrophone => 'Microphone';
+
+  @override
+  String get detectionPermissionAllowed => 'Allowed';
+
+  @override
+  String get detectionPermissionFix => 'Fix';
+
+  @override
+  String get detectionSectionDetection => 'Detection';
+
+  @override
+  String get detectionEnabled => 'Detect songs in other apps';
+
+  @override
+  String get detectionShowAs => 'Show lyrics as';
+
+  @override
+  String get detectionShowBubble => 'A small bubble';
+
+  @override
+  String get detectionShowBar => 'The lyrics bar';
+
+  @override
+  String get detectionSectionAppearance => 'Floating lyrics';
+
+  @override
+  String get detectionOpacity => 'Opacity';
+
+  @override
+  String get detectionSectionMatching => 'Matching';
+
+  @override
+  String get detectionClearMatches => 'Clear remembered matches';
+
+  @override
+  String get detectionClearMatchesTitle => 'Clear remembered matches?';
+
+  @override
+  String get detectionClearMatchesMessage =>
+      'Your answers and timing changes for videos are forgotten, so Zema may ask again.';
+
+  @override
+  String get detectionSectionIdentification => 'Identification';
+
+  @override
+  String get detectionClearListenHistory => 'Clear Listen history';
+
+  @override
+  String get detectionClearListenHistoryTitle => 'Clear Listen history?';
+
+  @override
+  String get detectionClearListenHistoryMessage =>
+      'Songs you identified by listening are removed from the history.';
+
+  @override
+  String get detectionClear => 'Clear';
+
+  @override
+  String get detectionCleared => 'Cleared';
+
+  @override
+  String get detectionPrivacy =>
+      'Zema reads only the title and position of what plays in these apps. When identifying by sound, only fingerprints leave your phone, never the recording.';
+
+  @override
+  String get detectionPreviewLine => 'The line being sung';
+
+  @override
+  String get detectionPreviewNext => 'The next line';
 }

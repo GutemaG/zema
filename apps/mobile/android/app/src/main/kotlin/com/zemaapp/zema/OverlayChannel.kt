@@ -27,14 +27,19 @@ class OverlayChannel(private val context: Context, messenger: BinaryMessenger) {
                     if (sheet == null) {
                         result.error("bad_arguments", "A key, a source and lines are needed", null)
                     } else {
-                        val mode = when (args["mode"]) {
-                            "bubble" -> LyricsOverlay.Mode.BUBBLE
-                            "bar" -> LyricsOverlay.Mode.BAR
-                            "panel" -> LyricsOverlay.Mode.PANEL
-                            else -> null
-                        }
-                        result.success(LyricsOverlay.show(context, sheet, mode))
+                        result.success(LyricsOverlay.show(context, sheet, modeOf(args["mode"])))
                     }
+                }
+                "appearance" -> result.success(LyricsOverlay.appearance(context))
+                "setAppearance" -> {
+                    val args = call.arguments as? Map<*, *> ?: emptyMap<Any, Any>()
+                    LyricsOverlay.setAppearance(
+                        context,
+                        (args["textSp"] as? Number)?.toFloat(),
+                        (args["opacity"] as? Number)?.toFloat(),
+                        modeOf(args["start"]),
+                    )
+                    result.success(null)
                 }
                 "hide" -> {
                     LyricsOverlay.hide()
@@ -61,6 +66,13 @@ class OverlayChannel(private val context: Context, messenger: BinaryMessenger) {
         events.setStreamHandler(null)
         stopListening?.invoke()
         stopListening = null
+    }
+
+    private fun modeOf(value: Any?) = when (value) {
+        "bubble" -> LyricsOverlay.Mode.BUBBLE
+        "bar" -> LyricsOverlay.Mode.BAR
+        "panel" -> LyricsOverlay.Mode.PANEL
+        else -> null
     }
 
     private fun openSettings() {

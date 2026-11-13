@@ -76,6 +76,8 @@ abstract final class AppRoutes {
   static const String hiddenSongsPath = 'hidden-songs';
   static const String hiddenFolders = '$settings/$hiddenFoldersPath';
   static const String hiddenSongs = '$settings/$hiddenSongsPath';
+  static const String detectionSettingsPath = 'detection';
+  static const String detectionSettings = '$settings/$detectionSettingsPath';
 
   /// S11a for the folder at [path].
   static String folder(String path) => Uri(

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/detection/presentation/detection_settings_screen.dart';
 import '../features/identify/presentation/listen_history_screen.dart';
 import '../features/identify/presentation/listen_lyrics_screen.dart';
 import '../features/identify/presentation/listen_screen.dart';
@@ -130,6 +131,10 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
           GoRoute(
             path: AppRoutes.hiddenSongsPath,
             builder: (_, _) => const HiddenSongsScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.detectionSettingsPath,
+            builder: (_, _) => const DetectionSettingsScreen(),
           ),
         ],
       ),
