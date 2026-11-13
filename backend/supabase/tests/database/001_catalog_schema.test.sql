@@ -17,7 +17,8 @@ select tables_are(
   array[
     'songs', 'sections', 'lines', 'play_order', 'recordings', 'sync_timings',
     'reports', 'user_roles', 'contributions', 'profiles', 'backups',
-    'search_entries', 'search_entry_words', 'search_vocab', 'search_syllable_consonants'
+    'search_entries', 'search_entry_words', 'search_vocab', 'search_syllable_consonants',
+    'recording_fingerprints', 'fingerprint_hashes'
   ],
   'the catalog has exactly the expected tables'
 );

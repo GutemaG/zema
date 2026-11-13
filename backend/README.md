@@ -54,6 +54,19 @@ for iOS.
 Only Postgres, the API, auth and Studio run locally; realtime, storage, edge functions,
 analytics and the mail catcher are turned off in `config.toml` until they are needed.
 
+## Fingerprints
+
+Recordings are found by sound with `identify_audio` (intent 009). To fingerprint
+catalog recordings from audio files on your computer (needs ffmpeg; only hashes are
+uploaded), from `packages/zema_core/`:
+
+```text
+SUPABASE_SERVICE_ROLE_KEY=<from npx supabase status> \
+  dart run tool/upload_fingerprints.dart selam-lezih-bet=~/Music/selam.mp3
+```
+
+`SUPABASE_URL` defaults to the local backend.
+
 ## Google sign-in
 
 Accounts (intent 005) sign in with Google only. The provider is set in `config.toml`

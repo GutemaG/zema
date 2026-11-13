@@ -213,8 +213,8 @@ online lookup) and Part B are not started.
 |----|-------|--------------------------|
 | FR-0 Fingerprint spike | Done | Results above; `packages/zema_core/tool/fingerprint_eval.dart`. Timing on a mid-range phone not yet measured. |
 | FR-1 Engine in `zema_core` | Done | `Fingerprinter`, `FingerprintIndex`, `AudioFingerprint` (versioned), with tests. |
-| FR-2 Fingerprints in the catalog | Not started | Needs the backend. |
-| FR-3 Online lookup | Not started | Needs FR-2. |
+| FR-2 Fingerprints in the catalog | Partly | `recording_fingerprints` + `fingerprint_hashes` (hidden from the API), `put_fingerprint` (service role only). Seed tool: `packages/zema_core/tool/upload_fingerprints.dart recording-id=file …` decodes with ffmpeg in memory and uploads only hashes. Left: fingerprints with contributions, and from users' libraries (opt-in). |
+| FR-3 Online lookup | Server done | `identify_audio(version, hashes, frames, queries)`: approved songs only, same scoring as `FingerprintIndex` (±1 frame, min 12, runner-up for repeats), at most 20,000 hashes. Checked locally: a 10 s excerpt of a 40 s upload found at the right place (frame 516 of ~517) in 19 ms. Left: the app (a catalog result in Listen, after the library search) and the offline queue. |
 | FR-4 Offline index | Partly | Every library song is fingerprinted on the phone (Kotlin decoder, saved in Drift, searched in a worker isolate). Left: catalog recordings, favorites, budget setting, Wi-Fi updates. |
 | FR-5 Listen | Done offline | Listen from Home, Search, and Now playing when nothing is playing: permission, listening state, checkpoints at 3/6/10 s, found / not found / failed. Left, with other FRs: server lookup and the offline queue (FR-3), "Show floating lyrics" (FR-14). |
 | FR-6 Lock screen and home screen | Done on Android | Quick Settings tile "Identify song" and a home-screen widget (mic button, last song identified, tap for History). Both open a compact Listen over the lock screen that starts at once; "Open in Zema" asks to unlock and opens the result in the app. Left: iOS Control Center control and widget. |
