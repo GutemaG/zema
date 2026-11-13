@@ -190,7 +190,7 @@ void main() {
       tester,
       overrides: [launchReceiverProvider.overrideWithValue(launches)],
     );
-    final match = found(byTitle['Two']!).toLaunch();
+    final match = found(byTitle['Two']!).toLaunch()!;
     launches.controller.add(match);
     await settle(tester);
 

@@ -73,9 +73,38 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
     _ => await Completer<Song?>().future,
   };
   if (song == null) return null;
-  final lines = expandPlayOrder(song).occurrences;
   final repository = ref.watch(lyricsRepositoryProvider);
-  final recording = usedRecording(await repository.recordings(song.id));
+  return _withRecording(
+    repository,
+    song,
+    usedRecording(await repository.recordings(song.id)),
+  );
+  // A failure shows C07 at once; its Try again retries.
+}, retry: (_, _) => null);
+
+/// A catalog song's lyrics timed by its recording `key.$2`, as a catalog
+/// match from Listen heard it (or its first recording, if that one is gone).
+final matchedSongLyricsProvider =
+    FutureProvider.family<TrackLyrics?, (String, String)>((ref, key) async {
+      final (songId, recordingId) = key;
+      final song = await ref.watch(songProvider(songId).future);
+      if (song == null) return null;
+      final repository = ref.watch(lyricsRepositoryProvider);
+      final recordings = await repository.recordings(songId);
+      return _withRecording(
+        repository,
+        song,
+        recordings.where((r) => r.id == recordingId).firstOrNull ??
+            usedRecording(recordings),
+      );
+    }, retry: (_, _) => null);
+
+Future<TrackLyrics> _withRecording(
+  LyricsRepository repository,
+  Song song,
+  Recording? recording,
+) async {
+  final lines = expandPlayOrder(song).occurrences;
   if (recording == null) return TrackLyrics(song: song, lines: lines);
   final timing = await repository.timing(recording.id);
   SyncedLyrics? synced;
@@ -93,8 +122,7 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
     recording: recording,
     synced: synced,
   );
-  // A failure shows C07 at once; its Try again retries.
-}, retry: (_, _) => null);
+}
 
 /// The lyrics of the user's own copy [own], marked pending, or as saved on
 /// this phone.

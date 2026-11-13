@@ -75,7 +75,8 @@ as $$ select 12 $$;
 -- shift (recording frame minus excerpt frame) gets a vote per hash that lines
 -- up there; a shift's score adds the shifts either side. [shift] is where the
 -- excerpt starts in the recording, in frames; [runner_up] is the best score
--- more than 3 frames away, high when a chorus repeats.
+-- more than 3 frames away, high when a chorus repeats; [frame_count] is the
+-- recording's length in frames.
 create function public.identify_audio(
   version integer,
   hashes integer[],
@@ -89,7 +90,8 @@ returns table (
   query integer,
   shift integer,
   score integer,
-  runner_up integer
+  runner_up integer,
+  frame_count integer
 )
 language plpgsql
 stable
@@ -112,7 +114,7 @@ begin
     where t.h is not null and t.f is not null
   ),
   candidates as (
-    select fp.recording_id, r.song_id
+    select fp.recording_id, r.song_id, fp.frame_count
     from public.recording_fingerprints fp
     join public.recordings r on r.id = fp.recording_id
     join public.songs s on s.id = r.song_id and s.status = 'approved'
@@ -148,7 +150,8 @@ begin
     coalesce((
       select max(s.score) from scored s
       where s.recording_id = p.recording_id and s.q = p.q and abs(s.shift - p.shift) > 3
-    ), 0)::integer
+    ), 0)::integer,
+    c.frame_count
   from per_recording p
   join candidates c on c.recording_id = p.recording_id
   order by p.score desc, p.recording_id

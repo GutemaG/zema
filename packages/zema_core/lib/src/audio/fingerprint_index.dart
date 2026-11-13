@@ -128,15 +128,31 @@ class FingerprintIndex {
     scores.forEach((shift, score) {
       if ((shift - topShift).abs() > 3) runnerUp = math.max(runnerUp, score);
     });
-    return AudioMatch(
+    return audioMatchAt(
       recordingId: _ids[number],
-      position: topShift >= 0
-          ? fingerprintFrameTime(topShift)
-          : -fingerprintFrameTime(-topShift),
+      shift: topShift,
       score: top,
-      playbackSpeed: 1 / speed,
-      ambiguousPosition:
-          runnerUp >= minimumMatchScore && runnerUp * 3 >= top * 2,
+      runnerUp: runnerUp,
+      speed: speed,
     );
   }
 }
+
+/// The match of an excerpt fingerprinted at [speed] that lines up with
+/// [recordingId] at [shift] frames, [score] hashes there and [runnerUp] at
+/// the best shift elsewhere.
+AudioMatch audioMatchAt({
+  required String recordingId,
+  required int shift,
+  required int score,
+  required int runnerUp,
+  double speed = 1,
+}) => AudioMatch(
+  recordingId: recordingId,
+  position: shift >= 0
+      ? fingerprintFrameTime(shift)
+      : -fingerprintFrameTime(-shift),
+  score: score,
+  playbackSpeed: 1 / speed,
+  ambiguousPosition: runnerUp >= minimumMatchScore && runnerUp * 3 >= score * 2,
+);

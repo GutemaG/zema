@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../../app/backend/backend_providers.dart';
 import '../../../app/database/database_provider.dart';
 import '../../library/application/library_providers.dart';
 import '../data/microphone.dart';
@@ -40,20 +41,33 @@ class Listening extends ListenState {
   final double level;
 }
 
-/// [track] was at [match]'s position at [startedAt], the moment the audio
-/// that was heard began.
+/// A library [track], or a catalog [song]'s recording `match.recordingId`,
+/// was at [match]'s position at [startedAt], the moment the audio that was
+/// heard began.
 class ListenFound extends ListenState {
   const ListenFound({
-    required this.track,
+    this.track,
+    this.song,
     required this.match,
     required this.startedAt,
     this.sure = true,
-  });
+    this.recordingDuration = Duration.zero,
+  }) : assert(track != null || song != null);
 
-  final Track track;
+  final Track? track;
+  final CatalogEntry? song;
   final AudioMatch match;
   final DateTime startedAt;
   final bool sure;
+
+  /// The catalog recording's length; a library track has its own.
+  final Duration recordingDuration;
+
+  String get title => track?.title ?? song!.title;
+
+  String? get artist => track == null ? song!.artist : track!.artist;
+
+  Duration get duration => track?.duration ?? recordingDuration;
 
   /// Where the song is at [now], if it kept playing.
   Duration positionAt(DateTime now) {
@@ -62,17 +76,21 @@ class ListenFound extends ListenState {
         Duration(microseconds: (since * match.playbackSpeed).round());
   }
 
-  OpenListenMatch toLaunch() => OpenListenMatch(
-    trackId: track.id,
-    position: match.position,
-    startedAt: startedAt,
-    speed: match.playbackSpeed,
-    score: match.score,
-    sure: sure,
-  );
+  /// For a library track only.
+  OpenListenMatch? toLaunch() => switch (track) {
+    final track? => OpenListenMatch(
+      trackId: track.id,
+      position: match.position,
+      startedAt: startedAt,
+      speed: match.playbackSpeed,
+      score: match.score,
+      sure: sure,
+    ),
+    null => null,
+  };
 
   bool endedAt(DateTime now) =>
-      track.duration > Duration.zero && positionAt(now) >= track.duration;
+      duration > Duration.zero && positionAt(now) >= duration;
 
   Duration playFrom(DateTime now) {
     final at = positionAt(now);
@@ -90,7 +108,7 @@ class ListenDenied extends ListenState {
   const ListenDenied();
 }
 
-/// No library song has a fingerprint yet.
+/// No library song has a fingerprint yet, and there's no catalog to ask.
 class ListenNothingToMatch extends ListenState {
   const ListenNothingToMatch();
 }
@@ -233,7 +251,8 @@ class ListenController extends Notifier<ListenState> {
       if (stale) state = const ListenLoading();
       final library = await _search();
       if (session != _session) return;
-      if (library.recordingCount == 0) {
+      if (library.recordingCount == 0 &&
+          ref.read(audioCatalogProvider) == null) {
         state = const ListenNothingToMatch();
         return;
       }
@@ -293,17 +312,21 @@ class ListenController extends Notifier<ListenState> {
       checking = true;
       try {
         final last = next == listenCheckpoints.length - 1;
-        final matches = await library.identify(_join(chunks), rate);
+        final heardNow = await library.identify(_join(chunks), rate);
         if (session != _session) return;
-        _log.fine('At $heard: $matches');
-        final sure = matches.isNotEmpty && !matches.first.ambiguousPosition;
-        if (sure || (last && matches.isNotEmpty)) {
-          final found = _found(matches.first, startedAt!, sure: sure);
-          state = found;
-          if (found is ListenFound) {
-            _remember(found.track);
-            ref.read(listenFoundEventsProvider).add(found);
+        _log.fine('At $heard: ${heardNow.matches}');
+        var found = _inLibrary(heardNow.matches, startedAt!);
+        if (found == null || !found.sure) {
+          final inCatalog = await _inCatalog(heardNow.queries, startedAt!);
+          if (session != _session) return;
+          if (inCatalog != null && (found == null || inCatalog.sure)) {
+            found = inCatalog;
           }
+        }
+        if (found != null && (found.sure || last)) {
+          state = found;
+          if (found.track case final track?) _remember(track);
+          ref.read(listenFoundEventsProvider).add(found);
           await _stopRecording();
         } else if (last) {
           state = const ListenNotFound();
@@ -333,11 +356,9 @@ class ListenController extends Notifier<ListenState> {
     unawaited(_stopRecording());
   }
 
-  ListenState _found(
-    AudioMatch match,
-    DateTime startedAt, {
-    required bool sure,
-  }) {
+  ListenFound? _inLibrary(List<AudioMatch> matches, DateTime startedAt) {
+    final match = matches.firstOrNull;
+    if (match == null) return null;
     final id = int.tryParse(match.recordingId);
     final tracks = ref.read(libraryTracksProvider).value ?? const <Track>[];
     for (final track in tracks) {
@@ -346,12 +367,41 @@ class ListenController extends Notifier<ListenState> {
           track: track,
           match: match,
           startedAt: startedAt,
-          sure: sure,
+          sure: !match.ambiguousPosition,
         );
       }
     }
     // Fingerprinted, then removed from the library.
-    return const ListenNotFound();
+    return null;
+  }
+
+  /// The catalog's best match, or null when there's none, no backend, or the
+  /// phone is offline.
+  Future<ListenFound?> _inCatalog(
+    List<AudioFingerprint> queries,
+    DateTime startedAt,
+  ) async {
+    final catalog = ref.read(audioCatalogProvider);
+    if (catalog == null) return null;
+    final List<CatalogAudioMatch> matches;
+    try {
+      matches = await catalog.identify(queries, limit: 1);
+    } on ZemaFailure catch (e) {
+      _log.info('The catalog could not be asked', e);
+      return null;
+    }
+    final best = matches.firstOrNull;
+    if (best == null) return null;
+    _log.fine('In the catalog: $best');
+    final song = await ref.read(databaseProvider).catalogDao.entry(best.songId);
+    if (song == null) return null;
+    return ListenFound(
+      song: song,
+      match: best.match,
+      startedAt: startedAt,
+      sure: !best.match.ambiguousPosition,
+      recordingDuration: best.recordingDuration,
+    );
   }
 
   void _remember(Track track) {

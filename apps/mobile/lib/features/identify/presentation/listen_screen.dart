@@ -458,11 +458,26 @@ class _Artwork extends StatelessWidget {
           ),
         ],
       ),
-      child: TrackArt(
-        track: found.track,
-        size: _StageState._artwork,
-        radius: radius,
-      ),
+      child: switch (found.track) {
+        final track? => TrackArt(
+          track: track,
+          size: _StageState._artwork,
+          radius: radius,
+        ),
+        null => Container(
+          width: _StageState._artwork,
+          height: _StageState._artwork,
+          decoration: BoxDecoration(
+            color: colors.soft,
+            borderRadius: BorderRadius.circular(radius),
+          ),
+          child: Icon(
+            Icons.lyrics_rounded,
+            size: _StageState._artwork / 2.5,
+            color: colors.accentText,
+          ),
+        ),
+      },
     );
   }
 }
@@ -565,7 +580,6 @@ class _Found extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final colors = context.zemaColors;
-    final track = found.track;
     Future<void> playFromHere() async {
       await playMatch(ref, found);
       if (context.mounted) unawaited(context.push(AppRoutes.nowPlaying));
@@ -575,13 +589,13 @@ class _Found extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          track.title,
+          found.title,
           style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        if (track.artist case final artist?) ...[
+        if (found.artist case final artist?) ...[
           const SizedBox(height: 4),
           Text(
             artist,
@@ -605,24 +619,26 @@ class _Found extends ConsumerWidget {
           spacing: 12,
           runSpacing: 8,
           children: [
-            if (ref.watch(quickListenHostProvider) case final host?)
-              FilledButton.icon(
-                onPressed: () => unawaited(host.openApp(found.toLaunch())),
-                icon: const Icon(Icons.open_in_new_rounded),
-                label: Text(l10n.listenOpenInApp),
-              )
-            else ...[
+            if (ref.watch(quickListenHostProvider) case final host?) ...[
+              if (found.toLaunch() case final launch?)
+                FilledButton.icon(
+                  onPressed: () => unawaited(host.openApp(launch)),
+                  icon: const Icon(Icons.open_in_new_rounded),
+                  label: Text(l10n.listenOpenInApp),
+                ),
+            ] else ...[
               FilledButton.icon(
                 onPressed: () =>
                     unawaited(context.push(AppRoutes.listenLyrics)),
                 icon: const Icon(Icons.lyrics_rounded),
                 label: Text(l10n.listenShowLyrics),
               ),
-              FilledButton.tonalIcon(
-                onPressed: playFromHere,
-                icon: const Icon(Icons.play_arrow_rounded),
-                label: Text(l10n.listenPlayFromHere),
-              ),
+              if (found.track != null)
+                FilledButton.tonalIcon(
+                  onPressed: playFromHere,
+                  icon: const Icon(Icons.play_arrow_rounded),
+                  label: Text(l10n.listenPlayFromHere),
+                ),
             ],
             OutlinedButton.icon(
               onPressed: onListen,
@@ -670,7 +686,7 @@ class _LivePositionState extends State<_LivePosition> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.zemaColors;
-    final end = widget.found.track.duration;
+    final end = widget.found.duration;
     var now = widget.found.positionAt(clock.now());
     if (end > Duration.zero && now > end) now = end;
     return DecoratedBox(

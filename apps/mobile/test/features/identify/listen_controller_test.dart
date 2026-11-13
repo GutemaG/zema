@@ -6,6 +6,7 @@ import 'package:clock/clock.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zema/app/backend/backend_providers.dart';
 import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/app/database/zema_database.dart';
 import 'package:zema/features/identify/application/library_fingerprints.dart';
@@ -103,8 +104,37 @@ class _FakeMicrophone implements Microphone {
   Future<void> stop() async => stopped++;
 }
 
+/// The catalog: one recording, [song], of the song "selam"; or offline.
+class _FakeCatalog implements AudioCatalog {
+  _FakeCatalog(Float32List song) {
+    _index.add('selam-rec', const Fingerprinter().fingerprint(song));
+  }
+
+  final _index = FingerprintIndex();
+  var offline = false;
+  var asked = 0;
+
+  @override
+  Future<List<CatalogAudioMatch>> identify(
+    List<AudioFingerprint> queries, {
+    int limit = 3,
+  }) async {
+    asked++;
+    if (offline) throw const NetworkFailure('offline');
+    return [
+      for (final match in _index.match(queries, limit: limit))
+        CatalogAudioMatch(
+          songId: 'selam',
+          match: match,
+          recordingDuration: const Duration(seconds: 40),
+        ),
+    ];
+  }
+}
+
 void main() {
   late ZemaDatabase db;
+  _FakeCatalog? catalog;
   late ProviderContainer container;
   late _FakeMicrophone microphone;
   late _FakeDecoder decoder;
@@ -118,6 +148,7 @@ void main() {
         libraryTracksProvider.overrideWith((ref) => Stream.value(tracks)),
         microphoneProvider.overrideWithValue(microphone),
         audioDecoderProvider.overrideWithValue(decoder),
+        audioCatalogProvider.overrideWithValue(catalog),
       ],
     );
     // As the Listen screen does; unwatched providers are paused.
@@ -144,6 +175,7 @@ void main() {
   });
 
   tearDown(() async {
+    catalog = null;
     container.dispose();
     await db.close();
   });
@@ -234,7 +266,7 @@ void main() {
     final state = await listenUntilDone();
 
     expect(state, isA<ListenFound>());
-    expect((state as ListenFound).track.title, 'Two');
+    expect((state as ListenFound).track!.title, 'Two');
     final left = await db.fingerprintsDao.all();
     expect(left.map((r) => r.trackId), isNot(contains(broken.id)));
   });
@@ -254,7 +286,7 @@ void main() {
 
       expect(state, isA<ListenFound>());
       final found = state as ListenFound;
-      expect(found.track.id, tracks.firstWhere((t) => t.title == 'Two').id);
+      expect(found.track!.id, tracks.firstWhere((t) => t.title == 'Two').id);
       expect(found.match.position.inMilliseconds, closeTo(20000, 50));
       // Ten seconds after listening started, the song is ten seconds on.
       expect(
@@ -266,7 +298,7 @@ void main() {
       expect(found.sure, isTrue);
       expect(microphone.stopped, 1);
       final history = await db.identifiedDao.watchAll().first;
-      expect(history.map((r) => r.trackId), [found.track.id]);
+      expect(history.map((r) => r.trackId), [found.track!.id]);
     },
   );
 
@@ -289,8 +321,70 @@ void main() {
 
     expect(state, isA<ListenFound>());
     final found = state as ListenFound;
-    expect(found.track.title, 'Broken');
+    expect(found.track!.title, 'Broken');
     expect(found.sure, isFalse);
+  });
+
+  group('the catalog', () {
+    final selam = _song(9, 40);
+
+    setUp(() async {
+      await db.catalogDao.replaceAll([
+        CatalogEntry(
+          id: 'selam',
+          title: 'Selam',
+          artist: 'Choir',
+          synced: true,
+          version: 1,
+          approvedAt: DateTime.utc(2026, 10, 1),
+        ),
+      ]);
+      container.dispose();
+      catalog = _FakeCatalog(selam);
+      container = newContainer();
+    });
+
+    test(
+      'finds a song the library does not have, with no library at all',
+      () async {
+        microphone.pcm = Float32List.sublistView(selam, 5 * _rate, 15 * _rate);
+
+        final state = await listenUntilDone();
+
+        expect(state, isA<ListenFound>());
+        final found = state as ListenFound;
+        expect(found.track, isNull);
+        expect(found.song!.id, 'selam');
+        expect(found.title, 'Selam');
+        expect(found.match.recordingId, 'selam-rec');
+        expect(found.match.position.inMilliseconds, closeTo(5000, 50));
+        expect(found.duration, const Duration(seconds: 40));
+        expect(found.sure, isTrue);
+        expect(await db.identifiedDao.watchAll().first, isEmpty);
+      },
+    );
+
+    test('is asked only when the library has no sure match', () async {
+      await container.read(libraryFingerprintsProvider.notifier).start();
+      microphone.pcm = Float32List.sublistView(
+        songs[2]!,
+        5 * _rate,
+        15 * _rate,
+      );
+
+      final state = await listenUntilDone();
+
+      expect((state as ListenFound).track!.title, 'Two');
+      expect(catalog!.asked, 0);
+    });
+
+    test('offline, a song only the catalog has is not found', () async {
+      catalog!.offline = true;
+      microphone.pcm = Float32List.sublistView(selam, 5 * _rate, 15 * _rate);
+
+      expect(await listenUntilDone(), isA<ListenNotFound>());
+      expect(catalog!.asked, listenCheckpoints.length);
+    });
   });
 
   test('a match handed over from the lock screen is shown', () async {

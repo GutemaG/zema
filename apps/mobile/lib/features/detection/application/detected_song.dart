@@ -163,7 +163,10 @@ class DetectedMatchController {
     DetectedPlayback playback,
     ListenFound found,
   ) async {
-    final songId = (await _links().first)[found.track.id]?.songId;
+    final songId = switch (found.track) {
+      final track? => (await _links().first)[track.id]?.songId,
+      null => found.song?.id,
+    };
     if (songId == null) return false;
     final now = clock.now();
     await _dao.remember(

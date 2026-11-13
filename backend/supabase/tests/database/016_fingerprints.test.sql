@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(17);
+select plan(18);
 
 create function pg_temp.song(id text, status public.song_status default 'approved') returns void language sql as $$
   select public.seed_song(jsonb_build_object(
@@ -46,6 +46,7 @@ select is((select song_id::text from found), 'song-a', 'with its song');
 select is((select shift from found), 395, 'the excerpt starts at frame 395');
 select is((select score from found), 30, 'every hash lined up');
 select is((select runner_up from found), 0, 'nowhere else');
+select is((select frame_count from found), 1100, 'with the recording''s length');
 
 select is(
   (select score from public.identify_audio(1, pg_temp.hashes(40, 69),

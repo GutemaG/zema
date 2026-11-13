@@ -21,3 +21,12 @@ final catalogRepositoryProvider = Provider<CatalogRepository?>((ref) {
   ref.onDispose(repository.close);
   return repository;
 });
+
+/// The catalog's recordings to identify an excerpt against, or null without
+/// a backend.
+final audioCatalogProvider = Provider<AudioCatalog?>(
+  (ref) => switch (ref.watch(catalogRepositoryProvider)) {
+    final AudioCatalog catalog => catalog,
+    _ => null,
+  },
+);

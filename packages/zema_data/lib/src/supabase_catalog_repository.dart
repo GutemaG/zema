@@ -7,13 +7,13 @@ import 'package:zema_core/zema_core.dart';
 import 'backend_errors.dart';
 
 /// The catalog served by a Supabase backend (see `backend/`), through its
-/// RPC functions `song_index`, `get_song`, `search_songs` and
-/// `submit_report`.
+/// RPC functions `song_index`, `get_song`, `search_songs`, `submit_report`
+/// and `identify_audio`.
 ///
 /// Every request gives up after [timeout]. Failures are thrown as
 /// [ZemaFailure]s only: [NetworkFailure], [RateLimitFailure],
 /// [BackendFailure] or, for a malformed answer, [LyricsFormatFailure].
-class SupabaseCatalogRepository implements CatalogRepository {
+class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
   SupabaseCatalogRepository({
     required String url,
     required String key,
@@ -65,6 +65,26 @@ class SupabaseCatalogRepository implements CatalogRepository {
       'note': ?note,
       'report_id': ?reportId,
     });
+  }
+
+  @override
+  Future<List<CatalogAudioMatch>> identify(
+    List<AudioFingerprint> queries, {
+    int limit = 3,
+  }) async {
+    if (queries.every((q) => q.length == 0)) return const [];
+    final rows = await _call('identify_audio', {
+      'version': fingerprintVersion,
+      'hashes': [for (final q in queries) ...q.hashes],
+      'frames': [for (final q in queries) ...q.frames],
+      'queries': [
+        for (final (i, q) in queries.indexed) ...List.filled(q.length, i),
+      ],
+      'max_results': limit,
+    });
+    return _parse(
+      () => [for (final row in _rows(rows)) _audioMatch(row, queries)],
+    );
   }
 
   /// Releases the client's connections and background isolate.
@@ -125,4 +145,19 @@ CatalogSearchHit _hit(Map<String, Object?> row) => CatalogSearchHit(
   score: (row['score']! as num).toDouble(),
   line: row['line_text'] as String?,
   lineTransliteration: row['line_transliteration'] as String?,
+);
+
+CatalogAudioMatch _audioMatch(
+  Map<String, Object?> row,
+  List<AudioFingerprint> queries,
+) => CatalogAudioMatch(
+  songId: row['song_id']! as String,
+  recordingDuration: fingerprintFrameTime(row['frame_count']! as int),
+  match: audioMatchAt(
+    recordingId: row['recording_id']! as String,
+    shift: row['shift']! as int,
+    score: row['score']! as int,
+    runnerUp: row['runner_up']! as int,
+    speed: queries[row['query']! as int].speed,
+  ),
 );

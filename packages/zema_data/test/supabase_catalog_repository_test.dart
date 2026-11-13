@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -254,6 +255,59 @@ void main() {
         [for (final r in requests) jsonDecode(r.body)['reason']],
         ['wrong_words', 'wrong_timing', 'wrong_song', 'other'],
       );
+    });
+  });
+
+  group('identify', () {
+    AudioFingerprint query(List<int> hashes, List<int> frames, double speed) =>
+        AudioFingerprint(
+          hashes: Uint32List.fromList(hashes),
+          frames: Uint32List.fromList(frames),
+          frameCount: 100,
+          speed: speed,
+        );
+
+    test('sends every query numbered and reads the matches', () async {
+      answerWith(
+        (_) => json([
+          {
+            'recording_id': 'selam-rec',
+            'song_id': 'selam',
+            'query': 1,
+            'shift': 431,
+            'score': 40,
+            'runner_up': 30,
+            'frame_count': 4307,
+          },
+        ]),
+      );
+      final matches = await repository.identify([
+        query([5, 6], [0, 3], 1),
+        query([7], [2], 0.98),
+      ]);
+
+      expect(requests.single.url.path, '/rest/v1/rpc/identify_audio');
+      expect(jsonDecode(requests.single.body), {
+        'version': fingerprintVersion,
+        'hashes': [5, 6, 7],
+        'frames': [0, 3, 2],
+        'queries': [0, 0, 1],
+        'max_results': 3,
+      });
+      final found = matches.single;
+      expect(found.songId, 'selam');
+      expect(found.match.recordingId, 'selam-rec');
+      expect(found.match.position, fingerprintFrameTime(431));
+      expect(found.match.score, 40);
+      expect(found.match.playbackSpeed, 1 / 0.98);
+      expect(found.match.ambiguousPosition, isTrue);
+      expect(found.recordingDuration, fingerprintFrameTime(4307));
+    });
+
+    test('an empty excerpt is not sent', () async {
+      answerWith((_) => json([]));
+      expect(await repository.identify([query([], [], 1)]), isEmpty);
+      expect(requests, isEmpty);
     });
   });
 

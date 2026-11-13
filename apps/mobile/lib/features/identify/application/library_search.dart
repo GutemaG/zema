@@ -9,6 +9,13 @@ import '../../../app/database/zema_database.dart';
 final _log = Logger('identify.search');
 
 const _pageSize = 100;
+
+/// The library's best match for an excerpt, and the excerpt's query
+/// fingerprints, to look for in the catalog when the library has no match.
+typedef LibraryHeard = ({
+  List<AudioMatch> matches,
+  List<AudioFingerprint> queries,
+});
 const _died = 'died';
 
 class LibrarySearch {
@@ -53,7 +60,7 @@ class LibrarySearch {
     }
   }
 
-  Future<List<AudioMatch>> identify(Float32List pcm, int rate) =>
+  Future<LibraryHeard> identify(Float32List pcm, int rate) =>
       _ask(_isolate, _worker, _Identify(pcm, rate));
 
   void close() => _isolate.kill(priority: Isolate.immediate);
@@ -110,15 +117,17 @@ void _work(SendPort main) {
       reply.send(switch (request) {
         _AddRows(:final rows) => _add(index, rows),
         _Count() => index.recordingCount,
-        _Identify(:final pcm, :final rate) => index.match(
-          const Fingerprinter().queries(resampleMono(pcm, rate)),
-          limit: 1,
-        ),
+        _Identify(:final pcm, :final rate) => _identify(index, pcm, rate),
       });
     } catch (e) {
       reply.send(_Failed('$e'));
     }
   });
+}
+
+LibraryHeard _identify(FingerprintIndex index, Float32List pcm, int rate) {
+  final queries = const Fingerprinter().queries(resampleMono(pcm, rate));
+  return (matches: index.match(queries, limit: 1), queries: queries);
 }
 
 List<int> _add(FingerprintIndex index, List<(int, Uint8List)> rows) {

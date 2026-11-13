@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routes.dart';
@@ -15,9 +16,19 @@ import '../../lyrics/presentation/lyrics_view.dart';
 import '../../player/application/player_providers.dart';
 import '../application/listen_controller.dart';
 
+ProviderListenable<AsyncValue<TrackLyrics?>> foundLyricsProvider(
+  ListenFound found,
+) => switch (found.track) {
+  final track? => trackLyricsProvider(track.id),
+  null => matchedSongLyricsProvider((found.song!.id, found.match.recordingId)),
+};
+
+/// Plays a library match from where it is now; a catalog match has no file.
 Future<void> playMatch(WidgetRef ref, ListenFound found) async {
+  final track = found.track;
+  if (track == null) return;
   final player = ref.read(playerControllerProvider);
-  await player.playList([found.track], position: found.playFrom(clock.now()));
+  await player.playList([track], position: found.playFrom(clock.now()));
   final now = found.playFrom(clock.now());
   if (now > Duration.zero) await player.seek(now);
 }
@@ -55,7 +66,7 @@ class _ListenLyricsScreenState extends ConsumerState<ListenLyricsScreen> {
     if (found == null || !mounted) return;
     final now = clock.now();
     final ended = found.endedAt(now);
-    final lyrics = ref.read(trackLyricsProvider(found.track.id)).value;
+    final lyrics = ref.read(foundLyricsProvider(found)).value;
     final synced = lyrics?.synced;
     final current = lyrics == null || synced == null
         ? null
@@ -106,8 +117,8 @@ class _ListenLyricsScreenState extends ConsumerState<ListenLyricsScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(track.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-            if (track.artist case final artist?)
+            Text(found.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            if (found.artist case final artist?)
               Text(
                 artist,
                 style: text.bodySmall?.copyWith(color: colors.muted),
@@ -117,23 +128,24 @@ class _ListenLyricsScreenState extends ConsumerState<ListenLyricsScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: l10n.listenPlayFromHere,
-            icon: const Icon(Icons.play_arrow_rounded),
-            onPressed: () async {
-              await playMatch(ref, found);
-              if (context.mounted) {
-                context.pushReplacement(AppRoutes.nowPlaying);
-              }
-            },
-          ),
+          if (track != null)
+            IconButton(
+              tooltip: l10n.listenPlayFromHere,
+              icon: const Icon(Icons.play_arrow_rounded),
+              onPressed: () async {
+                await playMatch(ref, found);
+                if (context.mounted) {
+                  context.pushReplacement(AppRoutes.nowPlaying);
+                }
+              },
+            ),
         ],
       ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-              child: switch (ref.watch(trackLyricsProvider(track.id))) {
+              child: switch (ref.watch(foundLyricsProvider(found))) {
                 AsyncData(value: final lyrics?) when lyrics.lines.isNotEmpty =>
                   LyricsLines(
                     lines: lyrics.lines,
@@ -142,7 +154,13 @@ class _ListenLyricsScreenState extends ConsumerState<ListenLyricsScreen> {
                     current: _current,
                     display: ref.watch(lyricsDisplayProvider),
                   ),
-                AsyncData() => NoLyrics(track: track),
+                AsyncData() when track != null => NoLyrics(track: track),
+                AsyncData() => Center(
+                  child: Text(
+                    l10n.playerNoLyrics,
+                    style: text.bodyLarge?.copyWith(color: colors.muted),
+                  ),
+                ),
                 AsyncError(:final error) => LyricsUnavailable(error: error),
                 _ => const Center(child: CircularProgressIndicator()),
               },

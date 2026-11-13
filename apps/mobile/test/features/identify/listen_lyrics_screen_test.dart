@@ -97,6 +97,36 @@ void main() {
   int? current(WidgetTester tester) =>
       tester.widget<LyricsLines>(find.byType(LyricsLines)).current;
 
+  testWidgets('a catalog match follows its recording, with nothing to play', (
+    tester,
+  ) async {
+    ListenFound inCatalog() => ListenFound(
+      song: CatalogEntry(
+        id: 'galatoomi',
+        title: 'Galatoomi',
+        synced: true,
+        version: 1,
+        approvedAt: DateTime.utc(2026, 10, 1),
+      ),
+      match: const AudioMatch(
+        recordingId: 'galatoomi',
+        position: Duration(seconds: 1),
+        score: 30,
+        playbackSpeed: 1,
+        ambiguousPosition: false,
+      ),
+      startedAt: clock.now(),
+      recordingDuration: const Duration(seconds: 43),
+    );
+    await open(tester, first: inCatalog);
+    await show(tester);
+
+    expect(find.text('Waaqayyo nu jaallatee'), findsOneWidget);
+    expect(find.byTooltip(_l10n.listenPlayFromHere), findsNothing);
+    await tester.pump(const Duration(seconds: 2));
+    expect(current(tester), 0);
+  });
+
   testWidgets('the lyrics follow the song that was heard', (tester) async {
     await open(
       tester,
