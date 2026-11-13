@@ -6,6 +6,7 @@ part of 'identified_dao.dart';
 mixin _$IdentifiedDaoMixin on DatabaseAccessor<ZemaDatabase> {
   $TracksTable get tracks => attachedDatabase.tracks;
   $IdentifiedSongsTable get identifiedSongs => attachedDatabase.identifiedSongs;
+  $PendingLookupsTable get pendingLookups => attachedDatabase.pendingLookups;
   IdentifiedDaoManager get managers => IdentifiedDaoManager(this);
 }
 
@@ -18,5 +19,10 @@ class IdentifiedDaoManager {
       $$IdentifiedSongsTableTableManager(
         _db.attachedDatabase,
         _db.identifiedSongs,
+      );
+  $$PendingLookupsTableTableManager get pendingLookups =>
+      $$PendingLookupsTableTableManager(
+        _db.attachedDatabase,
+        _db.pendingLookups,
       );
 }

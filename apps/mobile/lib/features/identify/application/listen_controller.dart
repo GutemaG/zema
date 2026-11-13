@@ -9,10 +9,13 @@ import 'package:zema_core/zema_core.dart';
 
 import '../../../app/backend/backend_providers.dart';
 import '../../../app/database/database_provider.dart';
+import '../../../app/preferences_provider.dart';
+import '../../catalog/application/report_sender.dart';
 import '../../library/application/library_providers.dart';
 import '../data/microphone.dart';
 import '../data/quick_launch.dart';
 import 'library_search.dart';
+import 'pending_lookups.dart';
 import 'quick_listen.dart';
 
 final _log = Logger('identify.listen');
@@ -101,6 +104,12 @@ class ListenFound extends ListenState {
 
 class ListenNotFound extends ListenState {
   const ListenNotFound();
+}
+
+/// Offline and not in the library: what was heard is kept, as fingerprints,
+/// and looked up when the phone is back online; the song goes into History.
+class ListenSavedForLater extends ListenState {
+  const ListenSavedForLater();
 }
 
 /// The microphone permission was refused.
@@ -316,17 +325,26 @@ class ListenController extends Notifier<ListenState> {
         if (session != _session) return;
         _log.fine('At $heard: ${heardNow.matches}');
         var found = _inLibrary(heardNow.matches, startedAt!);
+        var offline = false;
         if (found == null || !found.sure) {
-          final inCatalog = await _inCatalog(heardNow.queries, startedAt!);
+          final (inCatalog, reached) = await _inCatalog(
+            heardNow.queries,
+            startedAt!,
+          );
           if (session != _session) return;
+          offline = !reached;
           if (inCatalog != null && (found == null || inCatalog.sure)) {
             found = inCatalog;
           }
         }
         if (found != null && (found.sure || last)) {
           state = found;
-          if (found.track case final track?) _remember(track);
+          _remember(found);
           ref.read(listenFoundEventsProvider).add(found);
+          await _stopRecording();
+        } else if (last && offline) {
+          _saveForLater(heardNow.queries, startedAt!);
+          state = const ListenSavedForLater();
           await _stopRecording();
         } else if (last) {
           state = const ListenNotFound();
@@ -375,41 +393,64 @@ class ListenController extends Notifier<ListenState> {
     return null;
   }
 
-  /// The catalog's best match, or null when there's none, no backend, or the
-  /// phone is offline.
-  Future<ListenFound?> _inCatalog(
+  /// The catalog's best match, or null when there's none or no backend; and
+  /// whether the catalog answered (false offline).
+  Future<(ListenFound?, bool)> _inCatalog(
     List<AudioFingerprint> queries,
     DateTime startedAt,
   ) async {
     final catalog = ref.read(audioCatalogProvider);
-    if (catalog == null) return null;
+    if (catalog == null) return (null, true);
     final List<CatalogAudioMatch> matches;
     try {
-      matches = await catalog.identify(queries, limit: 1);
+      matches = await catalog.identify(
+        queries,
+        installId: installId(ref.read(sharedPreferencesProvider)),
+        limit: 1,
+      );
+    } on NetworkFailure catch (e) {
+      _log.info('The catalog could not be reached', e);
+      return (null, false);
     } on ZemaFailure catch (e) {
-      _log.info('The catalog could not be asked', e);
-      return null;
+      _log.warning('The catalog refused the lookup', e);
+      return (null, true);
     }
+    unawaited(ref.read(pendingLookupSenderProvider).flush());
     final best = matches.firstOrNull;
-    if (best == null) return null;
+    if (best == null) return (null, true);
     _log.fine('In the catalog: $best');
     final song = await ref.read(databaseProvider).catalogDao.entry(best.songId);
-    if (song == null) return null;
-    return ListenFound(
-      song: song,
-      match: best.match,
-      startedAt: startedAt,
-      sure: !best.match.ambiguousPosition,
-      recordingDuration: best.recordingDuration,
+    if (song == null) return (null, true);
+    return (
+      ListenFound(
+        song: song,
+        match: best.match,
+        startedAt: startedAt,
+        sure: !best.match.ambiguousPosition,
+        recordingDuration: best.recordingDuration,
+      ),
+      true,
     );
   }
 
-  void _remember(Track track) {
+  void _saveForLater(List<AudioFingerprint> queries, DateTime heardAt) {
     unawaited(
       ref
           .read(databaseProvider)
           .identifiedDao
-          .add(track.id, clock.now())
+          .addPending(encodeQueries(queries), heardAt)
+          .catchError((Object e, StackTrace s) {
+            _log.warning('Could not keep the lookup for later', e, s);
+          }),
+    );
+  }
+
+  void _remember(ListenFound found) {
+    unawaited(
+      ref
+          .read(databaseProvider)
+          .identifiedDao
+          .add(clock.now(), trackId: found.track?.id, songId: found.song?.id)
           .catchError((Object e, StackTrace s) {
             _log.warning('Could not save to History', e, s);
           }),

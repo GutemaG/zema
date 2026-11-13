@@ -9,8 +9,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zema/app/backend/backend_providers.dart';
 import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/app/database/zema_database.dart';
+import 'package:zema/app/preferences_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema/features/identify/application/library_fingerprints.dart';
 import 'package:zema/features/identify/application/listen_controller.dart';
+import 'package:zema/features/identify/application/pending_lookups.dart';
 import 'package:zema/features/identify/application/quick_listen.dart';
 import 'package:zema/features/identify/data/audio_decoder.dart';
 import 'package:zema/features/identify/data/microphone.dart';
@@ -117,6 +120,7 @@ class _FakeCatalog implements AudioCatalog {
   @override
   Future<List<CatalogAudioMatch>> identify(
     List<AudioFingerprint> queries, {
+    required String installId,
     int limit = 3,
   }) async {
     asked++;
@@ -134,6 +138,7 @@ class _FakeCatalog implements AudioCatalog {
 
 void main() {
   late ZemaDatabase db;
+  late SharedPreferences preferences;
   _FakeCatalog? catalog;
   late ProviderContainer container;
   late _FakeMicrophone microphone;
@@ -149,6 +154,7 @@ void main() {
         microphoneProvider.overrideWithValue(microphone),
         audioDecoderProvider.overrideWithValue(decoder),
         audioCatalogProvider.overrideWithValue(catalog),
+        sharedPreferencesProvider.overrideWithValue(preferences),
       ],
     );
     // As the Listen screen does; unwatched providers are paused.
@@ -157,6 +163,8 @@ void main() {
   }
 
   setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    preferences = await SharedPreferences.getInstance();
     db = ZemaDatabase(NativeDatabase.memory());
     await db.libraryDao.applyReconciliation(
       reconcileTracks(
@@ -360,7 +368,10 @@ void main() {
         expect(found.match.position.inMilliseconds, closeTo(5000, 50));
         expect(found.duration, const Duration(seconds: 40));
         expect(found.sure, isTrue);
-        expect(await db.identifiedDao.watchAll().first, isEmpty);
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        final history = await db.identifiedDao.watchAll().first;
+        expect(history.single.songId, 'selam');
+        expect(history.single.trackId, isNull);
       },
     );
 
@@ -378,13 +389,54 @@ void main() {
       expect(catalog!.asked, 0);
     });
 
-    test('offline, a song only the catalog has is not found', () async {
+    test('offline, what was heard is kept and found once online', () async {
       catalog!.offline = true;
       microphone.pcm = Float32List.sublistView(selam, 5 * _rate, 15 * _rate);
 
-      expect(await listenUntilDone(), isA<ListenNotFound>());
+      expect(await listenUntilDone(), isA<ListenSavedForLater>());
       expect(catalog!.asked, listenCheckpoints.length);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(await db.identifiedDao.pending(), hasLength(1));
+
+      final found = <CatalogEntry>[];
+      final sub = container.read(lateMatchesProvider).stream.listen(found.add);
+      addTearDown(sub.cancel);
+      await container.read(pendingLookupSenderProvider).flush();
+      expect(
+        await db.identifiedDao.pending(),
+        hasLength(1),
+        reason: 'still offline',
+      );
+
+      catalog!.offline = false;
+      await container.read(pendingLookupSenderProvider).flush();
+      await Future<void>.delayed(Duration.zero);
+      expect(await db.identifiedDao.pending(), isEmpty);
+      expect(found.single.id, 'selam');
+      expect((await db.identifiedDao.watchAll().first).single.songId, 'selam');
     });
+
+    test('a song the catalog does not have is not kept', () async {
+      microphone.pcm = Float32List.sublistView(_song(10, 20), 0, 10 * _rate);
+
+      expect(await listenUntilDone(), isA<ListenNotFound>());
+      expect(await db.identifiedDao.pending(), isEmpty);
+    });
+  });
+
+  test('queries survive being kept, speeds and all', () {
+    final queries = const Fingerprinter().queries(_song(11, 4));
+    final back = decodeQueries(encodeQueries(queries));
+    expect(back, hasLength(queries.length));
+    for (final (i, q) in back.indexed) {
+      expect(q.hashes, queries[i].hashes);
+      expect(q.frames, queries[i].frames);
+      expect(q.speed, queries[i].speed);
+    }
+    expect(
+      () => decodeQueries(Uint8List.fromList([0, 0, 0, 9, 1])),
+      throwsA(isA<FingerprintFormatFailure>()),
+    );
   });
 
   test('a match handed over from the lock screen is shown', () async {

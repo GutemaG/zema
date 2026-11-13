@@ -4643,6 +4643,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set Zema\'s battery use to Unrestricted, and allow it to start in the background.'**
   String get detectionBatteryOther;
+
+  /// Listen heard a song it couldn't find on the phone, with no internet
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get listenSavedTitle;
+
+  /// Under listenSavedTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Zema kept what it heard and will look it up when you\'re back online. The song will appear in History.'**
+  String get listenSavedMessage;
+
+  /// In-app notice when a song heard offline is identified later
+  ///
+  /// In en, this message translates to:
+  /// **'Found while you were offline: {title}'**
+  String listenFoundLater(String title);
 }
 
 class _AppLocalizationsDelegate

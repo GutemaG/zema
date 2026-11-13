@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(18);
+select plan(24);
 
 create function pg_temp.song(id text, status public.song_status default 'approved') returns void language sql as $$
   select public.seed_song(jsonb_build_object(
@@ -39,7 +39,7 @@ select is((select count(*)::int from public.fingerprint_hashes where recording_i
 
 -- An excerpt of hashes 40..69 that starts 395 frames into the recording.
 create temporary table found as
-  select * from public.identify_audio(1, pg_temp.hashes(40, 69), pg_temp.frames(40, 69, 395));
+  select * from public.identify_audio(1, pg_temp.hashes(40, 69), pg_temp.frames(40, 69, 395), 'install-1');
 select is((select count(*)::int from found), 1, 'one recording matches; the draft song is not searched');
 select is((select recording_id::text from found), 'song-a', 'it is the right recording');
 select is((select song_id::text from found), 'song-a', 'with its song');
@@ -50,35 +50,60 @@ select is((select frame_count from found), 1100, 'with the recording''s length')
 
 select is(
   (select score from public.identify_audio(1, pg_temp.hashes(40, 69),
-    (select array_agg(10 * i - 395 + (i % 2)) from generate_series(40, 69) i))),
+    (select array_agg(10 * i - 395 + (i % 2)) from generate_series(40, 69) i), 'install-1')),
   30, 'peaks a frame apart still count');
 
 select is_empty(
-  $$select * from public.identify_audio(1, pg_temp.hashes(40, 50), pg_temp.frames(40, 50))$$,
+  $$select * from public.identify_audio(1, pg_temp.hashes(40, 50), pg_temp.frames(40, 50), 'install-1')$$,
   'eleven hashes are not enough');
 select is_empty(
-  $$select * from public.identify_audio(2, pg_temp.hashes(40, 69), pg_temp.frames(40, 69))$$,
+  $$select * from public.identify_audio(2, pg_temp.hashes(40, 69), pg_temp.frames(40, 69), 'install-1')$$,
   'fingerprints of another version are not compared');
 
 select is(
   (select query from public.identify_audio(1,
     pg_temp.hashes(500, 529) || pg_temp.hashes(40, 69),
-    pg_temp.frames(1, 30) || pg_temp.frames(40, 69),
+    pg_temp.frames(1, 30) || pg_temp.frames(40, 69), 'install-1',
     array_fill(0, array[30]) || array_fill(1, array[30]))),
   1, 'of several speeds, the query that lined up is returned');
 
 select results_eq(
-  $$select score, runner_up from public.identify_audio(1, pg_temp.hashes(201, 220), pg_temp.frames(201, 220))$$,
+  $$select score, runner_up from public.identify_audio(1, pg_temp.hashes(201, 220), pg_temp.frames(201, 220), 'install-1')$$,
   $$values (20, 20)$$,
   'a repeated chorus scores as well elsewhere');
 
 select throws_ok(
-  $$select * from public.identify_audio(1, array[1, 2], array[1])$$,
+  $$select * from public.identify_audio(1, array[1, 2], array[1], 'install-1')$$,
   '22023', null, 'hashes and frames must line up');
+select throws_ok(
+  $$select * from public.identify_audio(1, array[1], array[1], 'short')$$,
+  '22023', null, 'an install ID is needed');
+
+select results_eq(
+  $$select lookups, matches from public.identify_counts
+    where key = 'install:' || encode(extensions.digest('install-1', 'sha256'), 'hex')$$,
+  $$values (6, 4)$$,
+  'only counts are kept: lookups, and those that matched, by a hash of the install');
+select is((select count(*)::int from public.identify_counts), 1, 'no IP without a forwarded header');
+
+update public.identify_counts set lookups = 300;
+select throws_ok(
+  $$select * from public.identify_audio(1, array[1], array[1], 'install-1')$$,
+  'PT429', null, 'past 300 lookups a day, the install is refused');
+
+set local request.headers = '{"x-forwarded-for": "203.0.113.9, 10.0.0.1"}';
+select lives_ok(
+  $$select * from public.identify_audio(1, array[1], array[1], 'install-3')$$,
+  'another install may search');
+update public.identify_counts set lookups = 2000 where key like 'ip:%';
+select throws_ok(
+  $$select * from public.identify_audio(1, array[1], array[1], 'install-4')$$,
+  'PT429', null, 'until the network passes 2000 a day');
+reset request.headers;
 
 set local role anon;
 select lives_ok(
-  $$select * from public.identify_audio(1, array[1], array[1])$$,
+  $$select * from public.identify_audio(1, array[1], array[1], 'install-2')$$,
   'listeners may search');
 select throws_ok(
   $$select public.put_fingerprint('song-a', 1, 10, array[1], array[1])$$,

@@ -284,11 +284,12 @@ void main() {
       final matches = await repository.identify([
         query([5, 6], [0, 3], 1),
         query([7], [2], 0.98),
-      ]);
+      ], installId: 'install-1234');
 
       expect(requests.single.url.path, '/rest/v1/rpc/identify_audio');
       expect(jsonDecode(requests.single.body), {
         'version': fingerprintVersion,
+        'install_id': 'install-1234',
         'hashes': [5, 6, 7],
         'frames': [0, 3, 2],
         'queries': [0, 0, 1],
@@ -304,9 +305,24 @@ void main() {
       expect(found.recordingDuration, fingerprintFrameTime(4307));
     });
 
+    test('past the daily limit, a RateLimitFailure', () async {
+      answerWith((_) => error('PT429', 429));
+      await expectLater(
+        repository.identify([
+          query([5], [0], 1),
+        ], installId: 'install-1234'),
+        throwsA(isA<RateLimitFailure>()),
+      );
+    });
+
     test('an empty excerpt is not sent', () async {
       answerWith((_) => json([]));
-      expect(await repository.identify([query([], [], 1)]), isEmpty);
+      expect(
+        await repository.identify([
+          query([], [], 1),
+        ], installId: 'install-1234'),
+        isEmpty,
+      );
       expect(requests, isEmpty);
     });
   });

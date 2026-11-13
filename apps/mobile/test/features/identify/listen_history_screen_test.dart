@@ -9,6 +9,7 @@ import 'package:zema/app/routes.dart';
 import 'package:zema/features/identify/data/microphone.dart';
 import 'package:zema/features/identify/presentation/listen_history_screen.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
+import 'package:zema/features/lyrics/presentation/song_detail_screen.dart';
 import 'package:zema/features/player/presentation/now_playing_screen.dart';
 import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
@@ -74,8 +75,23 @@ void main() {
     String title,
     DateTime at,
   ) async {
-    await tester.runAsync(() => db.identifiedDao.add(byTitle[title]!.id, at));
+    await tester.runAsync(
+      () => db.identifiedDao.add(at, trackId: byTitle[title]!.id),
+    );
   }
+
+  testWidgets('a catalog song shows, and opens its page', (tester) async {
+    await open(tester);
+    await tester.runAsync(
+      () => db.identifiedDao.add(DateTime(2026, 3, 4, 9), songId: 'galatoomi'),
+    );
+    await settle(tester);
+
+    expect(find.text('Galatoomi'), findsOneWidget);
+    await tester.tap(find.text('Galatoomi'));
+    await settle(tester);
+    expect(find.byType(SongDetailScreen), findsOneWidget);
+  });
 
   testWidgets('empty History says what will show there', (tester) async {
     await open(tester);

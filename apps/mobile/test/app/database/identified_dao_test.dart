@@ -30,15 +30,15 @@ void main() {
 
   final noon = DateTime.utc(2026, 11, 12, 12);
 
-  Future<List<(int, DateTime)>> rows() async => [
+  Future<List<(int?, DateTime)>> rows() async => [
     for (final r in await dao.watchAll().first) (r.trackId, r.identifiedAt),
   ];
 
   test('newest first; the same song again soon after is one entry', () async {
-    await dao.add(ids[0], noon);
-    await dao.add(ids[0], noon.add(const Duration(minutes: 3)));
-    await dao.add(ids[1], noon.add(const Duration(minutes: 5)));
-    await dao.add(ids[1], noon.add(const Duration(minutes: 30)));
+    await dao.add(noon, trackId: ids[0]);
+    await dao.add(noon.add(const Duration(minutes: 3)), trackId: ids[0]);
+    await dao.add(noon.add(const Duration(minutes: 5)), trackId: ids[1]);
+    await dao.add(noon.add(const Duration(minutes: 30)), trackId: ids[1]);
 
     expect(await rows(), [
       (ids[1], noon.add(const Duration(minutes: 30))),
@@ -48,8 +48,8 @@ void main() {
   });
 
   test('entries are removed one by one or all at once', () async {
-    await dao.add(ids[0], noon);
-    await dao.add(ids[1], noon);
+    await dao.add(noon, trackId: ids[0]);
+    await dao.add(noon, trackId: ids[1]);
     final first = (await dao.watchAll().first).last;
 
     await dao.remove(first.id);
@@ -60,7 +60,7 @@ void main() {
   });
 
   test('a song deleted from the library leaves History', () async {
-    await dao.add(ids[0], noon);
+    await dao.add(noon, trackId: ids[0]);
     await db.customStatement('DELETE FROM tracks WHERE id = ?', [ids[0]]);
     expect(await rows(), isEmpty);
   });

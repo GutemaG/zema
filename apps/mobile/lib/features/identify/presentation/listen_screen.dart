@@ -543,6 +543,15 @@ class _Words extends ConsumerWidget {
           ],
         ),
       ),
+      ListenSavedForLater() => message(
+        l10n.listenSavedTitle,
+        l10n.listenSavedMessage,
+        action: FilledButton.tonalIcon(
+          onPressed: onListen,
+          icon: const Icon(Icons.refresh_rounded),
+          label: Text(l10n.actionTryAgain),
+        ),
+      ),
       ListenDenied() => message(
         l10n.listenDeniedTitle,
         l10n.listenDeniedMessage,

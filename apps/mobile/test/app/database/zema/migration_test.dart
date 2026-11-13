@@ -16,6 +16,8 @@ import 'generated/schema_v6.dart' as v6;
 import 'generated/schema_v7.dart' as v7;
 import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
+import 'generated/schema_v13.dart' as v13;
+import 'generated/schema_v14.dart' as v14;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -365,6 +367,46 @@ void main() {
       );
     },
   );
+
+  test('migration from v13 to v14 keeps History and starts with no pending '
+      'lookups', () async {
+    const track = v13.TracksData(
+      id: 1,
+      mediaStoreId: 11,
+      uri: 'content://media/11',
+      path: '/m/1.mp3',
+      folder: '/m',
+      title: 'Tizita',
+      durationMs: 241000,
+      sizeBytes: 1000,
+      dateAdded: '2026-10-01T00:00:00.000Z',
+      missing: 0,
+    );
+    const identified = v13.IdentifiedSongsData(
+      id: 1,
+      trackId: 1,
+      identifiedAt: '2026-11-12T12:00:00.000Z',
+    );
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 13,
+      newVersion: 14,
+      createOld: v13.DatabaseAtV13.new,
+      createNew: v14.DatabaseAtV14.new,
+      openTestedDatabase: ZemaDatabase.new,
+      createItems: (batch, oldDb) {
+        batch
+          ..insert(oldDb.tracks, track)
+          ..insert(oldDb.identifiedSongs, identified);
+      },
+      validateItems: (newDb) async {
+        final rows = await newDb.select(newDb.identifiedSongs).get();
+        expect(rows.single.trackId, 1);
+        expect(rows.single.songId, equals(null));
+        expect(await newDb.select(newDb.pendingLookups).get(), isEmpty);
+      },
+    );
+  });
 }
 
 const _v3Track = v3.TracksData(

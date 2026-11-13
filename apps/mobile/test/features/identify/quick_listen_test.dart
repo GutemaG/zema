@@ -208,7 +208,7 @@ void main() {
     expect(widget.shown, [null]);
 
     await tester.runAsync(
-      () => db.identifiedDao.add(byTitle['Two']!.id, DateTime(2026)),
+      () => db.identifiedDao.add(DateTime(2026), trackId: byTitle['Two']!.id),
     );
     await settle(tester);
     expect(widget.shown.last, 'Two');

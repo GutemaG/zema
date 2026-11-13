@@ -26,8 +26,11 @@ class CatalogAudioMatch {
 abstract interface class AudioCatalog {
   /// The approved recordings [queries] match, best first. [queries] are one
   /// excerpt fingerprinted at several speeds (`Fingerprinter.queries`).
+  /// [installId] identifies this install for the daily limit
+  /// ([RateLimitFailure] past it).
   Future<List<CatalogAudioMatch>> identify(
     List<AudioFingerprint> queries, {
+    required String installId,
     int limit = 3,
   });
 }

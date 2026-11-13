@@ -6524,12 +6524,21 @@ class $IdentifiedSongsTable extends IdentifiedSongs
   late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
     'track_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES tracks (id) ON DELETE CASCADE',
     ),
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _identifiedAtMeta = const VerificationMeta(
     'identifiedAt',
@@ -6543,7 +6552,7 @@ class $IdentifiedSongsTable extends IdentifiedSongs
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, trackId, identifiedAt];
+  List<GeneratedColumn> get $columns => [id, trackId, songId, identifiedAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -6564,8 +6573,12 @@ class $IdentifiedSongsTable extends IdentifiedSongs
         _trackIdMeta,
         trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
     }
     if (data.containsKey('identified_at')) {
       context.handle(
@@ -6594,7 +6607,11 @@ class $IdentifiedSongsTable extends IdentifiedSongs
       trackId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}track_id'],
-      )!,
+      ),
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      ),
       identifiedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}identified_at'],
@@ -6611,18 +6628,25 @@ class $IdentifiedSongsTable extends IdentifiedSongs
 class IdentifiedSongRow extends DataClass
     implements Insertable<IdentifiedSongRow> {
   final int id;
-  final int trackId;
+  final int? trackId;
+  final String? songId;
   final DateTime identifiedAt;
   const IdentifiedSongRow({
     required this.id,
-    required this.trackId,
+    this.trackId,
+    this.songId,
     required this.identifiedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['track_id'] = Variable<int>(trackId);
+    if (!nullToAbsent || trackId != null) {
+      map['track_id'] = Variable<int>(trackId);
+    }
+    if (!nullToAbsent || songId != null) {
+      map['song_id'] = Variable<String>(songId);
+    }
     map['identified_at'] = Variable<DateTime>(identifiedAt);
     return map;
   }
@@ -6630,7 +6654,12 @@ class IdentifiedSongRow extends DataClass
   IdentifiedSongsCompanion toCompanion(bool nullToAbsent) {
     return IdentifiedSongsCompanion(
       id: Value(id),
-      trackId: Value(trackId),
+      trackId: trackId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackId),
+      songId: songId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(songId),
       identifiedAt: Value(identifiedAt),
     );
   }
@@ -6642,7 +6671,8 @@ class IdentifiedSongRow extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return IdentifiedSongRow(
       id: serializer.fromJson<int>(json['id']),
-      trackId: serializer.fromJson<int>(json['trackId']),
+      trackId: serializer.fromJson<int?>(json['trackId']),
+      songId: serializer.fromJson<String?>(json['songId']),
       identifiedAt: serializer.fromJson<DateTime>(json['identifiedAt']),
     );
   }
@@ -6651,21 +6681,28 @@ class IdentifiedSongRow extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'trackId': serializer.toJson<int>(trackId),
+      'trackId': serializer.toJson<int?>(trackId),
+      'songId': serializer.toJson<String?>(songId),
       'identifiedAt': serializer.toJson<DateTime>(identifiedAt),
     };
   }
 
-  IdentifiedSongRow copyWith({int? id, int? trackId, DateTime? identifiedAt}) =>
-      IdentifiedSongRow(
-        id: id ?? this.id,
-        trackId: trackId ?? this.trackId,
-        identifiedAt: identifiedAt ?? this.identifiedAt,
-      );
+  IdentifiedSongRow copyWith({
+    int? id,
+    Value<int?> trackId = const Value.absent(),
+    Value<String?> songId = const Value.absent(),
+    DateTime? identifiedAt,
+  }) => IdentifiedSongRow(
+    id: id ?? this.id,
+    trackId: trackId.present ? trackId.value : this.trackId,
+    songId: songId.present ? songId.value : this.songId,
+    identifiedAt: identifiedAt ?? this.identifiedAt,
+  );
   IdentifiedSongRow copyWithCompanion(IdentifiedSongsCompanion data) {
     return IdentifiedSongRow(
       id: data.id.present ? data.id.value : this.id,
       trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      songId: data.songId.present ? data.songId.value : this.songId,
       identifiedAt: data.identifiedAt.present
           ? data.identifiedAt.value
           : this.identifiedAt,
@@ -6677,57 +6714,65 @@ class IdentifiedSongRow extends DataClass
     return (StringBuffer('IdentifiedSongRow(')
           ..write('id: $id, ')
           ..write('trackId: $trackId, ')
+          ..write('songId: $songId, ')
           ..write('identifiedAt: $identifiedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, trackId, identifiedAt);
+  int get hashCode => Object.hash(id, trackId, songId, identifiedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is IdentifiedSongRow &&
           other.id == this.id &&
           other.trackId == this.trackId &&
+          other.songId == this.songId &&
           other.identifiedAt == this.identifiedAt);
 }
 
 class IdentifiedSongsCompanion extends UpdateCompanion<IdentifiedSongRow> {
   final Value<int> id;
-  final Value<int> trackId;
+  final Value<int?> trackId;
+  final Value<String?> songId;
   final Value<DateTime> identifiedAt;
   const IdentifiedSongsCompanion({
     this.id = const Value.absent(),
     this.trackId = const Value.absent(),
+    this.songId = const Value.absent(),
     this.identifiedAt = const Value.absent(),
   });
   IdentifiedSongsCompanion.insert({
     this.id = const Value.absent(),
-    required int trackId,
+    this.trackId = const Value.absent(),
+    this.songId = const Value.absent(),
     required DateTime identifiedAt,
-  }) : trackId = Value(trackId),
-       identifiedAt = Value(identifiedAt);
+  }) : identifiedAt = Value(identifiedAt);
   static Insertable<IdentifiedSongRow> custom({
     Expression<int>? id,
     Expression<int>? trackId,
+    Expression<String>? songId,
     Expression<DateTime>? identifiedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (trackId != null) 'track_id': trackId,
+      if (songId != null) 'song_id': songId,
       if (identifiedAt != null) 'identified_at': identifiedAt,
     });
   }
 
   IdentifiedSongsCompanion copyWith({
     Value<int>? id,
-    Value<int>? trackId,
+    Value<int?>? trackId,
+    Value<String?>? songId,
     Value<DateTime>? identifiedAt,
   }) {
     return IdentifiedSongsCompanion(
       id: id ?? this.id,
       trackId: trackId ?? this.trackId,
+      songId: songId ?? this.songId,
       identifiedAt: identifiedAt ?? this.identifiedAt,
     );
   }
@@ -6741,6 +6786,9 @@ class IdentifiedSongsCompanion extends UpdateCompanion<IdentifiedSongRow> {
     if (trackId.present) {
       map['track_id'] = Variable<int>(trackId.value);
     }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
     if (identifiedAt.present) {
       map['identified_at'] = Variable<DateTime>(identifiedAt.value);
     }
@@ -6752,6 +6800,7 @@ class IdentifiedSongsCompanion extends UpdateCompanion<IdentifiedSongRow> {
     return (StringBuffer('IdentifiedSongsCompanion(')
           ..write('id: $id, ')
           ..write('trackId: $trackId, ')
+          ..write('songId: $songId, ')
           ..write('identifiedAt: $identifiedAt')
           ..write(')'))
         .toString();
@@ -7076,6 +7125,259 @@ class DetectedMatchesCompanion extends UpdateCompanion<DetectedMatchRow> {
   }
 }
 
+class $PendingLookupsTable extends PendingLookups
+    with TableInfo<$PendingLookupsTable, PendingLookupRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PendingLookupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _queriesMeta = const VerificationMeta(
+    'queries',
+  );
+  @override
+  late final GeneratedColumn<Uint8List> queries = GeneratedColumn<Uint8List>(
+    'queries',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _heardAtMeta = const VerificationMeta(
+    'heardAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> heardAt = GeneratedColumn<DateTime>(
+    'heard_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, queries, heardAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pending_lookups';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PendingLookupRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('queries')) {
+      context.handle(
+        _queriesMeta,
+        queries.isAcceptableOrUnknown(data['queries']!, _queriesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_queriesMeta);
+    }
+    if (data.containsKey('heard_at')) {
+      context.handle(
+        _heardAtMeta,
+        heardAt.isAcceptableOrUnknown(data['heard_at']!, _heardAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_heardAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PendingLookupRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PendingLookupRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      queries: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}queries'],
+      )!,
+      heardAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}heard_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PendingLookupsTable createAlias(String alias) {
+    return $PendingLookupsTable(attachedDatabase, alias);
+  }
+}
+
+class PendingLookupRow extends DataClass
+    implements Insertable<PendingLookupRow> {
+  final int id;
+  final Uint8List queries;
+  final DateTime heardAt;
+  const PendingLookupRow({
+    required this.id,
+    required this.queries,
+    required this.heardAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['queries'] = Variable<Uint8List>(queries);
+    map['heard_at'] = Variable<DateTime>(heardAt);
+    return map;
+  }
+
+  PendingLookupsCompanion toCompanion(bool nullToAbsent) {
+    return PendingLookupsCompanion(
+      id: Value(id),
+      queries: Value(queries),
+      heardAt: Value(heardAt),
+    );
+  }
+
+  factory PendingLookupRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PendingLookupRow(
+      id: serializer.fromJson<int>(json['id']),
+      queries: serializer.fromJson<Uint8List>(json['queries']),
+      heardAt: serializer.fromJson<DateTime>(json['heardAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'queries': serializer.toJson<Uint8List>(queries),
+      'heardAt': serializer.toJson<DateTime>(heardAt),
+    };
+  }
+
+  PendingLookupRow copyWith({int? id, Uint8List? queries, DateTime? heardAt}) =>
+      PendingLookupRow(
+        id: id ?? this.id,
+        queries: queries ?? this.queries,
+        heardAt: heardAt ?? this.heardAt,
+      );
+  PendingLookupRow copyWithCompanion(PendingLookupsCompanion data) {
+    return PendingLookupRow(
+      id: data.id.present ? data.id.value : this.id,
+      queries: data.queries.present ? data.queries.value : this.queries,
+      heardAt: data.heardAt.present ? data.heardAt.value : this.heardAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PendingLookupRow(')
+          ..write('id: $id, ')
+          ..write('queries: $queries, ')
+          ..write('heardAt: $heardAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, $driftBlobEquality.hash(queries), heardAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PendingLookupRow &&
+          other.id == this.id &&
+          $driftBlobEquality.equals(other.queries, this.queries) &&
+          other.heardAt == this.heardAt);
+}
+
+class PendingLookupsCompanion extends UpdateCompanion<PendingLookupRow> {
+  final Value<int> id;
+  final Value<Uint8List> queries;
+  final Value<DateTime> heardAt;
+  const PendingLookupsCompanion({
+    this.id = const Value.absent(),
+    this.queries = const Value.absent(),
+    this.heardAt = const Value.absent(),
+  });
+  PendingLookupsCompanion.insert({
+    this.id = const Value.absent(),
+    required Uint8List queries,
+    required DateTime heardAt,
+  }) : queries = Value(queries),
+       heardAt = Value(heardAt);
+  static Insertable<PendingLookupRow> custom({
+    Expression<int>? id,
+    Expression<Uint8List>? queries,
+    Expression<DateTime>? heardAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (queries != null) 'queries': queries,
+      if (heardAt != null) 'heard_at': heardAt,
+    });
+  }
+
+  PendingLookupsCompanion copyWith({
+    Value<int>? id,
+    Value<Uint8List>? queries,
+    Value<DateTime>? heardAt,
+  }) {
+    return PendingLookupsCompanion(
+      id: id ?? this.id,
+      queries: queries ?? this.queries,
+      heardAt: heardAt ?? this.heardAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (queries.present) {
+      map['queries'] = Variable<Uint8List>(queries.value);
+    }
+    if (heardAt.present) {
+      map['heard_at'] = Variable<DateTime>(heardAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PendingLookupsCompanion(')
+          ..write('id: $id, ')
+          ..write('queries: $queries, ')
+          ..write('heardAt: $heardAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -7106,6 +7408,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $DetectedMatchesTable detectedMatches = $DetectedMatchesTable(
     this,
   );
+  late final $PendingLookupsTable pendingLookups = $PendingLookupsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -7170,6 +7473,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     trackFingerprints,
     identifiedSongs,
     detectedMatches,
+    pendingLookups,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -12526,13 +12830,15 @@ typedef $$TrackFingerprintsTableProcessedTableManager =
 typedef $$IdentifiedSongsTableCreateCompanionBuilder =
     IdentifiedSongsCompanion Function({
       Value<int> id,
-      required int trackId,
+      Value<int?> trackId,
+      Value<String?> songId,
       required DateTime identifiedAt,
     });
 typedef $$IdentifiedSongsTableUpdateCompanionBuilder =
     IdentifiedSongsCompanion Function({
       Value<int> id,
-      Value<int> trackId,
+      Value<int?> trackId,
+      Value<String?> songId,
       Value<DateTime> identifiedAt,
     });
 
@@ -12552,9 +12858,9 @@ final class $$IdentifiedSongsTableReferences
   static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
       db.tracks.createAlias('identified_songs__track_id__tracks__id');
 
-  $$TracksTableProcessedTableManager get trackId {
-    final $_column = $_itemColumn<int>('track_id')!;
-
+  $$TracksTableProcessedTableManager? get trackId {
+    final $_column = $_itemColumn<int>('track_id');
+    if ($_column == null) return null;
     final manager = $$TracksTableTableManager(
       $_db,
       $_db.tracks,
@@ -12578,6 +12884,11 @@ class $$IdentifiedSongsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12624,6 +12935,11 @@ class $$IdentifiedSongsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get identifiedAt => $composableBuilder(
     column: $table.identifiedAt,
     builder: (column) => ColumnOrderings(column),
@@ -12664,6 +12980,9 @@ class $$IdentifiedSongsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
 
   GeneratedColumn<DateTime> get identifiedAt => $composableBuilder(
     column: $table.identifiedAt,
@@ -12725,21 +13044,25 @@ class $$IdentifiedSongsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<int> trackId = const Value.absent(),
+                Value<int?> trackId = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
                 Value<DateTime> identifiedAt = const Value.absent(),
               }) => IdentifiedSongsCompanion(
                 id: id,
                 trackId: trackId,
+                songId: songId,
                 identifiedAt: identifiedAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required int trackId,
+                Value<int?> trackId = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
                 required DateTime identifiedAt,
               }) => IdentifiedSongsCompanion.insert(
                 id: id,
                 trackId: trackId,
+                songId: songId,
                 identifiedAt: identifiedAt,
               ),
           withReferenceMapper: (p0) => p0
@@ -13003,6 +13326,177 @@ typedef $$DetectedMatchesTableProcessedTableManager =
       DetectedMatchRow,
       PrefetchHooks Function()
     >;
+typedef $$PendingLookupsTableCreateCompanionBuilder =
+    PendingLookupsCompanion Function({
+      Value<int> id,
+      required Uint8List queries,
+      required DateTime heardAt,
+    });
+typedef $$PendingLookupsTableUpdateCompanionBuilder =
+    PendingLookupsCompanion Function({
+      Value<int> id,
+      Value<Uint8List> queries,
+      Value<DateTime> heardAt,
+    });
+
+class $$PendingLookupsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $PendingLookupsTable> {
+  $$PendingLookupsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get queries => $composableBuilder(
+    column: $table.queries,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get heardAt => $composableBuilder(
+    column: $table.heardAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PendingLookupsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $PendingLookupsTable> {
+  $$PendingLookupsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get queries => $composableBuilder(
+    column: $table.queries,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get heardAt => $composableBuilder(
+    column: $table.heardAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PendingLookupsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $PendingLookupsTable> {
+  $$PendingLookupsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get queries =>
+      $composableBuilder(column: $table.queries, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get heardAt =>
+      $composableBuilder(column: $table.heardAt, builder: (column) => column);
+}
+
+class $$PendingLookupsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $PendingLookupsTable,
+          PendingLookupRow,
+          $$PendingLookupsTableFilterComposer,
+          $$PendingLookupsTableOrderingComposer,
+          $$PendingLookupsTableAnnotationComposer,
+          $$PendingLookupsTableCreateCompanionBuilder,
+          $$PendingLookupsTableUpdateCompanionBuilder,
+          (
+            PendingLookupRow,
+            BaseReferences<
+              _$ZemaDatabase,
+              $PendingLookupsTable,
+              PendingLookupRow
+            >,
+          ),
+          PendingLookupRow,
+          PrefetchHooks Function()
+        > {
+  $$PendingLookupsTableTableManager(
+    _$ZemaDatabase db,
+    $PendingLookupsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PendingLookupsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PendingLookupsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PendingLookupsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<Uint8List> queries = const Value.absent(),
+                Value<DateTime> heardAt = const Value.absent(),
+              }) => PendingLookupsCompanion(
+                id: id,
+                queries: queries,
+                heardAt: heardAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required Uint8List queries,
+                required DateTime heardAt,
+              }) => PendingLookupsCompanion.insert(
+                id: id,
+                queries: queries,
+                heardAt: heardAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PendingLookupsTable, PendingLookupRow>(table),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $PendingLookupsTable,
+                    PendingLookupRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PendingLookupsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $PendingLookupsTable,
+      PendingLookupRow,
+      $$PendingLookupsTableFilterComposer,
+      $$PendingLookupsTableOrderingComposer,
+      $$PendingLookupsTableAnnotationComposer,
+      $$PendingLookupsTableCreateCompanionBuilder,
+      $$PendingLookupsTableUpdateCompanionBuilder,
+      (
+        PendingLookupRow,
+        BaseReferences<_$ZemaDatabase, $PendingLookupsTable, PendingLookupRow>,
+      ),
+      PendingLookupRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -13043,4 +13537,6 @@ class $ZemaDatabaseManager {
       $$IdentifiedSongsTableTableManager(_db, _db.identifiedSongs);
   $$DetectedMatchesTableTableManager get detectedMatches =>
       $$DetectedMatchesTableTableManager(_db, _db.detectedMatches);
+  $$PendingLookupsTableTableManager get pendingLookups =>
+      $$PendingLookupsTableTableManager(_db, _db.pendingLookups);
 }

@@ -28,7 +28,7 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
   final widget = ref.watch(homeWidgetProvider);
   ref.listen(listenHistoryProvider, (_, next) {
     if (next case AsyncData(:final value)) {
-      final last = value.firstOrNull?.track;
+      final last = value.firstOrNull;
       widget.showLast(title: last?.title, artist: last?.artist);
     }
   });

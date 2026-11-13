@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/database/database_provider.dart';
 import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
+import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../library/presentation/widgets/track_art.dart';
@@ -91,10 +92,20 @@ class _Row extends ConsumerWidget {
     );
     final track = entry.track;
     return ListTile(
-      leading: TrackArt(track: track, size: 48),
-      title: Text(track.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      leading: track == null
+          ? Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: colors.soft,
+                borderRadius: BorderRadius.circular(ZemaRadius.small),
+              ),
+              child: Icon(Icons.lyrics_rounded, color: colors.accentText),
+            )
+          : TrackArt(track: track, size: 48),
+      title: Text(entry.title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
-        [?track.artist, when].join(' · '),
+        [?entry.artist, when].join(' · '),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(color: colors.muted),
@@ -106,6 +117,10 @@ class _Row extends ConsumerWidget {
             ref.read(databaseProvider).identifiedDao.remove(entry.id),
       ),
       onTap: () async {
+        if (track == null) {
+          context.go(AppRoutes.song(entry.song!.id));
+          return;
+        }
         await ref.read(playerControllerProvider).playList([track]);
         if (context.mounted) unawaited(context.push(AppRoutes.nowPlaying));
       },

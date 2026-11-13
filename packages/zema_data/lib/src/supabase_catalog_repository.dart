@@ -70,11 +70,13 @@ class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
   @override
   Future<List<CatalogAudioMatch>> identify(
     List<AudioFingerprint> queries, {
+    required String installId,
     int limit = 3,
   }) async {
     if (queries.every((q) => q.length == 0)) return const [];
     final rows = await _call('identify_audio', {
       'version': fingerprintVersion,
+      'install_id': installId,
       'hashes': [for (final q in queries) ...q.hashes],
       'frames': [for (final q in queries) ...q.frames],
       'queries': [

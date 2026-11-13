@@ -14,6 +14,7 @@ import '../features/contribute/application/recording.dart';
 import '../features/contribute/presentation/my_contributions_screen.dart';
 import '../features/contribute/data/shared_audio.dart';
 import '../features/identify/application/listen_controller.dart';
+import '../features/identify/application/pending_lookups.dart';
 import '../features/identify/application/quick_listen.dart';
 import '../features/identify/data/quick_launch.dart';
 import '../features/library/application/library_providers.dart';
@@ -144,6 +145,7 @@ class AppShell extends ConsumerWidget {
     ref.listen(playHistoryProvider, (_, _) {});
     ref.listen(catalogStartupRefreshProvider, (_, _) {});
     ref.listen(reportStartupFlushProvider, (_, _) {});
+    ref.listen(pendingLookupFlushProvider, (_, _) {});
     ref.listen(lyricsLinkSyncProvider, (_, _) {});
     ref.listen(myContributionsProvider, (_, _) {});
     final l10n = AppLocalizations.of(context);
@@ -170,6 +172,19 @@ class AppShell extends ConsumerWidget {
             ),
           );
         }
+      }
+    });
+    ref.listen(lateMatchFoundProvider, (_, next) {
+      if (next case AsyncData(value: final song)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.listenFoundLater(song.title)),
+            action: SnackBarAction(
+              label: l10n.actionView,
+              onPressed: () => context.push(AppRoutes.listenHistory),
+            ),
+          ),
+        );
       }
     });
     ref.listen(unplayableTrackProvider, (_, next) {

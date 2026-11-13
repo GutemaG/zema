@@ -289,13 +289,27 @@ class TrackFingerprints extends Table {
   Set<Column<Object>> get primaryKey => {trackId};
 }
 
-/// Songs Listen identified (intent 009 FR-9), newest last.
+/// Songs Listen identified (intent 009 FR-9), newest last: a library track,
+/// or a catalog song (v14).
 @DataClassName('IdentifiedSongRow')
 class IdentifiedSongs extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get trackId =>
-      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+  IntColumn get trackId => integer().nullable().references(
+    Tracks,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
+  TextColumn get songId => text().nullable()();
   DateTimeColumn get identifiedAt => dateTime()();
+}
+
+/// Excerpts heard offline that the phone's songs didn't match, kept as query
+/// fingerprints (no audio) until the catalog can be asked (intent 009 FR-5).
+@DataClassName('PendingLookupRow')
+class PendingLookups extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  BlobColumn get queries => blob()();
+  DateTimeColumn get heardAt => dateTime()();
 }
 
 @DataClassName('DetectedMatchRow')

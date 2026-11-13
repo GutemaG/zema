@@ -59,6 +59,31 @@ revoke execute on function public.put_fingerprint(public.slug, integer, integer,
 grant execute on function public.put_fingerprint(public.slug, integer, integer, integer[], integer[])
   to service_role;
 
+-- Lookups per day, for the limits and match-rate statistics: only counts, keyed
+-- by a hash of the install ID or of the IP address; no query is stored.
+create table public.identify_counts (
+  key text not null,
+  day date not null default current_date,
+  lookups integer not null default 0,
+  matches integer not null default 0,
+  primary key (key, day)
+);
+
+alter table public.identify_counts enable row level security;
+
+-- Counts one lookup for [key] today; false once [daily_limit] is passed.
+create function public.count_identify(key text, daily_limit integer)
+returns boolean
+language sql
+set search_path = ''
+as $$
+  insert into public.identify_counts as c (key, lookups) values (key, 1)
+  on conflict (key, day) do update set lookups = c.lookups + 1
+  returning lookups <= daily_limit
+$$;
+
+revoke execute on function public.count_identify(text, integer) from public, anon, authenticated;
+
 -- Fewest hashes that must line up at one shift, as zema_core's minimumMatchScore.
 create function public.fingerprint_min_score()
 returns integer
@@ -66,7 +91,9 @@ language sql
 immutable
 as $$ select 12 $$;
 
--- The approved recordings an excerpt matches, best first.
+-- The approved recordings an excerpt matches, best first. Each call counts
+-- against [install_id]'s daily limit (300) and its IP address's (2000, as a
+-- church's phones share one network); past either, it fails with HTTP 429.
 --
 -- [hashes] and [frames] are the excerpt's fingerprint (zema_core's
 -- AudioFingerprint, made with the query density); [queries] numbers each hash's
@@ -81,6 +108,7 @@ create function public.identify_audio(
   version integer,
   hashes integer[],
   frames integer[],
+  install_id text,
   queries integer[] default null,
   max_results integer default 3
 )
@@ -94,11 +122,16 @@ returns table (
   frame_count integer
 )
 language plpgsql
-stable
 security definer
 set search_path = ''
 as $$
+declare
+  install_key text;
+  ip text;
 begin
+  if install_id is null or length(install_id) not between 8 and 64 then
+    raise exception 'Invalid install ID' using errcode = '22023';
+  end if;
   if coalesce(array_length(hashes, 1), 0) <> coalesce(array_length(frames, 1), 0)
     or (queries is not null
       and coalesce(array_length(queries, 1), 0) <> coalesce(array_length(hashes, 1), 0)) then
@@ -106,6 +139,14 @@ begin
   end if;
   if coalesce(array_length(hashes, 1), 0) > 20000 then
     raise exception 'At most 20000 hashes' using errcode = '22023';
+  end if;
+  install_key := 'install:' || encode(extensions.digest(install_id, 'sha256'), 'hex');
+  ip := trim(split_part(coalesce(
+    nullif(current_setting('request.headers', true), '')::json ->> 'x-forwarded-for', ''), ',', 1));
+  if not public.count_identify(install_key, 300)
+    or (ip <> '' and not public.count_identify(
+      'ip:' || encode(extensions.digest(ip, 'sha256'), 'hex'), 2000)) then
+    raise exception 'Too many lookups today' using errcode = 'PT429';
   end if;
   return query
   with excerpt as (
@@ -156,10 +197,14 @@ begin
   join candidates c on c.recording_id = p.recording_id
   order by p.score desc, p.recording_id
   limit greatest(1, least(max_results, 10));
+  if found then
+    update public.identify_counts c set matches = c.matches + 1
+    where c.key = install_key and c.day = current_date;
+  end if;
 end;
 $$;
 
-revoke execute on function public.identify_audio(integer, integer[], integer[], integer[], integer)
+revoke execute on function public.identify_audio(integer, integer[], integer[], text, integer[], integer)
   from public;
-grant execute on function public.identify_audio(integer, integer[], integer[], integer[], integer)
+grant execute on function public.identify_audio(integer, integer[], integer[], text, integer[], integer)
   to anon, authenticated, service_role;

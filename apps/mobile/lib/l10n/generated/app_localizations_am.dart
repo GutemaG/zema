@@ -2733,4 +2733,16 @@ class AppLocalizationsAm extends AppLocalizations {
   @override
   String get detectionBatteryOther =>
       'Set Zema\'s battery use to Unrestricted, and allow it to start in the background.';
+
+  @override
+  String get listenSavedTitle => 'You\'re offline';
+
+  @override
+  String get listenSavedMessage =>
+      'Zema kept what it heard and will look it up when you\'re back online. The song will appear in History.';
+
+  @override
+  String listenFoundLater(String title) {
+    return 'Found while you were offline: $title';
+  }
 }
