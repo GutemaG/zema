@@ -37,7 +37,7 @@ class OverlayChannel(private val context: Context, messenger: BinaryMessenger) {
                         context,
                         (args["textSp"] as? Number)?.toFloat(),
                         (args["opacity"] as? Number)?.toFloat(),
-                        modeOf(args["start"]),
+                        args["start"] as? String,
                     )
                     result.success(null)
                 }

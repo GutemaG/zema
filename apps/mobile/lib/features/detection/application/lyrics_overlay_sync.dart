@@ -24,11 +24,13 @@ class DetectedLyrics {
   const DetectedLyrics({
     required this.song,
     required this.lines,
+    required this.sung,
     this.recordingOffset = Duration.zero,
   });
 
   final Song song;
   final List<OverlayLine> lines;
+  final List<LineOccurrence> sung;
   final Duration recordingOffset;
 }
 
@@ -49,6 +51,7 @@ final detectedLyricsProvider = FutureProvider.family<DetectedLyrics?, String>((
       return DetectedLyrics(
         song: song,
         recordingOffset: recording.offset,
+        sung: synced.lines,
         lines: [
           for (final (i, sung) in synced.lines.indexed)
             OverlayLine(sung.line.text, at: timing.starts[i]),
@@ -58,12 +61,11 @@ final detectedLyricsProvider = FutureProvider.family<DetectedLyrics?, String>((
       _log.warning('Timing ${recording.id} does not fit $songId', e);
     }
   }
+  final sung = expandPlayOrder(song).occurrences;
   return DetectedLyrics(
     song: song,
-    lines: [
-      for (final sung in expandPlayOrder(song).occurrences)
-        OverlayLine(sung.line.text),
-    ],
+    sung: sung,
+    lines: [for (final line in sung) OverlayLine(line.line.text)],
   );
 }, retry: (_, _) => null);
 
@@ -114,15 +116,20 @@ final overlayHideDelayProvider = Provider<Duration>(
   (ref) => const Duration(seconds: 10),
 );
 
-final closedOverlaysProvider = NotifierProvider<ClosedOverlays, Set<String>>(
-  ClosedOverlays.new,
+final overlayStartProvider = FutureProvider<OverlayStart>(
+  (ref) async => (await ref.watch(lyricsOverlayProvider).appearance()).start,
 );
 
-class ClosedOverlays extends Notifier<Set<String>> {
-  @override
-  Set<String> build() => const {};
+final overlayChoicesProvider =
+    NotifierProvider<OverlayChoices, Map<String, bool>>(OverlayChoices.new);
 
-  void close(String key) => state = {...state, key};
+class OverlayChoices extends Notifier<Map<String, bool>> {
+  @override
+  Map<String, bool> build() => const {};
+
+  void close(String key) => state = {...state, key: false};
+
+  void open(String key) => state = {...state, key: true};
 }
 
 final lyricsOverlaySyncProvider = Provider<void>((ref) {
@@ -130,14 +137,20 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
   Timer? hiding;
   ref.onDispose(() => hiding?.cancel());
 
+  bool wanted(String key) =>
+      ref.read(overlayChoicesProvider)[key] ??
+      switch (ref.read(overlayStartProvider).value) {
+        OverlayStart.bubble || OverlayStart.bar => true,
+        OverlayStart.tap || null => false,
+      };
+
   void apply() {
     final sheet = ref.read(overlayContentProvider);
     final playing = ref.read(currentDetectionProvider) != null;
     if (sheet == null && playing && ref.read(detectedSongProvider) == null) {
       return;
     }
-    if (sheet != null &&
-        !ref.read(closedOverlaysProvider).contains(sheet.key)) {
+    if (sheet != null && wanted(sheet.key)) {
       hiding?.cancel();
       hiding = null;
       unawaited(overlay.show(sheet));
@@ -154,11 +167,12 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
   }
 
   ref.listen(overlayContentProvider, (_, _) => apply(), fireImmediately: true);
-  ref.listen(closedOverlaysProvider, (_, _) => apply());
+  ref.listen(overlayChoicesProvider, (_, _) => apply());
+  ref.listen(overlayStartProvider, (_, _) => apply());
   final subscription = overlay.actions.listen((action) {
     switch (action) {
       case OverlayClosed(:final key):
-        ref.read(closedOverlaysProvider.notifier).close(key);
+        ref.read(overlayChoicesProvider.notifier).close(key);
       case OverlayOffset(:final key, :final offset):
         final detected = ref.read(detectedSongProvider);
         if (detected is! DetectedMatch || detected.key != key) return;

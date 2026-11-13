@@ -188,7 +188,7 @@ class OverlayNotMezmur extends OverlayAction {
   const OverlayNotMezmur(super.key);
 }
 
-enum OverlayStart { bubble, bar }
+enum OverlayStart { bubble, bar, tap }
 
 @immutable
 class OverlayAppearance {

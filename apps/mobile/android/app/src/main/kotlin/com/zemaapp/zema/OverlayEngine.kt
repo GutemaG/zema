@@ -40,7 +40,7 @@ object OverlayEngine {
 
     fun check() {
         val context = app ?: return
-        if (MainActivity.appRunning()) {
+        if (MainActivity.appRunning() || LyricsOverlay.onTapOnly(context)) {
             stop()
             return
         }

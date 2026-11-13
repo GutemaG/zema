@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/onboarding/application/onboarding.dart';
 import '../features/onboarding/presentation/onboarding_screen.dart';
+import '../features/detection/presentation/detected_lyrics_screen.dart';
 import '../features/detection/presentation/detection_settings_screen.dart';
 import '../features/identify/presentation/listen_history_screen.dart';
 import '../features/identify/presentation/listen_lyrics_screen.dart';
@@ -160,6 +161,10 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.listenLyrics,
         builder: (_, _) => const ListenLyricsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.detectedLyrics,
+        builder: (_, _) => const DetectedLyricsScreen(),
       ),
       GoRoute(
         path: AppRoutes.listenHistory,

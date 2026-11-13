@@ -2644,4 +2644,42 @@ class AppLocalizationsTi extends AppLocalizations {
 
   @override
   String get onboardingSkipForNow => 'Skip for now';
+
+  @override
+  String get detectionShowOnTap => 'Only when I tap';
+
+  @override
+  String get homeNowDetected => 'Now detected';
+
+  @override
+  String get homeShowFloating => 'Show floating lyrics';
+
+  @override
+  String get homeOpenLyrics => 'Open lyrics';
+
+  @override
+  String homeFloatingLater(String app) {
+    return 'The lyrics will float over $app when you go back to it';
+  }
+
+  @override
+  String homeDetectedAsk(String title) {
+    return 'Is this $title?';
+  }
+
+  @override
+  String get homeDetectedYes => 'Yes';
+
+  @override
+  String get homeDetectedChoose => 'Choose another';
+
+  @override
+  String detectedLyricsFrom(String app) {
+    return 'Following $app';
+  }
+
+  @override
+  String detectedLyricsStopped(String app) {
+    return '$app stopped playing';
+  }
 }

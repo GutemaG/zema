@@ -4499,6 +4499,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip for now'**
   String get onboardingSkipForNow;
+
+  /// Floating lyrics wait until Show floating lyrics is tapped on Home
+  ///
+  /// In en, this message translates to:
+  /// **'Only when I tap'**
+  String get detectionShowOnTap;
+
+  /// Home section heading above the song playing in another app
+  ///
+  /// In en, this message translates to:
+  /// **'Now detected'**
+  String get homeNowDetected;
+
+  /// Button on the Now detected card that floats the lyrics over the other app
+  ///
+  /// In en, this message translates to:
+  /// **'Show floating lyrics'**
+  String get homeShowFloating;
+
+  /// Button on the Now detected card that opens lyrics following the other app
+  ///
+  /// In en, this message translates to:
+  /// **'Open lyrics'**
+  String get homeOpenLyrics;
+
+  /// Shown after Show floating lyrics, while Zema is open
+  ///
+  /// In en, this message translates to:
+  /// **'The lyrics will float over {app} when you go back to it'**
+  String homeFloatingLater(String app);
+
+  /// The Now detected card asks if the best match is the song playing
+  ///
+  /// In en, this message translates to:
+  /// **'Is this {title}?'**
+  String homeDetectedAsk(String title);
+
+  /// Confirms the song on the Now detected card
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get homeDetectedYes;
+
+  /// Opens the song picker from the Now detected card
+  ///
+  /// In en, this message translates to:
+  /// **'Choose another'**
+  String get homeDetectedChoose;
+
+  /// Under the title of lyrics that follow another app
+  ///
+  /// In en, this message translates to:
+  /// **'Following {app}'**
+  String detectedLyricsFrom(String app);
+
+  /// Shown on the lyrics when the other app no longer plays the song
+  ///
+  /// In en, this message translates to:
+  /// **'{app} stopped playing'**
+  String detectedLyricsStopped(String app);
 }
 
 class _AppLocalizationsDelegate

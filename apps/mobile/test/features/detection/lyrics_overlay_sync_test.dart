@@ -25,6 +25,11 @@ class _FakeOverlay extends NoLyricsOverlay {
   final shown = <OverlayContent>[];
   var hidden = 0;
   final controller = StreamController<OverlayAction>.broadcast();
+  var start = OverlayStart.bubble;
+
+  @override
+  Future<OverlayAppearance> appearance() async =>
+      OverlayAppearance(start: start);
 
   OverlaySheet? get last => shown.lastOrNull as OverlaySheet?;
 
@@ -102,6 +107,7 @@ void main() {
               : DetectedLyrics(
                   song: Song(id: id, title: 'Title of $id', sections: const []),
                   lines: _lines,
+                  sung: const [],
                   recordingOffset: const Duration(milliseconds: 300),
                 ),
         ),
@@ -132,6 +138,24 @@ void main() {
     expect(sheet.lines, _lines);
     expect(sheet.offset, const Duration(milliseconds: -300));
     expect(sheet.key, detectionKey(_playing('ሰላም ለዚህ ቤት | Official')));
+  });
+
+  test('"only when I tap" waits until the song is asked for', () async {
+    overlay.start = OverlayStart.tap;
+    container.invalidate(overlayStartProvider);
+    await detect(_playing('ሰላም ለዚህ ቤት'));
+    expect(overlay.shown, isEmpty);
+
+    final key = detectionKey(_playing('ሰላም ለዚህ ቤት'));
+    container.read(overlayChoicesProvider.notifier).open(key);
+    await settle();
+    expect(overlay.last!.songId, 'selam');
+
+    overlay.controller.add(OverlayClosed(key));
+    await settle();
+    container.read(overlayChoicesProvider.notifier).open(key);
+    await settle();
+    expect(overlay.shown, hasLength(2));
   });
 
   test('playback moving on does not send the lines again', () async {

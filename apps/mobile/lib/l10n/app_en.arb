@@ -3432,5 +3432,65 @@
   "onboardingSkipForNow": "Skip for now",
   "@onboardingSkipForNow": {
     "description": "Last onboarding page's button to go on without allowing everything"
+  },
+  "detectionShowOnTap": "Only when I tap",
+  "@detectionShowOnTap": {
+    "description": "Floating lyrics wait until Show floating lyrics is tapped on Home"
+  },
+  "homeNowDetected": "Now detected",
+  "@homeNowDetected": {
+    "description": "Home section heading above the song playing in another app"
+  },
+  "homeShowFloating": "Show floating lyrics",
+  "@homeShowFloating": {
+    "description": "Button on the Now detected card that floats the lyrics over the other app"
+  },
+  "homeOpenLyrics": "Open lyrics",
+  "@homeOpenLyrics": {
+    "description": "Button on the Now detected card that opens lyrics following the other app"
+  },
+  "homeFloatingLater": "The lyrics will float over {app} when you go back to it",
+  "@homeFloatingLater": {
+    "description": "Shown after Show floating lyrics, while Zema is open",
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "homeDetectedAsk": "Is this {title}?",
+  "@homeDetectedAsk": {
+    "description": "The Now detected card asks if the best match is the song playing",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "homeDetectedYes": "Yes",
+  "@homeDetectedYes": {
+    "description": "Confirms the song on the Now detected card"
+  },
+  "homeDetectedChoose": "Choose another",
+  "@homeDetectedChoose": {
+    "description": "Opens the song picker from the Now detected card"
+  },
+  "detectedLyricsFrom": "Following {app}",
+  "@detectedLyricsFrom": {
+    "description": "Under the title of lyrics that follow another app",
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "detectedLyricsStopped": "{app} stopped playing",
+  "@detectedLyricsStopped": {
+    "description": "Shown on the lyrics when the other app no longer plays the song",
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
   }
 }

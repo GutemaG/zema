@@ -36,6 +36,7 @@ object LyricsOverlay {
     enum class Mode { BUBBLE, BAR, PANEL }
 
     private const val PREFS = "zema_overlay"
+    private val STARTS = setOf("bubble", "bar", "tap")
     private const val SURFACE = 0xFF1C1613.toInt()
     private const val LINE = 0xFF2F2622.toInt()
     private const val TEXT = 0xFFF2E8D7.toInt()
@@ -612,21 +613,28 @@ object LyricsOverlay {
         return mapOf(
             "textSp" to textSp().toDouble(),
             "opacity" to opacity().toDouble(),
-            "start" to if (startMode() == Mode.BAR) "bar" else "bubble",
+            "start" to start(),
         )
     }
 
-    fun setAppearance(context: Context, textSp: Float?, opacity: Float?, start: Mode?) {
+    fun setAppearance(context: Context, textSp: Float?, opacity: Float?, start: String?) {
         attach(context)
         prefs.edit().apply {
             textSp?.let { putFloat("text_sp", it.coerceIn(12f, 30f)) }
             opacity?.let { putFloat("opacity", it.coerceIn(0.4f, 1f)) }
-            start?.let { putString("start", if (it == Mode.BAR) "bar" else "bubble") }
+            start?.takeIf { it in STARTS }?.let { putString("start", it) }
         }.apply()
         if (root != null) build()
     }
 
-    private fun startMode() = if (prefs.getString("start", null) == "bar") Mode.BAR else Mode.BUBBLE
+    fun onTapOnly(context: Context): Boolean {
+        attach(context)
+        return start() == "tap"
+    }
+
+    private fun start() = prefs.getString("start", null)?.takeIf { it in STARTS } ?: "bubble"
+
+    private fun startMode() = if (start() == "bar") Mode.BAR else Mode.BUBBLE
 
     private fun textSp() = prefs.getFloat("text_sp", 18f)
 

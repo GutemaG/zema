@@ -42,6 +42,7 @@ abstract final class AppRoutes {
   static const String listen = '/listen';
 
   static const String listenLyrics = '/listen/lyrics';
+  static const String detectedLyrics = '/detected';
 
   static const String listenHistory = '/listen/history';
 

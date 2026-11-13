@@ -16,9 +16,10 @@ import '../../library/application/library_sync_controller.dart';
 import '../../library/presentation/library_access_gate.dart';
 import 'widgets/continue_listening_card.dart';
 import 'widgets/home_rows.dart';
+import 'widgets/now_detected_card.dart';
 import 'widgets/quick_actions.dart';
 
-/// S05: quick actions, the song to continue, recent plays and playlists.
+/// S05: quick actions, the song playing in another app, the song to continue, recent plays and playlists.
 /// Each section hides when it has nothing to show.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -83,6 +84,7 @@ class _HomeBody extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 24),
       children: [
         QuickActions(tracks: stored),
+        const NowDetectedCard(),
         if (stored.isEmpty)
           _Scanning(label: l10n.libraryScanning)
         else ...const [

@@ -21,6 +21,13 @@ enum DetectionApp {
 
   final String label;
   final Set<String> packages;
+
+  static String labelOf(String package) =>
+      values
+          .where((app) => app.packages.contains(package))
+          .firstOrNull
+          ?.label ??
+      package;
 }
 
 @immutable
@@ -84,6 +91,7 @@ class DetectionSettingsController extends AsyncNotifier<DetectionSettings> {
     final current = await future;
     state = AsyncData(current.copyWith(appearance: appearance));
     await ref.read(lyricsOverlayProvider).setAppearance(appearance);
+    ref.invalidate(overlayStartProvider);
   }
 }
 

@@ -69,6 +69,7 @@ class _DetectionSettingsScreenState
     String showAs(OverlayStart start) => switch (start) {
       OverlayStart.bubble => l10n.detectionShowBubble,
       OverlayStart.bar => l10n.detectionShowBar,
+      OverlayStart.tap => l10n.detectionShowOnTap,
     };
 
     return Scaffold(
