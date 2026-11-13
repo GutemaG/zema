@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,12 +9,14 @@ import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/format_duration.dart';
 import '../../account/presentation/backup_screen.dart';
 import '../application/moderation.dart';
 import 'my_contributions_screen.dart';
 
 /// S23m: other users' pending contributions, oldest first, with their
-/// count and a filter by kind. Moderators only.
+/// count and a filter by kind, then fingerprints shared from libraries.
+/// Moderators only.
 class ReviewQueueScreen extends ConsumerStatefulWidget {
   const ReviewQueueScreen({super.key});
 
@@ -64,10 +68,13 @@ class _ReviewQueueScreenState extends ConsumerState<ReviewQueueScreen> {
         ),
         null => const Center(child: CircularProgressIndicator()),
         _ => RefreshIndicator(
-          onRefresh: () => ref
-              .read(reviewQueueProvider.notifier)
-              .refresh()
-              .catchError((Object _) {}),
+          onRefresh: () {
+            ref.invalidate(pendingFingerprintsProvider);
+            return ref
+                .read(reviewQueueProvider.notifier)
+                .refresh()
+                .catchError((Object _) {});
+          },
           child: ListView(
             padding: const EdgeInsets.fromLTRB(
               ZemaSpacing.screenSide,
@@ -101,6 +108,7 @@ class _ReviewQueueScreenState extends ConsumerState<ReviewQueueScreen> {
                   ),
                 ),
               for (final item in shown) _QueueTile(item),
+              const _FingerprintsSection(),
             ],
           ),
         ),
@@ -157,6 +165,79 @@ class _QueueTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () => context.push<void>(AppRoutes.reviewItem(item.id)),
+    );
+  }
+}
+
+/// Library fingerprints no second phone has confirmed: publish or drop.
+class _FingerprintsSection extends ConsumerWidget {
+  const _FingerprintsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(pendingFingerprintsProvider).value;
+    if (items == null || items.isEmpty) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final colors = context.zemaColors;
+    Future<void> decide(PendingFingerprint item, {required bool approve}) => ref
+        .read(pendingFingerprintsProvider.notifier)
+        .decide(item.id, approve: approve)
+        .catchError((Object _) {
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.reviewFingerprintFailed)));
+        });
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        Text(
+          l10n.reviewQueueFingerprints,
+          style: Theme.of(context).textTheme.titleSmall
+              ?.copyWith(color: colors.muted),
+        ),
+        for (final item in items)
+          ListTile(
+            key: ValueKey(item.id),
+            contentPadding: EdgeInsets.zero,
+            leading: CircleAvatar(
+              backgroundColor: colors.tile,
+              foregroundColor: colors.tileFg,
+              child: const Icon(Icons.graphic_eq),
+            ),
+            title: Text(
+              [item.songTitle, ?item.recordingArtist].join(' · '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              l10n.reviewFingerprintDetail(
+                item.installs,
+                formatDuration(item.duration),
+                switch (item.recordingDuration) {
+                  final length? => formatDuration(length),
+                  null => '–',
+                },
+              ),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: l10n.reviewFingerprintDrop,
+                  icon: const Icon(Icons.close),
+                  onPressed: () => unawaited(decide(item, approve: false)),
+                ),
+                IconButton(
+                  tooltip: l10n.reviewFingerprintPublish,
+                  icon: const Icon(Icons.check),
+                  onPressed: () => unawaited(decide(item, approve: true)),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

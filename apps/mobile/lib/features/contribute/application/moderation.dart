@@ -68,3 +68,37 @@ class ReviewQueue extends AsyncNotifier<List<QueuedContribution>> {
     ]);
   }
 }
+
+/// Library fingerprints waiting for a moderator, oldest first (S23m); empty
+/// for anyone but a moderator.
+final pendingFingerprintsProvider =
+    AsyncNotifierProvider.autoDispose<
+      PendingFingerprints,
+      List<PendingFingerprint>
+    >(PendingFingerprints.new);
+
+class PendingFingerprints extends AsyncNotifier<List<PendingFingerprint>> {
+  @override
+  Future<List<PendingFingerprint>> build() async {
+    final repository = ref.watch(contributionRepositoryProvider);
+    if (repository == null || !ref.watch(isModeratorProvider)) return const [];
+    return repository.pendingFingerprints();
+  }
+
+  /// Publishes ([approve]) or drops fingerprint [id] and takes it off the
+  /// list, with the others for its recording when published. Throws the
+  /// repository's failures.
+  Future<void> decide(String id, {required bool approve}) async {
+    final repository =
+        ref.read(contributionRepositoryProvider) ??
+        (throw const AuthFailure('No backend'));
+    await repository.reviewFingerprint(id, approve: approve);
+    if (!ref.mounted) return;
+    final items = state.value ?? const <PendingFingerprint>[];
+    final recording = items.where((f) => f.id == id).firstOrNull?.recordingId;
+    state = AsyncData([
+      for (final item in items)
+        if (item.id != id && !(approve && item.recordingId == recording)) item,
+    ]);
+  }
+}

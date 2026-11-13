@@ -4661,6 +4661,70 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Found while you were offline: {title}'**
   String listenFoundLater(String title);
+
+  /// Asked once: share library fingerprints (intent 009 FR-2)
+  ///
+  /// In en, this message translates to:
+  /// **'Help others identify songs?'**
+  String get shareFingerprintsTitle;
+
+  /// Body of shareFingerprintsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Some songs in your library can\'t be identified by sound yet. Zema can send their fingerprints to the catalog, so Listen finds them for everyone. Only fingerprints leave your phone, never the audio. You can change this in Settings.'**
+  String get shareFingerprintsMessage;
+
+  /// Accepts shareFingerprintsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareFingerprintsYes;
+
+  /// Declines shareFingerprintsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get shareFingerprintsNo;
+
+  /// S27s switch: send library fingerprints the catalog lacks
+  ///
+  /// In en, this message translates to:
+  /// **'Share fingerprints of my songs'**
+  String get detectionShareFingerprints;
+
+  /// S23m: heading of library fingerprints waiting for a moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Fingerprints from libraries'**
+  String get reviewQueueFingerprints;
+
+  /// S23m: under a waiting fingerprint's song title
+  ///
+  /// In en, this message translates to:
+  /// **'{phones, plural, =1{1 phone} other{{phones} phones}} · file {fileLength}, recording {recordingLength}'**
+  String reviewFingerprintDetail(
+    int phones,
+    String fileLength,
+    String recordingLength,
+  );
+
+  /// S23m tooltip: approve a library fingerprint
+  ///
+  /// In en, this message translates to:
+  /// **'Publish fingerprint'**
+  String get reviewFingerprintPublish;
+
+  /// S23m tooltip: reject a library fingerprint
+  ///
+  /// In en, this message translates to:
+  /// **'Drop fingerprint'**
+  String get reviewFingerprintDrop;
+
+  /// S23m: publishing or dropping a fingerprint failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save that. Check your connection and try again.'**
+  String get reviewFingerprintFailed;
 }
 
 class _AppLocalizationsDelegate

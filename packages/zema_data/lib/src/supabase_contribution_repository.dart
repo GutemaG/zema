@@ -4,7 +4,8 @@ import 'package:zema_core/zema_core.dart';
 import 'supabase_auth_repository.dart';
 
 /// Contributions through the backend's functions: `submit_contribution`,
-/// `resubmit_contribution`, `moderator_queue` and `review_contribution`.
+/// `resubmit_contribution`, `moderator_queue`, `review_contribution`,
+/// `attach_fingerprint`, `moderator_fingerprints` and `review_fingerprint`.
 /// Users read their own rows of `contributions` directly.
 class SupabaseContributionRepository implements ContributionRepository {
   SupabaseContributionRepository(this._auth);
@@ -78,6 +79,55 @@ class SupabaseContributionRepository implements ContributionRepository {
           final other => throw FormatException('Expected a song id: $other'),
         },
       );
+
+  @override
+  Future<void> attachFingerprint(String id, AudioFingerprint fingerprint) =>
+      _run(
+        'attach_fingerprint',
+        (client, _) => client.rpc<void>(
+          'attach_fingerprint',
+          params: {
+            'contribution': id,
+            'version': fingerprintVersion,
+            'frame_count': fingerprint.frameCount,
+            'hashes': fingerprint.hashes,
+            'frames': fingerprint.frames,
+          },
+        ),
+      );
+
+  @override
+  Future<List<PendingFingerprint>> pendingFingerprints() =>
+      _run('moderator_fingerprints', (client, _) async {
+        final rows = await client.rpc<List<dynamic>>('moderator_fingerprints');
+        return [
+          for (final row in rows.cast<Map<String, dynamic>>())
+            PendingFingerprint(
+              id: _string(row['id']),
+              recordingId: _string(row['recording_id']),
+              songId: _string(row['song_id']),
+              songTitle: _string(row['song_title']),
+              recordingArtist: row['recording_artist'] as String?,
+              recordingDuration: switch (row['duration_ms']) {
+                final int ms => Duration(milliseconds: ms),
+                _ => null,
+              },
+              frameCount: row['frame_count']! as int,
+              hashCount: row['hash_count']! as int,
+              installs: row['installs']! as int,
+              sentAt: _time(row['created_at']),
+            ),
+        ];
+      });
+
+  @override
+  Future<void> reviewFingerprint(String id, {required bool approve}) => _run(
+    'review_fingerprint',
+    (client, _) => client.rpc<void>(
+      'review_fingerprint',
+      params: {'id': id, 'approve': approve},
+    ),
+  );
 
   /// Runs [call] as the signed-in user; a refusal the backend names becomes
   /// a [ContributionFailure] with its code.

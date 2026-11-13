@@ -7,6 +7,7 @@ import '../../../app/database/database_provider.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../identify/application/shared_fingerprints.dart';
 import '../../lyrics/presentation/lyrics_options_sheet.dart';
 import '../../settings/presentation/widgets/choice_picker.dart';
 import '../../settings/presentation/widgets/settings_group.dart';
@@ -73,6 +74,7 @@ class _DetectionSettingsScreenState
       OverlayStart.tap => l10n.detectionShowOnTap,
     };
 
+    final shareFingerprints = ref.watch(shareFingerprintsProvider) ?? false;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.detectionSettingsTitle)),
       body: ListView(
@@ -229,6 +231,20 @@ class _DetectionSettingsScreenState
           SettingsGroup(
             title: l10n.detectionSectionIdentification,
             children: [
+              SettingsRow(
+                label: l10n.detectionShareFingerprints,
+                trailing: Switch(
+                  value: shareFingerprints,
+                  onChanged: (on) => unawaited(
+                    ref.read(shareFingerprintsProvider.notifier).set(on),
+                  ),
+                ),
+                onTap: () => unawaited(
+                  ref
+                      .read(shareFingerprintsProvider.notifier)
+                      .set(!shareFingerprints),
+                ),
+              ),
               SettingsRow(
                 label: l10n.detectionClearListenHistory,
                 onTap: () => unawaited(

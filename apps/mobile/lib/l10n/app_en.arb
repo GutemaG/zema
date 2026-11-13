@@ -3565,5 +3565,56 @@
         "type": "String"
       }
     }
+  },
+  "shareFingerprintsTitle": "Help others identify songs?",
+  "@shareFingerprintsTitle": {
+    "description": "Asked once: share library fingerprints (intent 009 FR-2)"
+  },
+  "shareFingerprintsMessage": "Some songs in your library can't be identified by sound yet. Zema can send their fingerprints to the catalog, so Listen finds them for everyone. Only fingerprints leave your phone, never the audio. You can change this in Settings.",
+  "@shareFingerprintsMessage": {
+    "description": "Body of shareFingerprintsTitle"
+  },
+  "shareFingerprintsYes": "Share",
+  "@shareFingerprintsYes": {
+    "description": "Accepts shareFingerprintsTitle"
+  },
+  "shareFingerprintsNo": "Not now",
+  "@shareFingerprintsNo": {
+    "description": "Declines shareFingerprintsTitle"
+  },
+  "detectionShareFingerprints": "Share fingerprints of my songs",
+  "@detectionShareFingerprints": {
+    "description": "S27s switch: send library fingerprints the catalog lacks"
+  },
+  "reviewQueueFingerprints": "Fingerprints from libraries",
+  "@reviewQueueFingerprints": {
+    "description": "S23m: heading of library fingerprints waiting for a moderator"
+  },
+  "reviewFingerprintDetail": "{phones, plural, =1{1 phone} other{{phones} phones}} · file {fileLength}, recording {recordingLength}",
+  "@reviewFingerprintDetail": {
+    "description": "S23m: under a waiting fingerprint's song title",
+    "placeholders": {
+      "phones": {
+        "type": "int"
+      },
+      "fileLength": {
+        "type": "String"
+      },
+      "recordingLength": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewFingerprintPublish": "Publish fingerprint",
+  "@reviewFingerprintPublish": {
+    "description": "S23m tooltip: approve a library fingerprint"
+  },
+  "reviewFingerprintDrop": "Drop fingerprint",
+  "@reviewFingerprintDrop": {
+    "description": "S23m tooltip: reject a library fingerprint"
+  },
+  "reviewFingerprintFailed": "Couldn't save that. Check your connection and try again.",
+  "@reviewFingerprintFailed": {
+    "description": "S23m: publishing or dropping a fingerprint failed"
   }
 }

@@ -33,4 +33,29 @@ abstract interface class AudioCatalog {
     required String installId,
     int limit = 3,
   });
+
+  /// Of [recordingIds] (at most 200), the catalog recordings with no
+  /// fingerprint of this `fingerprintVersion`.
+  Future<Set<String>> missingFingerprints(List<String> recordingIds);
+
+  /// Shares [fingerprint] (at `FingerprintDensity.catalog`) of a library
+  /// file linked to catalog recording [recordingId]. [installId] counts
+  /// against a daily limit ([RateLimitFailure] past it).
+  Future<FingerprintShare> shareFingerprint(
+    String recordingId,
+    AudioFingerprint fingerprint, {
+    required String installId,
+  });
+}
+
+/// What became of a shared fingerprint.
+enum FingerprintShare {
+  /// Waiting for another install's to line up with it, or a moderator.
+  pending,
+
+  /// Lined up with another install's: the recording has a fingerprint now.
+  published,
+
+  /// The recording has a fingerprint already, or isn't in the catalog.
+  notNeeded,
 }

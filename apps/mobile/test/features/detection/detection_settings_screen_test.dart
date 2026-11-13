@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema/app/database/database_provider.dart';
+import 'package:zema/app/preferences_provider.dart';
 import 'package:zema/features/detection/application/detection_providers.dart';
 import 'package:zema/features/detection/application/detection_settings.dart';
 import 'package:zema/features/detection/application/lyrics_overlay_sync.dart';
@@ -9,6 +11,7 @@ import 'package:zema/features/detection/data/background_access.dart';
 import 'package:zema/features/detection/data/lyrics_overlay.dart';
 import 'package:zema/features/detection/data/playback_detector.dart';
 import 'package:zema/features/detection/presentation/detection_settings_screen.dart';
+import 'package:zema/features/identify/application/shared_fingerprints.dart';
 
 import '../../helpers/fake_library.dart';
 import '../../helpers/pump_app.dart';
@@ -88,6 +91,8 @@ void main() {
     final detector = _FakeDetector();
     final overlay = _FakeOverlay();
     final battery = _Battery();
+    SharedPreferences.setMockInitialValues({});
+    final preferences = await SharedPreferences.getInstance();
     await pumpThemed(
       tester,
       ProviderScope(
@@ -98,6 +103,7 @@ void main() {
           microphoneAccessProvider.overrideWithValue(_NoMicrophone()),
           otherAppsSupportedProvider.overrideWithValue(true),
           backgroundAccessProvider.overrideWithValue(battery),
+          sharedPreferencesProvider.overrideWithValue(preferences),
         ],
         child: const DetectionSettingsScreen(),
       ),
@@ -159,5 +165,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(overlay.saved.start, OverlayStart.bar);
     expect(overlay.saved.textSize, 20);
+
+    await tester.tap(find.text('Share fingerprints of my songs'));
+    await tester.pumpAndSettle();
+    expect(preferences.getBool(ShareFingerprintsSetting.key), isTrue);
   });
 }

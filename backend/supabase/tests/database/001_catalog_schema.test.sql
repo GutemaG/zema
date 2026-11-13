@@ -18,7 +18,8 @@ select tables_are(
     'songs', 'sections', 'lines', 'play_order', 'recordings', 'sync_timings',
     'reports', 'user_roles', 'contributions', 'profiles', 'backups',
     'search_entries', 'search_entry_words', 'search_vocab', 'search_syllable_consonants',
-    'recording_fingerprints', 'fingerprint_hashes', 'identify_counts'
+    'recording_fingerprints', 'fingerprint_hashes', 'identify_counts',
+    'pending_fingerprints'
   ],
   'the catalog has exactly the expected tables'
 );

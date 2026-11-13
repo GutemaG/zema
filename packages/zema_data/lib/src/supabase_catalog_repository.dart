@@ -7,8 +7,8 @@ import 'package:zema_core/zema_core.dart';
 import 'backend_errors.dart';
 
 /// The catalog served by a Supabase backend (see `backend/`), through its
-/// RPC functions `song_index`, `get_song`, `search_songs`, `submit_report`
-/// and `identify_audio`.
+/// RPC functions `song_index`, `get_song`, `search_songs`, `submit_report`,
+/// `identify_audio`, `missing_fingerprints` and `share_fingerprint`.
 ///
 /// Every request gives up after [timeout]. Failures are thrown as
 /// [ZemaFailure]s only: [NetworkFailure], [RateLimitFailure],
@@ -87,6 +87,40 @@ class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
     return _parse(
       () => [for (final row in _rows(rows)) _audioMatch(row, queries)],
     );
+  }
+
+  @override
+  Future<Set<String>> missingFingerprints(List<String> recordingIds) async {
+    if (recordingIds.isEmpty) return const {};
+    final rows = await _call('missing_fingerprints', {
+      'version': fingerprintVersion,
+      'ids': recordingIds.take(200).toList(),
+    });
+    return _parse(
+      () => {for (final id in rows! as List<Object?>) id! as String},
+    );
+  }
+
+  @override
+  Future<FingerprintShare> shareFingerprint(
+    String recordingId,
+    AudioFingerprint fingerprint, {
+    required String installId,
+  }) async {
+    final answer = await _call('share_fingerprint', {
+      'recording': recordingId,
+      'version': fingerprintVersion,
+      'frame_count': fingerprint.frameCount,
+      'hashes': fingerprint.hashes,
+      'frames': fingerprint.frames,
+      'install_id': installId,
+    });
+    return switch (answer) {
+      'pending' => FingerprintShare.pending,
+      'published' => FingerprintShare.published,
+      'not_needed' => FingerprintShare.notNeeded,
+      _ => throw LyricsFormatFailure('Unexpected share answer: $answer'),
+    };
   }
 
   /// Releases the client's connections and background isolate.

@@ -16,6 +16,7 @@ import '../features/contribute/data/shared_audio.dart';
 import '../features/identify/application/listen_controller.dart';
 import '../features/identify/application/pending_lookups.dart';
 import '../features/identify/application/quick_listen.dart';
+import '../features/identify/application/shared_fingerprints.dart';
 import '../features/identify/data/quick_launch.dart';
 import '../features/library/application/library_providers.dart';
 import '../features/library/application/library_sync_controller.dart';
@@ -146,6 +147,12 @@ class AppShell extends ConsumerWidget {
     ref.listen(catalogStartupRefreshProvider, (_, _) {});
     ref.listen(reportStartupFlushProvider, (_, _) {});
     ref.listen(pendingLookupFlushProvider, (_, _) {});
+    ref.listen(fingerprintShareSyncProvider, (_, _) {});
+    ref.listen(askShareFingerprintsProvider, (_, next) {
+      if (next case AsyncData(value: true)) {
+        unawaited(_askShareFingerprints(context, ref));
+      }
+    });
     ref.listen(lyricsLinkSyncProvider, (_, _) {});
     ref.listen(myContributionsProvider, (_, _) {});
     final l10n = AppLocalizations.of(context);
@@ -232,4 +239,27 @@ class AppShell extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Asks once whether to share library fingerprints (intent 009, FR-2).
+Future<void> _askShareFingerprints(BuildContext context, WidgetRef ref) async {
+  final l10n = AppLocalizations.of(context);
+  final share = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(l10n.shareFingerprintsTitle),
+      content: Text(l10n.shareFingerprintsMessage),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(l10n.shareFingerprintsNo),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(l10n.shareFingerprintsYes),
+        ),
+      ],
+    ),
+  );
+  await ref.read(shareFingerprintsProvider.notifier).set(share ?? false);
 }

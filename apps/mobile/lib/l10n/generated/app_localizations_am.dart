@@ -2745,4 +2745,48 @@ class AppLocalizationsAm extends AppLocalizations {
   String listenFoundLater(String title) {
     return 'Found while you were offline: $title';
   }
+
+  @override
+  String get shareFingerprintsTitle => 'Help others identify songs?';
+
+  @override
+  String get shareFingerprintsMessage =>
+      'Some songs in your library can\'t be identified by sound yet. Zema can send their fingerprints to the catalog, so Listen finds them for everyone. Only fingerprints leave your phone, never the audio. You can change this in Settings.';
+
+  @override
+  String get shareFingerprintsYes => 'Share';
+
+  @override
+  String get shareFingerprintsNo => 'Not now';
+
+  @override
+  String get detectionShareFingerprints => 'Share fingerprints of my songs';
+
+  @override
+  String get reviewQueueFingerprints => 'Fingerprints from libraries';
+
+  @override
+  String reviewFingerprintDetail(
+    int phones,
+    String fileLength,
+    String recordingLength,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      phones,
+      locale: localeName,
+      other: '$phones phones',
+      one: '1 phone',
+    );
+    return '$_temp0 · file $fileLength, recording $recordingLength';
+  }
+
+  @override
+  String get reviewFingerprintPublish => 'Publish fingerprint';
+
+  @override
+  String get reviewFingerprintDrop => 'Drop fingerprint';
+
+  @override
+  String get reviewFingerprintFailed =>
+      'Couldn\'t save that. Check your connection and try again.';
 }

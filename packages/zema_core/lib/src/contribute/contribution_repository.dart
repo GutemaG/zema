@@ -1,3 +1,5 @@
+import '../audio/audio_fingerprint.dart';
+import '../audio/pending_fingerprint.dart';
 import '../failures.dart';
 import 'contribution.dart';
 
@@ -24,4 +26,18 @@ abstract interface class ContributionRepository {
   /// required unless approving. Returns the catalog song's id (for an
   /// approved new song, the one it became).
   Future<String?> review(String id, ReviewDecision decision, {String? note});
+
+  /// Attaches [fingerprint] (at `FingerprintDensity.catalog`) of the file
+  /// recording in the user's contribution [id], pending or sent back,
+  /// replacing one attached before. It is published when the contribution
+  /// is approved.
+  Future<void> attachFingerprint(String id, AudioFingerprint fingerprint);
+
+  /// Moderators only: fingerprints shared from libraries that no second
+  /// install has confirmed yet, oldest first.
+  Future<List<PendingFingerprint>> pendingFingerprints();
+
+  /// Moderators only: publishes ([approve]) or drops pending fingerprint
+  /// [id].
+  Future<void> reviewFingerprint(String id, {required bool approve});
 }

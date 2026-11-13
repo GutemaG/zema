@@ -3,6 +3,7 @@ library;
 
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:supabase/supabase.dart';
 import 'package:test/test.dart';
@@ -225,6 +226,71 @@ void main() {
       final [approved] = await author.mine();
       expect(approved.status, ContributionStatus.approved);
       expect(approved.songId, published);
+    });
+
+    test('fingerprints: attached to a contribution, and shared from a '
+        'library', () async {
+      final author = await user();
+      final moderator = await user(moderator: true);
+      final s = song();
+      final recording = Recording(
+        id: newRecordingId(),
+        songId: s.id,
+        source: RecordingSource.localFile,
+        duration: const Duration(minutes: 3),
+        fileName: 'Test Song.mp3',
+      );
+      final fingerprint = AudioFingerprint(
+        hashes: Uint32List.fromList([for (var i = 1; i <= 300; i++) i]),
+        frames: Uint32List.fromList([for (var i = 1; i <= 300; i++) 10 * i]),
+        frameCount: 7752,
+      );
+      final id = await submit(
+        author,
+        Contribution.newSong(s, recording: recording),
+      );
+      await author.attachFingerprint(id, fingerprint);
+      songIds.add((await moderator.review(id, ReviewDecision.approve))!);
+
+      final catalog = SupabaseCatalogRepository(url: localUrl, key: key!);
+      try {
+        expect(await catalog.missingFingerprints([recording.id]), isEmpty);
+        expect(
+          await catalog.shareFingerprint(
+            recording.id,
+            fingerprint,
+            installId: 'install-${random.nextInt(1 << 32)}',
+          ),
+          FingerprintShare.notNeeded,
+        );
+
+        await service
+            .from('recording_fingerprints')
+            .delete()
+            .eq('recording_id', recording.id);
+        expect(await catalog.missingFingerprints([recording.id]), {
+          recording.id,
+        });
+        expect(
+          await catalog.shareFingerprint(
+            recording.id,
+            fingerprint,
+            installId: 'install-${random.nextInt(1 << 32)}',
+          ),
+          FingerprintShare.pending,
+        );
+        final waiting = (await moderator.pendingFingerprints())
+            .where((p) => p.recordingId == recording.id)
+            .single;
+        expect(waiting.songTitle, 'Test Song');
+        expect(waiting.hashCount, 300);
+        expect(waiting.installs, 1);
+        expect(waiting.recordingDuration, const Duration(minutes: 3));
+        await moderator.reviewFingerprint(waiting.id, approve: true);
+        expect(await catalog.missingFingerprints([recording.id]), isEmpty);
+      } finally {
+        await catalog.close();
+      }
     });
 
     test('refusals reach the app with their code', () async {

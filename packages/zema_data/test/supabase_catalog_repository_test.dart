@@ -327,6 +327,62 @@ void main() {
     });
   });
 
+  group('sharing fingerprints', () {
+    final fingerprint = AudioFingerprint(
+      hashes: Uint32List.fromList([5, 6]),
+      frames: Uint32List.fromList([0, 3]),
+      frameCount: 100,
+    );
+
+    test('asks which recordings need one', () async {
+      answerWith((_) => json(['a']));
+      expect(await repository.missingFingerprints(['a', 'b']), {'a'});
+      expect(requests.single.url.path, '/rest/v1/rpc/missing_fingerprints');
+      expect(jsonDecode(requests.single.body), {
+        'version': fingerprintVersion,
+        'ids': ['a', 'b'],
+      });
+      requests.clear();
+      expect(await repository.missingFingerprints([]), isEmpty);
+      expect(requests, isEmpty);
+    });
+
+    test('shares one and reads what became of it', () async {
+      for (final (answer, share) in [
+        ('pending', FingerprintShare.pending),
+        ('published', FingerprintShare.published),
+        ('not_needed', FingerprintShare.notNeeded),
+      ]) {
+        answerWith((_) => json(answer));
+        expect(
+          await repository.shareFingerprint(
+            'rec',
+            fingerprint,
+            installId: 'install-1234',
+          ),
+          share,
+        );
+      }
+      expect(requests.last.url.path, '/rest/v1/rpc/share_fingerprint');
+      expect(jsonDecode(requests.last.body), {
+        'recording': 'rec',
+        'version': fingerprintVersion,
+        'frame_count': 100,
+        'hashes': [5, 6],
+        'frames': [0, 3],
+        'install_id': 'install-1234',
+      });
+    });
+
+    test('past the daily limit, a RateLimitFailure', () async {
+      answerWith((_) => error('PT429', 429));
+      await expectLater(
+        repository.shareFingerprint('rec', fingerprint, installId: 'x' * 8),
+        throwsA(isA<RateLimitFailure>()),
+      );
+    });
+  });
+
   group('errors become ZemaFailures', () {
     for (final (what, answer, failure) in [
       (

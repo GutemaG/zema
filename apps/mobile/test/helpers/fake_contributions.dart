@@ -207,6 +207,43 @@ class FakeContributionRepository implements ContributionRepository {
     );
     return songId;
   }
+
+  /// Fingerprints attached, by contribution id.
+  final attached = <String, AudioFingerprint>{};
+
+  /// Library fingerprints waiting for a moderator.
+  final pending = <PendingFingerprint>[];
+
+  /// Fingerprint reviews made: id, and whether approved.
+  final fingerprintReviews = <(String, bool)>[];
+
+  @override
+  Future<void> attachFingerprint(
+    String id,
+    AudioFingerprint fingerprint,
+  ) async {
+    final user = _caller();
+    final row = _rows.where((r) => r.value.id == id).firstOrNull;
+    if (row == null || row.author != user) {
+      _refuse(ContributionError.notEditable);
+    }
+    attached[id] = fingerprint;
+  }
+
+  @override
+  Future<List<PendingFingerprint>> pendingFingerprints() async {
+    _caller();
+    if (!moderator) throw const AuthFailure('not a moderator');
+    return [...pending];
+  }
+
+  @override
+  Future<void> reviewFingerprint(String id, {required bool approve}) async {
+    _caller();
+    if (!moderator) throw const AuthFailure('not a moderator');
+    fingerprintReviews.add((id, approve));
+    pending.removeWhere((p) => p.id == id);
+  }
 }
 
 class _Row {

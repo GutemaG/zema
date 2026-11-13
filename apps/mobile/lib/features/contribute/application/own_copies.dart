@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -7,6 +9,7 @@ import '../../../app/database/database_provider.dart';
 import '../../../app/database/own_copies_dao.dart';
 import '../../../app/database/zema_database.dart';
 import '../../account/application/account_providers.dart';
+import '../../identify/application/shared_fingerprints.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/data/lyrics_links_repository.dart';
 import '../data/shared_audio.dart';
@@ -101,6 +104,7 @@ OwnCopy? localCopyOf(int id, ContributionDraft draft) {
 /// What was sent is kept as the user's own copy, and the draft is deleted,
 /// with the lyrics saved from it on this phone only; Zema's copy of a
 /// shared file stays with the own copy until the contribution is reviewed.
+/// The file recording's fingerprint follows in the background.
 ///
 /// Throws a [ContributionFailure] for a rule the draft breaks (checked
 /// here first), an [AuthFailure] without a backend, and the repository's
@@ -152,6 +156,15 @@ Future<String> submitDraft(
     await database.ownCopiesDao.remove(localCopyId(id));
     await database.draftsDao.remove(id);
   });
+  if (ref.read(contributionFingerprintsProvider) case final fingerprints?) {
+    unawaited(
+      fingerprints
+          .attach(contributionId, draft)
+          .catchError(
+            (Object e) => _log.warning('No fingerprint for $contributionId', e),
+          ),
+    );
+  }
   return contributionId;
 }
 

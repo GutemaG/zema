@@ -328,4 +328,38 @@ void main() {
     expect(find.text(_l10n.reviewOffline), findsOneWidget);
     expect(find.byType(ReviewItemScreen), findsOneWidget);
   });
+
+  testWidgets('library fingerprints: publish one, drop another', (
+    tester,
+  ) async {
+    PendingFingerprint waiting(String id, String recording, int installs) =>
+        PendingFingerprint(
+          id: id,
+          recordingId: recording,
+          songId: 'selam',
+          songTitle: 'Selam',
+          recordingArtist: 'Abebe Choir',
+          recordingDuration: const Duration(minutes: 3),
+          frameCount: 7752,
+          hashCount: 18000,
+          installs: installs,
+          sentAt: DateTime.utc(2026, 11, 13),
+        );
+    contributions.pending.addAll([
+      waiting('f1', 'rec-1', 1),
+      waiting('f2', 'rec-2', 2),
+    ]);
+    await open(tester, AppRoutes.reviewQueue);
+
+    expect(find.text(_l10n.reviewQueueFingerprints), findsOneWidget);
+    expect(find.text('Selam · Abebe Choir'), findsNWidgets(2));
+    expect(find.textContaining('2 phones'), findsOneWidget);
+    expect(find.textContaining('file 3:00, recording 3:00'), findsNWidgets(2));
+
+    await tap(tester, find.byTooltip(_l10n.reviewFingerprintPublish).first);
+    expect(contributions.fingerprintReviews, [('f1', true)]);
+    await tap(tester, find.byTooltip(_l10n.reviewFingerprintDrop));
+    expect(contributions.fingerprintReviews.last, ('f2', false));
+    expect(find.text(_l10n.reviewQueueFingerprints), findsNothing);
+  });
 }

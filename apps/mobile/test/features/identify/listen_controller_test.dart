@@ -134,6 +134,17 @@ class _FakeCatalog implements AudioCatalog {
         ),
     ];
   }
+
+  @override
+  Future<Set<String>> missingFingerprints(List<String> recordingIds) async =>
+      const {};
+
+  @override
+  Future<FingerprintShare> shareFingerprint(
+    String recordingId,
+    AudioFingerprint fingerprint, {
+    required String installId,
+  }) async => FingerprintShare.notNeeded;
 }
 
 void main() {
