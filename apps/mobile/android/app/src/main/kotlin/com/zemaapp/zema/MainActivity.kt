@@ -23,6 +23,16 @@ class MainActivity : AudioServiceActivity() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        LyricsOverlay.setAppInFront(true)
+    }
+
+    override fun onPause() {
+        LyricsOverlay.setAppInFront(false)
+        super.onPause()
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         val channels = channelsOf(flutterEngine)

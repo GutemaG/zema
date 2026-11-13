@@ -56,6 +56,7 @@ object LyricsOverlay {
     private var clock: PlaybackClock? = null
     private var mode = Mode.BUBBLE
     private var locked = false
+    private var suspended = false
     private var root: FrameLayout? = null
     private var params: WindowManager.LayoutParams? = null
     private var handle: View? = null
@@ -93,7 +94,7 @@ object LyricsOverlay {
         if (previous?.source != next.source || stopWatching == null) watch(next.source)
         val wanted = if (next.question && start == Mode.PANEL) Mode.BAR else start
         when {
-            root == null || previous?.key != next.key -> {
+            previous?.key != next.key || (root == null && !suspended) -> {
                 removeHandle()
                 locked = false
                 mode = wanted ?: Mode.BUBBLE
@@ -126,6 +127,21 @@ object LyricsOverlay {
         forgetViews()
     }
 
+    fun setAppInFront(front: Boolean) {
+        if (front == suspended) return
+        suspended = front
+        if (front) {
+            main.removeCallbacks(tick)
+            removeHandle()
+            root?.let { runCatching { windows.removeView(it) } }
+            root = null
+            locked = false
+            forgetViews()
+        } else if (sheet != null) {
+            build()
+        }
+    }
+
     private fun attach(context: Context) {
         if (::app.isInitialized) return
         app = context.applicationContext
@@ -154,6 +170,7 @@ object LyricsOverlay {
     }
 
     private fun build() {
+        if (suspended) return
         val current = sheet ?: return
         forgetViews()
         if (current.question && mode == Mode.PANEL) mode = Mode.BAR

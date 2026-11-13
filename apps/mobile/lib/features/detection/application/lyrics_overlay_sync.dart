@@ -106,6 +106,14 @@ final overlayContentProvider = Provider<OverlayContent?>((ref) {
   }
 });
 
+final overlayAccessProvider = FutureProvider.autoDispose<bool>(
+  (ref) => ref.watch(lyricsOverlayProvider).canShow(),
+);
+
+final overlayHideDelayProvider = Provider<Duration>(
+  (ref) => const Duration(seconds: 10),
+);
+
 final closedOverlaysProvider = NotifierProvider<ClosedOverlays, Set<String>>(
   ClosedOverlays.new,
 );
@@ -119,17 +127,29 @@ class ClosedOverlays extends Notifier<Set<String>> {
 
 final lyricsOverlaySyncProvider = Provider<void>((ref) {
   final overlay = ref.watch(lyricsOverlayProvider);
+  Timer? hiding;
+  ref.onDispose(() => hiding?.cancel());
 
   void apply() {
     final sheet = ref.read(overlayContentProvider);
-    final matching =
-        ref.read(currentDetectionProvider) != null &&
-        ref.read(detectedSongProvider) == null;
-    if (sheet == null && matching) return;
-    if (sheet == null || ref.read(closedOverlaysProvider).contains(sheet.key)) {
-      unawaited(overlay.hide());
-    } else {
+    final playing = ref.read(currentDetectionProvider) != null;
+    if (sheet == null && playing && ref.read(detectedSongProvider) == null) {
+      return;
+    }
+    if (sheet != null &&
+        !ref.read(closedOverlaysProvider).contains(sheet.key)) {
+      hiding?.cancel();
+      hiding = null;
       unawaited(overlay.show(sheet));
+    } else if (sheet == null && !playing) {
+      hiding ??= Timer(ref.read(overlayHideDelayProvider), () {
+        hiding = null;
+        unawaited(overlay.hide());
+      });
+    } else {
+      hiding?.cancel();
+      hiding = null;
+      unawaited(overlay.hide());
     }
   }
 

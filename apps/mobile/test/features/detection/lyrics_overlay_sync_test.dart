@@ -93,6 +93,9 @@ void main() {
         databaseProvider.overrideWithValue(db),
         playbackDetectorProvider.overrideWithValue(detector),
         lyricsOverlayProvider.overrideWithValue(overlay),
+        overlayHideDelayProvider.overrideWithValue(
+          const Duration(milliseconds: 40),
+        ),
         detectedLyricsProvider.overrideWith(
           (ref, id) async => id == 'broken'
               ? throw const NetworkFailure('offline')
@@ -149,6 +152,24 @@ void main() {
 
     await detect(_playing('ሰላም ለዚህ ቤት', state: DetectedState.stopped));
     expect(overlay.hidden, greaterThan(hiddenBefore));
+  });
+
+  test('stopping hides it only after a while, a new song at once', () async {
+    await detect(_playing('ሰላም ለዚህ ቤት'));
+    final hiddenBefore = overlay.hidden;
+
+    detector.controller.add(
+      _playing('ሰላም ለዚህ ቤት', state: DetectedState.stopped),
+    );
+    await Future<void>.delayed(const Duration(milliseconds: 15));
+    expect(overlay.hidden, hiddenBefore);
+    await settle();
+    expect(overlay.hidden, hiddenBefore + 1);
+
+    await detect(_playing('ሰላም ለዚህ ቤት'));
+    detector.controller.add(_playing('lofi beats'));
+    await Future<void>.delayed(const Duration(milliseconds: 15));
+    expect(overlay.hidden, hiddenBefore + 2);
   });
 
   test('closing hides it for that song only', () async {
