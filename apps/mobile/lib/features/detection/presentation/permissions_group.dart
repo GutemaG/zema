@@ -31,7 +31,8 @@ class _PermissionsGroupState extends ConsumerState<PermissionsGroup> {
         ref
           ..invalidate(detectionAccessProvider)
           ..invalidate(overlayAccessProvider)
-          ..invalidate(microphoneGrantedProvider);
+          ..invalidate(microphoneGrantedProvider)
+          ..invalidate(backgroundUnrestrictedProvider);
       },
     );
   }
@@ -93,6 +94,11 @@ class _PermissionsGroupState extends ConsumerState<PermissionsGroup> {
             l10n.detectionPermissionOverlay,
             ref.watch(overlayAccessProvider).value,
             ref.read(lyricsOverlayProvider).openSettings,
+          ),
+          row(
+            l10n.detectionPermissionBattery,
+            ref.watch(backgroundUnrestrictedProvider).value,
+            ref.read(backgroundAccessProvider).allow,
           ),
         ],
       ],

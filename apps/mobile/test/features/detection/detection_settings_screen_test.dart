@@ -5,6 +5,7 @@ import 'package:zema/app/database/database_provider.dart';
 import 'package:zema/features/detection/application/detection_providers.dart';
 import 'package:zema/features/detection/application/detection_settings.dart';
 import 'package:zema/features/detection/application/lyrics_overlay_sync.dart';
+import 'package:zema/features/detection/data/background_access.dart';
 import 'package:zema/features/detection/data/lyrics_overlay.dart';
 import 'package:zema/features/detection/data/playback_detector.dart';
 import 'package:zema/features/detection/presentation/detection_settings_screen.dart';
@@ -55,13 +56,38 @@ class _NoMicrophone implements MicrophoneAccess {
   Future<void> fix() async {}
 }
 
+class _Battery implements BackgroundAccess {
+  var asked = 0;
+  var opened = 0;
+
+  @override
+  Future<bool> unrestricted() async => false;
+
+  @override
+  Future<void> allow() async => asked++;
+
+  @override
+  Future<PhoneBrand> brand() async => PhoneBrand.transsion;
+
+  @override
+  Future<void> openPhoneSettings() async => opened++;
+}
+
 void main() {
+  test('phone brands from the manufacturer', () {
+    expect(PhoneBrand.of('Xiaomi'), PhoneBrand.xiaomi);
+    expect(PhoneBrand.of('TECNO'), PhoneBrand.transsion);
+    expect(PhoneBrand.of('realme'), PhoneBrand.oppo);
+    expect(PhoneBrand.of('Google'), PhoneBrand.other);
+  });
+
   testWidgets('switches, apps, appearance and missing permissions', (
     tester,
   ) async {
     useScreen(tester, size: const Size(400, 2000));
     final detector = _FakeDetector();
     final overlay = _FakeOverlay();
+    final battery = _Battery();
     await pumpThemed(
       tester,
       ProviderScope(
@@ -71,6 +97,7 @@ void main() {
           lyricsOverlayProvider.overrideWithValue(overlay),
           microphoneAccessProvider.overrideWithValue(_NoMicrophone()),
           otherAppsSupportedProvider.overrideWithValue(true),
+          backgroundAccessProvider.overrideWithValue(battery),
         ],
         child: const DetectionSettingsScreen(),
       ),
@@ -78,7 +105,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Allowed'), findsOneWidget);
-    expect(find.text('Fix'), findsNWidgets(2));
+    expect(find.text('Fix'), findsNWidgets(3));
     await tester.tap(
       find.descendant(
         of: find.byKey(const ValueKey('Display over other apps')),
@@ -86,6 +113,21 @@ void main() {
       ),
     );
     expect(overlay.opened, 1);
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('Run in the background')),
+        matching: find.text('Fix'),
+      ),
+    );
+    expect(battery.asked, 1);
+
+    await tester.tap(find.text('Battery saver steps'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Phone Master'), findsOneWidget);
+    await tester.tap(find.text('Open settings'));
+    expect(battery.opened, 1);
+    await tester.tapAt(const Offset(200, 20));
+    await tester.pumpAndSettle();
 
     Switch toggle(DetectionApp key) => tester.widget<Switch>(
       find.descendant(

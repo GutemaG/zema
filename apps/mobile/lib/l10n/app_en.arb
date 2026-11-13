@@ -3492,5 +3492,61 @@
         "type": "String"
       }
     }
+  },
+  "detectionPermissionBattery": "Run in the background",
+  "@detectionPermissionBattery": {
+    "description": "Permission row: Android battery optimization turned off for Zema"
+  },
+  "detectionSectionBackground": "Keep detection running",
+  "@detectionSectionBackground": {
+    "description": "Settings group about phone battery savers"
+  },
+  "detectionBatterySteps": "Battery saver steps",
+  "@detectionBatterySteps": {
+    "description": "Row that opens the steps for this phone's battery saver"
+  },
+  "detectionBatteryTitle": "Keep Zema running",
+  "@detectionBatteryTitle": {
+    "description": "Title of the battery saver steps sheet"
+  },
+  "detectionBatteryIntro": "Some phones stop apps in the background to save battery, and then Zema misses songs in other apps. On your phone:",
+  "@detectionBatteryIntro": {
+    "description": "Before the phone-specific battery steps"
+  },
+  "detectionBatteryOpen": "Open settings",
+  "@detectionBatteryOpen": {
+    "description": "Opens the phone's battery or autostart settings"
+  },
+  "detectionBatteryXiaomi": "Turn on Autostart for Zema, then in Battery saver choose No restrictions.",
+  "@detectionBatteryXiaomi": {
+    "description": "Battery steps for Xiaomi, Redmi and POCO phones"
+  },
+  "detectionBatterySamsung": "In Battery, open Background usage limits and add Zema to Never sleeping apps.",
+  "@detectionBatterySamsung": {
+    "description": "Battery steps for Samsung phones"
+  },
+  "detectionBatteryHuawei": "In App launch, turn off Manage automatically for Zema and allow all three options.",
+  "@detectionBatteryHuawei": {
+    "description": "Battery steps for Huawei and Honor phones"
+  },
+  "detectionBatteryOppo": "Allow Zema to auto-launch, and in Battery allow background activity.",
+  "@detectionBatteryOppo": {
+    "description": "Battery steps for Oppo and Realme phones"
+  },
+  "detectionBatteryVivo": "Turn on Autostart for Zema and allow high background power use.",
+  "@detectionBatteryVivo": {
+    "description": "Battery steps for Vivo phones"
+  },
+  "detectionBatteryOneplus": "Allow Zema to auto-launch, and in Battery optimization choose Don't optimize.",
+  "@detectionBatteryOneplus": {
+    "description": "Battery steps for OnePlus phones"
+  },
+  "detectionBatteryTranssion": "In Phone Master, turn on Auto-start for Zema, and lock Zema in the recent apps.",
+  "@detectionBatteryTranssion": {
+    "description": "Battery steps for Tecno, Infinix and itel phones"
+  },
+  "detectionBatteryOther": "Set Zema's battery use to Unrestricted, and allow it to start in the background.",
+  "@detectionBatteryOther": {
+    "description": "Battery steps for other phones"
   }
 }

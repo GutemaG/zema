@@ -2682,4 +2682,55 @@ class AppLocalizationsOm extends AppLocalizations {
   String detectedLyricsStopped(String app) {
     return '$app stopped playing';
   }
+
+  @override
+  String get detectionPermissionBattery => 'Run in the background';
+
+  @override
+  String get detectionSectionBackground => 'Keep detection running';
+
+  @override
+  String get detectionBatterySteps => 'Battery saver steps';
+
+  @override
+  String get detectionBatteryTitle => 'Keep Zema running';
+
+  @override
+  String get detectionBatteryIntro =>
+      'Some phones stop apps in the background to save battery, and then Zema misses songs in other apps. On your phone:';
+
+  @override
+  String get detectionBatteryOpen => 'Open settings';
+
+  @override
+  String get detectionBatteryXiaomi =>
+      'Turn on Autostart for Zema, then in Battery saver choose No restrictions.';
+
+  @override
+  String get detectionBatterySamsung =>
+      'In Battery, open Background usage limits and add Zema to Never sleeping apps.';
+
+  @override
+  String get detectionBatteryHuawei =>
+      'In App launch, turn off Manage automatically for Zema and allow all three options.';
+
+  @override
+  String get detectionBatteryOppo =>
+      'Allow Zema to auto-launch, and in Battery allow background activity.';
+
+  @override
+  String get detectionBatteryVivo =>
+      'Turn on Autostart for Zema and allow high background power use.';
+
+  @override
+  String get detectionBatteryOneplus =>
+      'Allow Zema to auto-launch, and in Battery optimization choose Don\'t optimize.';
+
+  @override
+  String get detectionBatteryTranssion =>
+      'In Phone Master, turn on Auto-start for Zema, and lock Zema in the recent apps.';
+
+  @override
+  String get detectionBatteryOther =>
+      'Set Zema\'s battery use to Unrestricted, and allow it to start in the background.';
 }

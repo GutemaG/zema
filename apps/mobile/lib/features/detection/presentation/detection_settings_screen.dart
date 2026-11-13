@@ -14,6 +14,7 @@ import '../../settings/presentation/widgets/settings_row.dart';
 import '../application/detected_song.dart';
 import '../application/detection_settings.dart';
 import '../data/lyrics_overlay.dart';
+import 'battery_steps_sheet.dart';
 import 'permissions_group.dart';
 
 class DetectionSettingsScreen extends ConsumerStatefulWidget {
@@ -135,6 +136,15 @@ class _DetectionSettingsScreenState
                           );
                         }
                       },
+              ),
+            ],
+          ),
+          SettingsGroup(
+            title: l10n.detectionSectionBackground,
+            children: [
+              SettingsRow(
+                label: l10n.detectionBatterySteps,
+                onTap: () => unawaited(showBatteryStepsSheet(context)),
               ),
             ],
           ),

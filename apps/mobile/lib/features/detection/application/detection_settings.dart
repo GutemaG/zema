@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../data/background_access.dart';
 import '../data/lyrics_overlay.dart';
 import 'detection_providers.dart';
 import 'lyrics_overlay_sync.dart';
@@ -120,4 +122,18 @@ final microphoneAccessProvider = Provider<MicrophoneAccess>(
 
 final microphoneGrantedProvider = FutureProvider.autoDispose<bool>(
   (ref) => ref.watch(microphoneAccessProvider).granted(),
+);
+
+final backgroundAccessProvider = Provider<BackgroundAccess>(
+  (ref) => Platform.isAndroid
+      ? const AndroidBackgroundAccess()
+      : const NoBackgroundAccess(),
+);
+
+final backgroundUnrestrictedProvider = FutureProvider.autoDispose<bool>(
+  (ref) => ref.watch(backgroundAccessProvider).unrestricted(),
+);
+
+final phoneBrandProvider = FutureProvider<PhoneBrand>(
+  (ref) => ref.watch(backgroundAccessProvider).brand(),
 );

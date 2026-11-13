@@ -4559,6 +4559,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{app} stopped playing'**
   String detectedLyricsStopped(String app);
+
+  /// Permission row: Android battery optimization turned off for Zema
+  ///
+  /// In en, this message translates to:
+  /// **'Run in the background'**
+  String get detectionPermissionBattery;
+
+  /// Settings group about phone battery savers
+  ///
+  /// In en, this message translates to:
+  /// **'Keep detection running'**
+  String get detectionSectionBackground;
+
+  /// Row that opens the steps for this phone's battery saver
+  ///
+  /// In en, this message translates to:
+  /// **'Battery saver steps'**
+  String get detectionBatterySteps;
+
+  /// Title of the battery saver steps sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Zema running'**
+  String get detectionBatteryTitle;
+
+  /// Before the phone-specific battery steps
+  ///
+  /// In en, this message translates to:
+  /// **'Some phones stop apps in the background to save battery, and then Zema misses songs in other apps. On your phone:'**
+  String get detectionBatteryIntro;
+
+  /// Opens the phone's battery or autostart settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get detectionBatteryOpen;
+
+  /// Battery steps for Xiaomi, Redmi and POCO phones
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Autostart for Zema, then in Battery saver choose No restrictions.'**
+  String get detectionBatteryXiaomi;
+
+  /// Battery steps for Samsung phones
+  ///
+  /// In en, this message translates to:
+  /// **'In Battery, open Background usage limits and add Zema to Never sleeping apps.'**
+  String get detectionBatterySamsung;
+
+  /// Battery steps for Huawei and Honor phones
+  ///
+  /// In en, this message translates to:
+  /// **'In App launch, turn off Manage automatically for Zema and allow all three options.'**
+  String get detectionBatteryHuawei;
+
+  /// Battery steps for Oppo and Realme phones
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Zema to auto-launch, and in Battery allow background activity.'**
+  String get detectionBatteryOppo;
+
+  /// Battery steps for Vivo phones
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Autostart for Zema and allow high background power use.'**
+  String get detectionBatteryVivo;
+
+  /// Battery steps for OnePlus phones
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Zema to auto-launch, and in Battery optimization choose Don\'t optimize.'**
+  String get detectionBatteryOneplus;
+
+  /// Battery steps for Tecno, Infinix and itel phones
+  ///
+  /// In en, this message translates to:
+  /// **'In Phone Master, turn on Auto-start for Zema, and lock Zema in the recent apps.'**
+  String get detectionBatteryTranssion;
+
+  /// Battery steps for other phones
+  ///
+  /// In en, this message translates to:
+  /// **'Set Zema\'s battery use to Unrestricted, and allow it to start in the background.'**
+  String get detectionBatteryOther;
 }
 
 class _AppLocalizationsDelegate
