@@ -11,6 +11,7 @@ import 'app/l10n/app_language.dart';
 import 'app/licenses.dart';
 import 'app/zema_app.dart';
 import 'features/account/application/auto_backup_task.dart';
+import 'features/detection/application/lyrics_overlay_main.dart';
 import 'features/identify/presentation/quick_listen_app.dart';
 import 'features/player/application/player_providers.dart';
 import 'features/player/data/audio_backend.dart';
@@ -21,6 +22,9 @@ import 'l10n/generated/app_localizations.dart';
 
 @pragma('vm:entry-point')
 Future<void> listenMain() => runQuickListen();
+
+@pragma('vm:entry-point')
+Future<void> overlayMain() => runLyricsOverlay();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

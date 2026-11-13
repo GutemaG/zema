@@ -26,6 +26,7 @@ class MediaWatchService : NotificationListenerService() {
         sessions = manager
         manager.addOnActiveSessionsChangedListener(changed, component(this), main)
         PlaybackHub.onSourcesChanged = { refresh() }
+        OverlayEngine.watch(this)
         refresh()
     }
 
@@ -44,6 +45,7 @@ class MediaWatchService : NotificationListenerService() {
         sessions?.removeOnActiveSessionsChangedListener(changed)
         sessions = null
         PlaybackHub.onSourcesChanged = null
+        OverlayEngine.unwatch()
         detachAll()
         for (source in PlaybackHub.active()) PlaybackHub.gone(source)
     }

@@ -1,8 +1,13 @@
 package com.zemaapp.zema
 
 import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import com.ryanheise.audioservice.AudioServiceActivity
+import com.ryanheise.audioservice.AudioServicePlugin
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.FlutterEngineCache
 import java.util.WeakHashMap
 
 // AudioServiceActivity keeps one Flutter engine shared with the playback
@@ -12,6 +17,11 @@ import java.util.WeakHashMap
 class MainActivity : AudioServiceActivity() {
     private var share: ShareChannel? = null
     private var launch: LaunchChannel? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        OverlayEngine.stop()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -34,6 +44,7 @@ class MainActivity : AudioServiceActivity() {
 
     private fun channelsOf(engine: FlutterEngine): Channels =
         channels.getOrPut(engine) {
+            OverlayEngine.stop()
             val messenger = engine.dartExecutor.binaryMessenger
             val made = Channels(
                 LibraryChannel(applicationContext, messenger),
@@ -56,6 +67,7 @@ class MainActivity : AudioServiceActivity() {
                     made.detection.dispose()
                     made.overlay.dispose()
                     channels.remove(engine)
+                    Handler(Looper.getMainLooper()).post { OverlayEngine.check() }
                 }
             })
             made
@@ -73,5 +85,8 @@ class MainActivity : AudioServiceActivity() {
 
     companion object {
         private val channels = WeakHashMap<FlutterEngine, Channels>()
+
+        fun appRunning(): Boolean = channels.isNotEmpty() ||
+            FlutterEngineCache.getInstance().contains(AudioServicePlugin.getFlutterEngineId())
     }
 }

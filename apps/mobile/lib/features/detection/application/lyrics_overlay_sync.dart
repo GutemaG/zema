@@ -10,6 +10,7 @@ import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/application/track_lyrics.dart';
 import '../data/lyrics_overlay.dart';
 import 'detected_song.dart';
+import 'detection_providers.dart';
 
 final _log = Logger('detection.overlay');
 
@@ -98,6 +99,10 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
 
   void apply() {
     final sheet = ref.read(overlaySheetProvider);
+    final matching =
+        ref.read(currentDetectionProvider) != null &&
+        ref.read(detectedSongProvider) == null;
+    if (sheet == null && matching) return;
     if (sheet == null || ref.read(closedOverlaysProvider).contains(sheet.key)) {
       unawaited(overlay.hide());
     } else {

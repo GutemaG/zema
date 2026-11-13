@@ -44,6 +44,8 @@ object PlaybackHub {
 
     fun active(): Set<String> = latest.keys.toSet()
 
+    fun anyPlaying(): Boolean = latest.values.any { it["playbackState"] == "playing" }
+
     fun listen(listener: (Map<String, Any?>) -> Unit): () -> Unit {
         listeners.add(listener)
         for (event in latest.values.toList()) listener(event)
