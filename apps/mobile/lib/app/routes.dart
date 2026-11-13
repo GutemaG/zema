@@ -15,6 +15,8 @@ abstract final class AppRoutes {
   /// S04, the one-time account choice, shown instead of Home until made.
   static const String accountChoice = '/welcome';
 
+  static const String onboarding = '/onboarding';
+
   /// S24, above everything; it returns to the screen it was opened from.
   static const String signIn = '/sign-in';
 

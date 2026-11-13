@@ -4403,6 +4403,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The next line'**
   String get detectionPreviewNext;
+
+  /// First onboarding page title
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Zema'**
+  String get onboardingWelcomeTitle;
+
+  /// First onboarding page message, above the language list
+  ///
+  /// In en, this message translates to:
+  /// **'Mezmur and the music on your phone, with lyrics. Choose your language.'**
+  String get onboardingWelcomeMessage;
+
+  /// Second onboarding page title
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get onboardingHowTitle;
+
+  /// Second onboarding page message, above three steps
+  ///
+  /// In en, this message translates to:
+  /// **'Three things Zema does for you.'**
+  String get onboardingHowMessage;
+
+  /// Onboarding step
+  ///
+  /// In en, this message translates to:
+  /// **'Play the songs on your phone'**
+  String get onboardingStepPlay;
+
+  /// Onboarding step
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the lyrics as they\'re sung'**
+  String get onboardingStepLyrics;
+
+  /// Onboarding step, Android
+  ///
+  /// In en, this message translates to:
+  /// **'Playing a mezmur on YouTube or Telegram? Zema floats its lyrics on top'**
+  String get onboardingStepOtherApps;
+
+  /// Onboarding step, iOS
+  ///
+  /// In en, this message translates to:
+  /// **'Hear a song nearby? Tap Listen to find it'**
+  String get onboardingStepListen;
+
+  /// Third onboarding page title
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access'**
+  String get onboardingPermissionsTitle;
+
+  /// Third onboarding page message, above the permission rows
+  ///
+  /// In en, this message translates to:
+  /// **'Each one turns on part of Zema. You can change them later in Settings.'**
+  String get onboardingPermissionsMessage;
+
+  /// Permission row; lets Zema list and play the audio files on the phone
+  ///
+  /// In en, this message translates to:
+  /// **'Music files'**
+  String get onboardingPermissionMusic;
+
+  /// Privacy note under the onboarding permission rows
+  ///
+  /// In en, this message translates to:
+  /// **'Zema reads your audio files only to play them. When you identify a song by sound, only its fingerprint leaves your phone.'**
+  String get onboardingPrivacy;
+
+  /// Onboarding button to the next page
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// Onboarding button that ends onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// Last onboarding page's main button
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingContinue;
+
+  /// Last onboarding page's button to go on without allowing everything
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get onboardingSkipForNow;
 }
 
 class _AppLocalizationsDelegate

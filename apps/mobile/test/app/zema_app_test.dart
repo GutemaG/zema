@@ -6,6 +6,7 @@ import 'package:zema/app/theme/palette_provider.dart';
 import 'package:zema/app/theme/zema_colors.dart';
 import 'package:zema/app/theme/zema_palette.dart';
 import 'package:zema/app/zema_app.dart';
+import 'package:zema/features/onboarding/application/onboarding.dart';
 
 import '../helpers/fake_library.dart';
 import '../helpers/fake_player.dart';
@@ -22,6 +23,7 @@ Future<void> _pumpApp(
         deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
         ...libraryOverrides(),
         ...playerOverrides(),
+        onboardingPendingProvider.overrideWithBuild((_, _) => false),
         paletteProvider.overrideWithValue(palette),
       ],
       child: const ZemaApp(),
@@ -49,6 +51,7 @@ void main() {
             deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
             ...libraryOverrides(),
             ...playerOverrides(),
+            onboardingPendingProvider.overrideWithBuild((_, _) => false),
           ],
           child: const ZemaApp(),
         ),
@@ -75,6 +78,7 @@ void main() {
             deviceLocalesProvider.overrideWithValue(const [Locale('en')]),
             ...libraryOverrides(),
             ...playerOverrides(),
+            onboardingPendingProvider.overrideWithBuild((_, _) => false),
           ],
           child: const ZemaApp(),
         ),

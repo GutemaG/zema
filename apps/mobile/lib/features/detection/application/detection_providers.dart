@@ -13,6 +13,8 @@ final playbackDetectorProvider = Provider<PlaybackDetector>(
       : const NoPlaybackDetector(),
 );
 
+final otherAppsSupportedProvider = Provider<bool>((ref) => Platform.isAndroid);
+
 final detectionAccessProvider = FutureProvider.autoDispose<bool>(
   (ref) => ref.watch(playbackDetectorProvider).hasAccess(),
 );

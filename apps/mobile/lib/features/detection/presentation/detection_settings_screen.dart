@@ -12,10 +12,9 @@ import '../../settings/presentation/widgets/choice_picker.dart';
 import '../../settings/presentation/widgets/settings_group.dart';
 import '../../settings/presentation/widgets/settings_row.dart';
 import '../application/detected_song.dart';
-import '../application/detection_providers.dart';
 import '../application/detection_settings.dart';
-import '../application/lyrics_overlay_sync.dart';
 import '../data/lyrics_overlay.dart';
+import 'permissions_group.dart';
 
 class DetectionSettingsScreen extends ConsumerStatefulWidget {
   const DetectionSettingsScreen({super.key});
@@ -27,27 +26,6 @@ class DetectionSettingsScreen extends ConsumerStatefulWidget {
 
 class _DetectionSettingsScreenState
     extends ConsumerState<DetectionSettingsScreen> {
-  late final AppLifecycleListener _lifecycle;
-
-  @override
-  void initState() {
-    super.initState();
-    _lifecycle = AppLifecycleListener(
-      onResume: () {
-        ref
-          ..invalidate(detectionAccessProvider)
-          ..invalidate(overlayAccessProvider)
-          ..invalidate(microphoneGrantedProvider);
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _lifecycle.dispose();
-    super.dispose();
-  }
-
   Future<void> _clear(
     String title,
     String message,
@@ -88,21 +66,6 @@ class _DetectionSettingsScreenState
     final enabled = settings?.enabled ?? false;
     final appearance = settings?.appearance ?? const OverlayAppearance();
 
-    Widget permission(
-      String label,
-      AsyncValue<bool> granted,
-      Future<void> Function() fix,
-    ) => SettingsRow(
-      label: label,
-      value: granted.value == true ? l10n.detectionPermissionAllowed : null,
-      trailing: granted.value == false
-          ? TextButton(
-              onPressed: () => unawaited(fix()),
-              child: Text(l10n.detectionPermissionFix),
-            )
-          : null,
-    );
-
     String showAs(OverlayStart start) => switch (start) {
       OverlayStart.bubble => l10n.detectionShowBubble,
       OverlayStart.bar => l10n.detectionShowBar,
@@ -118,29 +81,7 @@ class _DetectionSettingsScreenState
           24,
         ),
         children: [
-          SettingsGroup(
-            title: l10n.detectionSectionPermissions,
-            children: [
-              permission(
-                l10n.detectionPermissionNotifications,
-                ref.watch(detectionAccessProvider),
-                ref.read(playbackDetectorProvider).openAccessSettings,
-              ),
-              permission(
-                l10n.detectionPermissionOverlay,
-                ref.watch(overlayAccessProvider),
-                ref.read(lyricsOverlayProvider).openSettings,
-              ),
-              permission(
-                l10n.detectionPermissionMicrophone,
-                ref.watch(microphoneGrantedProvider),
-                () async {
-                  await ref.read(microphoneAccessProvider).fix();
-                  ref.invalidate(microphoneGrantedProvider);
-                },
-              ),
-            ],
-          ),
+          const PermissionsGroup(),
           SettingsGroup(
             title: l10n.detectionSectionDetection,
             children: [

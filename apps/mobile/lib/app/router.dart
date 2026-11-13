@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/onboarding/application/onboarding.dart';
+import '../features/onboarding/presentation/onboarding_screen.dart';
 import '../features/detection/presentation/detection_settings_screen.dart';
 import '../features/identify/presentation/listen_history_screen.dart';
 import '../features/identify/presentation/listen_lyrics_screen.dart';
@@ -51,11 +53,13 @@ final routerProvider = Provider<GoRouter>((ref) {
 GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
   return GoRouter(
     initialLocation: initialLocation,
-    redirect: (_, state) =>
-        state.uri.path == AppRoutes.home &&
-            ref.read(accountChoicePendingProvider)
-        ? AppRoutes.accountChoice
-        : null,
+    redirect: (_, state) {
+      if (state.uri.path != AppRoutes.home) return null;
+      if (ref.read(onboardingPendingProvider)) return AppRoutes.onboarding;
+      return ref.read(accountChoicePendingProvider)
+          ? AppRoutes.accountChoice
+          : null;
+    },
     routes: [
       GoRoute(path: '/', redirect: (_, _) => AppRoutes.home),
       StatefulShellRoute.indexedStack(
@@ -137,6 +141,10 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
             builder: (_, _) => const DetectionSettingsScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.onboarding,
+        builder: (_, _) => const OnboardingScreen(),
       ),
       GoRoute(
         path: AppRoutes.accountChoice,

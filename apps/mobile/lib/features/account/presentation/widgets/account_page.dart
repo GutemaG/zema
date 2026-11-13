@@ -15,16 +15,16 @@ class AccountBenefits extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Benefit(Icons.edit_note, l10n.accountBenefitContribute),
-        _Benefit(Icons.cloud_upload_outlined, l10n.accountBenefitBackup),
-        _Benefit(Icons.phonelink_setup_outlined, l10n.accountBenefitRestore),
+        IconPoint(Icons.edit_note, l10n.accountBenefitContribute),
+        IconPoint(Icons.cloud_upload_outlined, l10n.accountBenefitBackup),
+        IconPoint(Icons.phonelink_setup_outlined, l10n.accountBenefitRestore),
       ],
     );
   }
 }
 
-class _Benefit extends StatelessWidget {
-  const _Benefit(this.icon, this.label);
+class IconPoint extends StatelessWidget {
+  const IconPoint(this.icon, this.label, {super.key});
 
   final IconData icon;
   final String label;

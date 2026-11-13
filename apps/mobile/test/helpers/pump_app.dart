@@ -97,6 +97,7 @@ Future<void> pumpZemaApp(
   tester.platformDispatcher.platformBrightnessTestValue = phoneBrightness;
   addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
   SharedPreferences.setMockInitialValues({
+    'onboardingDone': true,
     ...savedPrefs,
     'localeCode': ?savedLanguage,
   });

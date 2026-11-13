@@ -2591,4 +2591,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get detectionPreviewNext => 'The next line';
+
+  @override
+  String get onboardingWelcomeTitle => 'Welcome to Zema';
+
+  @override
+  String get onboardingWelcomeMessage =>
+      'Mezmur and the music on your phone, with lyrics. Choose your language.';
+
+  @override
+  String get onboardingHowTitle => 'How it works';
+
+  @override
+  String get onboardingHowMessage => 'Three things Zema does for you.';
+
+  @override
+  String get onboardingStepPlay => 'Play the songs on your phone';
+
+  @override
+  String get onboardingStepLyrics => 'Follow the lyrics as they\'re sung';
+
+  @override
+  String get onboardingStepOtherApps =>
+      'Playing a mezmur on YouTube or Telegram? Zema floats its lyrics on top';
+
+  @override
+  String get onboardingStepListen =>
+      'Hear a song nearby? Tap Listen to find it';
+
+  @override
+  String get onboardingPermissionsTitle => 'Allow access';
+
+  @override
+  String get onboardingPermissionsMessage =>
+      'Each one turns on part of Zema. You can change them later in Settings.';
+
+  @override
+  String get onboardingPermissionMusic => 'Music files';
+
+  @override
+  String get onboardingPrivacy =>
+      'Zema reads your audio files only to play them. When you identify a song by sound, only its fingerprint leaves your phone.';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingContinue => 'Continue';
+
+  @override
+  String get onboardingSkipForNow => 'Skip for now';
 }

@@ -70,6 +70,7 @@ void main() {
           playbackDetectorProvider.overrideWithValue(detector),
           lyricsOverlayProvider.overrideWithValue(overlay),
           microphoneAccessProvider.overrideWithValue(_NoMicrophone()),
+          otherAppsSupportedProvider.overrideWithValue(true),
         ],
         child: const DetectionSettingsScreen(),
       ),
@@ -78,7 +79,12 @@ void main() {
 
     expect(find.text('Allowed'), findsOneWidget);
     expect(find.text('Fix'), findsNWidgets(2));
-    await tester.tap(find.text('Fix').first);
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('Display over other apps')),
+        matching: find.text('Fix'),
+      ),
+    );
     expect(overlay.opened, 1);
 
     Switch toggle(DetectionApp key) => tester.widget<Switch>(

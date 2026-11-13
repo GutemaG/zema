@@ -3368,5 +3368,69 @@
   "detectionPreviewNext": "The next line",
   "@detectionPreviewNext": {
     "description": "Sample next line in the floating lyrics preview"
+  },
+  "onboardingWelcomeTitle": "Welcome to Zema",
+  "@onboardingWelcomeTitle": {
+    "description": "First onboarding page title"
+  },
+  "onboardingWelcomeMessage": "Mezmur and the music on your phone, with lyrics. Choose your language.",
+  "@onboardingWelcomeMessage": {
+    "description": "First onboarding page message, above the language list"
+  },
+  "onboardingHowTitle": "How it works",
+  "@onboardingHowTitle": {
+    "description": "Second onboarding page title"
+  },
+  "onboardingHowMessage": "Three things Zema does for you.",
+  "@onboardingHowMessage": {
+    "description": "Second onboarding page message, above three steps"
+  },
+  "onboardingStepPlay": "Play the songs on your phone",
+  "@onboardingStepPlay": {
+    "description": "Onboarding step"
+  },
+  "onboardingStepLyrics": "Follow the lyrics as they're sung",
+  "@onboardingStepLyrics": {
+    "description": "Onboarding step"
+  },
+  "onboardingStepOtherApps": "Playing a mezmur on YouTube or Telegram? Zema floats its lyrics on top",
+  "@onboardingStepOtherApps": {
+    "description": "Onboarding step, Android"
+  },
+  "onboardingStepListen": "Hear a song nearby? Tap Listen to find it",
+  "@onboardingStepListen": {
+    "description": "Onboarding step, iOS"
+  },
+  "onboardingPermissionsTitle": "Allow access",
+  "@onboardingPermissionsTitle": {
+    "description": "Third onboarding page title"
+  },
+  "onboardingPermissionsMessage": "Each one turns on part of Zema. You can change them later in Settings.",
+  "@onboardingPermissionsMessage": {
+    "description": "Third onboarding page message, above the permission rows"
+  },
+  "onboardingPermissionMusic": "Music files",
+  "@onboardingPermissionMusic": {
+    "description": "Permission row; lets Zema list and play the audio files on the phone"
+  },
+  "onboardingPrivacy": "Zema reads your audio files only to play them. When you identify a song by sound, only its fingerprint leaves your phone.",
+  "@onboardingPrivacy": {
+    "description": "Privacy note under the onboarding permission rows"
+  },
+  "onboardingNext": "Next",
+  "@onboardingNext": {
+    "description": "Onboarding button to the next page"
+  },
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Onboarding button that ends onboarding"
+  },
+  "onboardingContinue": "Continue",
+  "@onboardingContinue": {
+    "description": "Last onboarding page's main button"
+  },
+  "onboardingSkipForNow": "Skip for now",
+  "@onboardingSkipForNow": {
+    "description": "Last onboarding page's button to go on without allowing everything"
   }
 }
