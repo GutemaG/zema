@@ -334,6 +334,44 @@ void main() {
       frameCount: 100,
     );
 
+    test('lists and fetches fingerprints for the offline index', () async {
+      answerWith(
+        (request) => request.url.path.endsWith('offline_fingerprints')
+            ? json([
+                {
+                  'recording_id': 'rec',
+                  'song_id': 'selam',
+                  'revision': 2,
+                  'hash_count': 3,
+                  'identified': 7,
+                },
+              ])
+            : json([
+                {
+                  'recording_id': 'rec',
+                  'revision': 2,
+                  'frame_count': 100,
+                  'hashes': [5, 6, 7],
+                  'frames': [0, 3, 9],
+                },
+              ]),
+      );
+      final [entry] = await repository.offlineFingerprints();
+      expect(
+        (entry.recordingId, entry.songId, entry.revision, entry.identified),
+        ('rec', 'selam', 2, 7),
+      );
+      final [fetched] = await repository.fingerprints(['rec']);
+      expect(fetched.revision, 2);
+      expect(fetched.fingerprint.hashes, [5, 6, 7]);
+      expect(fetched.fingerprint.frames, [0, 3, 9]);
+      expect(fetched.fingerprint.frameCount, 100);
+      expect(jsonDecode(requests.last.body), {
+        'version': fingerprintVersion,
+        'ids': ['rec'],
+      });
+    });
+
     test('asks which recordings need one', () async {
       answerWith((_) => json(['a']));
       expect(await repository.missingFingerprints(['a', 'b']), {'a'});

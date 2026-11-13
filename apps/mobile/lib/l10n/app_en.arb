@@ -3616,5 +3616,38 @@
   "reviewFingerprintFailed": "Couldn't save that. Check your connection and try again.",
   "@reviewFingerprintFailed": {
     "description": "S23m: publishing or dropping a fingerprint failed"
+  },
+  "detectionOfflineIndex": "Songs to identify offline",
+  "@detectionOfflineIndex": {
+    "description": "S27s row: how much room the offline index may take (intent 009 FR-4)"
+  },
+  "detectionOfflineIndexNote": "Fingerprints of catalog songs kept on this phone, so Listen finds them without the internet. Your library's songs come first, then the most identified. Updated on Wi-Fi.",
+  "@detectionOfflineIndexNote": {
+    "description": "Note in the offline index picker"
+  },
+  "detectionOfflineLibraryOnly": "My library's songs only",
+  "@detectionOfflineLibraryOnly": {
+    "description": "Offline index budget: only songs linked to library files"
+  },
+  "detectionOfflineMegabytes": "Up to {megabytes} MB",
+  "@detectionOfflineMegabytes": {
+    "description": "Offline index budget option",
+    "placeholders": {
+      "megabytes": {
+        "type": "int"
+      }
+    }
+  },
+  "detectionOfflineCoverage": "{songs, plural, =0{None yet} =1{1 song · {size}} other{{songs} songs · {size}}}",
+  "@detectionOfflineCoverage": {
+    "description": "Under detectionOfflineIndex: songs covered and their size, e.g. 1.2 MB",
+    "placeholders": {
+      "songs": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
   }
 }

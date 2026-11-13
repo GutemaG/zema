@@ -2789,4 +2789,31 @@ class AppLocalizationsTi extends AppLocalizations {
   @override
   String get reviewFingerprintFailed =>
       'Couldn\'t save that. Check your connection and try again.';
+
+  @override
+  String get detectionOfflineIndex => 'Songs to identify offline';
+
+  @override
+  String get detectionOfflineIndexNote =>
+      'Fingerprints of catalog songs kept on this phone, so Listen finds them without the internet. Your library\'s songs come first, then the most identified. Updated on Wi-Fi.';
+
+  @override
+  String get detectionOfflineLibraryOnly => 'My library\'s songs only';
+
+  @override
+  String detectionOfflineMegabytes(int megabytes) {
+    return 'Up to $megabytes MB';
+  }
+
+  @override
+  String detectionOfflineCoverage(int songs, String size) {
+    String _temp0 = intl.Intl.pluralLogic(
+      songs,
+      locale: localeName,
+      other: '$songs songs · $size',
+      one: '1 song · $size',
+      zero: 'None yet',
+    );
+    return '$_temp0';
+  }
 }

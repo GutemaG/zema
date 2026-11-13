@@ -182,7 +182,7 @@ class ListenController extends Notifier<ListenState> {
   late Microphone _microphone;
 
   LibrarySearch? _library;
-  (int, DateTime?)? _libraryStamp;
+  Object? _libraryStamp;
   Future<LibrarySearch>? _opening;
   var _closed = false;
 
@@ -222,16 +222,21 @@ class ListenController extends Notifier<ListenState> {
     }
   }
 
+  /// Changes when library or kept catalog fingerprints change.
+  Future<Object> _stamp() async {
+    final fingerprints = ref.read(databaseProvider).fingerprintsDao;
+    return (await fingerprints.stamp(), await fingerprints.catalogStamp());
+  }
+
   Future<bool> _searchIsStale() async =>
-      _library == null ||
-      await ref.read(databaseProvider).fingerprintsDao.stamp() != _libraryStamp;
+      _library == null || await _stamp() != _libraryStamp;
 
   Future<LibrarySearch> _search() =>
       _opening ??= _openSearch().whenComplete(() => _opening = null);
 
   Future<LibrarySearch> _openSearch() async {
     final db = ref.read(databaseProvider);
-    final stamp = await db.fingerprintsDao.stamp();
+    final stamp = await _stamp();
     final current = _library;
     if (current != null && stamp == _libraryStamp) return current;
     final fresh = await LibrarySearch.open(db);
@@ -324,7 +329,7 @@ class ListenController extends Notifier<ListenState> {
         final heardNow = await library.identify(_join(chunks), rate);
         if (session != _session) return;
         _log.fine('At $heard: ${heardNow.matches}');
-        var found = _inLibrary(heardNow.matches, startedAt!);
+        var found = await _onPhone(library, heardNow.matches, startedAt!);
         var offline = false;
         if (found == null || !found.sure) {
           final (inCatalog, reached) = await _inCatalog(
@@ -374,9 +379,40 @@ class ListenController extends Notifier<ListenState> {
     unawaited(_stopRecording());
   }
 
-  ListenFound? _inLibrary(List<AudioMatch> matches, DateTime startedAt) {
+  /// The best match on the phone: a library file, or a catalog recording
+  /// kept for offline.
+  Future<ListenFound?> _onPhone(
+    LibrarySearch search,
+    List<AudioMatch> matches,
+    DateTime startedAt,
+  ) async {
     final match = matches.firstOrNull;
     if (match == null) return null;
+    if (match.recordingId.startsWith(catalogSearchPrefix)) {
+      final recordingId = match.recordingId.substring(
+        catalogSearchPrefix.length,
+      );
+      final kept = search.catalogRecordings[recordingId];
+      if (kept == null) return null;
+      final song = await ref
+          .read(databaseProvider)
+          .catalogDao
+          .entry(kept.songId);
+      if (song == null) return null;
+      return ListenFound(
+        song: song,
+        match: AudioMatch(
+          recordingId: recordingId,
+          position: match.position,
+          score: match.score,
+          playbackSpeed: match.playbackSpeed,
+          ambiguousPosition: match.ambiguousPosition,
+        ),
+        startedAt: startedAt,
+        sure: !match.ambiguousPosition,
+        recordingDuration: kept.duration,
+      );
+    }
     final id = int.tryParse(match.recordingId);
     final tracks = ref.read(libraryTracksProvider).value ?? const <Track>[];
     for (final track in tracks) {

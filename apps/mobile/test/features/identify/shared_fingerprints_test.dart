@@ -57,6 +57,14 @@ class _Catalog implements AudioCatalog {
   }) async => const [];
 
   @override
+  Future<List<OfflineFingerprintEntry>> offlineFingerprints() async => const [];
+
+  @override
+  Future<List<CatalogFingerprint>> fingerprints(
+    List<String> recordingIds,
+  ) async => const [];
+
+  @override
   Future<Set<String>> missingFingerprints(List<String> recordingIds) async {
     asked.add(recordingIds);
     return {...recordingIds.where(missing.contains)};

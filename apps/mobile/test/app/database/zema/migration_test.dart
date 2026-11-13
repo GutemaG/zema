@@ -18,6 +18,7 @@ import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
 import 'generated/schema_v13.dart' as v13;
 import 'generated/schema_v14.dart' as v14;
+import 'generated/schema_v15.dart' as v15;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -404,6 +405,49 @@ void main() {
         expect(rows.single.trackId, 1);
         expect(rows.single.songId, equals(null));
         expect(await newDb.select(newDb.pendingLookups).get(), isEmpty);
+      },
+    );
+  });
+
+  test('migration from v14 to v15 keeps library fingerprints and starts '
+      'with no catalog ones', () async {
+    const track = v14.TracksData(
+      id: 1,
+      mediaStoreId: 11,
+      uri: 'content://media/11',
+      path: '/m/1.mp3',
+      folder: '/m',
+      title: 'Tizita',
+      durationMs: 241000,
+      sizeBytes: 1000,
+      dateAdded: '2026-10-01T00:00:00.000Z',
+      missing: 0,
+    );
+    final fingerprint = v14.TrackFingerprintsData(
+      trackId: 1,
+      version: 1,
+      sizeBytes: 1000,
+      data: Uint8List.fromList([1, 2, 3]),
+      updatedAt: '2026-11-12T12:00:00.000Z',
+    );
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 14,
+      newVersion: 15,
+      createOld: v14.DatabaseAtV14.new,
+      createNew: v15.DatabaseAtV15.new,
+      openTestedDatabase: ZemaDatabase.new,
+      createItems: (batch, oldDb) {
+        batch
+          ..insert(oldDb.tracks, track)
+          ..insert(oldDb.trackFingerprints, fingerprint);
+      },
+      validateItems: (newDb) async {
+        expect(
+          (await newDb.select(newDb.trackFingerprints).get()).single.data,
+          [1, 2, 3],
+        );
+        expect(await newDb.select(newDb.catalogFingerprints).get(), isEmpty);
       },
     );
   });

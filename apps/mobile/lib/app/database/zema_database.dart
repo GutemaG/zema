@@ -44,6 +44,7 @@ part 'zema_database.g.dart';
     IdentifiedSongs,
     DetectedMatches,
     PendingLookups,
+    CatalogFingerprints,
   ],
   daos: [
     LibraryDao,
@@ -75,7 +76,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   );
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -124,6 +125,8 @@ class ZemaDatabase extends _$ZemaDatabase {
         );
         await m.createTable(schema.pendingLookups);
       },
+      // v15: catalog fingerprints for Listen offline.
+      from14To15: (m, schema) => m.createTable(schema.catalogFingerprints),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

@@ -7,6 +7,8 @@ mixin _$FingerprintsDaoMixin on DatabaseAccessor<ZemaDatabase> {
   $TracksTable get tracks => attachedDatabase.tracks;
   $TrackFingerprintsTable get trackFingerprints =>
       attachedDatabase.trackFingerprints;
+  $CatalogFingerprintsTable get catalogFingerprints =>
+      attachedDatabase.catalogFingerprints;
   FingerprintsDaoManager get managers => FingerprintsDaoManager(this);
 }
 
@@ -19,5 +21,10 @@ class FingerprintsDaoManager {
       $$TrackFingerprintsTableTableManager(
         _db.attachedDatabase,
         _db.trackFingerprints,
+      );
+  $$CatalogFingerprintsTableTableManager get catalogFingerprints =>
+      $$CatalogFingerprintsTableTableManager(
+        _db.attachedDatabase,
+        _db.catalogFingerprints,
       );
 }

@@ -11,6 +11,7 @@ import 'package:zema/features/detection/data/background_access.dart';
 import 'package:zema/features/detection/data/lyrics_overlay.dart';
 import 'package:zema/features/detection/data/playback_detector.dart';
 import 'package:zema/features/detection/presentation/detection_settings_screen.dart';
+import 'package:zema/features/identify/application/offline_catalog.dart';
 import 'package:zema/features/identify/application/shared_fingerprints.dart';
 
 import '../../helpers/fake_library.dart';
@@ -169,5 +170,12 @@ void main() {
     await tester.tap(find.text('Share fingerprints of my songs'));
     await tester.pumpAndSettle();
     expect(preferences.getBool(ShareFingerprintsSetting.key), isTrue);
+
+    expect(find.text('Up to 50 MB · None yet'), findsOneWidget);
+    await tester.tap(find.text('Songs to identify offline'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My library\'s songs only'));
+    await tester.pumpAndSettle();
+    expect(preferences.getString(OfflineBudgetSetting.key), 'libraryOnly');
   });
 }

@@ -5,9 +5,9 @@ import 'zema_database.dart';
 
 part 'fingerprints_dao.g.dart';
 
-/// Audio fingerprints of library files, by Zema's track ID. A track's
-/// fingerprint goes with its row.
-@DriftAccessor(tables: [TrackFingerprints])
+/// Audio fingerprints of library files, by Zema's track ID (a track's
+/// fingerprint goes with its row), and of catalog recordings kept offline.
+@DriftAccessor(tables: [TrackFingerprints, CatalogFingerprints])
 class FingerprintsDao extends DatabaseAccessor<ZemaDatabase>
     with _$FingerprintsDaoMixin {
   FingerprintsDao(super.attachedDatabase);
@@ -78,4 +78,94 @@ class FingerprintsDao extends DatabaseAccessor<ZemaDatabase>
   Expression<bool> _usable(int version) =>
       trackFingerprints.version.equals(version) &
       const CustomExpression<bool>('length(data) > 0');
+
+  /// The catalog fingerprints kept, with their sizes in bytes.
+  Future<List<KeptFingerprint>> keptCatalog() async {
+    final size = catalogFingerprints.data.length;
+    final rows =
+        await (selectOnly(catalogFingerprints)..addColumns([
+              catalogFingerprints.recordingId,
+              catalogFingerprints.songId,
+              catalogFingerprints.revision,
+              catalogFingerprints.version,
+              size,
+            ]))
+            .get();
+    return [
+      for (final row in rows)
+        (
+          recordingId: row.read(catalogFingerprints.recordingId)!,
+          songId: row.read(catalogFingerprints.songId)!,
+          revision: row.read(catalogFingerprints.revision)!,
+          version: row.read(catalogFingerprints.version)!,
+          bytes: row.read(size) ?? 0,
+        ),
+    ];
+  }
+
+  Future<void> putCatalog(
+    String recordingId, {
+    required String songId,
+    required int revision,
+    required int version,
+    required Uint8List data,
+    DateTime? at,
+  }) => into(catalogFingerprints).insertOnConflictUpdate(
+    CatalogFingerprintsCompanion.insert(
+      recordingId: recordingId,
+      songId: songId,
+      revision: revision,
+      version: version,
+      data: data,
+      updatedAt: (at ?? DateTime.now()).toUtc(),
+    ),
+  );
+
+  Future<void> removeCatalog(Iterable<String> recordingIds) => (delete(
+    catalogFingerprints,
+  )..where((f) => f.recordingId.isIn(recordingIds))).go();
+
+  Future<List<CatalogFingerprintRow>> catalogPage(
+    int version, {
+    required String after,
+    required int limit,
+  }) =>
+      (select(catalogFingerprints)
+            ..where(
+              (f) =>
+                  f.version.equals(version) &
+                  f.recordingId.isBiggerThanValue(after),
+            )
+            ..orderBy([(f) => OrderingTerm.asc(f.recordingId)])
+            ..limit(limit))
+          .get();
+
+  /// How many catalog songs the kept fingerprints cover, and their size.
+  Stream<({int songs, int bytes})> watchCatalogCoverage() =>
+      customSelect(
+        'SELECT COUNT(DISTINCT song_id) AS songs, '
+        'COALESCE(SUM(length(data)), 0) AS bytes FROM catalog_fingerprints',
+        readsFrom: {catalogFingerprints},
+      ).watchSingle().map(
+        (row) => (songs: row.read<int>('songs'), bytes: row.read<int>('bytes')),
+      );
+
+  /// Changes when a catalog fingerprint is added, replaced or removed.
+  Future<(int, DateTime?)> catalogStamp() async {
+    final count = catalogFingerprints.recordingId.count();
+    final latest = catalogFingerprints.updatedAt.max();
+    final row = await (selectOnly(
+      catalogFingerprints,
+    )..addColumns([count, latest])).getSingle();
+    return (row.read(count)!, row.read(latest));
+  }
 }
+
+/// A catalog fingerprint on the phone, without its bytes.
+typedef KeptFingerprint = ({
+  String recordingId,
+  String songId,
+  int revision,
+  int version,
+  int bytes,
+});

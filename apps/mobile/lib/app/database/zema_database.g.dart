@@ -7378,6 +7378,436 @@ class PendingLookupsCompanion extends UpdateCompanion<PendingLookupRow> {
   }
 }
 
+class $CatalogFingerprintsTable extends CatalogFingerprints
+    with TableInfo<$CatalogFingerprintsTable, CatalogFingerprintRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CatalogFingerprintsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _recordingIdMeta = const VerificationMeta(
+    'recordingId',
+  );
+  @override
+  late final GeneratedColumn<String> recordingId = GeneratedColumn<String>(
+    'recording_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<Uint8List> data = GeneratedColumn<Uint8List>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    recordingId,
+    songId,
+    revision,
+    version,
+    data,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'catalog_fingerprints';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CatalogFingerprintRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('recording_id')) {
+      context.handle(
+        _recordingIdMeta,
+        recordingId.isAcceptableOrUnknown(
+          data['recording_id']!,
+          _recordingIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_recordingIdMeta);
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_songIdMeta);
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_revisionMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {recordingId};
+  @override
+  CatalogFingerprintRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CatalogFingerprintRow(
+      recordingId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recording_id'],
+      )!,
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}data'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CatalogFingerprintsTable createAlias(String alias) {
+    return $CatalogFingerprintsTable(attachedDatabase, alias);
+  }
+}
+
+class CatalogFingerprintRow extends DataClass
+    implements Insertable<CatalogFingerprintRow> {
+  final String recordingId;
+  final String songId;
+
+  /// The catalog's revision of the fingerprint.
+  final int revision;
+
+  /// `fingerprintVersion` the bytes were made with.
+  final int version;
+
+  /// `AudioFingerprint.toBytes`.
+  final Uint8List data;
+  final DateTime updatedAt;
+  const CatalogFingerprintRow({
+    required this.recordingId,
+    required this.songId,
+    required this.revision,
+    required this.version,
+    required this.data,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['recording_id'] = Variable<String>(recordingId);
+    map['song_id'] = Variable<String>(songId);
+    map['revision'] = Variable<int>(revision);
+    map['version'] = Variable<int>(version);
+    map['data'] = Variable<Uint8List>(data);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CatalogFingerprintsCompanion toCompanion(bool nullToAbsent) {
+    return CatalogFingerprintsCompanion(
+      recordingId: Value(recordingId),
+      songId: Value(songId),
+      revision: Value(revision),
+      version: Value(version),
+      data: Value(data),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CatalogFingerprintRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CatalogFingerprintRow(
+      recordingId: serializer.fromJson<String>(json['recordingId']),
+      songId: serializer.fromJson<String>(json['songId']),
+      revision: serializer.fromJson<int>(json['revision']),
+      version: serializer.fromJson<int>(json['version']),
+      data: serializer.fromJson<Uint8List>(json['data']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'recordingId': serializer.toJson<String>(recordingId),
+      'songId': serializer.toJson<String>(songId),
+      'revision': serializer.toJson<int>(revision),
+      'version': serializer.toJson<int>(version),
+      'data': serializer.toJson<Uint8List>(data),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CatalogFingerprintRow copyWith({
+    String? recordingId,
+    String? songId,
+    int? revision,
+    int? version,
+    Uint8List? data,
+    DateTime? updatedAt,
+  }) => CatalogFingerprintRow(
+    recordingId: recordingId ?? this.recordingId,
+    songId: songId ?? this.songId,
+    revision: revision ?? this.revision,
+    version: version ?? this.version,
+    data: data ?? this.data,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CatalogFingerprintRow copyWithCompanion(CatalogFingerprintsCompanion data) {
+    return CatalogFingerprintRow(
+      recordingId: data.recordingId.present
+          ? data.recordingId.value
+          : this.recordingId,
+      songId: data.songId.present ? data.songId.value : this.songId,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      version: data.version.present ? data.version.value : this.version,
+      data: data.data.present ? data.data.value : this.data,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogFingerprintRow(')
+          ..write('recordingId: $recordingId, ')
+          ..write('songId: $songId, ')
+          ..write('revision: $revision, ')
+          ..write('version: $version, ')
+          ..write('data: $data, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    recordingId,
+    songId,
+    revision,
+    version,
+    $driftBlobEquality.hash(data),
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CatalogFingerprintRow &&
+          other.recordingId == this.recordingId &&
+          other.songId == this.songId &&
+          other.revision == this.revision &&
+          other.version == this.version &&
+          $driftBlobEquality.equals(other.data, this.data) &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CatalogFingerprintsCompanion
+    extends UpdateCompanion<CatalogFingerprintRow> {
+  final Value<String> recordingId;
+  final Value<String> songId;
+  final Value<int> revision;
+  final Value<int> version;
+  final Value<Uint8List> data;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CatalogFingerprintsCompanion({
+    this.recordingId = const Value.absent(),
+    this.songId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.version = const Value.absent(),
+    this.data = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CatalogFingerprintsCompanion.insert({
+    required String recordingId,
+    required String songId,
+    required int revision,
+    required int version,
+    required Uint8List data,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : recordingId = Value(recordingId),
+       songId = Value(songId),
+       revision = Value(revision),
+       version = Value(version),
+       data = Value(data),
+       updatedAt = Value(updatedAt);
+  static Insertable<CatalogFingerprintRow> custom({
+    Expression<String>? recordingId,
+    Expression<String>? songId,
+    Expression<int>? revision,
+    Expression<int>? version,
+    Expression<Uint8List>? data,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (recordingId != null) 'recording_id': recordingId,
+      if (songId != null) 'song_id': songId,
+      if (revision != null) 'revision': revision,
+      if (version != null) 'version': version,
+      if (data != null) 'data': data,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CatalogFingerprintsCompanion copyWith({
+    Value<String>? recordingId,
+    Value<String>? songId,
+    Value<int>? revision,
+    Value<int>? version,
+    Value<Uint8List>? data,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CatalogFingerprintsCompanion(
+      recordingId: recordingId ?? this.recordingId,
+      songId: songId ?? this.songId,
+      revision: revision ?? this.revision,
+      version: version ?? this.version,
+      data: data ?? this.data,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (recordingId.present) {
+      map['recording_id'] = Variable<String>(recordingId.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<Uint8List>(data.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CatalogFingerprintsCompanion(')
+          ..write('recordingId: $recordingId, ')
+          ..write('songId: $songId, ')
+          ..write('revision: $revision, ')
+          ..write('version: $version, ')
+          ..write('data: $data, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -7409,6 +7839,8 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     this,
   );
   late final $PendingLookupsTable pendingLookups = $PendingLookupsTable(this);
+  late final $CatalogFingerprintsTable catalogFingerprints =
+      $CatalogFingerprintsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -7474,6 +7906,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     identifiedSongs,
     detectedMatches,
     pendingLookups,
+    catalogFingerprints,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -13497,6 +13930,254 @@ typedef $$PendingLookupsTableProcessedTableManager =
       PendingLookupRow,
       PrefetchHooks Function()
     >;
+typedef $$CatalogFingerprintsTableCreateCompanionBuilder =
+    CatalogFingerprintsCompanion Function({
+      required String recordingId,
+      required String songId,
+      required int revision,
+      required int version,
+      required Uint8List data,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CatalogFingerprintsTableUpdateCompanionBuilder =
+    CatalogFingerprintsCompanion Function({
+      Value<String> recordingId,
+      Value<String> songId,
+      Value<int> revision,
+      Value<int> version,
+      Value<Uint8List> data,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CatalogFingerprintsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $CatalogFingerprintsTable> {
+  $$CatalogFingerprintsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CatalogFingerprintsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $CatalogFingerprintsTable> {
+  $$CatalogFingerprintsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CatalogFingerprintsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $CatalogFingerprintsTable> {
+  $$CatalogFingerprintsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CatalogFingerprintsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $CatalogFingerprintsTable,
+          CatalogFingerprintRow,
+          $$CatalogFingerprintsTableFilterComposer,
+          $$CatalogFingerprintsTableOrderingComposer,
+          $$CatalogFingerprintsTableAnnotationComposer,
+          $$CatalogFingerprintsTableCreateCompanionBuilder,
+          $$CatalogFingerprintsTableUpdateCompanionBuilder,
+          (
+            CatalogFingerprintRow,
+            BaseReferences<
+              _$ZemaDatabase,
+              $CatalogFingerprintsTable,
+              CatalogFingerprintRow
+            >,
+          ),
+          CatalogFingerprintRow,
+          PrefetchHooks Function()
+        > {
+  $$CatalogFingerprintsTableTableManager(
+    _$ZemaDatabase db,
+    $CatalogFingerprintsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CatalogFingerprintsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CatalogFingerprintsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CatalogFingerprintsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> recordingId = const Value.absent(),
+                Value<String> songId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<Uint8List> data = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CatalogFingerprintsCompanion(
+                recordingId: recordingId,
+                songId: songId,
+                revision: revision,
+                version: version,
+                data: data,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String recordingId,
+                required String songId,
+                required int revision,
+                required int version,
+                required Uint8List data,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CatalogFingerprintsCompanion.insert(
+                recordingId: recordingId,
+                songId: songId,
+                revision: revision,
+                version: version,
+                data: data,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CatalogFingerprintsTable, CatalogFingerprintRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $CatalogFingerprintsTable,
+                    CatalogFingerprintRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CatalogFingerprintsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $CatalogFingerprintsTable,
+      CatalogFingerprintRow,
+      $$CatalogFingerprintsTableFilterComposer,
+      $$CatalogFingerprintsTableOrderingComposer,
+      $$CatalogFingerprintsTableAnnotationComposer,
+      $$CatalogFingerprintsTableCreateCompanionBuilder,
+      $$CatalogFingerprintsTableUpdateCompanionBuilder,
+      (
+        CatalogFingerprintRow,
+        BaseReferences<
+          _$ZemaDatabase,
+          $CatalogFingerprintsTable,
+          CatalogFingerprintRow
+        >,
+      ),
+      CatalogFingerprintRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -13539,4 +14220,6 @@ class $ZemaDatabaseManager {
       $$DetectedMatchesTableTableManager(_db, _db.detectedMatches);
   $$PendingLookupsTableTableManager get pendingLookups =>
       $$PendingLookupsTableTableManager(_db, _db.pendingLookups);
+  $$CatalogFingerprintsTableTableManager get catalogFingerprints =>
+      $$CatalogFingerprintsTableTableManager(_db, _db.catalogFingerprints);
 }

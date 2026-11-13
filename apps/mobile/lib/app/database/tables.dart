@@ -289,6 +289,27 @@ class TrackFingerprints extends Table {
   Set<Column<Object>> get primaryKey => {trackId};
 }
 
+/// A catalog recording's fingerprint kept on the phone (intent 009 FR-4,
+/// v15), at the catalog's density, so Listen finds catalog songs offline.
+@DataClassName('CatalogFingerprintRow')
+class CatalogFingerprints extends Table {
+  TextColumn get recordingId => text()();
+  TextColumn get songId => text()();
+
+  /// The catalog's revision of the fingerprint.
+  IntColumn get revision => integer()();
+
+  /// `fingerprintVersion` the bytes were made with.
+  IntColumn get version => integer()();
+
+  /// `AudioFingerprint.toBytes`.
+  BlobColumn get data => blob()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {recordingId};
+}
+
 /// Songs Listen identified (intent 009 FR-9), newest last: a library track,
 /// or a catalog song (v14).
 @DataClassName('IdentifiedSongRow')

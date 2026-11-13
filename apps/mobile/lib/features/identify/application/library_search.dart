@@ -18,12 +18,29 @@ typedef LibraryHeard = ({
 });
 const _died = 'died';
 
+/// Catalog recordings in the search have IDs with this prefix; library
+/// files have their track ID.
+const catalogSearchPrefix = 'c:';
+
+/// A catalog recording kept on the phone: its song and length.
+typedef OfflineRecording = ({String songId, Duration duration});
+
+/// Searches the library's fingerprints and the catalog's kept on the phone
+/// (intent 009 FR-4), in a worker isolate.
 class LibrarySearch {
-  LibrarySearch._(this._isolate, this._worker, this.recordingCount);
+  LibrarySearch._(
+    this._isolate,
+    this._worker,
+    this.recordingCount,
+    this.catalogRecordings,
+  );
 
   final Isolate _isolate;
   final SendPort _worker;
   final int recordingCount;
+
+  /// The catalog recordings searched, by recording ID.
+  final Map<String, OfflineRecording> catalogRecordings;
 
   static Future<LibrarySearch> open(ZemaDatabase db) async {
     final ready = ReceivePort();
@@ -52,8 +69,40 @@ class LibrarySearch {
         _log.warning('Deleting ${damaged.length} damaged fingerprints');
         await db.fingerprintsDao.remove(damaged);
       }
+      final catalog = <String, OfflineRecording>{};
+      final damagedCatalog = <String>[];
+      var afterId = '';
+      while (true) {
+        final rows = await db.fingerprintsDao.catalogPage(
+          fingerprintVersion,
+          after: afterId,
+          limit: _pageSize,
+        );
+        if (rows.isEmpty) break;
+        final frames = await _ask<Map<String, int>>(
+          isolate,
+          worker,
+          _AddCatalogRows([
+            for (final row in rows) (row.recordingId, row.data),
+          ]),
+        );
+        for (final row in rows) {
+          if (frames[row.recordingId] case final count?) {
+            catalog[row.recordingId] = (
+              songId: row.songId,
+              duration: fingerprintFrameTime(count),
+            );
+          } else {
+            damagedCatalog.add(row.recordingId);
+          }
+        }
+        afterId = rows.last.recordingId;
+      }
+      if (damagedCatalog.isNotEmpty) {
+        await db.fingerprintsDao.removeCatalog(damagedCatalog);
+      }
       final count = await _ask<int>(isolate, worker, const _Count());
-      return LibrarySearch._(isolate, worker, count);
+      return LibrarySearch._(isolate, worker, count, catalog);
     } catch (_) {
       isolate.kill(priority: Isolate.immediate);
       rethrow;
@@ -90,6 +139,12 @@ class _AddRows extends _Request {
   final List<(int, Uint8List)> rows;
 }
 
+class _AddCatalogRows extends _Request {
+  const _AddCatalogRows(this.rows);
+
+  final List<(String, Uint8List)> rows;
+}
+
 class _Count extends _Request {
   const _Count();
 }
@@ -116,6 +171,7 @@ void _work(SendPort main) {
     try {
       reply.send(switch (request) {
         _AddRows(:final rows) => _add(index, rows),
+        _AddCatalogRows(:final rows) => _addCatalog(index, rows),
         _Count() => index.recordingCount,
         _Identify(:final pcm, :final rate) => _identify(index, pcm, rate),
       });
@@ -140,4 +196,22 @@ List<int> _add(FingerprintIndex index, List<(int, Uint8List)> rows) {
     }
   }
   return damaged;
+}
+
+/// Adds catalog [rows]; returns the frame count of each one added.
+Map<String, int> _addCatalog(
+  FingerprintIndex index,
+  List<(String, Uint8List)> rows,
+) {
+  final added = <String, int>{};
+  for (final (id, data) in rows) {
+    try {
+      final fingerprint = AudioFingerprint.fromBytes(data);
+      index.add('$catalogSearchPrefix$id', fingerprint);
+      added[id] = fingerprint.frameCount;
+    } on FingerprintFormatFailure {
+      continue;
+    }
+  }
+  return added;
 }

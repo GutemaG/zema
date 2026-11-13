@@ -34,6 +34,14 @@ abstract interface class AudioCatalog {
     int limit = 3,
   });
 
+  /// The fingerprints of this `fingerprintVersion` phones can keep (intent
+  /// 009, FR-4), most identified first.
+  Future<List<OfflineFingerprintEntry>> offlineFingerprints();
+
+  /// The fingerprints of up to 20 of [recordingIds]; ones not in the
+  /// catalog are left out.
+  Future<List<CatalogFingerprint>> fingerprints(List<String> recordingIds);
+
   /// Of [recordingIds] (at most 200), the catalog recordings with no
   /// fingerprint of this `fingerprintVersion`.
   Future<Set<String>> missingFingerprints(List<String> recordingIds);
@@ -46,6 +54,40 @@ abstract interface class AudioCatalog {
     AudioFingerprint fingerprint, {
     required String installId,
   });
+}
+
+/// A catalog recording's fingerprint that phones can keep offline.
+class OfflineFingerprintEntry {
+  const OfflineFingerprintEntry({
+    required this.recordingId,
+    required this.songId,
+    required this.revision,
+    required this.hashCount,
+    required this.identified,
+  });
+
+  final String recordingId;
+  final String songId;
+
+  /// Goes up each time the fingerprint is replaced.
+  final int revision;
+  final int hashCount;
+
+  /// How often Listen found the recording.
+  final int identified;
+}
+
+/// A catalog recording's fingerprint, at [revision].
+class CatalogFingerprint {
+  const CatalogFingerprint({
+    required this.recordingId,
+    required this.revision,
+    required this.fingerprint,
+  });
+
+  final String recordingId;
+  final int revision;
+  final AudioFingerprint fingerprint;
 }
 
 /// What became of a shared fingerprint.

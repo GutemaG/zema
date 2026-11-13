@@ -7,6 +7,8 @@ import '../../../app/database/database_provider.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/format_bytes.dart';
+import '../../identify/application/offline_catalog.dart';
 import '../../identify/application/shared_fingerprints.dart';
 import '../../lyrics/presentation/lyrics_options_sheet.dart';
 import '../../settings/presentation/widgets/choice_picker.dart';
@@ -75,6 +77,11 @@ class _DetectionSettingsScreenState
     };
 
     final shareFingerprints = ref.watch(shareFingerprintsProvider) ?? false;
+    final offlineBudget = ref.watch(offlineBudgetProvider);
+    String budgetName(OfflineBudget budget) => switch (budget.megabytes) {
+      final megabytes? => l10n.detectionOfflineMegabytes(megabytes),
+      null => l10n.detectionOfflineLibraryOnly,
+    };
     return Scaffold(
       appBar: AppBar(title: Text(l10n.detectionSettingsTitle)),
       body: ListView(
@@ -231,6 +238,33 @@ class _DetectionSettingsScreenState
           SettingsGroup(
             title: l10n.detectionSectionIdentification,
             children: [
+              SettingsRow(
+                label: l10n.detectionOfflineIndex,
+                value: [
+                  budgetName(offlineBudget),
+                  if (ref.watch(offlineCoverageProvider).value
+                      case final coverage?)
+                    l10n.detectionOfflineCoverage(
+                      coverage.songs,
+                      formatBytes(coverage.bytes),
+                    ),
+                ].join(' · '),
+                onTap: () async {
+                  final picked = await showChoicePicker<OfflineBudget>(
+                    context,
+                    title: l10n.detectionOfflineIndex,
+                    note: l10n.detectionOfflineIndexNote,
+                    options: [
+                      for (final budget in OfflineBudget.values)
+                        (budget, budgetName(budget)),
+                    ],
+                    current: offlineBudget,
+                  );
+                  if (picked != null) {
+                    await ref.read(offlineBudgetProvider.notifier).set(picked);
+                  }
+                },
+              ),
               SettingsRow(
                 label: l10n.detectionShareFingerprints,
                 trailing: Switch(

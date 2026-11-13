@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:supabase/supabase.dart';
@@ -8,7 +9,8 @@ import 'backend_errors.dart';
 
 /// The catalog served by a Supabase backend (see `backend/`), through its
 /// RPC functions `song_index`, `get_song`, `search_songs`, `submit_report`,
-/// `identify_audio`, `missing_fingerprints` and `share_fingerprint`.
+/// `identify_audio`, `missing_fingerprints`, `share_fingerprint`,
+/// `offline_fingerprints` and `get_fingerprints`.
 ///
 /// Every request gives up after [timeout]. Failures are thrown as
 /// [ZemaFailure]s only: [NetworkFailure], [RateLimitFailure],
@@ -86,6 +88,54 @@ class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
     });
     return _parse(
       () => [for (final row in _rows(rows)) _audioMatch(row, queries)],
+    );
+  }
+
+  @override
+  Future<List<OfflineFingerprintEntry>> offlineFingerprints() async {
+    final rows = await _call('offline_fingerprints', {
+      'version': fingerprintVersion,
+    });
+    return _parse(
+      () => [
+        for (final row in _rows(rows))
+          OfflineFingerprintEntry(
+            recordingId: row['recording_id']! as String,
+            songId: row['song_id']! as String,
+            revision: row['revision']! as int,
+            hashCount: row['hash_count']! as int,
+            identified: row['identified']! as int,
+          ),
+      ],
+    );
+  }
+
+  @override
+  Future<List<CatalogFingerprint>> fingerprints(
+    List<String> recordingIds,
+  ) async {
+    if (recordingIds.isEmpty) return const [];
+    final rows = await _call('get_fingerprints', {
+      'version': fingerprintVersion,
+      'ids': recordingIds.take(20).toList(),
+    });
+    return _parse(
+      () => [
+        for (final row in _rows(rows))
+          CatalogFingerprint(
+            recordingId: row['recording_id']! as String,
+            revision: row['revision']! as int,
+            fingerprint: AudioFingerprint(
+              hashes: Uint32List.fromList(
+                (row['hashes']! as List<Object?>).cast<int>(),
+              ),
+              frames: Uint32List.fromList(
+                (row['frames']! as List<Object?>).cast<int>(),
+              ),
+              frameCount: row['frame_count']! as int,
+            ),
+          ),
+      ],
     );
   }
 

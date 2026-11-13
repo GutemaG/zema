@@ -136,6 +136,14 @@ class _FakeCatalog implements AudioCatalog {
   }
 
   @override
+  Future<List<OfflineFingerprintEntry>> offlineFingerprints() async => const [];
+
+  @override
+  Future<List<CatalogFingerprint>> fingerprints(
+    List<String> recordingIds,
+  ) async => const [];
+
+  @override
   Future<Set<String>> missingFingerprints(List<String> recordingIds) async =>
       const {};
 
@@ -425,6 +433,26 @@ void main() {
       expect(await db.identifiedDao.pending(), isEmpty);
       expect(found.single.id, 'selam');
       expect((await db.identifiedDao.watchAll().first).single.songId, 'selam');
+    });
+
+    test('kept on the phone, it is found offline without asking', () async {
+      await db.fingerprintsDao.putCatalog(
+        'selam-rec',
+        songId: 'selam',
+        revision: 1,
+        version: fingerprintVersion,
+        data: const Fingerprinter().fingerprint(selam).toBytes(),
+      );
+      catalog!.offline = true;
+      microphone.pcm = Float32List.sublistView(selam, 5 * _rate, 15 * _rate);
+
+      final found = await listenUntilDone() as ListenFound;
+      expect(found.song!.id, 'selam');
+      expect(found.match.recordingId, 'selam-rec');
+      expect(found.match.position.inMilliseconds, closeTo(5000, 50));
+      expect(found.duration.inMilliseconds, closeTo(40000, 100));
+      expect(catalog!.asked, 0);
+      expect(await db.identifiedDao.pending(), isEmpty);
     });
 
     test('a song the catalog does not have is not kept', () async {

@@ -4725,6 +4725,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t save that. Check your connection and try again.'**
   String get reviewFingerprintFailed;
+
+  /// S27s row: how much room the offline index may take (intent 009 FR-4)
+  ///
+  /// In en, this message translates to:
+  /// **'Songs to identify offline'**
+  String get detectionOfflineIndex;
+
+  /// Note in the offline index picker
+  ///
+  /// In en, this message translates to:
+  /// **'Fingerprints of catalog songs kept on this phone, so Listen finds them without the internet. Your library\'s songs come first, then the most identified. Updated on Wi-Fi.'**
+  String get detectionOfflineIndexNote;
+
+  /// Offline index budget: only songs linked to library files
+  ///
+  /// In en, this message translates to:
+  /// **'My library\'s songs only'**
+  String get detectionOfflineLibraryOnly;
+
+  /// Offline index budget option
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {megabytes} MB'**
+  String detectionOfflineMegabytes(int megabytes);
+
+  /// Under detectionOfflineIndex: songs covered and their size, e.g. 1.2 MB
+  ///
+  /// In en, this message translates to:
+  /// **'{songs, plural, =0{None yet} =1{1 song · {size}} other{{songs} songs · {size}}}'**
+  String detectionOfflineCoverage(int songs, String size);
 }
 
 class _AppLocalizationsDelegate

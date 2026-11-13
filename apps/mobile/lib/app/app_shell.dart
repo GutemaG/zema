@@ -14,6 +14,7 @@ import '../features/contribute/application/recording.dart';
 import '../features/contribute/presentation/my_contributions_screen.dart';
 import '../features/contribute/data/shared_audio.dart';
 import '../features/identify/application/listen_controller.dart';
+import '../features/identify/application/offline_catalog.dart';
 import '../features/identify/application/pending_lookups.dart';
 import '../features/identify/application/quick_listen.dart';
 import '../features/identify/application/shared_fingerprints.dart';
@@ -148,6 +149,7 @@ class AppShell extends ConsumerWidget {
     ref.listen(reportStartupFlushProvider, (_, _) {});
     ref.listen(pendingLookupFlushProvider, (_, _) {});
     ref.listen(fingerprintShareSyncProvider, (_, _) {});
+    ref.listen(offlineCatalogUpdatesProvider, (_, _) {});
     ref.listen(askShareFingerprintsProvider, (_, next) {
       if (next case AsyncData(value: true)) {
         unawaited(_askShareFingerprints(context, ref));
