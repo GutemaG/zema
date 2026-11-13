@@ -41,6 +41,7 @@ class LaunchChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHandle
 
     private fun requestOf(intent: Intent?): Map<String, Any?>? = when (intent?.action) {
         ACTION_HISTORY -> mapOf("open" to "history")
+        ACTION_SONG -> mapOf("open" to "song", "songId" to intent.getLongExtra("songId", -1))
         ACTION_MATCH -> mapOf(
             "open" to "match",
             "trackId" to intent.getLongExtra("trackId", -1),
@@ -57,11 +58,18 @@ class LaunchChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHandle
         private const val NAME = "zema/launch"
         const val ACTION_HISTORY = "com.zemaapp.zema.OPEN_LISTEN_HISTORY"
         const val ACTION_MATCH = "com.zemaapp.zema.OPEN_LISTEN_MATCH"
+        const val ACTION_SONG = "com.zemaapp.zema.OPEN_SONG"
 
         fun historyIntent(context: Context): Intent =
             Intent(context, MainActivity::class.java)
                 .setAction(ACTION_HISTORY)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+        fun songIntent(context: Context, songId: Long?): Intent =
+            Intent(context, MainActivity::class.java)
+                .setAction(if (songId == null) Intent.ACTION_MAIN else ACTION_SONG)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .apply { if (songId != null) putExtra("songId", songId) }
 
         fun matchIntent(context: Context, args: Map<*, *>): Intent =
             Intent(context, MainActivity::class.java)

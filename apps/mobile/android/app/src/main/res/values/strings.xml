@@ -8,4 +8,21 @@
     <string name="listen_widget_last_by">Last song identified · %1$s</string>
     <string name="listen_widget_mic">Identify a song</string>
     <string name="detection_service_label">Lyrics for songs in other apps</string>
+    <string name="overlay_show">Show lyrics</string>
+    <string name="overlay_lock">Let touches through</string>
+    <string name="overlay_unlock">Unlock lyrics</string>
+    <string name="overlay_expand">Expand lyrics</string>
+    <string name="overlay_collapse">Smaller lyrics</string>
+    <string name="overlay_minimize">Minimize lyrics</string>
+    <string name="overlay_close">Close lyrics</string>
+    <string name="overlay_open_app">Open in Zema</string>
+    <string name="overlay_text_smaller">Smaller text</string>
+    <string name="overlay_text_bigger">Bigger text</string>
+    <string name="overlay_opacity">Opacity</string>
+    <string name="overlay_sync_later">Lyrics later</string>
+    <string name="overlay_sync_earlier">Lyrics earlier</string>
+    <string name="overlay_sync">Timing %1$s s</string>
+    <string name="overlay_resize">Resize</string>
+    <string name="overlay_not_synced">Lyrics aren\'t timed yet. Expand to read them.</string>
+    <string name="overlay_no_lyrics">No lyrics for this song yet</string>
 </resources>
