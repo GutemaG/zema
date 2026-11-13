@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../features/detection/application/detected_song.dart';
+import '../features/detection/application/lyrics_overlay_sync.dart';
 import '../features/account/application/account_providers.dart';
 import '../features/contribute/application/my_contributions.dart';
 import '../features/contribute/application/recording.dart';
@@ -96,6 +97,8 @@ class AppShell extends ConsumerWidget {
               ),
             );
         await context.push<void>(AppRoutes.listen);
+      case OpenSong(:final songId):
+        await context.push<void>(AppRoutes.song(songId));
     }
   }
 
@@ -108,6 +111,7 @@ class AppShell extends ConsumerWidget {
     });
     ref.listen(homeWidgetSyncProvider, (_, _) {});
     ref.listen(listenedMatchSyncProvider, (_, _) {});
+    ref.listen(lyricsOverlaySyncProvider, (_, _) {});
     ref.listen(incomingSharesProvider, (_, next) {
       if (next case AsyncData(:final value)) {
         unawaited(_contributeShared(context, ref, value));

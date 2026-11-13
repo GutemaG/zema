@@ -5,7 +5,7 @@ data class LyricsLine(val atMs: Long?, val text: String)
 data class LyricsSheet(
     val key: String,
     val source: String,
-    val songId: Long?,
+    val songId: String?,
     val title: String,
     val artist: String?,
     val lines: List<LyricsLine>,
@@ -35,7 +35,7 @@ data class LyricsSheet(
             return LyricsSheet(
                 key = key,
                 source = source,
-                songId = (map["songId"] as? Number)?.toLong(),
+                songId = map["songId"] as? String,
                 title = map["title"] as? String ?: "",
                 artist = map["artist"] as? String,
                 lines = if (lines.all { it.atMs != null }) lines.sortedBy { it.atMs } else lines,

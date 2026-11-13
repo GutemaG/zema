@@ -57,6 +57,12 @@ class OpenListenMatch extends LaunchRequest {
   }
 }
 
+class OpenSong extends LaunchRequest {
+  const OpenSong(this.songId);
+
+  final String songId;
+}
+
 abstract interface class LaunchReceiver {
   Future<LaunchRequest?> takeInitial();
 
@@ -105,6 +111,10 @@ class AndroidLaunchReceiver implements LaunchReceiver {
     return switch (value['open']) {
       'history' => const OpenListenHistory(),
       'match' => OpenListenMatch.fromMap(value),
+      'song' => switch (value['songId']) {
+        final String id when id.isNotEmpty => OpenSong(id),
+        _ => null,
+      },
       _ => null,
     };
   }

@@ -41,7 +41,7 @@ class LaunchChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHandle
 
     private fun requestOf(intent: Intent?): Map<String, Any?>? = when (intent?.action) {
         ACTION_HISTORY -> mapOf("open" to "history")
-        ACTION_SONG -> mapOf("open" to "song", "songId" to intent.getLongExtra("songId", -1))
+        ACTION_SONG -> mapOf("open" to "song", "songId" to intent.getStringExtra("songId"))
         ACTION_MATCH -> mapOf(
             "open" to "match",
             "trackId" to intent.getLongExtra("trackId", -1),
@@ -65,7 +65,7 @@ class LaunchChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHandle
                 .setAction(ACTION_HISTORY)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-        fun songIntent(context: Context, songId: Long?): Intent =
+        fun songIntent(context: Context, songId: String?): Intent =
             Intent(context, MainActivity::class.java)
                 .setAction(if (songId == null) Intent.ACTION_MAIN else ACTION_SONG)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)

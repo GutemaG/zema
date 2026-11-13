@@ -140,6 +140,17 @@ class DetectedMatchController {
   Future<void> confirm(DetectedPlayback playback, SongIdentity song) =>
       _dao.remember(detectionKey(playback), song.id, at: clock.now());
 
+  Future<void> setOffset(
+    DetectedPlayback playback,
+    String songId,
+    Duration offset,
+  ) => _dao.remember(
+    detectionKey(playback),
+    songId,
+    offset: offset,
+    at: clock.now(),
+  );
+
   Future<void> notMezmur(DetectedPlayback playback) =>
       _dao.remember(detectionKey(playback), null, at: clock.now());
 
