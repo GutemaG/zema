@@ -7,6 +7,7 @@ import 'package:zema_core/zema_core.dart';
 
 import '../features/detection/application/detected_song.dart';
 import '../features/detection/application/lyrics_overlay_sync.dart';
+import '../features/detection/presentation/choose_detected_song_sheet.dart';
 import '../features/account/application/account_providers.dart';
 import '../features/contribute/application/my_contributions.dart';
 import '../features/contribute/application/recording.dart';
@@ -99,7 +100,26 @@ class AppShell extends ConsumerWidget {
         await context.push<void>(AppRoutes.listen);
       case OpenSong(:final songId):
         await context.push<void>(AppRoutes.song(songId));
+      case OpenDetected(:final key, :final ask):
+        final detected = await _detected(ref, key);
+        if (detected == null || !context.mounted) return;
+        switch (ask) {
+          case DetectedAsk.choose:
+            await showChooseDetectedSongSheet(context, detected);
+          case DetectedAsk.listen:
+            ref.read(listeningForProvider.notifier).set(detected.playback);
+            await context.push<void>(AppRoutes.listen);
+        }
     }
+  }
+
+  static Future<DetectedSong?> _detected(WidgetRef ref, String key) async {
+    for (var i = 0; i < 30; i++) {
+      final song = ref.read(detectedSongProvider);
+      if (song != null && song.key == key) return song;
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+    return null;
   }
 
   @override

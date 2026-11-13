@@ -67,20 +67,43 @@ final detectedLyricsProvider = FutureProvider.family<DetectedLyrics?, String>((
   );
 }, retry: (_, _) => null);
 
-final overlaySheetProvider = Provider<OverlaySheet?>((ref) {
+final overlayContentProvider = Provider<OverlayContent?>((ref) {
   final detected = ref.watch(detectedSongProvider);
-  if (detected is! DetectedMatch) return null;
-  final lyrics = ref.watch(detectedLyricsProvider(detected.song.id)).value;
-  if (lyrics == null) return null;
-  return OverlaySheet(
-    key: detected.key,
-    source: detected.playback.source,
-    songId: detected.song.id,
-    title: lyrics.song.title,
-    artist: lyrics.song.artist,
-    lines: lyrics.lines,
-    offset: detected.offset - lyrics.recordingOffset,
-  );
+  switch (detected) {
+    case DetectedUnsure(:final candidates) when candidates.isNotEmpty:
+      final best = candidates.first;
+      return OverlayQuestion(
+        key: detected.key,
+        source: detected.playback.source,
+        songId: best.id,
+        title: best.title,
+        artist: best.artist,
+      );
+    case DetectedMatch():
+      return switch (ref.watch(detectedLyricsProvider(detected.song.id))) {
+        AsyncData(value: final lyrics?) => OverlaySheet(
+          key: detected.key,
+          source: detected.playback.source,
+          songId: detected.song.id,
+          title: lyrics.song.title,
+          artist: lyrics.song.artist,
+          lines: lyrics.lines,
+          offset: detected.offset - lyrics.recordingOffset,
+        ),
+        AsyncError() => OverlaySheet(
+          key: detected.key,
+          source: detected.playback.source,
+          songId: detected.song.id,
+          title: detected.song.title,
+          artist: detected.song.artist,
+          lines: const [],
+          failed: true,
+        ),
+        _ => null,
+      };
+    default:
+      return null;
+  }
 });
 
 final closedOverlaysProvider = NotifierProvider<ClosedOverlays, Set<String>>(
@@ -98,7 +121,7 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
   final overlay = ref.watch(lyricsOverlayProvider);
 
   void apply() {
-    final sheet = ref.read(overlaySheetProvider);
+    final sheet = ref.read(overlayContentProvider);
     final matching =
         ref.read(currentDetectionProvider) != null &&
         ref.read(detectedSongProvider) == null;
@@ -110,7 +133,7 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
     }
   }
 
-  ref.listen(overlaySheetProvider, (_, _) => apply(), fireImmediately: true);
+  ref.listen(overlayContentProvider, (_, _) => apply(), fireImmediately: true);
   ref.listen(closedOverlaysProvider, (_, _) => apply());
   final subscription = overlay.actions.listen((action) {
     switch (action) {
@@ -130,6 +153,30 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
               )
               .catchError((Object e, StackTrace s) {
                 _log.warning('Could not save the timing', e, s);
+              }),
+        );
+      case OverlayConfirmed(:final key, :final songId):
+        final detected = ref.read(detectedSongProvider);
+        if (detected is! DetectedUnsure || detected.key != key) return;
+        final song = detected.candidates.where((c) => c.id == songId);
+        if (song.isEmpty) return;
+        unawaited(
+          ref
+              .read(detectedMatchControllerProvider)
+              .confirm(detected.playback, song.first)
+              .catchError((Object e, StackTrace s) {
+                _log.warning('Could not save the answer', e, s);
+              }),
+        );
+      case OverlayNotMezmur(:final key):
+        final detected = ref.read(detectedSongProvider);
+        if (detected == null || detected.key != key) return;
+        unawaited(
+          ref
+              .read(detectedMatchControllerProvider)
+              .notMezmur(detected.playback)
+              .catchError((Object e, StackTrace s) {
+                _log.warning('Could not save the answer', e, s);
               }),
         );
       case OverlayOpened():

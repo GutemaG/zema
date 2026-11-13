@@ -10,6 +10,8 @@ data class LyricsSheet(
     val artist: String?,
     val lines: List<LyricsLine>,
     val offsetMs: Long,
+    val question: Boolean = false,
+    val failed: Boolean = false,
 ) {
     val timed: Boolean get() = lines.isNotEmpty() && lines.all { it.atMs != null }
 
@@ -40,6 +42,8 @@ data class LyricsSheet(
                 artist = map["artist"] as? String,
                 lines = if (lines.all { it.atMs != null }) lines.sortedBy { it.atMs } else lines,
                 offsetMs = (map["offsetMs"] as? Number)?.toLong() ?: 0,
+                question = map["kind"] == "question",
+                failed = map["failed"] == true,
             )
         }
     }

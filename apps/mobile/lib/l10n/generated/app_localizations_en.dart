@@ -2501,4 +2501,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listenAddThisSong => 'Add this song';
+
+  @override
+  String get detectedChooseTitle => 'Which song is playing?';
 }

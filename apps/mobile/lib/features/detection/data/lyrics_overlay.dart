@@ -26,33 +26,45 @@ class OverlayLine {
   String toString() => 'OverlayLine($at $text)';
 }
 
+sealed class OverlayContent {
+  const OverlayContent({required this.key, required this.source});
+
+  final String key;
+  final String source;
+
+  Map<String, Object?> toMap();
+}
+
 @immutable
-class OverlaySheet {
+class OverlaySheet extends OverlayContent {
   const OverlaySheet({
-    required this.key,
-    required this.source,
+    required super.key,
+    required super.source,
     required this.songId,
     required this.title,
     required this.lines,
     this.artist,
     this.offset = Duration.zero,
+    this.failed = false,
   });
 
-  final String key;
-  final String source;
   final String songId;
   final String title;
   final String? artist;
   final List<OverlayLine> lines;
   final Duration offset;
+  final bool failed;
 
+  @override
   Map<String, Object?> toMap() => {
+    'kind': 'lyrics',
     'key': key,
     'source': source,
     'songId': songId,
     'title': title,
     'artist': ?artist,
     'offsetMs': offset.inMilliseconds,
+    'failed': failed,
     'lines': [for (final line in lines) line.toMap()],
   };
 
@@ -65,6 +77,7 @@ class OverlaySheet {
       other.title == title &&
       other.artist == artist &&
       other.offset == offset &&
+      other.failed == failed &&
       listEquals(other.lines, lines);
 
   @override
@@ -75,11 +88,52 @@ class OverlaySheet {
     title,
     artist,
     offset,
+    failed,
     Object.hashAll(lines),
   );
 
   @override
   String toString() => 'OverlaySheet($songId for $key, ${lines.length} lines)';
+}
+
+@immutable
+class OverlayQuestion extends OverlayContent {
+  const OverlayQuestion({
+    required super.key,
+    required super.source,
+    required this.songId,
+    required this.title,
+    this.artist,
+  });
+
+  final String songId;
+  final String title;
+  final String? artist;
+
+  @override
+  Map<String, Object?> toMap() => {
+    'kind': 'question',
+    'key': key,
+    'source': source,
+    'songId': songId,
+    'title': title,
+    'artist': ?artist,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is OverlayQuestion &&
+      other.key == key &&
+      other.source == source &&
+      other.songId == songId &&
+      other.title == title &&
+      other.artist == artist;
+
+  @override
+  int get hashCode => Object.hash(key, source, songId, title, artist);
+
+  @override
+  String toString() => 'OverlayQuestion($songId for $key)';
 }
 
 sealed class OverlayAction {
@@ -98,6 +152,11 @@ sealed class OverlayAction {
         Duration(milliseconds: (value['offsetMs'] as num?)?.toInt() ?? 0),
       ),
       'open' => OverlayOpened(key, songId: value['songId'] as String?),
+      'confirm' => switch (value['songId']) {
+        final String id => OverlayConfirmed(key, id),
+        _ => null,
+      },
+      'notMezmur' => OverlayNotMezmur(key),
       _ => null,
     };
   }
@@ -119,12 +178,22 @@ class OverlayOpened extends OverlayAction {
   final String? songId;
 }
 
+class OverlayConfirmed extends OverlayAction {
+  const OverlayConfirmed(super.key, this.songId);
+
+  final String songId;
+}
+
+class OverlayNotMezmur extends OverlayAction {
+  const OverlayNotMezmur(super.key);
+}
+
 abstract interface class LyricsOverlay {
   Future<bool> canShow();
 
   Future<void> openSettings();
 
-  Future<bool> show(OverlaySheet sheet);
+  Future<bool> show(OverlayContent content);
 
   Future<void> hide();
 
@@ -141,7 +210,7 @@ class NoLyricsOverlay implements LyricsOverlay {
   Future<void> openSettings() async {}
 
   @override
-  Future<bool> show(OverlaySheet sheet) async => false;
+  Future<bool> show(OverlayContent content) async => false;
 
   @override
   Future<void> hide() async {}
@@ -168,8 +237,8 @@ class AndroidLyricsOverlay implements LyricsOverlay {
       _call<void>('openSettings', 'Opening the overlay settings');
 
   @override
-  Future<bool> show(OverlaySheet sheet) async =>
-      await _call<bool>('show', 'Showing lyrics', sheet.toMap()) ?? false;
+  Future<bool> show(OverlayContent content) async =>
+      await _call<bool>('show', 'Showing lyrics', content.toMap()) ?? false;
 
   @override
   Future<void> hide() => _call<void>('hide', 'Hiding lyrics');

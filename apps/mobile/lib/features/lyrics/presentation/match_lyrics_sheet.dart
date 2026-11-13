@@ -23,7 +23,7 @@ Future<SongIdentity?> showMatchLyricsSheet(BuildContext context, Track track) {
 
 /// Every lyrics song, searchable, with the one [track] is linked to
 /// checked.
-class MatchLyricsSheet extends ConsumerStatefulWidget {
+class MatchLyricsSheet extends ConsumerWidget {
   const MatchLyricsSheet({super.key, required this.track});
 
   /// Share of the screen height the sheet may take.
@@ -32,10 +32,34 @@ class MatchLyricsSheet extends ConsumerStatefulWidget {
   final Track track;
 
   @override
-  ConsumerState<MatchLyricsSheet> createState() => _MatchLyricsSheetState();
+  Widget build(BuildContext context, WidgetRef ref) => SongPickerSheet(
+    title: AppLocalizations.of(context).songMatchLyrics,
+    checkedId: ref.watch(trackSongProvider(track.id)).value?.id,
+    onPick: (song) => ref.read(lyricsLinksControllerProvider).link(track, song),
+  );
 }
 
-class _MatchLyricsSheetState extends ConsumerState<MatchLyricsSheet> {
+class SongPickerSheet extends ConsumerStatefulWidget {
+  const SongPickerSheet({
+    super.key,
+    required this.title,
+    required this.onPick,
+    this.subtitle,
+    this.checkedId,
+    this.suggestions = const [],
+  });
+
+  final String title;
+  final String? subtitle;
+  final String? checkedId;
+  final List<CatalogEntry> suggestions;
+  final Future<void> Function(SongIdentity song) onPick;
+
+  @override
+  ConsumerState<SongPickerSheet> createState() => _SongPickerSheetState();
+}
+
+class _SongPickerSheetState extends ConsumerState<SongPickerSheet> {
   final _field = TextEditingController();
   var _query = '';
 
@@ -46,7 +70,7 @@ class _MatchLyricsSheetState extends ConsumerState<MatchLyricsSheet> {
   }
 
   Future<void> _pick(SongIdentity song) async {
-    await ref.read(lyricsLinksControllerProvider).link(widget.track, song);
+    await widget.onPick(song);
     if (mounted) Navigator.of(context).pop(song);
   }
 
@@ -57,8 +81,15 @@ class _MatchLyricsSheetState extends ConsumerState<MatchLyricsSheet> {
     final textTheme = Theme.of(context).textTheme;
     final all =
         ref.watch(catalogEntriesProvider).value ?? const <CatalogEntry>[];
-    final linkedId = ref.watch(trackSongProvider(widget.track.id)).value?.id;
-    final songs = _query.trim().isEmpty ? all : searchSongs(all, _query);
+    final linkedId = widget.checkedId;
+    final suggested = {for (final s in widget.suggestions) s.id};
+    final songs = _query.trim().isEmpty
+        ? [
+            ...widget.suggestions,
+            for (final song in all)
+              if (!suggested.contains(song.id)) song,
+          ]
+        : searchSongs(all, _query);
     return Padding(
       // Keeps the field above the keyboard.
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -80,12 +111,23 @@ class _MatchLyricsSheetState extends ConsumerState<MatchLyricsSheet> {
                   ZemaSpacing.screenSide,
                   8,
                 ),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    l10n.songMatchLyrics,
-                    style: textTheme.titleLarge,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(widget.title, style: textTheme.titleLarge),
+                    ),
+                    if (widget.subtitle case final subtitle?)
+                      Text(
+                        subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.muted,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Padding(

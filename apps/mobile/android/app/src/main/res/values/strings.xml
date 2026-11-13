@@ -25,4 +25,10 @@
     <string name="overlay_resize">Resize</string>
     <string name="overlay_not_synced">Lyrics aren\'t timed yet. Expand to read them.</string>
     <string name="overlay_no_lyrics">No lyrics for this song yet</string>
+    <string name="overlay_failed">Couldn\'t load the lyrics. Check your connection.</string>
+    <string name="overlay_question">Is this the song?</string>
+    <string name="overlay_yes">Yes</string>
+    <string name="overlay_choose">Choose another</string>
+    <string name="overlay_not_mezmur">Not a mezmur</string>
+    <string name="overlay_listen">Identify by listening</string>
 </resources>

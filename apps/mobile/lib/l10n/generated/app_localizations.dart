@@ -4229,6 +4229,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add this song'**
   String get listenAddThisSong;
+
+  /// Title of the sheet for choosing the song playing in another app (YouTube, Telegram), opened from the floating lyrics' Choose another
+  ///
+  /// In en, this message translates to:
+  /// **'Which song is playing?'**
+  String get detectedChooseTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -3252,5 +3252,9 @@
   "listenAddThisSong": "Add this song",
   "@listenAddThisSong": {
     "description": "Listen found nothing: starts writing the song's lyrics (a contribution draft)"
+  },
+  "detectedChooseTitle": "Which song is playing?",
+  "@detectedChooseTitle": {
+    "description": "Title of the sheet for choosing the song playing in another app (YouTube, Telegram), opened from the floating lyrics' Choose another"
   }
 }

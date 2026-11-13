@@ -91,15 +91,18 @@ object LyricsOverlay {
         val previous = sheet
         sheet = next
         if (previous?.source != next.source || stopWatching == null) watch(next.source)
+        val wanted = if (next.question && start == Mode.PANEL) Mode.BAR else start
         when {
             root == null || previous?.key != next.key -> {
                 removeHandle()
                 locked = false
-                mode = start ?: Mode.BUBBLE
+                mode = wanted ?: Mode.BUBBLE
                 build()
             }
-            start != null && start != mode -> switchTo(start)
-            previous.lines != next.lines || previous.title != next.title || previous.artist != next.artist -> build()
+            wanted != null && wanted != mode -> switchTo(wanted)
+            previous.question != next.question || previous.failed != next.failed ||
+                previous.lines != next.lines || previous.title != next.title ||
+                previous.artist != next.artist || previous.songId != next.songId -> build()
             else -> {
                 showSync()
                 shownLine = Int.MIN_VALUE
@@ -153,10 +156,12 @@ object LyricsOverlay {
     private fun build() {
         val current = sheet ?: return
         forgetViews()
-        val content = when (mode) {
-            Mode.BUBBLE -> bubbleView()
-            Mode.BAR -> barView()
-            Mode.PANEL -> panelView(current)
+        if (current.question && mode == Mode.PANEL) mode = Mode.BAR
+        val content = when {
+            mode == Mode.BUBBLE -> bubbleView()
+            current.question -> questionView(current)
+            mode == Mode.BAR -> barView()
+            else -> panelView(current)
         }
         val layout = params ?: WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -226,6 +231,7 @@ object LyricsOverlay {
         val second = barNext
         if (first != null && second != null) {
             val (top, bottom) = when {
+                current.failed -> current.title to app.getString(R.string.overlay_failed)
                 current.lines.isEmpty() -> current.title to app.getString(R.string.overlay_no_lyrics)
                 !current.timed -> current.title to app.getString(R.string.overlay_not_synced)
                 index < 0 -> "♪ ${current.title}" to current.lines.first().text
@@ -426,7 +432,8 @@ object LyricsOverlay {
         draggable(header, "panel")
 
         val lineViews = if (current.lines.isEmpty()) {
-            listOf(text(size, MUTED).apply { text = app.getString(R.string.overlay_no_lyrics) })
+            val note = if (current.failed) R.string.overlay_failed else R.string.overlay_no_lyrics
+            listOf(text(size, MUTED).apply { text = app.getString(note) })
         } else {
             current.lines.map { line ->
                 text(size, TEXT).apply {
@@ -515,6 +522,59 @@ object LyricsOverlay {
             addView(looks)
             addView(actions)
         }
+    }
+
+    private fun questionView(current: LyricsSheet): View {
+        val ask = text(13f, MUTED).apply {
+            text = app.getString(R.string.overlay_question)
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        }
+        val header = row(
+            ask,
+            icon(R.drawable.ic_listen_mic, R.string.overlay_listen) { askInApp("listen") },
+            icon(R.drawable.ic_overlay_close, R.string.overlay_close) { close() },
+        )
+        draggable(header, "bar")
+        val title = text(textSp(), TEXT, bold = true).apply {
+            text = current.title
+            maxLines = 2
+            ellipsize = TextUtils.TruncateAt.END
+        }
+        val artist = text(14f, MUTED).apply {
+            text = current.artist.orEmpty()
+            visibility = if (current.artist.isNullOrEmpty()) View.GONE else View.VISIBLE
+        }
+        val answers = row(
+            chip(app.getString(R.string.overlay_yes), R.string.overlay_yes, primary = true) { confirm() },
+            chip(app.getString(R.string.overlay_choose), R.string.overlay_choose) { askInApp("choose") },
+            chip(app.getString(R.string.overlay_not_mezmur), R.string.overlay_not_mezmur) { notMezmur() },
+        ).apply { setPadding(0, dp(8), 0, dp(2)) }
+        return LinearLayout(themed).apply {
+            orientation = LinearLayout.VERTICAL
+            background = card()
+            setPadding(dp(16), dp(4), dp(6), dp(10))
+            addView(header)
+            addView(title)
+            addView(artist)
+            addView(answers)
+        }
+    }
+
+    private fun confirm() {
+        val current = sheet ?: return
+        emit(mapOf("type" to "confirm", "key" to current.key, "songId" to current.songId))
+    }
+
+    private fun notMezmur() {
+        val key = sheet?.key ?: return
+        hide()
+        emit(mapOf("type" to "notMezmur", "key" to key))
+    }
+
+    private fun askInApp(ask: String) {
+        val current = sheet ?: return
+        runCatching { app.startActivity(LaunchChannel.detectedIntent(app, current.key, ask)) }
+        switchTo(Mode.BUBBLE)
     }
 
     private fun showSync() {
@@ -620,16 +680,22 @@ object LyricsOverlay {
         setOnClickListener { onTap() }
     }
 
-    private fun chip(label: String, description: Int, onTap: () -> Unit) = TextView(themed).apply {
+    private fun chip(
+        label: String,
+        description: Int,
+        primary: Boolean = false,
+        onTap: () -> Unit,
+    ) = TextView(themed).apply {
         text = label
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
-        setTextColor(TEXT)
+        setTextColor(if (primary) SURFACE else TEXT)
+        if (primary) setTypeface(typeface, Typeface.BOLD)
         gravity = Gravity.CENTER
         minWidth = dp(44)
         setPadding(dp(10), dp(6), dp(10), dp(6))
         background = GradientDrawable().apply {
             cornerRadius = dp(14).toFloat()
-            setColor(LINE)
+            setColor(if (primary) PRIMARY else LINE)
         }
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,

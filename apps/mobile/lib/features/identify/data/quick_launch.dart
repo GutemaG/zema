@@ -63,6 +63,15 @@ class OpenSong extends LaunchRequest {
   final String songId;
 }
 
+enum DetectedAsk { choose, listen }
+
+class OpenDetected extends LaunchRequest {
+  const OpenDetected(this.key, this.ask);
+
+  final String key;
+  final DetectedAsk ask;
+}
+
 abstract interface class LaunchReceiver {
   Future<LaunchRequest?> takeInitial();
 
@@ -111,6 +120,14 @@ class AndroidLaunchReceiver implements LaunchReceiver {
     return switch (value['open']) {
       'history' => const OpenListenHistory(),
       'match' => OpenListenMatch.fromMap(value),
+      'detected' => switch ((value['key'], value['ask'])) {
+        (final String key, final String ask) => switch (DetectedAsk.values
+            .asNameMap()[ask]) {
+          final ask? => OpenDetected(key, ask),
+          null => null,
+        },
+        _ => null,
+      },
       'song' => switch (value['songId']) {
         final String id when id.isNotEmpty => OpenSong(id),
         _ => null,

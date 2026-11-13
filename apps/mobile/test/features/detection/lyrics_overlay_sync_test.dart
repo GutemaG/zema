@@ -22,15 +22,17 @@ class _FakeDetector extends NoPlaybackDetector {
 }
 
 class _FakeOverlay extends NoLyricsOverlay {
-  final shown = <OverlaySheet>[];
+  final shown = <OverlayContent>[];
   var hidden = 0;
   final controller = StreamController<OverlayAction>.broadcast();
 
-  OverlaySheet? get last => shown.lastOrNull;
+  OverlaySheet? get last => shown.lastOrNull as OverlaySheet?;
+
+  OverlayContent? get latest => shown.lastOrNull;
 
   @override
-  Future<bool> show(OverlaySheet sheet) async {
-    shown.add(sheet);
+  Future<bool> show(OverlayContent content) async {
+    shown.add(content);
     return true;
   }
 
@@ -41,9 +43,10 @@ class _FakeOverlay extends NoLyricsOverlay {
   Stream<OverlayAction> get actions => controller.stream;
 }
 
-CatalogEntry _entry(String id, String title) => CatalogEntry(
+CatalogEntry _entry(String id, String title, {String? artist}) => CatalogEntry(
   id: id,
   title: title,
+  artist: artist,
   synced: true,
   version: 1,
   approvedAt: DateTime.utc(2026, 10, 1),
@@ -79,6 +82,9 @@ void main() {
     await db.catalogDao.replaceAll([
       _entry('selam', 'ሰላም ለዚህ ቤት'),
       _entry('kidus', 'ቅዱስ ቅዱስ እግዚአብሔር'),
+      _entry('halea', 'ሃሌ ሉያ ዘምሩ', artist: 'Choir A'),
+      _entry('haleb', 'ሃሌ ሉያ ዘምሩ', artist: 'Choir B'),
+      _entry('broken', 'የተሰበረ ሰንሰለት መዝሙር'),
     ]);
     detector = _FakeDetector();
     overlay = _FakeOverlay();
@@ -88,11 +94,13 @@ void main() {
         playbackDetectorProvider.overrideWithValue(detector),
         lyricsOverlayProvider.overrideWithValue(overlay),
         detectedLyricsProvider.overrideWith(
-          (ref, id) async => DetectedLyrics(
-            song: Song(id: id, title: 'Title of $id', sections: const []),
-            lines: _lines,
-            recordingOffset: const Duration(milliseconds: 300),
-          ),
+          (ref, id) async => id == 'broken'
+              ? throw const NetworkFailure('offline')
+              : DetectedLyrics(
+                  song: Song(id: id, title: 'Title of $id', sections: const []),
+                  lines: _lines,
+                  recordingOffset: const Duration(milliseconds: 300),
+                ),
         ),
       ],
     );
@@ -169,6 +177,39 @@ void main() {
     expect(row.songId, 'selam');
     expect(row.offsetMs, 1500);
     expect(overlay.last!.offset, const Duration(milliseconds: 1200));
+  });
+
+  test('an unsure match asks, and Yes shows its lyrics', () async {
+    await detect(_playing('ሃሌ ሉያ ዘምሩ'));
+    final question = overlay.latest! as OverlayQuestion;
+    expect(question.songId, anyOf('halea', 'haleb'));
+
+    overlay.controller.add(OverlayConfirmed(question.key, 'haleb'));
+    await settle();
+
+    expect(overlay.last!.songId, 'haleb');
+    expect(overlay.last!.key, question.key);
+  });
+
+  test('Not a mezmur hides it and is remembered', () async {
+    final playback = _playing('ሃሌ ሉያ ዘምሩ');
+    await detect(playback);
+    final hiddenBefore = overlay.hidden;
+    overlay.controller.add(OverlayNotMezmur(overlay.latest!.key));
+    await settle();
+
+    expect(overlay.hidden, greaterThan(hiddenBefore));
+    final row = (await db.detectedMatchesDao.watchAll().first).single;
+    expect(row.sourceKey, detectionKey(playback));
+    expect(row.songId, isNull);
+  });
+
+  test('lyrics that cannot be loaded say so', () async {
+    await detect(_playing('የተሰበረ ሰንሰለት መዝሙር'));
+    final sheet = overlay.last!;
+    expect(sheet.songId, 'broken');
+    expect(sheet.failed, isTrue);
+    expect(sheet.lines, isEmpty);
   });
 
   test('the window\'s actions and Open in Zema are read', () {
