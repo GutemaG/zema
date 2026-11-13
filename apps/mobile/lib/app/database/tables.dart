@@ -297,3 +297,14 @@ class IdentifiedSongs extends Table {
       integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
   DateTimeColumn get identifiedAt => dateTime()();
 }
+
+@DataClassName('DetectedMatchRow')
+class DetectedMatches extends Table {
+  TextColumn get sourceKey => text()();
+  TextColumn get songId => text().nullable()();
+  IntColumn get offsetMs => integer().withDefault(const Constant(0))();
+  DateTimeColumn get decidedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {sourceKey};
+}

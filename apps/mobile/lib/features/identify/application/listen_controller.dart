@@ -127,6 +127,14 @@ double loudness(Float32List samples) {
   return ((db + 50) / 40).clamp(0.0, 1.0);
 }
 
+final listenFoundEventsProvider = Provider<StreamController<ListenFound>>((
+  ref,
+) {
+  final events = StreamController<ListenFound>.broadcast();
+  ref.onDispose(events.close);
+  return events;
+});
+
 final listenControllerProvider =
     NotifierProvider.autoDispose<ListenController, ListenState>(
       ListenController.new,
@@ -292,7 +300,10 @@ class ListenController extends Notifier<ListenState> {
         if (sure || (last && matches.isNotEmpty)) {
           final found = _found(matches.first, startedAt!, sure: sure);
           state = found;
-          if (found is ListenFound) _remember(found.track);
+          if (found is ListenFound) {
+            _remember(found.track);
+            ref.read(listenFoundEventsProvider).add(found);
+          }
           await _stopRecording();
         } else if (last) {
           state = const ListenNotFound();

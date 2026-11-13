@@ -53,4 +53,76 @@ class SongMatcher<S extends SongIdentity> {
     }
     return tie ? null : best;
   }
+
+  List<SongCandidate<S>> rank(
+    String title, {
+    String? artist,
+    double minimum = 0.6,
+    int limit = 5,
+  }) {
+    final target = SearchKey(title);
+    if (target.isEmpty) return const [];
+    final by = artist == null ? null : SearchKey(artist);
+    final found = <SongCandidate<S>>[];
+    for (final (song, keys, songArtist) in _songs) {
+      final titleScore = keys.map((k) => matchScore(k, target)).reduce(max);
+      if (titleScore < minimum) continue;
+      final artistScore = by != null && songArtist != null
+          ? max(matchScore(songArtist, by), matchScore(songArtist, target))
+          : songArtist != null
+          ? matchScore(songArtist, target)
+          : 0.0;
+      found.add(
+        SongCandidate(
+          song: song,
+          titleScore: titleScore,
+          artistScore: artistScore,
+          titleWords: keys.map((k) => k.words.length).reduce(max),
+        ),
+      );
+    }
+    found.sort((a, b) => b.score.compareTo(a.score));
+    return found.take(limit).toList();
+  }
+}
+
+class SongCandidate<S> {
+  const SongCandidate({
+    required this.song,
+    required this.titleScore,
+    required this.artistScore,
+    required this.titleWords,
+  });
+
+  final S song;
+  final double titleScore;
+  final double artistScore;
+  final int titleWords;
+
+  double get score => titleScore + 0.01 * artistScore;
+}
+
+class DetectedSongChoice<S> {
+  const DetectedSongChoice({this.sure, this.candidates = const []});
+
+  final S? sure;
+  final List<S> candidates;
+}
+
+DetectedSongChoice<S> chooseDetectedSong<S>(List<SongCandidate<S>> ranked) {
+  if (ranked.isEmpty) return DetectedSongChoice<S>();
+  final top = ranked.first;
+  final second = ranked.length > 1 ? ranked[1] : null;
+  final clear =
+      second == null ||
+      top.titleScore - second.titleScore >= 0.05 ||
+      (top.artistScore >= autoLinkThreshold &&
+          top.artistScore - second.artistScore >= 0.3);
+  final strong =
+      top.titleScore >= autoLinkThreshold &&
+      (top.titleWords >= 2 || top.artistScore >= autoLinkThreshold);
+  return DetectedSongChoice(
+    sure: clear && strong ? top.song : null,
+    candidates: [for (final c in ranked) c.song],
+  );
 }

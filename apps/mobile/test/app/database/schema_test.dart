@@ -13,10 +13,10 @@ void main() {
   setUpAll(() => verifier = SchemaVerifier(GeneratedHelper()));
 
   group('ZemaDatabase schema', () {
-    test('is version 12', () {
+    test('is version 13', () {
       final db = ZemaDatabase(NativeDatabase.memory());
       addTearDown(db.close);
-      expect(db.schemaVersion, 12);
+      expect(db.schemaVersion, 13);
     });
 
     // Migrations between versions are tested in zema/migration_test.dart,
@@ -29,8 +29,8 @@ void main() {
       await verifier.migrateAndValidate(db, 6);
     });
 
-    test('a fresh database has all seventeen tables', () async {
-      final connection = await verifier.startAt(12);
+    test('a fresh database has all eighteen tables', () async {
+      final connection = await verifier.startAt(13);
       final db = ZemaDatabase(connection);
       addTearDown(db.close);
 
@@ -44,6 +44,7 @@ void main() {
       expect(rows.map((r) => r.read<String>('name')), [
         'cached_songs',
         'catalog_songs',
+        'detected_matches',
         'drafts',
         'favorites',
         'hidden_folders',

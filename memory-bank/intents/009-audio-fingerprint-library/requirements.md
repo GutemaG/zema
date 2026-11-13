@@ -224,7 +224,8 @@ online lookup) and Part B are not started.
 | FR-10 Song not in the catalog | Done | Not found offers "Add this song", which starts a lyrics draft without a recording (not over the lock screen). |
 | FR-11 Detection and overlay spike | Done on the emulator | Results above; decision: native Kotlin overlay. Left: Telegram and a real phone. |
 | FR-12 Playback detection | Done (Android) | `MediaWatchService` → `PlaybackHub` → `zema/detection` channels → `detectedPlaybacksProvider` / `currentDetectionProvider`. Default apps: YouTube, YouTube Music, Telegram, Telegram X. Checked on the emulator: play, pause, already playing at app start, access turned off. Nothing shows it yet (FR-15). |
-| FR-13 – FR-18 (Part B) | Not started | |
+| FR-13 Matching a detected song | Done, without the prompt UI | `detectedSongProvider`: remembered answer (keyed by app + normalized title and artist, or media ID), then the title against the catalog index on the phone (`SongMatcher.rank` / `chooseDetectedSong`; a one-word title needs the artist to be sure). Answers: Yes / Choose another (`confirm`), Not a mezmur, Identify by listening (`listeningForProvider`: the Listen result is remembered with its offset). Step 2 (exact recording) only by media ID: YouTube gives none and recordings aren't indexed by video ID. The "Is this the song?" prompt is drawn in FR-14 and FR-15. |
+| FR-14 – FR-18 (Part B) | Not started | |
 
 Known gaps in what's built: files below 11,025 Hz decode wrongly (the Kotlin resampler
 can't upsample); microphone delay and MP3/AAC priming aren't corrected (under 0.1 s).

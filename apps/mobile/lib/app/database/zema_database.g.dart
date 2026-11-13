@@ -6758,6 +6758,324 @@ class IdentifiedSongsCompanion extends UpdateCompanion<IdentifiedSongRow> {
   }
 }
 
+class $DetectedMatchesTable extends DetectedMatches
+    with TableInfo<$DetectedMatchesTable, DetectedMatchRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DetectedMatchesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sourceKeyMeta = const VerificationMeta(
+    'sourceKey',
+  );
+  @override
+  late final GeneratedColumn<String> sourceKey = GeneratedColumn<String>(
+    'source_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _offsetMsMeta = const VerificationMeta(
+    'offsetMs',
+  );
+  @override
+  late final GeneratedColumn<int> offsetMs = GeneratedColumn<int>(
+    'offset_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _decidedAtMeta = const VerificationMeta(
+    'decidedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> decidedAt = GeneratedColumn<DateTime>(
+    'decided_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    sourceKey,
+    songId,
+    offsetMs,
+    decidedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'detected_matches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DetectedMatchRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('source_key')) {
+      context.handle(
+        _sourceKeyMeta,
+        sourceKey.isAcceptableOrUnknown(data['source_key']!, _sourceKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceKeyMeta);
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    }
+    if (data.containsKey('offset_ms')) {
+      context.handle(
+        _offsetMsMeta,
+        offsetMs.isAcceptableOrUnknown(data['offset_ms']!, _offsetMsMeta),
+      );
+    }
+    if (data.containsKey('decided_at')) {
+      context.handle(
+        _decidedAtMeta,
+        decidedAt.isAcceptableOrUnknown(data['decided_at']!, _decidedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_decidedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {sourceKey};
+  @override
+  DetectedMatchRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DetectedMatchRow(
+      sourceKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_key'],
+      )!,
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      ),
+      offsetMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}offset_ms'],
+      )!,
+      decidedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}decided_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DetectedMatchesTable createAlias(String alias) {
+    return $DetectedMatchesTable(attachedDatabase, alias);
+  }
+}
+
+class DetectedMatchRow extends DataClass
+    implements Insertable<DetectedMatchRow> {
+  final String sourceKey;
+  final String? songId;
+  final int offsetMs;
+  final DateTime decidedAt;
+  const DetectedMatchRow({
+    required this.sourceKey,
+    this.songId,
+    required this.offsetMs,
+    required this.decidedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['source_key'] = Variable<String>(sourceKey);
+    if (!nullToAbsent || songId != null) {
+      map['song_id'] = Variable<String>(songId);
+    }
+    map['offset_ms'] = Variable<int>(offsetMs);
+    map['decided_at'] = Variable<DateTime>(decidedAt);
+    return map;
+  }
+
+  DetectedMatchesCompanion toCompanion(bool nullToAbsent) {
+    return DetectedMatchesCompanion(
+      sourceKey: Value(sourceKey),
+      songId: songId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(songId),
+      offsetMs: Value(offsetMs),
+      decidedAt: Value(decidedAt),
+    );
+  }
+
+  factory DetectedMatchRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DetectedMatchRow(
+      sourceKey: serializer.fromJson<String>(json['sourceKey']),
+      songId: serializer.fromJson<String?>(json['songId']),
+      offsetMs: serializer.fromJson<int>(json['offsetMs']),
+      decidedAt: serializer.fromJson<DateTime>(json['decidedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sourceKey': serializer.toJson<String>(sourceKey),
+      'songId': serializer.toJson<String?>(songId),
+      'offsetMs': serializer.toJson<int>(offsetMs),
+      'decidedAt': serializer.toJson<DateTime>(decidedAt),
+    };
+  }
+
+  DetectedMatchRow copyWith({
+    String? sourceKey,
+    Value<String?> songId = const Value.absent(),
+    int? offsetMs,
+    DateTime? decidedAt,
+  }) => DetectedMatchRow(
+    sourceKey: sourceKey ?? this.sourceKey,
+    songId: songId.present ? songId.value : this.songId,
+    offsetMs: offsetMs ?? this.offsetMs,
+    decidedAt: decidedAt ?? this.decidedAt,
+  );
+  DetectedMatchRow copyWithCompanion(DetectedMatchesCompanion data) {
+    return DetectedMatchRow(
+      sourceKey: data.sourceKey.present ? data.sourceKey.value : this.sourceKey,
+      songId: data.songId.present ? data.songId.value : this.songId,
+      offsetMs: data.offsetMs.present ? data.offsetMs.value : this.offsetMs,
+      decidedAt: data.decidedAt.present ? data.decidedAt.value : this.decidedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DetectedMatchRow(')
+          ..write('sourceKey: $sourceKey, ')
+          ..write('songId: $songId, ')
+          ..write('offsetMs: $offsetMs, ')
+          ..write('decidedAt: $decidedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(sourceKey, songId, offsetMs, decidedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DetectedMatchRow &&
+          other.sourceKey == this.sourceKey &&
+          other.songId == this.songId &&
+          other.offsetMs == this.offsetMs &&
+          other.decidedAt == this.decidedAt);
+}
+
+class DetectedMatchesCompanion extends UpdateCompanion<DetectedMatchRow> {
+  final Value<String> sourceKey;
+  final Value<String?> songId;
+  final Value<int> offsetMs;
+  final Value<DateTime> decidedAt;
+  final Value<int> rowid;
+  const DetectedMatchesCompanion({
+    this.sourceKey = const Value.absent(),
+    this.songId = const Value.absent(),
+    this.offsetMs = const Value.absent(),
+    this.decidedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DetectedMatchesCompanion.insert({
+    required String sourceKey,
+    this.songId = const Value.absent(),
+    this.offsetMs = const Value.absent(),
+    required DateTime decidedAt,
+    this.rowid = const Value.absent(),
+  }) : sourceKey = Value(sourceKey),
+       decidedAt = Value(decidedAt);
+  static Insertable<DetectedMatchRow> custom({
+    Expression<String>? sourceKey,
+    Expression<String>? songId,
+    Expression<int>? offsetMs,
+    Expression<DateTime>? decidedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (sourceKey != null) 'source_key': sourceKey,
+      if (songId != null) 'song_id': songId,
+      if (offsetMs != null) 'offset_ms': offsetMs,
+      if (decidedAt != null) 'decided_at': decidedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DetectedMatchesCompanion copyWith({
+    Value<String>? sourceKey,
+    Value<String?>? songId,
+    Value<int>? offsetMs,
+    Value<DateTime>? decidedAt,
+    Value<int>? rowid,
+  }) {
+    return DetectedMatchesCompanion(
+      sourceKey: sourceKey ?? this.sourceKey,
+      songId: songId ?? this.songId,
+      offsetMs: offsetMs ?? this.offsetMs,
+      decidedAt: decidedAt ?? this.decidedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sourceKey.present) {
+      map['source_key'] = Variable<String>(sourceKey.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    if (offsetMs.present) {
+      map['offset_ms'] = Variable<int>(offsetMs.value);
+    }
+    if (decidedAt.present) {
+      map['decided_at'] = Variable<DateTime>(decidedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DetectedMatchesCompanion(')
+          ..write('sourceKey: $sourceKey, ')
+          ..write('songId: $songId, ')
+          ..write('offsetMs: $offsetMs, ')
+          ..write('decidedAt: $decidedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -6783,6 +7101,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $TrackFingerprintsTable trackFingerprints =
       $TrackFingerprintsTable(this);
   late final $IdentifiedSongsTable identifiedSongs = $IdentifiedSongsTable(
+    this,
+  );
+  late final $DetectedMatchesTable detectedMatches = $DetectedMatchesTable(
     this,
   );
   late final Index tracksFolder = Index(
@@ -6823,6 +7144,9 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     this as ZemaDatabase,
   );
   late final IdentifiedDao identifiedDao = IdentifiedDao(this as ZemaDatabase);
+  late final DetectedMatchesDao detectedMatchesDao = DetectedMatchesDao(
+    this as ZemaDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6845,6 +7169,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     trackOverrides,
     trackFingerprints,
     identifiedSongs,
+    detectedMatches,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -12482,6 +12807,202 @@ typedef $$IdentifiedSongsTableProcessedTableManager =
       IdentifiedSongRow,
       PrefetchHooks Function({bool trackId})
     >;
+typedef $$DetectedMatchesTableCreateCompanionBuilder =
+    DetectedMatchesCompanion Function({
+      required String sourceKey,
+      Value<String?> songId,
+      Value<int> offsetMs,
+      required DateTime decidedAt,
+      Value<int> rowid,
+    });
+typedef $$DetectedMatchesTableUpdateCompanionBuilder =
+    DetectedMatchesCompanion Function({
+      Value<String> sourceKey,
+      Value<String?> songId,
+      Value<int> offsetMs,
+      Value<DateTime> decidedAt,
+      Value<int> rowid,
+    });
+
+class $$DetectedMatchesTableFilterComposer
+    extends Composer<_$ZemaDatabase, $DetectedMatchesTable> {
+  $$DetectedMatchesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get sourceKey => $composableBuilder(
+    column: $table.sourceKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get offsetMs => $composableBuilder(
+    column: $table.offsetMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get decidedAt => $composableBuilder(
+    column: $table.decidedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DetectedMatchesTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $DetectedMatchesTable> {
+  $$DetectedMatchesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get sourceKey => $composableBuilder(
+    column: $table.sourceKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get offsetMs => $composableBuilder(
+    column: $table.offsetMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get decidedAt => $composableBuilder(
+    column: $table.decidedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DetectedMatchesTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $DetectedMatchesTable> {
+  $$DetectedMatchesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get sourceKey =>
+      $composableBuilder(column: $table.sourceKey, builder: (column) => column);
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+
+  GeneratedColumn<int> get offsetMs =>
+      $composableBuilder(column: $table.offsetMs, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get decidedAt =>
+      $composableBuilder(column: $table.decidedAt, builder: (column) => column);
+}
+
+class $$DetectedMatchesTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $DetectedMatchesTable,
+          DetectedMatchRow,
+          $$DetectedMatchesTableFilterComposer,
+          $$DetectedMatchesTableOrderingComposer,
+          $$DetectedMatchesTableAnnotationComposer,
+          $$DetectedMatchesTableCreateCompanionBuilder,
+          $$DetectedMatchesTableUpdateCompanionBuilder,
+          (
+            DetectedMatchRow,
+            BaseReferences<
+              _$ZemaDatabase,
+              $DetectedMatchesTable,
+              DetectedMatchRow
+            >,
+          ),
+          DetectedMatchRow,
+          PrefetchHooks Function()
+        > {
+  $$DetectedMatchesTableTableManager(
+    _$ZemaDatabase db,
+    $DetectedMatchesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DetectedMatchesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DetectedMatchesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DetectedMatchesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> sourceKey = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+                Value<int> offsetMs = const Value.absent(),
+                Value<DateTime> decidedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DetectedMatchesCompanion(
+                sourceKey: sourceKey,
+                songId: songId,
+                offsetMs: offsetMs,
+                decidedAt: decidedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String sourceKey,
+                Value<String?> songId = const Value.absent(),
+                Value<int> offsetMs = const Value.absent(),
+                required DateTime decidedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DetectedMatchesCompanion.insert(
+                sourceKey: sourceKey,
+                songId: songId,
+                offsetMs: offsetMs,
+                decidedAt: decidedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DetectedMatchesTable, DetectedMatchRow>(table),
+                  BaseReferences<
+                    _$ZemaDatabase,
+                    $DetectedMatchesTable,
+                    DetectedMatchRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DetectedMatchesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $DetectedMatchesTable,
+      DetectedMatchRow,
+      $$DetectedMatchesTableFilterComposer,
+      $$DetectedMatchesTableOrderingComposer,
+      $$DetectedMatchesTableAnnotationComposer,
+      $$DetectedMatchesTableCreateCompanionBuilder,
+      $$DetectedMatchesTableUpdateCompanionBuilder,
+      (
+        DetectedMatchRow,
+        BaseReferences<_$ZemaDatabase, $DetectedMatchesTable, DetectedMatchRow>,
+      ),
+      DetectedMatchRow,
+      PrefetchHooks Function()
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -12520,4 +13041,6 @@ class $ZemaDatabaseManager {
       $$TrackFingerprintsTableTableManager(_db, _db.trackFingerprints);
   $$IdentifiedSongsTableTableManager get identifiedSongs =>
       $$IdentifiedSongsTableTableManager(_db, _db.identifiedSongs);
+  $$DetectedMatchesTableTableManager get detectedMatches =>
+      $$DetectedMatchesTableTableManager(_db, _db.detectedMatches);
 }
