@@ -2354,6 +2354,10 @@
   "@contributeSyncBack5": {
     "description": "Moves playback back 5 seconds."
   },
+  "contributeSyncForward5": "+5 s",
+  "@contributeSyncForward5": {
+    "description": "Moves playback forward 5 seconds."
+  },
   "contributeSyncSpeedNormal": "1×",
   "@contributeSyncSpeedNormal": {
     "description": "Playback speed button at normal speed; tap for 0.75×."

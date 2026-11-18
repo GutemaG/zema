@@ -3066,6 +3066,12 @@ abstract class AppLocalizations {
   /// **'−5 s'**
   String get contributeSyncBack5;
 
+  /// Moves playback forward 5 seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'+5 s'**
+  String get contributeSyncForward5;
+
   /// Playback speed button at normal speed; tap for 0.75×.
   ///
   /// In en, this message translates to:

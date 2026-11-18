@@ -236,12 +236,14 @@ void main() {
     expect(find.text(_l10n.contributeSyncTapHint), findsOneWidget);
   });
 
-  testWidgets('−5 s and the speed', (tester) async {
+  testWidgets('−5 s, +5 s and the speed', (tester) async {
     await open(tester);
     player.position = s(12);
     await tester.pump();
-    await tap(tester, find.text(_l10n.contributeSyncBack5));
+    await tap(tester, find.byTooltip(_l10n.contributeSyncBack5));
     expect(player.seeks.last, s(7));
+    await tap(tester, find.byTooltip(_l10n.contributeSyncForward5));
+    expect(player.seeks.last, s(12));
     await tap(tester, find.text(_l10n.contributeSyncSpeedNormal));
     expect(player.speeds, [0.75]);
     await tap(tester, find.text(_l10n.contributeSyncSpeedSlow));
@@ -358,7 +360,7 @@ void main() {
 
       await tap(tester, find.text(_l10n.contributeSyncUndo));
       expect((await saved(tester)).starts, [s(1), s(3), null, null]);
-      await tap(tester, find.text(_l10n.contributeSyncBack5));
+      await tap(tester, find.byTooltip(_l10n.contributeSyncBack5));
       expect(player.seeks.last, s(1.2));
       await tap(tester, find.text(_l10n.playerPause));
       expect(player.isPlaying, isFalse);

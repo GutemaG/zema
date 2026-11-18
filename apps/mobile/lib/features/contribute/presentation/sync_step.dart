@@ -197,9 +197,12 @@ class _SyncStepState extends ConsumerState<SyncStep> {
     }
   });
 
-  Future<void> _back5() async {
-    final at = _player.position - const Duration(seconds: 5);
-    await _player.seek(at < Duration.zero ? Duration.zero : at);
+  /// Moves playback by [seconds] (back when negative), within the recording.
+  Future<void> _skip(int seconds) async {
+    var at = _player.position + Duration(seconds: seconds);
+    if (at < Duration.zero) at = Duration.zero;
+    if (_duration case final total? when at > total) at = total;
+    await _player.seek(at);
   }
 
   Future<void> _playPause() => _playing ? _player.pause() : _player.play();
@@ -276,7 +279,7 @@ class _SyncStepState extends ConsumerState<SyncStep> {
         speed: _speed,
         ready: _audio == _Audio.ready,
         onPlayPause: () => unawaited(_playPause()),
-        onBack5: () => unawaited(_back5()),
+        onSkip: (seconds) => unawaited(_skip(seconds)),
         onSpeed: () => unawaited(_toggleSpeed()),
         onSeek: (at) => unawaited(_player.seek(at)),
       ),
@@ -323,7 +326,7 @@ class _SyncStepState extends ConsumerState<SyncStep> {
                     : () => unawaited(_player.play()),
                 onUndo: starts.any((s) => s != null) ? _undo : null,
                 onPlayPause: () => unawaited(_playPause()),
-                onBack5: () => unawaited(_back5()),
+                onSkip: (seconds) => unawaited(_skip(seconds)),
               ),
             ),
           ],
@@ -347,7 +350,7 @@ class _SyncStepState extends ConsumerState<SyncStep> {
             ready: _audio == _Audio.ready,
             onPlayPause: () =>
                 unawaited(_playing ? _player.pause() : _player.play()),
-            onBack5: () => unawaited(_back5()),
+            onSkip: (seconds) => unawaited(_skip(seconds)),
             onSpeed: () => unawaited(_toggleSpeed()),
             onSeek: (at) => unawaited(_player.seek(at)),
           ),
@@ -604,7 +607,7 @@ class _ViewBar extends StatelessWidget {
 
 /// The Focus view: the line before with its time, the next line to time
 /// large with its block, the one after, a big tap area, and Undo, Play or
-/// Pause and −5 s.
+/// Pause, −5 s and +5 s.
 class _FocusView extends StatelessWidget {
   const _FocusView({
     required this.lines,
@@ -617,7 +620,7 @@ class _FocusView extends StatelessWidget {
     required this.onTap,
     required this.onUndo,
     required this.onPlayPause,
-    required this.onBack5,
+    required this.onSkip,
   });
 
   final List<LineOccurrence> lines;
@@ -630,7 +633,7 @@ class _FocusView extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onUndo;
   final VoidCallback onPlayPause;
-  final VoidCallback onBack5;
+  final ValueChanged<int> onSkip;
 
   @override
   Widget build(BuildContext context) {
@@ -785,9 +788,15 @@ class _FocusView extends StatelessWidget {
                 icon: Icon(playing ? Icons.pause : Icons.play_arrow),
                 label: Text(playing ? l10n.playerPause : l10n.playerPlay),
               ),
-              TextButton(
-                onPressed: ready ? onBack5 : null,
-                child: Text(l10n.contributeSyncBack5),
+              IconButton(
+                tooltip: l10n.contributeSyncBack5,
+                onPressed: ready ? () => onSkip(-5) : null,
+                icon: const Icon(Icons.replay_5),
+              ),
+              IconButton(
+                tooltip: l10n.contributeSyncForward5,
+                onPressed: ready ? () => onSkip(5) : null,
+                icon: const Icon(Icons.forward_5),
               ),
             ],
           ),
@@ -805,7 +814,7 @@ String formatSyncTime(Duration d) {
   return '$m:$s.$tenths';
 }
 
-/// Play/pause, the position over the length, −5 s and the speed.
+/// Play/pause, the position over the length, −5 s, +5 s and the speed.
 class _PlaybackBar extends StatelessWidget {
   const _PlaybackBar({
     required this.position,
@@ -814,7 +823,7 @@ class _PlaybackBar extends StatelessWidget {
     required this.speed,
     required this.ready,
     required this.onPlayPause,
-    required this.onBack5,
+    required this.onSkip,
     required this.onSpeed,
     required this.onSeek,
   });
@@ -825,7 +834,7 @@ class _PlaybackBar extends StatelessWidget {
   final double speed;
   final bool ready;
   final VoidCallback onPlayPause;
-  final VoidCallback onBack5;
+  final ValueChanged<int> onSkip;
   final VoidCallback onSpeed;
   final ValueChanged<Duration> onSeek;
 
@@ -874,9 +883,15 @@ class _PlaybackBar extends StatelessWidget {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: ready ? onBack5 : null,
-                child: Text(l10n.contributeSyncBack5),
+              IconButton(
+                tooltip: l10n.contributeSyncBack5,
+                onPressed: ready ? () => onSkip(-5) : null,
+                icon: const Icon(Icons.replay_5),
+              ),
+              IconButton(
+                tooltip: l10n.contributeSyncForward5,
+                onPressed: ready ? () => onSkip(5) : null,
+                icon: const Icon(Icons.forward_5),
               ),
               TextButton(
                 onPressed: ready ? onSpeed : null,

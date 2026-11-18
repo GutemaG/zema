@@ -1826,6 +1826,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contributeSyncBack5 => '−5 s';
 
   @override
+  String get contributeSyncForward5 => '+5 s';
+
+  @override
   String get contributeSyncSpeedNormal => '1×';
 
   @override
