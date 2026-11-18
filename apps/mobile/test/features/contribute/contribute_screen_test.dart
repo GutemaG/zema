@@ -93,8 +93,11 @@ void main() {
     ) async {
       await db.draftsDao.create(titled('Kept'), now: t0);
       await start(tester);
-      expect(find.text(_l10n.contributeHowTitle), findsOneWidget);
-      expect(find.text(_l10n.contributeStepSync), findsOneWidget);
+      expect(find.text(_l10n.contributeStepSyncBody), findsNothing);
+      await tap(tester, find.text(_l10n.contributeHowTitle));
+      expect(find.text(_l10n.contributeStepSyncBody), findsOneWidget);
+      await tap(tester, find.text(_l10n.contributeHowTitle));
+      expect(find.text(_l10n.contributeStepSyncBody), findsNothing);
       expect(find.text('Kept'), findsOneWidget);
       expect(find.text(_l10n.myContributionsTitle), findsNothing);
 

@@ -120,8 +120,16 @@ class ContributeScreen extends ConsumerWidget {
   }
 }
 
-class _HowItWorks extends StatelessWidget {
+/// How contributing works: the title alone until tapped, then the steps.
+class _HowItWorks extends StatefulWidget {
   const _HowItWorks();
+
+  @override
+  State<_HowItWorks> createState() => _HowItWorksState();
+}
+
+class _HowItWorksState extends State<_HowItWorks> {
+  var _open = false;
 
   @override
   Widget build(BuildContext context) {
@@ -134,57 +142,92 @@ class _HowItWorks extends StatelessWidget {
       (l10n.contributeStepSync, l10n.contributeStepSyncBody),
       (l10n.contributeStepReview, l10n.contributeStepReviewBody),
     ];
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.surface,
-        border: Border.all(color: colors.line),
+    return Material(
+      color: colors.surface,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: colors.line),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 200),
+        alignment: Alignment.topCenter,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.contributeHowTitle,
-              style: textTheme.titleMedium?.copyWith(color: colors.text),
-            ),
-            for (final (i, (title, body)) in steps.indexed)
-              Padding(
-                padding: const EdgeInsets.only(top: 14),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 13,
-                      backgroundColor: colors.soft,
-                      child: Text(
-                        '${i + 1}',
-                        style: textTheme.labelMedium?.copyWith(
-                          color: colors.primaryText,
+            Semantics(
+              button: true,
+              expanded: _open,
+              child: InkWell(
+                onTap: () => setState(() => _open = !_open),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, color: colors.primaryText),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.contributeHowTitle,
+                          style: textTheme.titleMedium?.copyWith(
+                            color: colors.text,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: textTheme.titleSmall?.copyWith(
-                              color: colors.text,
-                            ),
-                          ),
-                          Text(
-                            body,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colors.muted,
-                            ),
-                          ),
-                        ],
+                      AnimatedRotation(
+                        turns: _open ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(Icons.expand_more, color: colors.muted),
                       ),
-                    ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (_open)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Column(
+                  children: [
+                    for (final (i, (title, body)) in steps.indexed)
+                      Padding(
+                        padding: EdgeInsets.only(top: i == 0 ? 0 : 14),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: 13,
+                              backgroundColor: colors.soft,
+                              child: Text(
+                                '${i + 1}',
+                                style: textTheme.labelMedium?.copyWith(
+                                  color: colors.primaryText,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: textTheme.titleSmall?.copyWith(
+                                      color: colors.text,
+                                    ),
+                                  ),
+                                  Text(
+                                    body,
+                                    style: textTheme.bodySmall?.copyWith(
+                                      color: colors.muted,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
