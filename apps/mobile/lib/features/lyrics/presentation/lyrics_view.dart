@@ -378,7 +378,7 @@ class _LyricsLinesState extends State<LyricsLines> {
                                 current == null ||
                                 _userScrolling
                             ? 0
-                            : 0.9 * ((i - current).abs().clamp(0, 3)),
+                            : 0.4 * ((i - current).abs() - 1).clamp(0, 2),
                         large: widget.focus && synced && i == current,
                         state: !synced || current == null
                             ? (!synced ? _LineState.plain : _LineState.ahead)
