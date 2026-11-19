@@ -37,7 +37,7 @@ the title out of it; with empty tags, read the file name (track numbers, `_`, ` 
 A recording length within 3 s breaks ties.
 
 ### FR-2: Track print
-`zema_core` makes a print from the first 120 s: 32-bit values (band energy
+`zema_core` makes a print from the first 110 s: 32-bit values (band energy
 differences, Philips/Chromaprint family) and compares two prints by the share of
 differing bits over the best shift. An eval on the owner's music folder sets the
 threshold: re-encodes (320/128/64 kbps MP3, AAC) and starts trimmed by up to 2 s
@@ -87,4 +87,4 @@ Covers, live versions, microphone excerpts, neural embeddings, AcoustID/ShazamKi
 | Question | Resolution |
 |----------|------------|
 | Print per song or per recording | Per song, several allowed (files linked by title have no recording) |
-| Print length | 120 s, as AcoustID; revisit after the eval |
+| Print length | 110 s at a 46 ms hop (≤ 10 KB); eval passed, bolt 059 |
