@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/zema_database.dart';
+import 'track_sound_links.dart';
 
 final _log = Logger('identify.search');
 
@@ -27,7 +28,7 @@ typedef OfflineRecording = ({String songId, Duration duration});
 
 /// Searches the library's fingerprints and the catalog's kept on the phone
 /// (intent 009 FR-4), in a worker isolate.
-class LibrarySearch {
+class LibrarySearch implements SoundSearch {
   LibrarySearch._(
     this._isolate,
     this._worker,
@@ -37,9 +38,10 @@ class LibrarySearch {
 
   final Isolate _isolate;
   final SendPort _worker;
+  @override
   final int recordingCount;
 
-  /// The catalog recordings searched, by recording ID.
+  @override
   final Map<String, OfflineRecording> catalogRecordings;
 
   static Future<LibrarySearch> open(ZemaDatabase db) async {
@@ -109,8 +111,16 @@ class LibrarySearch {
     }
   }
 
-  Future<LibraryHeard> identify(Float32List pcm, int rate) =>
-      _ask(_isolate, _worker, _Identify(pcm, rate));
+  /// The best match for [pcm] (mono at [rate]), or the best [limit] that
+  /// aren't [exclude] (a search ID: a track ID, or [catalogSearchPrefix]
+  /// and a recording ID).
+  @override
+  Future<LibraryHeard> identify(
+    Float32List pcm,
+    int rate, {
+    String? exclude,
+    int limit = 1,
+  }) => _ask(_isolate, _worker, _Identify(pcm, rate, exclude, limit));
 
   void close() => _isolate.kill(priority: Isolate.immediate);
 
@@ -150,10 +160,12 @@ class _Count extends _Request {
 }
 
 class _Identify extends _Request {
-  const _Identify(this.pcm, this.rate);
+  const _Identify(this.pcm, this.rate, this.exclude, this.limit);
 
   final Float32List pcm;
   final int rate;
+  final String? exclude;
+  final int limit;
 }
 
 class _Failed {
@@ -173,7 +185,8 @@ void _work(SendPort main) {
         _AddRows(:final rows) => _add(index, rows),
         _AddCatalogRows(:final rows) => _addCatalog(index, rows),
         _Count() => index.recordingCount,
-        _Identify(:final pcm, :final rate) => _identify(index, pcm, rate),
+        _Identify(:final pcm, :final rate, :final exclude, :final limit) =>
+          _identify(index, pcm, rate, exclude, limit),
       });
     } catch (e) {
       reply.send(_Failed('$e'));
@@ -181,9 +194,22 @@ void _work(SendPort main) {
   });
 }
 
-LibraryHeard _identify(FingerprintIndex index, Float32List pcm, int rate) {
+LibraryHeard _identify(
+  FingerprintIndex index,
+  Float32List pcm,
+  int rate,
+  String? exclude,
+  int limit,
+) {
   final queries = const Fingerprinter().queries(resampleMono(pcm, rate));
-  return (matches: index.match(queries, limit: 1), queries: queries);
+  final matches = index.match(queries, limit: limit + 1);
+  return (
+    matches: matches
+        .where((m) => m.recordingId != exclude)
+        .take(limit)
+        .toList(),
+    queries: queries,
+  );
 }
 
 List<int> _add(FingerprintIndex index, List<(int, Uint8List)> rows) {

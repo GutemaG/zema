@@ -7808,6 +7808,526 @@ class CatalogFingerprintsCompanion
   }
 }
 
+class $TrackAudioMatchesTable extends TrackAudioMatches
+    with TableInfo<$TrackAudioMatchesTable, TrackAudioMatchRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrackAudioMatchesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tracks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recordingIdMeta = const VerificationMeta(
+    'recordingId',
+  );
+  @override
+  late final GeneratedColumn<String> recordingId = GeneratedColumn<String>(
+    'recording_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _offsetMsMeta = const VerificationMeta(
+    'offsetMs',
+  );
+  @override
+  late final GeneratedColumn<int> offsetMs = GeneratedColumn<int>(
+    'offset_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _searchedMeta = const VerificationMeta(
+    'searched',
+  );
+  @override
+  late final GeneratedColumn<int> searched = GeneratedColumn<int>(
+    'searched',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _askedServerMeta = const VerificationMeta(
+    'askedServer',
+  );
+  @override
+  late final GeneratedColumn<bool> askedServer = GeneratedColumn<bool>(
+    'asked_server',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("asked_server" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta(
+    'checkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    trackId,
+    sizeBytes,
+    songId,
+    recordingId,
+    offsetMs,
+    searched,
+    askedServer,
+    checkedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'track_audio_matches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrackAudioMatchRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeBytesMeta);
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    }
+    if (data.containsKey('recording_id')) {
+      context.handle(
+        _recordingIdMeta,
+        recordingId.isAcceptableOrUnknown(
+          data['recording_id']!,
+          _recordingIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('offset_ms')) {
+      context.handle(
+        _offsetMsMeta,
+        offsetMs.isAcceptableOrUnknown(data['offset_ms']!, _offsetMsMeta),
+      );
+    }
+    if (data.containsKey('searched')) {
+      context.handle(
+        _searchedMeta,
+        searched.isAcceptableOrUnknown(data['searched']!, _searchedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_searchedMeta);
+    }
+    if (data.containsKey('asked_server')) {
+      context.handle(
+        _askedServerMeta,
+        askedServer.isAcceptableOrUnknown(
+          data['asked_server']!,
+          _askedServerMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_askedServerMeta);
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {trackId};
+  @override
+  TrackAudioMatchRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrackAudioMatchRow(
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      ),
+      recordingId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recording_id'],
+      ),
+      offsetMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}offset_ms'],
+      )!,
+      searched: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}searched'],
+      )!,
+      askedServer: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}asked_server'],
+      )!,
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TrackAudioMatchesTable createAlias(String alias) {
+    return $TrackAudioMatchesTable(attachedDatabase, alias);
+  }
+}
+
+class TrackAudioMatchRow extends DataClass
+    implements Insertable<TrackAudioMatchRow> {
+  final int trackId;
+  final int sizeBytes;
+  final String? songId;
+  final String? recordingId;
+  final int offsetMs;
+
+  /// How many recordings the phone's search held when checked.
+  final int searched;
+  final bool askedServer;
+  final DateTime checkedAt;
+  const TrackAudioMatchRow({
+    required this.trackId,
+    required this.sizeBytes,
+    this.songId,
+    this.recordingId,
+    required this.offsetMs,
+    required this.searched,
+    required this.askedServer,
+    required this.checkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['track_id'] = Variable<int>(trackId);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    if (!nullToAbsent || songId != null) {
+      map['song_id'] = Variable<String>(songId);
+    }
+    if (!nullToAbsent || recordingId != null) {
+      map['recording_id'] = Variable<String>(recordingId);
+    }
+    map['offset_ms'] = Variable<int>(offsetMs);
+    map['searched'] = Variable<int>(searched);
+    map['asked_server'] = Variable<bool>(askedServer);
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  TrackAudioMatchesCompanion toCompanion(bool nullToAbsent) {
+    return TrackAudioMatchesCompanion(
+      trackId: Value(trackId),
+      sizeBytes: Value(sizeBytes),
+      songId: songId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(songId),
+      recordingId: recordingId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recordingId),
+      offsetMs: Value(offsetMs),
+      searched: Value(searched),
+      askedServer: Value(askedServer),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory TrackAudioMatchRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrackAudioMatchRow(
+      trackId: serializer.fromJson<int>(json['trackId']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      songId: serializer.fromJson<String?>(json['songId']),
+      recordingId: serializer.fromJson<String?>(json['recordingId']),
+      offsetMs: serializer.fromJson<int>(json['offsetMs']),
+      searched: serializer.fromJson<int>(json['searched']),
+      askedServer: serializer.fromJson<bool>(json['askedServer']),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'trackId': serializer.toJson<int>(trackId),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'songId': serializer.toJson<String?>(songId),
+      'recordingId': serializer.toJson<String?>(recordingId),
+      'offsetMs': serializer.toJson<int>(offsetMs),
+      'searched': serializer.toJson<int>(searched),
+      'askedServer': serializer.toJson<bool>(askedServer),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  TrackAudioMatchRow copyWith({
+    int? trackId,
+    int? sizeBytes,
+    Value<String?> songId = const Value.absent(),
+    Value<String?> recordingId = const Value.absent(),
+    int? offsetMs,
+    int? searched,
+    bool? askedServer,
+    DateTime? checkedAt,
+  }) => TrackAudioMatchRow(
+    trackId: trackId ?? this.trackId,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    songId: songId.present ? songId.value : this.songId,
+    recordingId: recordingId.present ? recordingId.value : this.recordingId,
+    offsetMs: offsetMs ?? this.offsetMs,
+    searched: searched ?? this.searched,
+    askedServer: askedServer ?? this.askedServer,
+    checkedAt: checkedAt ?? this.checkedAt,
+  );
+  TrackAudioMatchRow copyWithCompanion(TrackAudioMatchesCompanion data) {
+    return TrackAudioMatchRow(
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      songId: data.songId.present ? data.songId.value : this.songId,
+      recordingId: data.recordingId.present
+          ? data.recordingId.value
+          : this.recordingId,
+      offsetMs: data.offsetMs.present ? data.offsetMs.value : this.offsetMs,
+      searched: data.searched.present ? data.searched.value : this.searched,
+      askedServer: data.askedServer.present
+          ? data.askedServer.value
+          : this.askedServer,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackAudioMatchRow(')
+          ..write('trackId: $trackId, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('songId: $songId, ')
+          ..write('recordingId: $recordingId, ')
+          ..write('offsetMs: $offsetMs, ')
+          ..write('searched: $searched, ')
+          ..write('askedServer: $askedServer, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    trackId,
+    sizeBytes,
+    songId,
+    recordingId,
+    offsetMs,
+    searched,
+    askedServer,
+    checkedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrackAudioMatchRow &&
+          other.trackId == this.trackId &&
+          other.sizeBytes == this.sizeBytes &&
+          other.songId == this.songId &&
+          other.recordingId == this.recordingId &&
+          other.offsetMs == this.offsetMs &&
+          other.searched == this.searched &&
+          other.askedServer == this.askedServer &&
+          other.checkedAt == this.checkedAt);
+}
+
+class TrackAudioMatchesCompanion extends UpdateCompanion<TrackAudioMatchRow> {
+  final Value<int> trackId;
+  final Value<int> sizeBytes;
+  final Value<String?> songId;
+  final Value<String?> recordingId;
+  final Value<int> offsetMs;
+  final Value<int> searched;
+  final Value<bool> askedServer;
+  final Value<DateTime> checkedAt;
+  const TrackAudioMatchesCompanion({
+    this.trackId = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.songId = const Value.absent(),
+    this.recordingId = const Value.absent(),
+    this.offsetMs = const Value.absent(),
+    this.searched = const Value.absent(),
+    this.askedServer = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+  });
+  TrackAudioMatchesCompanion.insert({
+    this.trackId = const Value.absent(),
+    required int sizeBytes,
+    this.songId = const Value.absent(),
+    this.recordingId = const Value.absent(),
+    this.offsetMs = const Value.absent(),
+    required int searched,
+    required bool askedServer,
+    required DateTime checkedAt,
+  }) : sizeBytes = Value(sizeBytes),
+       searched = Value(searched),
+       askedServer = Value(askedServer),
+       checkedAt = Value(checkedAt);
+  static Insertable<TrackAudioMatchRow> custom({
+    Expression<int>? trackId,
+    Expression<int>? sizeBytes,
+    Expression<String>? songId,
+    Expression<String>? recordingId,
+    Expression<int>? offsetMs,
+    Expression<int>? searched,
+    Expression<bool>? askedServer,
+    Expression<DateTime>? checkedAt,
+  }) {
+    return RawValuesInsertable({
+      if (trackId != null) 'track_id': trackId,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (songId != null) 'song_id': songId,
+      if (recordingId != null) 'recording_id': recordingId,
+      if (offsetMs != null) 'offset_ms': offsetMs,
+      if (searched != null) 'searched': searched,
+      if (askedServer != null) 'asked_server': askedServer,
+      if (checkedAt != null) 'checked_at': checkedAt,
+    });
+  }
+
+  TrackAudioMatchesCompanion copyWith({
+    Value<int>? trackId,
+    Value<int>? sizeBytes,
+    Value<String?>? songId,
+    Value<String?>? recordingId,
+    Value<int>? offsetMs,
+    Value<int>? searched,
+    Value<bool>? askedServer,
+    Value<DateTime>? checkedAt,
+  }) {
+    return TrackAudioMatchesCompanion(
+      trackId: trackId ?? this.trackId,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      songId: songId ?? this.songId,
+      recordingId: recordingId ?? this.recordingId,
+      offsetMs: offsetMs ?? this.offsetMs,
+      searched: searched ?? this.searched,
+      askedServer: askedServer ?? this.askedServer,
+      checkedAt: checkedAt ?? this.checkedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    if (recordingId.present) {
+      map['recording_id'] = Variable<String>(recordingId.value);
+    }
+    if (offsetMs.present) {
+      map['offset_ms'] = Variable<int>(offsetMs.value);
+    }
+    if (searched.present) {
+      map['searched'] = Variable<int>(searched.value);
+    }
+    if (askedServer.present) {
+      map['asked_server'] = Variable<bool>(askedServer.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackAudioMatchesCompanion(')
+          ..write('trackId: $trackId, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('songId: $songId, ')
+          ..write('recordingId: $recordingId, ')
+          ..write('offsetMs: $offsetMs, ')
+          ..write('searched: $searched, ')
+          ..write('askedServer: $askedServer, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -7841,6 +8361,8 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
   late final $PendingLookupsTable pendingLookups = $PendingLookupsTable(this);
   late final $CatalogFingerprintsTable catalogFingerprints =
       $CatalogFingerprintsTable(this);
+  late final $TrackAudioMatchesTable trackAudioMatches =
+      $TrackAudioMatchesTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -7907,6 +8429,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     detectedMatches,
     pendingLookups,
     catalogFingerprints,
+    trackAudioMatches,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -7976,6 +8499,13 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('identified_songs', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_audio_matches', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -8167,6 +8697,27 @@ final class $$TracksTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _identifiedSongsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TrackAudioMatchesTable, List<TrackAudioMatchRow>>
+  _trackAudioMatchesRefsTable(_$ZemaDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.trackAudioMatches,
+        aliasName: 'tracks__id__track_audio_matches__track_id',
+      );
+
+  $$TrackAudioMatchesTableProcessedTableManager get trackAudioMatchesRefs {
+    final manager = $$TrackAudioMatchesTableTableManager(
+      $_db,
+      $_db.trackAudioMatches,
+    ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _trackAudioMatchesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -8449,6 +9000,31 @@ class $$TracksTableFilterComposer
           }) => $$IdentifiedSongsTableFilterComposer(
             $db: $db,
             $table: $db.identifiedSongs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> trackAudioMatchesRefs(
+    Expression<bool> Function($$TrackAudioMatchesTableFilterComposer f) f,
+  ) {
+    final $$TrackAudioMatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackAudioMatches,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackAudioMatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.trackAudioMatches,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -8806,6 +9382,32 @@ class $$TracksTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> trackAudioMatchesRefs<T extends Object>(
+    Expression<T> Function($$TrackAudioMatchesTableAnnotationComposer a) f,
+  ) {
+    final $$TrackAudioMatchesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.trackAudioMatches,
+          getReferencedColumn: (t) => t.trackId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TrackAudioMatchesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.trackAudioMatches,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$TracksTableTableManager
@@ -8830,6 +9432,7 @@ class $$TracksTableTableManager
             bool trackOverridesRefs,
             bool trackFingerprintsRefs,
             bool identifiedSongsRefs,
+            bool trackAudioMatchesRefs,
           })
         > {
   $$TracksTableTableManager(_$ZemaDatabase db, $TracksTable table)
@@ -8929,6 +9532,7 @@ class $$TracksTableTableManager
                 trackOverridesRefs = false,
                 trackFingerprintsRefs = false,
                 identifiedSongsRefs = false,
+                trackAudioMatchesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -8941,6 +9545,7 @@ class $$TracksTableTableManager
                     if (trackOverridesRefs) db.trackOverrides,
                     if (trackFingerprintsRefs) db.trackFingerprints,
                     if (identifiedSongsRefs) db.identifiedSongs,
+                    if (trackAudioMatchesRefs) db.trackAudioMatches,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -9105,6 +9710,26 @@ class $$TracksTableTableManager
                           referencedColumn: 'track_id',
                           typedResults: items,
                         ),
+                      if (trackAudioMatchesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TrackRow,
+                          $TracksTable,
+                          TrackAudioMatchRow,
+                          $TrackAudioMatchesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TracksTableReferences
+                              ._trackAudioMatchesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TracksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).trackAudioMatchesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'track_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -9134,6 +9759,7 @@ typedef $$TracksTableProcessedTableManager =
         bool trackOverridesRefs,
         bool trackFingerprintsRefs,
         bool identifiedSongsRefs,
+        bool trackAudioMatchesRefs,
       })
     >;
 typedef $$HiddenFoldersTableCreateCompanionBuilder =
@@ -14178,6 +14804,392 @@ typedef $$CatalogFingerprintsTableProcessedTableManager =
       CatalogFingerprintRow,
       PrefetchHooks Function()
     >;
+typedef $$TrackAudioMatchesTableCreateCompanionBuilder =
+    TrackAudioMatchesCompanion Function({
+      Value<int> trackId,
+      required int sizeBytes,
+      Value<String?> songId,
+      Value<String?> recordingId,
+      Value<int> offsetMs,
+      required int searched,
+      required bool askedServer,
+      required DateTime checkedAt,
+    });
+typedef $$TrackAudioMatchesTableUpdateCompanionBuilder =
+    TrackAudioMatchesCompanion Function({
+      Value<int> trackId,
+      Value<int> sizeBytes,
+      Value<String?> songId,
+      Value<String?> recordingId,
+      Value<int> offsetMs,
+      Value<int> searched,
+      Value<bool> askedServer,
+      Value<DateTime> checkedAt,
+    });
+
+final class $$TrackAudioMatchesTableReferences
+    extends
+        BaseReferences<
+          _$ZemaDatabase,
+          $TrackAudioMatchesTable,
+          TrackAudioMatchRow
+        > {
+  $$TrackAudioMatchesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
+      db.tracks.createAlias('track_audio_matches__track_id__tracks__id');
+
+  $$TracksTableProcessedTableManager get trackId {
+    final $_column = $_itemColumn<int>('track_id')!;
+
+    final manager = $$TracksTableTableManager(
+      $_db,
+      $_db.tracks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_trackIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TrackAudioMatchesTableFilterComposer
+    extends Composer<_$ZemaDatabase, $TrackAudioMatchesTable> {
+  $$TrackAudioMatchesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get offsetMs => $composableBuilder(
+    column: $table.offsetMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get searched => $composableBuilder(
+    column: $table.searched,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get askedServer => $composableBuilder(
+    column: $table.askedServer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TracksTableFilterComposer get trackId {
+    final $$TracksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableFilterComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackAudioMatchesTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $TrackAudioMatchesTable> {
+  $$TrackAudioMatchesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get offsetMs => $composableBuilder(
+    column: $table.offsetMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get searched => $composableBuilder(
+    column: $table.searched,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get askedServer => $composableBuilder(
+    column: $table.askedServer,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TracksTableOrderingComposer get trackId {
+    final $$TracksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackAudioMatchesTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $TrackAudioMatchesTable> {
+  $$TrackAudioMatchesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordingId => $composableBuilder(
+    column: $table.recordingId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get offsetMs =>
+      $composableBuilder(column: $table.offsetMs, builder: (column) => column);
+
+  GeneratedColumn<int> get searched =>
+      $composableBuilder(column: $table.searched, builder: (column) => column);
+
+  GeneratedColumn<bool> get askedServer => $composableBuilder(
+    column: $table.askedServer,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+
+  $$TracksTableAnnotationComposer get trackId {
+    final $$TracksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackAudioMatchesTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $TrackAudioMatchesTable,
+          TrackAudioMatchRow,
+          $$TrackAudioMatchesTableFilterComposer,
+          $$TrackAudioMatchesTableOrderingComposer,
+          $$TrackAudioMatchesTableAnnotationComposer,
+          $$TrackAudioMatchesTableCreateCompanionBuilder,
+          $$TrackAudioMatchesTableUpdateCompanionBuilder,
+          (TrackAudioMatchRow, $$TrackAudioMatchesTableReferences),
+          TrackAudioMatchRow,
+          PrefetchHooks Function({bool trackId})
+        > {
+  $$TrackAudioMatchesTableTableManager(
+    _$ZemaDatabase db,
+    $TrackAudioMatchesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrackAudioMatchesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrackAudioMatchesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrackAudioMatchesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+                Value<String?> recordingId = const Value.absent(),
+                Value<int> offsetMs = const Value.absent(),
+                Value<int> searched = const Value.absent(),
+                Value<bool> askedServer = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+              }) => TrackAudioMatchesCompanion(
+                trackId: trackId,
+                sizeBytes: sizeBytes,
+                songId: songId,
+                recordingId: recordingId,
+                offsetMs: offsetMs,
+                searched: searched,
+                askedServer: askedServer,
+                checkedAt: checkedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                required int sizeBytes,
+                Value<String?> songId = const Value.absent(),
+                Value<String?> recordingId = const Value.absent(),
+                Value<int> offsetMs = const Value.absent(),
+                required int searched,
+                required bool askedServer,
+                required DateTime checkedAt,
+              }) => TrackAudioMatchesCompanion.insert(
+                trackId: trackId,
+                sizeBytes: sizeBytes,
+                songId: songId,
+                recordingId: recordingId,
+                offsetMs: offsetMs,
+                searched: searched,
+                askedServer: askedServer,
+                checkedAt: checkedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TrackAudioMatchesTable, TrackAudioMatchRow>(
+                    table,
+                  ),
+                  $$TrackAudioMatchesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (trackId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.trackId,
+                        referencedTable: $$TrackAudioMatchesTableReferences
+                            ._trackIdTable(db),
+                        referencedColumn: $$TrackAudioMatchesTableReferences
+                            ._trackIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TrackAudioMatchesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $TrackAudioMatchesTable,
+      TrackAudioMatchRow,
+      $$TrackAudioMatchesTableFilterComposer,
+      $$TrackAudioMatchesTableOrderingComposer,
+      $$TrackAudioMatchesTableAnnotationComposer,
+      $$TrackAudioMatchesTableCreateCompanionBuilder,
+      $$TrackAudioMatchesTableUpdateCompanionBuilder,
+      (TrackAudioMatchRow, $$TrackAudioMatchesTableReferences),
+      TrackAudioMatchRow,
+      PrefetchHooks Function({bool trackId})
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -14222,4 +15234,6 @@ class $ZemaDatabaseManager {
       $$PendingLookupsTableTableManager(_db, _db.pendingLookups);
   $$CatalogFingerprintsTableTableManager get catalogFingerprints =>
       $$CatalogFingerprintsTableTableManager(_db, _db.catalogFingerprints);
+  $$TrackAudioMatchesTableTableManager get trackAudioMatches =>
+      $$TrackAudioMatchesTableTableManager(_db, _db.trackAudioMatches);
 }

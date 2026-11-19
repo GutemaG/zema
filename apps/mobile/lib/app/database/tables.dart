@@ -343,3 +343,27 @@ class DetectedMatches extends Table {
   @override
   Set<Column<Object>> get primaryKey => {sourceKey};
 }
+
+/// What a library file was identified as by its sound (v16): a catalog
+/// song, its recording when known, and how much later the file runs than
+/// that recording. [songId] is null when nothing matched; the file is
+/// checked again when it changes ([sizeBytes]), when the phone has other
+/// fingerprints to search ([searched]), or, while played, on the server if
+/// it wasn't asked ([askedServer]).
+@DataClassName('TrackAudioMatchRow')
+class TrackAudioMatches extends Table {
+  IntColumn get trackId =>
+      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+  IntColumn get sizeBytes => integer()();
+  TextColumn get songId => text().nullable()();
+  TextColumn get recordingId => text().nullable()();
+  IntColumn get offsetMs => integer().withDefault(const Constant(0))();
+
+  /// How many recordings the phone's search held when checked.
+  IntColumn get searched => integer()();
+  BoolColumn get askedServer => boolean()();
+  DateTimeColumn get checkedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {trackId};
+}

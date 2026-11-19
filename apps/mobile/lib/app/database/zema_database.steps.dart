@@ -4423,6 +4423,424 @@ i1.GeneratedColumn<int> _column_67(String aliasedName) =>
       type: i1.DriftSqlType.int,
       $customConstraints: 'NOT NULL',
     );
+
+final class Schema16 extends i0.VersionedSchema {
+  Schema16({required super.database}) : super(version: 16);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    tracks,
+    hiddenFolders,
+    hiddenTracks,
+    favorites,
+    playlists,
+    playlistEntries,
+    playEvents,
+    lyricsLinks,
+    catalogSongs,
+    cachedSongs,
+    queuedReports,
+    unmatchedEntries,
+    drafts,
+    ownCopies,
+    trackOverrides,
+    trackFingerprints,
+    identifiedSongs,
+    detectedMatches,
+    pendingLookups,
+    catalogFingerprints,
+    trackAudioMatches,
+    tracksFolder,
+    playlistEntriesOrder,
+    playEventsTrack,
+    playEventsTime,
+  ];
+  late final Shape0 tracks = Shape0(
+    source: i0.VersionedTable(
+      entityName: 'tracks',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_8,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_12,
+        _column_13,
+        _column_14,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape1 hiddenFolders = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'hidden_folders',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(path)'],
+      columns: [_column_15, _column_16],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape2 hiddenTracks = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'hidden_tracks',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(track_id)'],
+      columns: [_column_17, _column_16],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape3 favorites = Shape3(
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(track_id)'],
+      columns: [_column_17, _column_18],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape4 playlists = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'playlists',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_22,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape5 playlistEntries = Shape5(
+    source: i0.VersionedTable(
+      entityName: 'playlist_entries',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(playlist_id, track_id)'],
+      columns: [_column_24, _column_17, _column_25],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 playEvents = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'play_events',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_17, _column_26],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape7 lyricsLinks = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'lyrics_links',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(track_id)'],
+      columns: [_column_17, _column_27, _column_28, _column_29],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape8 catalogSongs = Shape8(
+    source: i0.VersionedTable(
+      entityName: 'catalog_songs',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_30,
+        _column_5,
+        _column_31,
+        _column_6,
+        _column_7,
+        _column_32,
+        _column_33,
+        _column_34,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape9 cachedSongs = Shape9(
+    source: i0.VersionedTable(
+      entityName: 'cached_songs',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [_column_30, _column_33, _column_35, _column_36],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 queuedReports = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'queued_reports',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_41,
+        _column_37,
+        _column_38,
+        _column_39,
+        _column_40,
+        _column_22,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape12 unmatchedEntries = Shape12(
+    source: i0.VersionedTable(
+      entityName: 'unmatched_entries',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_42,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_11,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_46,
+        _column_27,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape13 drafts = Shape13(
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_42,
+        _column_47,
+        _column_5,
+        _column_48,
+        _column_22,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape14 ownCopies = Shape14(
+    source: i0.VersionedTable(
+      entityName: 'own_copies',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_49,
+        _column_42,
+        _column_50,
+        _column_51,
+        _column_52,
+        _column_53,
+        _column_54,
+        _column_55,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape15 trackOverrides = Shape15(
+    source: i0.VersionedTable(
+      entityName: 'track_overrides',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(track_id)'],
+      columns: [
+        _column_17,
+        _column_56,
+        _column_6,
+        _column_7,
+        _column_9,
+        _column_57,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape16 trackFingerprints = Shape16(
+    source: i0.VersionedTable(
+      entityName: 'track_fingerprints',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(track_id)'],
+      columns: [_column_17, _column_33, _column_12, _column_58, _column_23],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape19 identifiedSongs = Shape19(
+    source: i0.VersionedTable(
+      entityName: 'identified_songs',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_63, _column_27, _column_59],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape18 detectedMatches = Shape18(
+    source: i0.VersionedTable(
+      entityName: 'detected_matches',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(source_key)'],
+      columns: [_column_60, _column_27, _column_61, _column_62],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape20 pendingLookups = Shape20(
+    source: i0.VersionedTable(
+      entityName: 'pending_lookups',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_64, _column_65],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape21 catalogFingerprints = Shape21(
+    source: i0.VersionedTable(
+      entityName: 'catalog_fingerprints',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(recording_id)'],
+      columns: [
+        _column_66,
+        _column_37,
+        _column_67,
+        _column_33,
+        _column_58,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape22 trackAudioMatches = Shape22(
+    source: i0.VersionedTable(
+      entityName: 'track_audio_matches',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(track_id)'],
+      columns: [
+        _column_17,
+        _column_12,
+        _column_27,
+        _column_38,
+        _column_61,
+        _column_68,
+        _column_69,
+        _column_70,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Index tracksFolder = i1.Index(
+    'tracks_folder',
+    'CREATE INDEX tracks_folder ON tracks (folder)',
+  );
+  final i1.Index playlistEntriesOrder = i1.Index(
+    'playlist_entries_order',
+    'CREATE INDEX playlist_entries_order ON playlist_entries (playlist_id, position)',
+  );
+  final i1.Index playEventsTrack = i1.Index(
+    'play_events_track',
+    'CREATE INDEX play_events_track ON play_events (track_id)',
+  );
+  final i1.Index playEventsTime = i1.Index(
+    'play_events_time',
+    'CREATE INDEX play_events_time ON play_events (played_at)',
+  );
+}
+
+class Shape22 extends i0.VersionedTable {
+  Shape22({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get trackId =>
+      columnsByName['track_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get sizeBytes =>
+      columnsByName['size_bytes']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get songId =>
+      columnsByName['song_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get recordingId =>
+      columnsByName['recording_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get offsetMs =>
+      columnsByName['offset_ms']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get searched =>
+      columnsByName['searched']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get askedServer =>
+      columnsByName['asked_server']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get checkedAt =>
+      columnsByName['checked_at']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<int> _column_68(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'searched',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<int> _column_69(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'asked_server',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL CHECK (asked_server IN (0, 1))',
+    );
+i1.GeneratedColumn<String> _column_70(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'checked_at',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -4438,6 +4856,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema13 schema) from12To13,
   required Future<void> Function(i1.Migrator m, Schema14 schema) from13To14,
   required Future<void> Function(i1.Migrator m, Schema15 schema) from14To15,
+  required Future<void> Function(i1.Migrator m, Schema16 schema) from15To16,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -4511,6 +4930,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from14To15(migrator, schema);
         return 15;
+      case 15:
+        final schema = Schema16(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from15To16(migrator, schema);
+        return 16;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -4532,6 +4956,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema13 schema) from12To13,
   required Future<void> Function(i1.Migrator m, Schema14 schema) from13To14,
   required Future<void> Function(i1.Migrator m, Schema15 schema) from14To15,
+  required Future<void> Function(i1.Migrator m, Schema16 schema) from15To16,
 }) => i0.VersionedSchema.stepByStepHelper(
   step: migrationSteps(
     from1To2: from1To2,
@@ -4548,5 +4973,6 @@ i1.OnUpgrade stepByStep({
     from12To13: from12To13,
     from13To14: from13To14,
     from14To15: from14To15,
+    from15To16: from15To16,
   ),
 );

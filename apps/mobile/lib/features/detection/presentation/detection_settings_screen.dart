@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/backend/backend_providers.dart';
 import '../../../app/database/database_provider.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
@@ -265,20 +266,21 @@ class _DetectionSettingsScreenState
                   }
                 },
               ),
-              SettingsRow(
-                label: l10n.detectionShareFingerprints,
-                trailing: Switch(
-                  value: shareFingerprints,
-                  onChanged: (on) => unawaited(
-                    ref.read(shareFingerprintsProvider.notifier).set(on),
+              if (ref.watch(backendConfigProvider).fingerprintUploads)
+                SettingsRow(
+                  label: l10n.detectionShareFingerprints,
+                  trailing: Switch(
+                    value: shareFingerprints,
+                    onChanged: (on) => unawaited(
+                      ref.read(shareFingerprintsProvider.notifier).set(on),
+                    ),
+                  ),
+                  onTap: () => unawaited(
+                    ref
+                        .read(shareFingerprintsProvider.notifier)
+                        .set(!shareFingerprints),
                   ),
                 ),
-                onTap: () => unawaited(
-                  ref
-                      .read(shareFingerprintsProvider.notifier)
-                      .set(!shareFingerprints),
-                ),
-              ),
               SettingsRow(
                 label: l10n.detectionClearListenHistory,
                 onTap: () => unawaited(

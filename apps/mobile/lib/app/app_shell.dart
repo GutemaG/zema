@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../features/identify/application/track_sound_links.dart';
 import '../features/detection/application/detected_song.dart';
 import '../features/detection/application/lyrics_overlay_sync.dart';
 import '../features/detection/presentation/choose_detected_song_sheet.dart';
@@ -156,6 +157,7 @@ class AppShell extends ConsumerWidget {
       }
     });
     ref.listen(lyricsLinkSyncProvider, (_, _) {});
+    ref.listen(soundLinkSyncProvider, (_, _) {});
     ref.listen(myContributionsProvider, (_, _) {});
     final l10n = AppLocalizations.of(context);
     ref.listen(contributionChangesProvider, (_, next) {

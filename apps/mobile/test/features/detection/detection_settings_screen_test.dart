@@ -12,7 +12,6 @@ import 'package:zema/features/detection/data/lyrics_overlay.dart';
 import 'package:zema/features/detection/data/playback_detector.dart';
 import 'package:zema/features/detection/presentation/detection_settings_screen.dart';
 import 'package:zema/features/identify/application/offline_catalog.dart';
-import 'package:zema/features/identify/application/shared_fingerprints.dart';
 
 import '../../helpers/fake_library.dart';
 import '../../helpers/pump_app.dart';
@@ -167,9 +166,11 @@ void main() {
     expect(overlay.saved.start, OverlayStart.bar);
     expect(overlay.saved.textSize, 20);
 
-    await tester.tap(find.text('Share fingerprints of my songs'));
-    await tester.pumpAndSettle();
-    expect(preferences.getBool(ShareFingerprintsSetting.key), isTrue);
+    expect(
+      find.text('Share fingerprints of my songs'),
+      findsNothing,
+      reason: 'fingerprint uploads are off in this build',
+    );
 
     expect(find.text('Up to 50 MB · None yet'), findsOneWidget);
     await tester.tap(find.text('Songs to identify offline'));

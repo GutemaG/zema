@@ -582,6 +582,12 @@ abstract class AppLocalizations {
   /// **'No lyrics for this song'**
   String get playerNoLyrics;
 
+  /// Shown on Now Playing under No lyrics while the playing file is identified by its sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for lyrics by the song\'s sound…'**
+  String get playerFindingLyrics;
+
   /// Name of the Android notification channel for music playback.
   ///
   /// In en, this message translates to:

@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zema_core/zema_core.dart';
 
+import '../../identify/application/track_sound_links.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -154,6 +155,26 @@ class NoLyrics extends ConsumerWidget {
               style: Theme.of(context).textTheme.bodyLarge
                   ?.copyWith(color: colors.muted),
             ),
+            if (ref.watch(identifyingTrackProvider) == track.id) ...[
+              const SizedBox(height: 8),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox.square(
+                    dimension: 14,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      l10n.playerFindingLyrics,
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: colors.muted),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             OutlinedButton.icon(
               icon: const Icon(Icons.link),

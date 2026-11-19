@@ -6,8 +6,11 @@ import 'zema_database.dart';
 part 'fingerprints_dao.g.dart';
 
 /// Audio fingerprints of library files, by Zema's track ID (a track's
-/// fingerprint goes with its row), and of catalog recordings kept offline.
-@DriftAccessor(tables: [TrackFingerprints, CatalogFingerprints])
+/// fingerprint goes with its row), of catalog recordings kept offline, and
+/// what library files were identified as by their sound.
+@DriftAccessor(
+  tables: [TrackFingerprints, CatalogFingerprints, TrackAudioMatches],
+)
 class FingerprintsDao extends DatabaseAccessor<ZemaDatabase>
     with _$FingerprintsDaoMixin {
   FingerprintsDao(super.attachedDatabase);
@@ -159,6 +162,19 @@ class FingerprintsDao extends DatabaseAccessor<ZemaDatabase>
     )..addColumns([count, latest])).getSingle();
     return (row.read(count)!, row.read(latest));
   }
+
+  /// What library files were identified as by their sound, by track ID.
+  Stream<Map<int, TrackAudioMatchRow>> watchAudioMatches() =>
+      select(trackAudioMatches)
+          .watch()
+          .map((rows) => {for (final row in rows) row.trackId: row});
+
+  Future<TrackAudioMatchRow?> audioMatch(int trackId) => (select(
+    trackAudioMatches,
+  )..where((m) => m.trackId.equals(trackId))).getSingleOrNull();
+
+  Future<void> putAudioMatch(TrackAudioMatchesCompanion match) =>
+      into(trackAudioMatches).insertOnConflictUpdate(match);
 }
 
 /// A catalog fingerprint on the phone, without its bytes.

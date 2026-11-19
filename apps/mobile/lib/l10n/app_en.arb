@@ -337,6 +337,10 @@
   "@playerNoLyrics": {
     "description": "Shown on Now Playing when the song has no linked lyrics."
   },
+  "playerFindingLyrics": "Looking for lyrics by the song's sound…",
+  "@playerFindingLyrics": {
+    "description": "Shown on Now Playing under No lyrics while the playing file is identified by its sound."
+  },
   "playbackChannelName": "Playback",
   "@playbackChannelName": {
     "description": "Name of the Android notification channel for music playback."

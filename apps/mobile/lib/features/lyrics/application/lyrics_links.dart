@@ -7,6 +7,7 @@ import 'package:zema_core/zema_core.dart';
 import '../../../app/database/database_provider.dart';
 import '../../catalog/application/catalog_index.dart';
 import '../../catalog/data/catalog_lyrics_repository.dart';
+import '../../identify/application/track_sound_links.dart';
 import '../../library/application/library_providers.dart';
 import '../data/lyrics_links_repository.dart';
 
@@ -58,7 +59,8 @@ final songProvider = FutureProvider.family<Song?, String>((ref, songId) async {
   return ref.watch(lyricsRepositoryProvider).song(songId);
 }, retry: (_, _) => null);
 
-final _linksProvider = StreamProvider<Map<int, LyricsLink>>(
+/// Every track's link, by track ID.
+final lyricsLinksProvider = StreamProvider<Map<int, LyricsLink>>(
   (ref) => ref.watch(lyricsLinksRepositoryProvider).watchLinks(),
 );
 
@@ -85,14 +87,18 @@ final lyricsLinkSyncProvider = Provider<void>((ref) {
   );
 });
 
-/// The lyrics song [trackId] is linked to, or null. A link to a song that
-/// is no longer in the catalog's index counts as none.
+/// The lyrics song [trackId] is linked to, or null: the user's choice, else
+/// what its sound matched, else what its title matched. A link to a song
+/// that is no longer in the catalog's index counts as none.
 final trackSongProvider = Provider.family<AsyncValue<Song?>, int>((
   ref,
   trackId,
 ) {
-  return switch (ref.watch(_linksProvider)) {
-    AsyncData(value: final links) => switch (links[trackId]?.songId) {
+  return switch (ref.watch(lyricsLinksProvider)) {
+    AsyncData(value: final links) => switch (ref
+            .watch(trackSoundMatchProvider(trackId))
+            ?.songId ??
+        links[trackId]?.songId) {
       final id? => ref.watch(songProvider(id)),
       null => const AsyncData(null),
     },
@@ -124,7 +130,7 @@ class LyricsLinksController {
 
 /// The library's tracks linked to the song [songId], in library order.
 final songTracksProvider = Provider.family<List<Track>, String>((ref, songId) {
-  final links = ref.watch(_linksProvider).value ?? const {};
+  final links = ref.watch(lyricsLinksProvider).value ?? const {};
   final tracks = ref.watch(libraryTracksProvider).value ?? const <Track>[];
   return [
     for (final track in tracks)

@@ -9,6 +9,8 @@ mixin _$FingerprintsDaoMixin on DatabaseAccessor<ZemaDatabase> {
       attachedDatabase.trackFingerprints;
   $CatalogFingerprintsTable get catalogFingerprints =>
       attachedDatabase.catalogFingerprints;
+  $TrackAudioMatchesTable get trackAudioMatches =>
+      attachedDatabase.trackAudioMatches;
   FingerprintsDaoManager get managers => FingerprintsDaoManager(this);
 }
 
@@ -26,5 +28,10 @@ class FingerprintsDaoManager {
       $$CatalogFingerprintsTableTableManager(
         _db.attachedDatabase,
         _db.catalogFingerprints,
+      );
+  $$TrackAudioMatchesTableTableManager get trackAudioMatches =>
+      $$TrackAudioMatchesTableTableManager(
+        _db.attachedDatabase,
+        _db.trackAudioMatches,
       );
 }

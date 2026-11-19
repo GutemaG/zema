@@ -22,6 +22,7 @@ import 'package:zema/features/account/application/account_providers.dart';
 import 'package:zema/features/account/data/avatar_cache.dart';
 import 'package:zema/features/account/data/google_account_picker.dart';
 import 'package:zema/features/contribute/application/moderation.dart';
+import 'package:zema/features/identify/application/track_sound_links.dart';
 import 'package:zema/features/library/application/song_info.dart';
 import 'package:zema/features/library/data/cover_store.dart';
 import 'package:zema/features/contribute/application/recording.dart';
@@ -152,6 +153,9 @@ Future<void> pumpZemaApp(
               ? contributions ?? FakeContributionRepository()
               : null,
         ),
+        // Identifying files by sound decodes real audio; tests that need it
+        // override this.
+        soundLinkSyncProvider.overrideWith((ref) {}),
         ...overrides,
       ],
       child: const ZemaApp(),

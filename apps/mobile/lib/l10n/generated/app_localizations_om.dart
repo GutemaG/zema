@@ -269,6 +269,9 @@ class AppLocalizationsOm extends AppLocalizations {
   String get playerNoLyrics => 'No lyrics for this song';
 
   @override
+  String get playerFindingLyrics => 'Looking for lyrics by the song\'s sound…';
+
+  @override
   String get playbackChannelName => 'Playback';
 
   @override

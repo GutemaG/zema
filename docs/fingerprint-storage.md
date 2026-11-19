@@ -77,6 +77,13 @@ the new ones.
 24-bit hashes, frames inside the recording, and a length within 3 s or 5 % of the
 recording's.
 
+### Uploads are off for now
+
+While server storage is limited, phones send no fingerprints: contributions
+and library sharing skip `attach_fingerprint` and `share_fingerprint`, and the
+Share switch is hidden. Build with `--dart-define=ZEMA_FINGERPRINT_UPLOADS=true`
+to turn them back on. The tables and functions stay; the seed tool still works.
+
 ## Lookups
 
 `identify_audio(version, hashes, frames, install_id, …)` returns up to 3 approved
@@ -92,6 +99,15 @@ and the IP address (2,000 a day); past either it fails with HTTP 429. The top ma
 | `track_fingerprints` | The user's own files, at the library density, for offline Listen |
 | `catalog_fingerprints` | Catalog recordings kept for offline Listen, with the server's `revision` |
 | `pending_lookups` | Excerpts heard offline, kept as query fingerprints until the catalog can be asked |
+
+`track_audio_matches` (v16) holds what each library file was identified as
+by its **sound**: the song, the recording and how much later the file runs. Zema
+decodes the first 105 s of a file with no lyrics linked, searches two 12 s
+excerpts (about 26 s and 90 s in) among the library's and the kept catalog
+fingerprints, and links the song only when both agree. A file being played is
+also looked up on the server, which stores nothing. The others are checked in
+the background after the library is fingerprinted. A link made by hand comes
+first, then one by sound, then one by title.
 
 Each fingerprint is one blob (`AudioFingerprint.toBytes`), about 6 bytes per hash:
 roughly 160 KB for a 4½-minute catalog song.

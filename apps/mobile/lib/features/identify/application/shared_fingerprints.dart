@@ -76,7 +76,10 @@ final contributionFingerprintsProvider = Provider<ContributionFingerprints?>((
   ref,
 ) {
   final repository = ref.watch(contributionRepositoryProvider);
-  if (repository == null) return null;
+  if (repository == null ||
+      !ref.watch(backendConfigProvider).fingerprintUploads) {
+    return null;
+  }
   return ContributionFingerprints(
     repository: repository,
     decoder: ref.watch(audioDecoderProvider),
@@ -214,7 +217,9 @@ Future<List<ShareCandidate>> shareCandidates(Ref ref) async {
 
 final fingerprintSharerProvider = Provider<FingerprintSharer?>((ref) {
   final catalog = ref.watch(audioCatalogProvider);
-  if (catalog == null) return null;
+  if (catalog == null || !ref.watch(backendConfigProvider).fingerprintUploads) {
+    return null;
+  }
   return FingerprintSharer(
     catalog: catalog,
     decoder: ref.watch(audioDecoderProvider),

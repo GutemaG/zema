@@ -8,6 +8,7 @@ import '../../../app/database/own_copies_dao.dart';
 import '../../contribute/application/own_copies.dart';
 import '../../player/application/player_providers.dart';
 import '../../catalog/data/catalog_lyrics_repository.dart';
+import '../../identify/application/track_sound_links.dart';
 import 'lyrics_links.dart';
 import 'lyrics_prefs.dart';
 
@@ -23,6 +24,7 @@ class TrackLyrics {
     this.synced,
     this.pending = false,
     this.localDraftId,
+    this.soundOffset = Duration.zero,
   });
 
   final Song song;
@@ -42,6 +44,10 @@ class TrackLyrics {
 
   /// For lyrics saved on this phone only, the draft they were saved from.
   final int? localDraftId;
+
+  /// How much later the file runs than [recording], when its sound was
+  /// matched to it.
+  final Duration soundOffset;
 }
 
 /// The recording of a song whose timing the lyrics view uses.
@@ -74,10 +80,16 @@ final trackLyricsProvider = FutureProvider.family<TrackLyrics?, int>((
   };
   if (song == null) return null;
   final repository = ref.watch(lyricsRepositoryProvider);
+  final recordings = await repository.recordings(song.id);
+  final sound = ref.watch(trackSoundMatchProvider(trackId));
+  final matched = sound?.songId == song.id
+      ? recordings.where((r) => r.id == sound!.recordingId).firstOrNull
+      : null;
   return _withRecording(
     repository,
     song,
-    usedRecording(await repository.recordings(song.id)),
+    matched ?? usedRecording(recordings),
+    soundOffset: sound?.songId == song.id ? sound!.offset : Duration.zero,
   );
   // A failure shows C07 at once; its Try again retries.
 }, retry: (_, _) => null);
@@ -102,8 +114,9 @@ final matchedSongLyricsProvider =
 Future<TrackLyrics> _withRecording(
   LyricsRepository repository,
   Song song,
-  Recording? recording,
-) async {
+  Recording? recording, {
+  Duration soundOffset = Duration.zero,
+}) async {
   final lines = expandPlayOrder(song).occurrences;
   if (recording == null) return TrackLyrics(song: song, lines: lines);
   final timing = await repository.timing(recording.id);
@@ -121,6 +134,7 @@ Future<TrackLyrics> _withRecording(
     lines: synced?.lines ?? lines,
     recording: recording,
     synced: synced,
+    soundOffset: soundOffset,
   );
 }
 
@@ -157,6 +171,7 @@ final lyricsShiftProvider = Provider.family<Duration, TrackLyrics>((
   if (recording == null) return Duration.zero;
   final own = ref.watch(lyricsOffsetProvider(recording.id));
   return recording.offset +
+      lyrics.soundOffset +
       (own ?? ref.watch(lyricsDisplayProvider).defaultOffset);
 });
 
