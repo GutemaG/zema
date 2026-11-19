@@ -14,7 +14,7 @@ import 'dart:typed_data';
 import 'package:zema_core/zema_core.dart';
 
 const _hops = [trackPrintHop];
-const _strides = [1, 2, 4, 8];
+const _strides = [1, 4, 8, trackPrintKeyStride];
 
 /// Copies of each file: ffmpeg input options (before `-i`) and encoder
 /// options, or null for the file as it is.

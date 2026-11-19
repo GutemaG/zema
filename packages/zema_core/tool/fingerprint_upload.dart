@@ -31,3 +31,11 @@ Map<String, Object> putFingerprintBody(
   'hashes': fingerprint.hashes.toList(),
   'frames': fingerprint.frames.toList(),
 };
+
+/// The body of `put_track_print` for [songId]: the print only, no audio.
+Map<String, Object> putTrackPrintBody(String songId, TrackPrint print) => {
+  'song': songId,
+  'version': trackPrintVersion,
+  'print': printValuesSigned(print),
+  'duration_ms': print.duration.inMilliseconds,
+};

@@ -324,17 +324,29 @@ const double trackPrintMatch = 0.30;
 /// Number of bits a print key keeps: the top ones of a value.
 const int trackPrintKeyBits = 20;
 
+/// Every how many values the server keeps a key of a stored print
+/// (`track_print_keys`); a lookup sends all of its own.
+const int trackPrintKeyStride = 16;
+
 /// The keys to find [print] by in an index: the top [trackPrintKeyBits]
-/// bits of every [stride]-th value, without repeats. A copy of the same
-/// recording shares some of them exactly, so an index only has to compare
-/// prints that share a key.
+/// bits of every [stride]-th value, without repeats, skipping silence
+/// (value 0), which every print has. A copy of the same recording shares
+/// some of them exactly, so an index only has to compare prints that share
+/// keys. As the server's `track_print_keys`.
 List<int> printKeys(TrackPrint print, {int stride = 1}) {
   final keys = <int>{};
   for (var i = 0; i < print.values.length; i += stride) {
-    keys.add(print.values[i] >> (32 - trackPrintKeyBits));
+    final v = print.values[i];
+    if (v != 0) keys.add(v >> (32 - trackPrintKeyBits));
   }
   return keys.toList();
 }
+
+/// [print]'s values as signed 32-bit integers, as the server stores them
+/// (Postgres has no unsigned integer).
+List<int> printValuesSigned(TrackPrint print) => [
+  for (final v in print.values) v >= 0x80000000 ? v - 0x100000000 : v,
+];
 
 final Uint8List _ones = () {
   final t = Uint8List(1 << 16);

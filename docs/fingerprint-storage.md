@@ -145,3 +145,36 @@ Ways to make it smaller, when needed:
   some loss on short or noisy excerpts. Needs a new `fingerprintVersion`.
 - Drop very common hashes, which match almost everything and help little.
 - A bigger plan or server (see [replacing-supabase.md](replacing-supabase.md)).
+
+## Track prints (intent 013)
+
+A second, much smaller kind of fingerprint finds the song of a whole library file
+whose tags don't name it ("Track 01"). It isn't for Listen.
+
+- **What:** `zema_core`'s `TrackPrinter`. The file's first 110 s give one 32-bit
+  value per 46 ms (about 2,360 values, 9.2 KB). Two prints are compared by the share
+  of differing bits at the best shift within 2 s. Copies of one recording
+  (re-encodes, starts cut by up to 2 s) were at most 17.5 % apart on the owner's 98
+  files; different files were at least 48.6 % apart. The match threshold is 30 %.
+- **Tables:**
+  - `track_prints`: one row per print, per song (several per song allowed),
+    `pending` or `published`.
+  - `track_print_keys`: one row per every 16th value's top 20 bits, for published
+    prints.
+  - Both have RLS on and no policies.
+- **Lookup:** `match_track(version, print, duration_ms, install_id)` ranks prints by
+  shared keys, compares the top 20 at the shifts their keys agree on, and returns up
+  to 3 songs. Limits are 300 a day per install and 2,000 per IP. It took 50–66 ms
+  with 10,000 prints, locally.
+- **Getting in:**
+  - The seed tool (`tool/upload_track_prints.dart`, service key) calls
+    `put_track_print`.
+  - Phones call `share_track_print` (at most 30 a day). A print publishes when a
+    second install sends a matching one for the same song.
+  - A print that matches a different song's waits for a moderator
+    (`moderator_track_prints`, `review_track_print`).
+- **Size:** about 23 KB per song, with 10 KB for the print and 13 KB for keys and
+  indexes. That is 230 MB at 10,000 songs, against about 4 MB per song for the
+  fingerprints above. Keeping every 32nd value's key would halve the key part.
+- **Trying it:** `dart run tool/track_print_eval.dart <folder>` (needs ffmpeg).
+

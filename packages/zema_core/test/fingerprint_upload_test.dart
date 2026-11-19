@@ -32,4 +32,23 @@ void main() {
       'frames': [0, 4],
     });
   });
+
+  test(
+    'a track print upload holds the signed values and length, not audio',
+    () {
+      final body = putTrackPrintBody(
+        'selam',
+        TrackPrint(
+          values: Uint32List.fromList([1, 0xffffffff]),
+          duration: const Duration(seconds: 200),
+        ),
+      );
+      expect(body, {
+        'song': 'selam',
+        'version': trackPrintVersion,
+        'print': [1, -1],
+        'duration_ms': 200000,
+      });
+    },
+  );
 }

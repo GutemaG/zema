@@ -84,7 +84,8 @@ select results_eq(
     where key = 'install:' || encode(extensions.digest('install-1', 'sha256'), 'hex')$$,
   $$values (6, 4)$$,
   'only counts are kept: lookups, and those that matched, by a hash of the install');
-select is((select count(*)::int from public.identify_counts), 1, 'no IP without a forwarded header');
+select is((select count(*)::int from public.identify_counts where key like 'ip:%'), 0,
+  'no IP without a forwarded header');
 
 update public.identify_counts set lookups = 300;
 select throws_ok(

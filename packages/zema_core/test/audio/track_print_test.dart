@@ -81,5 +81,18 @@ void main() {
     expect(all.every((k) => k < 1 << trackPrintKeyBits), isTrue);
     expect(all.toSet().length, all.length);
     expect(printKeys(print, stride: 4).length, lessThan(all.length));
+    final silent = TrackPrint(
+      values: Uint32List.fromList([0, 0, 0x80001000]),
+      duration: Duration.zero,
+    );
+    expect(printKeys(silent), [0x80001]);
+  });
+
+  test('signed values keep the bits', () {
+    final p = TrackPrint(
+      values: Uint32List.fromList([1, 0x7fffffff, 0x80000000, 0xffffffff]),
+      duration: Duration.zero,
+    );
+    expect(printValuesSigned(p), [1, 0x7fffffff, -0x80000000, -1]);
   });
 }

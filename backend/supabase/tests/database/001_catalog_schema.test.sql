@@ -19,7 +19,7 @@ select tables_are(
     'reports', 'user_roles', 'contributions', 'profiles', 'backups',
     'search_entries', 'search_entry_words', 'search_vocab', 'search_syllable_consonants',
     'recording_fingerprints', 'fingerprint_hashes', 'identify_counts',
-    'pending_fingerprints'
+    'pending_fingerprints', 'track_prints', 'track_print_keys'
   ],
   'the catalog has exactly the expected tables'
 );

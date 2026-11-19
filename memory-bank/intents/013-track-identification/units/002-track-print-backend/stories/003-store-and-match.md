@@ -2,11 +2,11 @@
 id: 003-store-and-match
 unit: 002-track-print-backend
 intent: 013-track-identification
-status: planned
+status: complete
 priority: must
 created: '2026-11-19T16:00:00Z'
 assigned_bolt: 060-track-print-backend
-implemented: false
+implemented: true
 ---
 
 # Story: 003-store-and-match
@@ -19,8 +19,8 @@ Store and match prints
 
 ## Acceptance Criteria
 
-- [ ] **Given** a migration, **When** applied, **Then** `track_prints` (song, version, print int[], keys int[], duration, status, installs) exists with an index on keys and RLS with no policies
-- [ ] **Given** `match_track(version, print, duration, install_id)`, **When** called, **Then** published prints sharing keys are scored by differing bits and up to 3 songs under the threshold come back, best first
-- [ ] **Given** too many calls, **When** over 300 a day per install or 2,000 per IP, **Then** HTTP 429, as `identify_audio`
-- [ ] **Given** the seed tool, **When** run with the service key, **Then** it publishes prints for files with a song id
-- [ ] **Given** 10,000 prints, **When** matched, **Then** < 300 ms on local Supabase
+- [x] **Given** a migration, **When** applied, **Then** `track_prints` (song, version, print int[], keys int[], duration, status, installs) exists with an index on keys and RLS with no policies
+- [x] **Given** `match_track(version, print, duration, install_id)`, **When** called, **Then** published prints sharing keys are scored by differing bits and up to 3 songs under the threshold come back, best first
+- [x] **Given** too many calls, **When** over 300 a day per install or 2,000 per IP, **Then** HTTP 429, as `identify_audio`
+- [x] **Given** the seed tool, **When** run with the service key, **Then** it publishes prints for files with a song id
+- [x] **Given** 10,000 prints, **When** matched, **Then** < 300 ms on local Supabase
