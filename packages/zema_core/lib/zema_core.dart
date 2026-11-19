@@ -38,6 +38,7 @@ export 'src/lyrics/lyrics_repository.dart';
 export 'src/lyrics/track_matching.dart';
 export 'src/lyrics/play_order.dart';
 export 'src/lyrics/sync_engine.dart';
+export 'src/moderation/moderation.dart';
 export 'src/player/play_queue.dart';
 export 'src/search/normalize.dart';
 export 'src/search/search_tables.dart';

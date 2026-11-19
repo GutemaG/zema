@@ -61,7 +61,7 @@ class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
   }) async {
     await _call('submit_report', {
       'song_id': songId,
-      'reason': _reasonNames[reason],
+      'reason': reportReasonWire[reason],
       'install_id': installId,
       'recording_id': ?recordingId,
       'note': ?note,
@@ -184,13 +184,6 @@ class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
     }
   }
 }
-
-const _reasonNames = {
-  ReportReason.wrongWords: 'wrong_words',
-  ReportReason.wrongTiming: 'wrong_timing',
-  ReportReason.wrongSong: 'wrong_song',
-  ReportReason.other: 'other',
-};
 
 T _parse<T>(T Function() parse) {
   try {

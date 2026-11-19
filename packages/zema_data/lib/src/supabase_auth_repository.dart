@@ -23,10 +23,12 @@ class SupabaseAuthRepository implements AuthRepository {
     required this._store,
     http.Client? httpClient,
     Duration timeout = const Duration(seconds: 10),
+    GotrueAsyncStorage? redirectStorage,
   }) : client = SupabaseClient(
          url,
          key,
          httpClient: TimeoutClient(httpClient ?? http.Client(), timeout),
+         authOptions: AuthClientOptions(pkceAsyncStorage: redirectStorage),
        ) {
     // Refresh failures are reported on this stream too; they are handled
     // where the refresh was asked for.
@@ -109,6 +111,33 @@ class SupabaseAuthRepository implements AuthRepository {
       throw const AuthFailure('signInWithGoogle: no session in the answer');
     }
     _signedIn(session);
+    return _user!;
+  }
+
+  /// The Google page to send a browser to, for sign-in on the web; it comes
+  /// back to [returnTo] with a `code` for [completeRedirectSignIn]. Needs the
+  /// `redirectStorage` given to the constructor, kept across page loads.
+  Future<Uri> googleRedirectUrl(Uri returnTo) async {
+    try {
+      final response = await client.auth.getOAuthSignInUrl(
+        provider: OAuthProvider.google,
+        redirectTo: returnTo.toString(),
+      );
+      return Uri.parse(response.url);
+    } on Object catch (e) {
+      throw _authFailure('googleRedirectUrl', e);
+    }
+  }
+
+  /// Signs in with the [code] Google's sign-in page came back with.
+  Future<AuthUser> completeRedirectSignIn(String code) async {
+    final AuthSessionUrlResponse response;
+    try {
+      response = await client.auth.exchangeCodeForSession(code);
+    } on Object catch (e) {
+      throw _authFailure('completeRedirectSignIn', e);
+    }
+    _signedIn(response.session);
     return _user!;
   }
 

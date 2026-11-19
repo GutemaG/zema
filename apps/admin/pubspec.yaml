@@ -1,0 +1,27 @@
+name: zema_admin
+description: Zema's admin website for moderators.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.5
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.4.3
+  web: ^1.1.1
+  zema_core:
+    path: ../../packages/zema_core
+  zema_data:
+    path: ../../packages/zema_data
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

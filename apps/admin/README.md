@@ -1,15 +1,12 @@
 # admin
 
-Admin website for moderators (planned): browse lyrics, review the submission queue,
-approve / request changes / reject, edit songs and recordings.
+The website moderators use to review contributions and reports and to hide songs
+(intent 008). Flutter web, sharing `zema_core` and `zema_data` with the app; every
+moderator action is checked by the backend.
 
-Planned stack: Flutter web, sharing `packages/zema_core` with the mobile app.
-Deployed as static files (e.g. Vercel or Firebase Hosting). Access control is enforced
-by the backend rules in `backend/`, not by the site itself.
+    flutter run -d chrome --web-port 5555 \
+      --dart-define-from-file=../mobile/config/backend.local.json
+    flutter test
+    tool/deploy.sh          # hosted build to Cloudflare Pages
 
-Not created yet. When starting:
-
-    flutter create --platforms web --org com.zemaapp --project-name zema_admin apps/admin
-
-then add `resolution: workspace` and a `zema_core` path dependency to its pubspec, and
-add `apps/admin` to the root `pubspec.yaml` workspace list.
+Setup and deploying: [docs/admin-website.md](../../docs/admin-website.md).

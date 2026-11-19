@@ -324,4 +324,72 @@ void main() {
       expect(requests.first.url.queryParameters['id'], 'eq.$userId');
     });
   });
+
+  group('sign-in on the web', () {
+    late _MemoryAsyncStorage kept;
+
+    void answerWebWith(http.Response Function() answer) {
+      kept = _MemoryAsyncStorage();
+      auth = SupabaseAuthRepository(
+        url: 'http://backend.test',
+        key: 'anon-key',
+        store: store = MemorySessionStore(),
+        redirectStorage: kept,
+        httpClient: MockClient((request) async {
+          requests.add(request);
+          return answer();
+        }),
+      );
+    }
+
+    test('sends the browser to Google and signs in with the code', () async {
+      answerWebWith(() => json(sessionJson()));
+      final url = await auth.googleRedirectUrl(
+        Uri.parse('https://admin.test/'),
+      );
+      expect(url.path, '/auth/v1/authorize');
+      expect(url.queryParameters['provider'], 'google');
+      expect(url.queryParameters['redirect_to'], 'https://admin.test/');
+      expect(url.queryParameters['code_challenge'], isNotEmpty);
+      expect(kept.items, isNotEmpty, reason: 'kept for the return');
+      expect(requests, isEmpty);
+
+      final user = await auth.completeRedirectSignIn('code-1');
+      expect(user.id, userId);
+      expect(auth.currentUser?.name, 'Abebe Bikila');
+      expect(requests.single.url.queryParameters['grant_type'], 'pkce');
+      expect(
+        jsonDecode(requests.single.body),
+        containsPair('auth_code', 'code-1'),
+      );
+      await pumpEventQueue();
+      expect(store.session, isNotNull);
+    });
+
+    test('a refused code is an AuthFailure', () async {
+      answerWebWith(
+        () => json({'error_code': 'flow_state_not_found', 'msg': 'bad'}, 404),
+      );
+      await auth.googleRedirectUrl(Uri.parse('https://admin.test/'));
+      await expectLater(
+        auth.completeRedirectSignIn('code-1'),
+        throwsA(isA<AuthFailure>()),
+      );
+      expect(auth.currentUser, isNull);
+    });
+  });
+}
+
+class _MemoryAsyncStorage extends GotrueAsyncStorage {
+  final items = <String, String>{};
+
+  @override
+  Future<String?> getItem({required String key}) async => items[key];
+
+  @override
+  Future<void> setItem({required String key, required String value}) async =>
+      items[key] = value;
+
+  @override
+  Future<void> removeItem({required String key}) async => items.remove(key);
 }
