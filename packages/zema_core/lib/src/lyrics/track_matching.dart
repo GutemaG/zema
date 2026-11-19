@@ -3,6 +3,7 @@ import 'dart:math';
 import '../library/track.dart';
 import '../search/transliteration.dart';
 import 'lyrics_models.dart';
+import 'track_tags.dart';
 
 /// The score a track's title must reach to link to a song automatically.
 const double autoLinkThreshold = 0.9;
@@ -29,21 +30,30 @@ class SongMatcher<S extends SongIdentity> {
   /// match equally well.
   ///
   /// The song's title (or transliteration) must be found in the track's
-  /// title, so noise around it ("… - Official Video") doesn't matter. The
-  /// artist only breaks ties between equal titles.
+  /// [matchTitle], so noise around it ("… - Official Video") doesn't matter.
+  /// The artist only breaks ties between equal titles: the track's
+  /// [matchArtist], or the song's artist found in its [artistHints].
   S? match(Track track) {
-    final title = SearchKey(track.title);
+    final title = SearchKey(matchTitle(track));
     if (title.isEmpty) return null;
-    final artist = track.artist == null ? null : SearchKey(track.artist!);
+    final artist = switch (matchArtist(track)) {
+      final a? => SearchKey(a),
+      null => null,
+    };
+    final hints = SearchKey(artistHints(track));
     S? best;
     var bestScore = 0.0;
     var tie = false;
     for (final (song, keys, songArtist) in _songs) {
       final titleScore = keys.map((k) => matchScore(k, title)).reduce(max);
       if (titleScore < autoLinkThreshold) continue;
-      final artistBonus = artist != null && songArtist != null
-          ? 0.01 * matchScore(songArtist, artist)
-          : 0.0;
+      final artistBonus = songArtist == null
+          ? 0.0
+          : 0.01 *
+                max(
+                  artist == null ? 0.0 : matchScore(songArtist, artist),
+                  matchScore(songArtist, hints),
+                );
       final score = titleScore + artistBonus;
       if (score > bestScore) {
         (best, bestScore, tie) = (song, score, false);

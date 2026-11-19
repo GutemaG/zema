@@ -32,3 +32,7 @@ Track print table, match and share RPCs; hosted migration after the owner confir
 - [ ] **1. plan** → implementation-plan.md
 - [ ] **2. implement** → code + implementation-walkthrough.md
 - [ ] **3. test** → tests + test-walkthrough.md
+
+## Carried over
+
+- From 058: the length tie-break (story 001). The song index has no recording lengths. Add them to `song_index` / `CatalogEntry`, or let the track print settle the tie.
