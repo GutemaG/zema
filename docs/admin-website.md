@@ -13,7 +13,7 @@ in; grant it with `backend/scripts/moderator.sh grant <email>`.
 2. **Supabase dashboard** → Authentication → Sign In / Providers → Google: the web client
    ID and its secret are filled in.
 3. **Supabase dashboard** → Authentication → URL Configuration → *Redirect URLs*: add
-   `https://zema-admin.pages.dev/**` and `http://localhost:5555/**`.
+   `https://zema-admin.pages.dev/**` and `http://localhost:8765/**`.
 4. **Cloudflare**: `npx wrangler login`, then the first `tool/deploy.sh` creates the
    `zema-admin` Pages project (`ZEMA_ADMIN_PROJECT` picks another name; update step 3).
 
@@ -27,7 +27,7 @@ uploads `build/web`. Deploying on push waits for CI on GitHub.
 ## Running locally
 
     cd apps/admin
-    flutter run -d chrome --web-port 5555 --dart-define-from-file=../mobile/config/backend.local.json
+    flutter run -d chrome --web-port 8765 --dart-define-from-file=../mobile/config/backend.local.json
 
 `backend.local.json` points at the emulator's address (`10.0.2.2`); for Chrome use
 `http://127.0.0.1:54321` as `ZEMA_BACKEND_URL`.
