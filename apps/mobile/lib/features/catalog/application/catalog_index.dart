@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ import '../../../app/backend/backend_providers.dart';
 import '../../../app/database/catalog_dao.dart';
 import '../../../app/database/database_provider.dart';
 import '../../../app/preferences_provider.dart';
+import '../../contribute/application/my_contributions.dart';
 
 final _log = Logger('catalog.index');
 
@@ -33,8 +35,9 @@ class CatalogIndexRefresher {
     required this._preferences,
   });
 
-  /// How old the index may get before a start-up refresh fetches it again.
-  static const maxAge = Duration(hours: 6);
+  /// How old the index may get before Zema starting or coming back to the
+  /// front fetches it again.
+  static const maxAge = Duration(minutes: 30);
 
   /// Where the time of the last refresh is kept (milliseconds since epoch).
   static const refreshedAtKey = 'catalog.indexRefreshedAt';
@@ -102,17 +105,28 @@ final newLyricsProvider = Provider<List<CatalogEntry>>((ref) {
   return entries.take(count).toList();
 });
 
-/// Refreshes the index once when the app starts, if it is stale. Failing is
-/// normal offline, so it is only logged. Kept alive by the app shell.
+/// Refreshes the index when the app starts or comes back to the front, if
+/// it is stale, and at once when one of the user's contributions is
+/// approved, so its song can be matched. Failing is normal offline, so it is
+/// only logged. Kept alive by the app shell.
 final catalogStartupRefreshProvider = Provider<void>((ref) {
-  unawaited(
+  void refresh({bool force = false}) => unawaited(
     ref
         .read(catalogIndexRefresherProvider)
-        .refresh()
+        .refresh(force: force)
         .then<void>((_) {})
         .catchError(
           (Object e) => _log.info('Song index not refreshed', e),
           test: (e) => e is ZemaFailure,
         ),
   );
+  refresh();
+  final lifecycle = AppLifecycleListener(onResume: refresh);
+  ref.onDispose(lifecycle.dispose);
+  ref.listen(contributionChangesProvider, (_, next) {
+    if (next.value?.any((c) => c.status == ContributionStatus.approved) ??
+        false) {
+      refresh(force: true);
+    }
+  });
 });

@@ -17,6 +17,7 @@ import 'package:zema/l10n/generated/app_localizations.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../helpers/fake_auth.dart';
+import '../../helpers/fake_catalog.dart';
 import '../../helpers/fake_contribute.dart';
 import '../../helpers/fake_contributions.dart';
 import '../../helpers/fake_library.dart';
@@ -84,10 +85,12 @@ class _Contributions extends FakeContributionRepository {
 void main() {
   late ZemaDatabase db;
   late _Contributions contributions;
+  late FakeCatalogRepository catalog;
 
   setUp(() {
     db = memoryDatabase();
     contributions = _Contributions();
+    catalog = FakeCatalogRepository(entries: const []);
   });
 
   Future<void> open(WidgetTester tester, String location) async {
@@ -105,6 +108,7 @@ void main() {
       savedPrefs: {AccountChoiceController.key: true},
       syncPlayer: FakeSyncPlayer(),
       contributions: contributions,
+      catalog: catalog,
     );
     await tester.pumpAndSettle();
   }
@@ -143,11 +147,17 @@ void main() {
     expect(find.byType(Badge), findsNothing);
     expect(await db.select(db.ownCopies).get(), hasLength(1));
 
+    final fetched = catalog.indexCalls;
     await contributions.decide(id, ReviewDecision.approve);
     await check(tester);
     expect(
       find.text(_l10n.contributionApprovedMessage('Selam')),
       findsOneWidget,
+    );
+    expect(
+      catalog.indexCalls,
+      fetched + 1,
+      reason: 'the song index is fetched at once, for the new song',
     );
     expect(find.byType(Badge), findsOneWidget);
     expect(

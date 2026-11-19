@@ -51,11 +51,11 @@ void main() {
     expect(r.refreshedAt, start);
   });
 
-  test('under 6 hours old it is skipped; after that it refreshes', () async {
+  test('under 30 minutes old it is skipped; after that it refreshes', () async {
     final r = refresher();
     await withClock(Clock.fixed(start), r.refresh);
 
-    final soon = start.add(const Duration(hours: 5, minutes: 59));
+    final soon = start.add(const Duration(minutes: 29));
     expect(await withClock(Clock.fixed(soon), r.refresh), IndexRefresh.fresh);
     expect(catalog.indexCalls, 1);
 
