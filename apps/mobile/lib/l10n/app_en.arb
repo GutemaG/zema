@@ -3197,6 +3197,70 @@
   "@listenResyncFailed": {
     "description": "Lyrics from a match: re-sync found nothing"
   },
+  "keepListening": "Keep listening",
+  "@keepListening": {
+    "description": "Listen screen: starts identifying each song as it plays, in bursts (intent 010 FR-1)"
+  },
+  "keepListeningAbout": "Zema listens every few seconds and follows each song as it plays, even with the screen off. It stops by itself.",
+  "@keepListeningAbout": {
+    "description": "Keep listening sheet: what it does, on Android"
+  },
+  "keepListeningAboutOpen": "Zema listens every few seconds and follows each song as it plays, while Zema stays open. It stops by itself.",
+  "@keepListeningAboutOpen": {
+    "description": "Keep listening sheet: what it does, on iPhone"
+  },
+  "keepListeningMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@keepListeningMinutes": {
+    "description": "Keep listening sheet: a length to listen for",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "keepListeningHours": "{hours, plural, =1{1 hour} other{{hours} hours}}",
+  "@keepListeningHours": {
+    "description": "Keep listening sheet: a length to listen for",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "keepListeningUntil": "Until {time}",
+  "@keepListeningUntil": {
+    "description": "Keep listening notification: when it stops by itself",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "keepListeningOn": "Keep listening until {time}",
+  "@keepListeningOn": {
+    "description": "Listen and lyrics screens while Keep listening is on",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "keepListeningStop": "Stop",
+  "@keepListeningStop": {
+    "description": "Stops Keep listening"
+  },
+  "keepListeningWaiting": "Listening for songs",
+  "@keepListeningWaiting": {
+    "description": "Keep listening notification before a song is found"
+  },
+  "keepListeningTimeUp": "Keep listening ended: the time was up",
+  "@keepListeningTimeUp": {
+    "description": "Why Keep listening ended"
+  },
+  "keepListeningMicrophone": "Keep listening stopped: the microphone stopped working, maybe for a call or another app",
+  "@keepListeningMicrophone": {
+    "description": "Why Keep listening ended"
+  },
   "listenUnsure": "This part repeats in the song, so the place may be off. Re-sync to check.",
   "@listenUnsure": {
     "description": "Listen: the match is sure of the song but not of the place in it"

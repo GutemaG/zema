@@ -31,4 +31,5 @@
     <string name="overlay_choose">Choose another</string>
     <string name="overlay_not_mezmur">Not a mezmur</string>
     <string name="overlay_listen">Identify by listening</string>
+    <string name="keep_listening_channel">Keep listening</string>
 </resources>

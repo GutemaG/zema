@@ -102,6 +102,16 @@ class AppShell extends ConsumerWidget {
               ),
             );
         await context.push<void>(AppRoutes.listen);
+      case OpenKeepListening():
+        final to = ref.read(listenControllerProvider) is ListenFound
+            ? AppRoutes.listenLyrics
+            : AppRoutes.listen;
+        final at = GoRouter.of(context)
+            .routerDelegate
+            .currentConfiguration
+            .uri
+            .path;
+        if (at != to) await context.push<void>(to);
       case OpenSong(:final songId):
         await context.push<void>(AppRoutes.song(songId));
       case OpenDetected(:final key, :final ask):

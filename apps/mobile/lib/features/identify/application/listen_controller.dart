@@ -140,6 +140,20 @@ const listenCheckpoints = [
 /// arriving.
 const listenPatience = Duration(seconds: 5);
 
+/// How far a background burst's match may be from where the shown song
+/// should be and still count as the same moment, not a re-sync.
+const listenSameMoment = Duration(seconds: 2);
+
+/// Whether [a] and [b] are the same library track or catalog song.
+bool sameSong(ListenFound a, ListenFound b) =>
+    a.track?.id == b.track?.id && a.song?.id == b.song?.id;
+
+/// Whether [found] is the [shown] song where it should be at [now], so
+/// nothing needs to change.
+bool sameMoment(ListenFound shown, ListenFound found, DateTime now) =>
+    sameSong(shown, found) &&
+    (found.positionAt(now) - shown.positionAt(now)).abs() < listenSameMoment;
+
 /// How loud [samples] are, 0 to 1: their level from -50 dB (silence) to
 /// -10 dB (loud music near the phone).
 double loudness(Float32List samples) {
@@ -175,6 +189,14 @@ class ListenController extends Notifier<ListenState> {
   Timer? _ticker;
   var _session = 0;
 
+  /// Completes the current session's [listen] with how it ended, or null
+  /// when another session replaced it.
+  Completer<ListenState?>? _done;
+
+  /// In a background session, the song kept on screen while it listens.
+  ListenFound? _shown;
+  var _background = false;
+
   /// The microphone's starts and stops, one at a time: a stop asked for during
   /// a start waits for it, so the microphone can't be left on.
   Future<void> _microphoneWork = Future.value();
@@ -192,6 +214,7 @@ class ListenController extends Notifier<ListenState> {
     _microphone = ref.read(microphoneProvider);
     ref.onDispose(() {
       _session++;
+      _settle(null);
       _closed = true;
       _library?.close();
       _library = null;
@@ -200,6 +223,7 @@ class ListenController extends Notifier<ListenState> {
     ref.listen(pendingMatchProvider, (_, next) {
       if (next == null) return;
       _session++;
+      _settle(null);
       unawaited(_stopRecording());
       state = next;
       ref.read(pendingMatchProvider.notifier).set(null);
@@ -250,30 +274,81 @@ class ListenController extends Notifier<ListenState> {
     return fresh;
   }
 
-  Future<void> listen() async {
-    final session = ++_session;
+  /// Starts listening; done once the microphone is on.
+  Future<void> listen() {
+    _open(background: false);
+    return _start(_session);
+  }
+
+  /// One Keep listening burst: how it ended, or null when another session
+  /// replaced it.
+  ///
+  /// It keeps a found song on screen while it listens and when it finds
+  /// nothing, saves nothing for later, and adds to History only a song that
+  /// isn't the one shown.
+  Future<ListenState?> listenInBackground() {
+    final done = _open(background: true);
+    unawaited(_start(_session));
+    return done;
+  }
+
+  Future<ListenState?> _open({required bool background}) {
+    _session++;
+    _settle(null);
+    final done = _done = Completer<ListenState?>();
+    _background = background;
+    _shown = switch (state) {
+      final ListenFound found when background => found,
+      _ => null,
+    };
+    return done.future;
+  }
+
+  Future<void> _start(int session) async {
     try {
       await _stopRecording();
       final allowed = await _microphone.requestPermission();
       if (session != _session) return;
-      if (!allowed) {
-        state = const ListenDenied();
-        return;
-      }
+      if (!allowed) return _end(const ListenDenied());
       final stale = await _searchIsStale();
       if (session != _session) return;
-      if (stale) state = const ListenLoading();
+      if (stale && _shown == null) state = const ListenLoading();
       final library = await _search();
       if (session != _session) return;
       if (library.recordingCount == 0 &&
           ref.read(audioCatalogProvider) == null) {
-        state = const ListenNothingToMatch();
-        return;
+        return _end(const ListenNothingToMatch());
       }
       await _record(session, library);
     } catch (e, s) {
       _fail(session, e, s);
     }
+  }
+
+  /// Ends the session with [result], shown unless a background session keeps
+  /// its song on screen.
+  void _end(ListenState result, {ListenState? show}) {
+    state = show ?? _shown ?? result;
+    _settle(result);
+  }
+
+  void _settle(ListenState? result) {
+    final done = _done;
+    _done = null;
+    if (done != null && !done.isCompleted) done.complete(result);
+  }
+
+  /// [found] as a background session shows it: the shown song stays when it's
+  /// at the expected moment, and History gets only a new song.
+  void _found(ListenFound found) {
+    final shown = _shown;
+    if (shown != null && sameSong(shown, found)) {
+      _end(found, show: sameMoment(shown, found, clock.now()) ? shown : found);
+      return;
+    }
+    _end(found, show: found);
+    _remember(found);
+    ref.read(listenFoundEventsProvider).add(found);
   }
 
   Future<void> _record(int session, LibrarySearch library) async {
@@ -295,7 +370,7 @@ class ListenController extends Notifier<ListenState> {
       if (earliest == null || start.isBefore(earliest)) startedAt = start;
     }
 
-    state = const Listening(Duration.zero);
+    if (_shown == null) state = const Listening(Duration.zero);
     await _inTurn(() async {
       if (session != _session) return;
       final stream = await _microphone.start();
@@ -311,10 +386,12 @@ class ListenController extends Notifier<ListenState> {
     _ticker = Timer.periodic(const Duration(milliseconds: 100), (_) async {
       if (session != _session) return;
       final heard = Duration(microseconds: samples * 1000000 ~/ rate);
-      state = Listening(
-        heard,
-        level: chunks.isEmpty ? 0 : loudness(chunks.last),
-      );
+      if (_shown == null) {
+        state = Listening(
+          heard,
+          level: chunks.isEmpty ? 0 : loudness(chunks.last),
+        );
+      }
       if (checking) return;
       if (heard < listenCheckpoints[next]) {
         final waited = clock.now().difference(askedAt);
@@ -343,16 +420,14 @@ class ListenController extends Notifier<ListenState> {
           }
         }
         if (found != null && (found.sure || last)) {
-          state = found;
-          _remember(found);
-          ref.read(listenFoundEventsProvider).add(found);
+          _found(found);
           await _stopRecording();
-        } else if (last && offline) {
+        } else if (last && offline && !_background) {
           _saveForLater(heardNow.queries, startedAt!);
-          state = const ListenSavedForLater();
+          _end(const ListenSavedForLater());
           await _stopRecording();
         } else if (last) {
-          state = const ListenNotFound();
+          _end(const ListenNotFound());
           await _stopRecording();
         } else {
           next++;
@@ -366,8 +441,14 @@ class ListenController extends Notifier<ListenState> {
 
   Future<void> cancel() async {
     _session++;
-    state = const ListenIdle();
+    _settle(null);
+    state = _shown ?? const ListenIdle();
     await _stopRecording();
+  }
+
+  /// Stops a Keep listening burst, leaving a session the user started alone.
+  Future<void> cancelBackground() async {
+    if (_background && _done != null) await cancel();
   }
 
   /// Ends [session], if it's still the current one, and says listening failed.
@@ -375,7 +456,7 @@ class ListenController extends Notifier<ListenState> {
     _log.warning('Listening failed', error, stack);
     if (session != _session) return;
     _session++;
-    state = const ListenFailed();
+    _end(const ListenFailed());
     unawaited(_stopRecording());
   }
 

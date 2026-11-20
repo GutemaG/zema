@@ -46,6 +46,7 @@ class LaunchChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHandle
             "key" to intent.getStringExtra("key"),
             "ask" to intent.getStringExtra("ask"),
         )
+        ACTION_KEEP_LISTENING -> mapOf("open" to "keepListening")
         ACTION_SONG -> mapOf("open" to "song", "songId" to intent.getStringExtra("songId"))
         ACTION_MATCH -> mapOf(
             "open" to "match",
@@ -65,6 +66,12 @@ class LaunchChannel(messenger: BinaryMessenger) : MethodChannel.MethodCallHandle
         const val ACTION_MATCH = "com.zemaapp.zema.OPEN_LISTEN_MATCH"
         const val ACTION_SONG = "com.zemaapp.zema.OPEN_SONG"
         const val ACTION_DETECTED = "com.zemaapp.zema.OPEN_DETECTED"
+        const val ACTION_KEEP_LISTENING = "com.zemaapp.zema.OPEN_KEEP_LISTENING"
+
+        fun keepListeningIntent(context: Context): Intent =
+            Intent(context, MainActivity::class.java)
+                .setAction(ACTION_KEEP_LISTENING)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
         fun historyIntent(context: Context): Intent =
             Intent(context, MainActivity::class.java)

@@ -17,6 +17,7 @@ import '../../library/presentation/widgets/track_art.dart';
 import '../application/library_fingerprints.dart';
 import '../application/listen_controller.dart';
 import '../application/quick_listen.dart';
+import 'keep_listening_bar.dart';
 import 'listen_lyrics_screen.dart';
 import 'listen_visuals.dart';
 
@@ -158,6 +159,10 @@ class _ListenScreenState extends ConsumerState<ListenScreen> {
                           ),
                         ),
                         const Spacer(),
+                        if (ref.watch(quickListenHostProvider) == null) ...[
+                          const KeepListeningBar(),
+                          const SizedBox(height: 12),
+                        ],
                         _Privacy(text: l10n.listenPrivacy),
                         const SizedBox(height: 12),
                       ],

@@ -1,8 +1,8 @@
 # Plan: Keep listening (a Pixel-style Now Playing for Zema)
 
 > Source: product owner, 2026-11-12 ("on my Pixel, Now Playing identifies songs with the
-> screen off; how does that work?"). Plans 010 FR-1 and FR-2. **Not scheduled**: the
-> remaining 009 work comes first.
+> screen off; how does that work?"). Plans 010 FR-1 and FR-2. Steps 1–4 built in bolt 063
+> (2026-11-20); steps 5–6 need a phone and the Play listing.
 
 ## Goal
 
@@ -75,6 +75,6 @@ listening. So Zema gets close, but not all the way:
 
 | Question | Default until decided |
 |----------|-----------------------|
-| Default length | 1 hour |
+| Default length | Chosen each time: 30 min, 1 h or 2 h |
 | Show lyrics on the lock screen itself (over the lock screen), or only in the notification? | Notification only |
 | Burst timing | As above, tuned in step 5 |

@@ -455,6 +455,22 @@ void main() {
       expect(await db.identifiedDao.pending(), isEmpty);
     });
 
+    test('offline, a Keep listening burst keeps nothing for later', () async {
+      catalog!.offline = true;
+      await container.read(libraryFingerprintsProvider.notifier).start();
+      final sub = container.listen(listenControllerProvider, (_, _) {});
+      microphone.pcm = Float32List.sublistView(selam, 5 * _rate, 15 * _rate);
+      expect(
+        await container
+            .read(listenControllerProvider.notifier)
+            .listenInBackground(),
+        isA<ListenNotFound>(),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(await db.identifiedDao.pending(), isEmpty);
+      sub.close();
+    });
+
     test('a song the catalog does not have is not kept', () async {
       microphone.pcm = Float32List.sublistView(_song(10, 20), 0, 10 * _rate);
 
@@ -555,6 +571,62 @@ void main() {
     microphone.allow = false;
     expect(await listenUntilDone(), isA<ListenDenied>());
     expect(microphone.started, 0);
+  });
+
+  group('a Keep listening burst', () {
+    test('keeps the found song on screen and adds each song to History '
+        'once', () async {
+      await container.read(libraryFingerprintsProvider.notifier).start();
+      final one = tracks.firstWhere((t) => t.title == 'One').id;
+      final two = tracks.firstWhere((t) => t.title == 'Two').id;
+      microphone.pcm = Float32List.sublistView(
+        songs[2]!,
+        20 * _rate,
+        30 * _rate,
+      );
+      final first = await listenUntilDone() as ListenFound;
+      final shown = <ListenState>[];
+      final sub = container.listen(
+        listenControllerProvider,
+        (_, next) => shown.add(next),
+      );
+      final controller = container.read(listenControllerProvider.notifier);
+
+      microphone.pcm = Float32List.sublistView(songs[2]!, 0, 10 * _rate);
+      final again = await controller.listenInBackground();
+      expect((again! as ListenFound).track!.id, two);
+      final resynced = container.read(listenControllerProvider) as ListenFound;
+      expect(resynced, isNot(same(first)), reason: 'another place re-syncs');
+
+      microphone.pcm = _song(9, 12);
+      expect(await controller.listenInBackground(), isA<ListenNotFound>());
+      expect(container.read(listenControllerProvider), same(resynced));
+
+      microphone.pcm = songs[1]!;
+      final next = await controller.listenInBackground() as ListenFound;
+      expect(next.track!.id, one);
+      expect(container.read(listenControllerProvider), same(next));
+
+      expect(shown.whereType<Listening>(), isEmpty);
+      expect(shown.whereType<ListenNotFound>(), isEmpty);
+      final history = await db.identifiedDao.watchAll().first;
+      expect(history.map((r) => r.trackId).toSet(), {one, two});
+      expect(history, hasLength(2));
+      sub.close();
+    });
+
+    test('is replaced by Listen tapped meanwhile', () async {
+      await container.read(libraryFingerprintsProvider.notifier).start();
+      final sub = container.listen(listenControllerProvider, (_, _) {});
+      final controller = container.read(listenControllerProvider.notifier);
+      microphone.pcm = songs[1]!;
+      final burst = controller.listenInBackground();
+      await controller.listen();
+      expect(await burst, isNull);
+      await controller.cancelBackground();
+      expect(await settled(), isA<ListenFound>(), reason: 'not cancelled');
+      sub.close();
+    });
   });
 
   group('the search', () {

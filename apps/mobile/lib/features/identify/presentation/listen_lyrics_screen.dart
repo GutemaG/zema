@@ -14,7 +14,9 @@ import '../../lyrics/application/lyrics_prefs.dart';
 import '../../lyrics/application/track_lyrics.dart';
 import '../../lyrics/presentation/lyrics_view.dart';
 import '../../player/application/player_providers.dart';
+import '../application/keep_listening.dart';
 import '../application/listen_controller.dart';
+import 'keep_listening_bar.dart';
 
 ProviderListenable<AsyncValue<TrackLyrics?>> foundLyricsProvider(
   ListenFound found,
@@ -179,28 +181,37 @@ class _ListenLyricsScreenState extends ConsumerState<ListenLyricsScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(ZemaSpacing.screenSide),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton.tonalIcon(
-                  onPressed: busy ? controller.cancel : controller.listen,
-                  icon: busy
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Icon(_ended ? Icons.mic_rounded : Icons.sync_rounded),
-                  label: Text(
-                    busy
-                        ? l10n.listenListening
-                        : _ended
-                        ? l10n.listenAgain
-                        : l10n.listenResync,
+            if (ref.watch(keepListeningProvider).on)
+              const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ZemaSpacing.screenSide,
+                  vertical: 8,
+                ),
+                child: KeepListeningBar(),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.all(ZemaSpacing.screenSide),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    onPressed: busy ? controller.cancel : controller.listen,
+                    icon: busy
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Icon(_ended ? Icons.mic_rounded : Icons.sync_rounded),
+                    label: Text(
+                      busy
+                          ? l10n.listenListening
+                          : _ended
+                          ? l10n.listenAgain
+                          : l10n.listenResync,
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),

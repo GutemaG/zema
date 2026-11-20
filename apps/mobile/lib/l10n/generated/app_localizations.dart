@@ -4158,6 +4158,72 @@ abstract class AppLocalizations {
   /// **'Couldn\'t hear the song. The lyrics keep their place.'**
   String get listenResyncFailed;
 
+  /// Listen screen: starts identifying each song as it plays, in bursts (intent 010 FR-1)
+  ///
+  /// In en, this message translates to:
+  /// **'Keep listening'**
+  String get keepListening;
+
+  /// Keep listening sheet: what it does, on Android
+  ///
+  /// In en, this message translates to:
+  /// **'Zema listens every few seconds and follows each song as it plays, even with the screen off. It stops by itself.'**
+  String get keepListeningAbout;
+
+  /// Keep listening sheet: what it does, on iPhone
+  ///
+  /// In en, this message translates to:
+  /// **'Zema listens every few seconds and follows each song as it plays, while Zema stays open. It stops by itself.'**
+  String get keepListeningAboutOpen;
+
+  /// Keep listening sheet: a length to listen for
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 minute} other{{minutes} minutes}}'**
+  String keepListeningMinutes(int minutes);
+
+  /// Keep listening sheet: a length to listen for
+  ///
+  /// In en, this message translates to:
+  /// **'{hours, plural, =1{1 hour} other{{hours} hours}}'**
+  String keepListeningHours(int hours);
+
+  /// Keep listening notification: when it stops by itself
+  ///
+  /// In en, this message translates to:
+  /// **'Until {time}'**
+  String keepListeningUntil(String time);
+
+  /// Listen and lyrics screens while Keep listening is on
+  ///
+  /// In en, this message translates to:
+  /// **'Keep listening until {time}'**
+  String keepListeningOn(String time);
+
+  /// Stops Keep listening
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get keepListeningStop;
+
+  /// Keep listening notification before a song is found
+  ///
+  /// In en, this message translates to:
+  /// **'Listening for songs'**
+  String get keepListeningWaiting;
+
+  /// Why Keep listening ended
+  ///
+  /// In en, this message translates to:
+  /// **'Keep listening ended: the time was up'**
+  String get keepListeningTimeUp;
+
+  /// Why Keep listening ended
+  ///
+  /// In en, this message translates to:
+  /// **'Keep listening stopped: the microphone stopped working, maybe for a call or another app'**
+  String get keepListeningMicrophone;
+
   /// Listen: the match is sure of the song but not of the place in it
   ///
   /// In en, this message translates to:

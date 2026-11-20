@@ -62,8 +62,9 @@ status: in-progress
 
 ## Next Steps
 
-1. Resolve open questions in requirements.md
-2. Run requirements skill (Checkpoints 1–2) via `/specsmd-inception-agent`
+1. Keep listening (FR-1, FR-2) built in bolt 063, unit `001-keep-listening`.
+2. Left: battery measurement and burst tuning on a phone; the Play Store microphone
+   foreground-service declaration (plan steps 5–6).
 
 ## Dependencies
 

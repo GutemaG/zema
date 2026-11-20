@@ -2461,6 +2461,62 @@ class AppLocalizationsTi extends AppLocalizations {
       'Couldn\'t hear the song. The lyrics keep their place.';
 
   @override
+  String get keepListening => 'Keep listening';
+
+  @override
+  String get keepListeningAbout =>
+      'Zema listens every few seconds and follows each song as it plays, even with the screen off. It stops by itself.';
+
+  @override
+  String get keepListeningAboutOpen =>
+      'Zema listens every few seconds and follows each song as it plays, while Zema stays open. It stops by itself.';
+
+  @override
+  String keepListeningMinutes(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String keepListeningHours(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours hours',
+      one: '1 hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String keepListeningUntil(String time) {
+    return 'Until $time';
+  }
+
+  @override
+  String keepListeningOn(String time) {
+    return 'Keep listening until $time';
+  }
+
+  @override
+  String get keepListeningStop => 'Stop';
+
+  @override
+  String get keepListeningWaiting => 'Listening for songs';
+
+  @override
+  String get keepListeningTimeUp => 'Keep listening ended: the time was up';
+
+  @override
+  String get keepListeningMicrophone =>
+      'Keep listening stopped: the microphone stopped working, maybe for a call or another app';
+
+  @override
   String get listenUnsure =>
       'This part repeats in the song, so the place may be off. Re-sync to check.';
 

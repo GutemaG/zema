@@ -57,6 +57,11 @@ class OpenListenMatch extends LaunchRequest {
   }
 }
 
+/// The Keep listening notification was tapped.
+class OpenKeepListening extends LaunchRequest {
+  const OpenKeepListening();
+}
+
 class OpenSong extends LaunchRequest {
   const OpenSong(this.songId);
 
@@ -119,6 +124,7 @@ class AndroidLaunchReceiver implements LaunchReceiver {
     if (value is! Map) return null;
     return switch (value['open']) {
       'history' => const OpenListenHistory(),
+      'keepListening' => const OpenKeepListening(),
       'match' => OpenListenMatch.fromMap(value),
       'detected' => switch ((value['key'], value['ask'])) {
         (final String key, final String ask) => switch (DetectedAsk.values
