@@ -40,4 +40,12 @@ abstract interface class ContributionRepository {
   /// Moderators only: publishes ([approve]) or drops pending fingerprint
   /// [id].
   Future<void> reviewFingerprint(String id, {required bool approve});
+
+  /// Moderators only: track prints shared from libraries waiting for a
+  /// decision, oldest first.
+  Future<List<PendingTrackPrint>> pendingTrackPrints();
+
+  /// Moderators only: publishes ([approve]) or drops pending track print
+  /// [id].
+  Future<void> reviewTrackPrint(int id, {required bool approve});
 }

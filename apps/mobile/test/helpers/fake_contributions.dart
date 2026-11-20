@@ -244,6 +244,19 @@ class FakeContributionRepository implements ContributionRepository {
     fingerprintReviews.add((id, approve));
     pending.removeWhere((p) => p.id == id);
   }
+
+  @override
+  Future<List<PendingTrackPrint>> pendingTrackPrints() async {
+    _caller();
+    if (!moderator) throw const AuthFailure('not a moderator');
+    return const [];
+  }
+
+  @override
+  Future<void> reviewTrackPrint(int id, {required bool approve}) async {
+    _caller();
+    if (!moderator) throw const AuthFailure('not a moderator');
+  }
 }
 
 class _Row {

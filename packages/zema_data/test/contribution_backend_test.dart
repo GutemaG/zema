@@ -346,6 +346,34 @@ void main() {
         );
         expect(found.songId, s.id);
         expect(found.bits, lessThan(trackPrintMatch));
+
+        // Another recording of the song waits for a moderator.
+        final other = TrackPrint(
+          values: Uint32List.fromList([
+            for (var i = 0; i < 2000; i++) random.nextInt(1 << 32),
+          ]),
+          duration: const Duration(minutes: 3),
+        );
+        expect(
+          await catalog.shareTrackPrint(s.id, other, installId: install()),
+          FingerprintShare.pending,
+        );
+        final waiting = (await moderator.pendingTrackPrints())
+            .where((p) => p.songId == s.id)
+            .single;
+        expect(waiting.songTitle, 'Test Song');
+        expect(waiting.installs, 1);
+        expect(waiting.duration, const Duration(minutes: 3));
+        expect(waiting.conflictSongId, isNull);
+        await moderator.reviewTrackPrint(waiting.id, approve: true);
+        expect(
+          (await moderator.pendingTrackPrints()).where((p) => p.songId == s.id),
+          isEmpty,
+        );
+        expect(
+          (await catalog.matchTrack(other, installId: install())).single.songId,
+          s.id,
+        );
       } finally {
         await catalog.close();
       }

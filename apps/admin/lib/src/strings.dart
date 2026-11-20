@@ -51,8 +51,10 @@ abstract final class Strings {
   static const unknownArtist = 'Unknown artist';
   static const byAuthor = 'by';
   static const anonymous = 'someone';
-  static const fingerprintsEmpty =
-      'No fingerprints waiting. (Uploads from phones are paused.)';
+  static const fingerprintsEmpty = 'No fingerprints or track prints waiting.';
+  static const libraryFingerprints = 'Library fingerprints';
+  static const trackPrints = 'Track prints';
+  static const alsoMatches = 'Also matches';
   static const installs = 'phones';
   static const hashes = 'hashes';
   static const open = 'Open';

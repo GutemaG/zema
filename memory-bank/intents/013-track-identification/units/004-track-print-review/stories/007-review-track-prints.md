@@ -2,11 +2,11 @@
 id: 007-review-track-prints
 unit: 004-track-print-review
 intent: 013-track-identification
-status: planned
+status: complete
 priority: should
 created: '2026-11-19T16:00:00Z'
 assigned_bolt: 062-track-print-review
-implemented: false
+implemented: true
 ---
 
 # Story: 007-review-track-prints
@@ -19,5 +19,5 @@ Review shared prints
 
 ## Acceptance Criteria
 
-- [ ] **Given** pending prints, **When** the Fingerprints page opens, **Then** they list with song, installs, length and whether they conflict with another song
-- [ ] **Given** one, **When** approved or rejected, **Then** `review_track_print` is called and it leaves the list
+- [x] **Given** pending prints, **When** the Fingerprints page opens, **Then** they list with song, installs, length and whether they conflict with another song
+- [x] **Given** one, **When** approved or rejected, **Then** `review_track_print` is called and it leaves the list

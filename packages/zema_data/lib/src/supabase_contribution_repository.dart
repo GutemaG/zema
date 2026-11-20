@@ -129,6 +129,35 @@ class SupabaseContributionRepository implements ContributionRepository {
     ),
   );
 
+  @override
+  Future<List<PendingTrackPrint>> pendingTrackPrints() =>
+      _run('moderator_track_prints', (client, _) async {
+        final rows = await client.rpc<List<dynamic>>('moderator_track_prints');
+        return [
+          for (final row in rows.cast<Map<String, dynamic>>())
+            PendingTrackPrint(
+              id: row['id']! as int,
+              songId: _string(row['song_id']),
+              songTitle: _string(row['song_title']),
+              songArtist: row['song_artist'] as String?,
+              duration: Duration(milliseconds: row['duration_ms']! as int),
+              installs: row['installs']! as int,
+              conflictSongId: row['conflict_song_id'] as String?,
+              conflictSongTitle: row['conflict_song_title'] as String?,
+              sentAt: _time(row['created_at']),
+            ),
+        ];
+      });
+
+  @override
+  Future<void> reviewTrackPrint(int id, {required bool approve}) => _run(
+    'review_track_print',
+    (client, _) => client.rpc<void>(
+      'review_track_print',
+      params: {'id': id, 'approve': approve},
+    ),
+  );
+
   /// Runs [call] as the signed-in user; a refusal the backend names becomes
   /// a [ContributionFailure] with its code.
   Future<T> _run<T>(

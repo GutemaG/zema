@@ -36,3 +36,36 @@ class PendingFingerprint {
   /// The fingerprinted file's length.
   Duration get duration => fingerprintFrameTime(frameCount);
 }
+
+/// A track print shared from a library, waiting for a moderator (intent
+/// 013, FR-6): no second install sent a matching one, or it matched a
+/// different song's ([conflictSongTitle]).
+class PendingTrackPrint {
+  const PendingTrackPrint({
+    required this.id,
+    required this.songId,
+    required this.songTitle,
+    required this.duration,
+    required this.installs,
+    required this.sentAt,
+    this.songArtist,
+    this.conflictSongId,
+    this.conflictSongTitle,
+  });
+
+  final int id;
+  final String songId;
+  final String songTitle;
+  final String? songArtist;
+
+  /// The printed file's length.
+  final Duration duration;
+
+  /// How many installs sent a print for the song.
+  final int installs;
+
+  /// The other song the print matched when it was shared, if any.
+  final String? conflictSongId;
+  final String? conflictSongTitle;
+  final DateTime sentAt;
+}

@@ -73,6 +73,8 @@ class _Repository implements ContributionRepository {
   ZemaFailure? failure;
   List<PendingFingerprint> fingerprints = [];
   final fingerprintReviews = <(String, bool)>[];
+  List<PendingTrackPrint> prints = [];
+  final printReviews = <(int, bool)>[];
 
   @override
   Future<List<QueuedContribution>> queue({ContributionKind? kind}) async {
@@ -105,6 +107,18 @@ class _Repository implements ContributionRepository {
   Future<void> reviewFingerprint(String id, {required bool approve}) async {
     fingerprintReviews.add((id, approve));
     fingerprints = [];
+  }
+
+  @override
+  Future<List<PendingTrackPrint>> pendingTrackPrints() async => prints;
+
+  @override
+  Future<void> reviewTrackPrint(int id, {required bool approve}) async {
+    printReviews.add((id, approve));
+    prints = [
+      for (final p in prints)
+        if (p.id != id) p,
+    ];
   }
 
   @override
@@ -243,7 +257,7 @@ void main() {
   });
 
   group('fingerprints', () {
-    testWidgets('empty while uploads are paused', (tester) async {
+    testWidgets('empty when nothing waits', (tester) async {
       await pump(tester, const FingerprintsPage());
       expect(find.text(Strings.fingerprintsEmpty), findsOneWidget);
     });
@@ -270,6 +284,47 @@ void main() {
       await tester.tap(find.text(Strings.approve));
       await tester.pumpAndSettle();
       expect(repository.fingerprintReviews, [('f1', true)]);
+      expect(find.text(Strings.fingerprintsEmpty), findsOneWidget);
+    });
+
+    testWidgets('track prints, with the other song one matched', (
+      tester,
+    ) async {
+      repository.prints = [
+        PendingTrackPrint(
+          id: 7,
+          songId: 'selam',
+          songTitle: 'Selam',
+          songArtist: 'Choir',
+          duration: const Duration(minutes: 3, seconds: 20),
+          installs: 2,
+          sentAt: _now,
+          conflictSongId: 'other',
+          conflictSongTitle: 'Other Song',
+        ),
+        PendingTrackPrint(
+          id: 8,
+          songId: 'amlak',
+          songTitle: 'Amlak',
+          duration: const Duration(minutes: 4),
+          installs: 1,
+          sentAt: _now,
+        ),
+      ];
+      await pump(tester, const FingerprintsPage());
+      expect(find.text(Strings.trackPrints), findsOneWidget);
+      expect(find.text(Strings.libraryFingerprints), findsNothing);
+      expect(find.textContaining('Choir · 3:20 · 2 phones'), findsOneWidget);
+      expect(find.text('${Strings.alsoMatches} “Other Song”'), findsOneWidget);
+
+      await tester.tap(find.text(Strings.reject).first);
+      await tester.pumpAndSettle();
+      expect(repository.printReviews, [(7, false)]);
+      expect(find.text('Selam'), findsNothing);
+
+      await tester.tap(find.text(Strings.approve));
+      await tester.pumpAndSettle();
+      expect(repository.printReviews.last, (8, true));
       expect(find.text(Strings.fingerprintsEmpty), findsOneWidget);
     });
   });

@@ -1,7 +1,7 @@
 # Admin website
 
-`apps/admin`: moderators sign in with Google and review contributions, fingerprints and
-reports, and hide or restore songs. Only accounts with the moderator or admin role get
+`apps/admin`: moderators sign in with Google and review contributions, fingerprints,
+track prints and reports, and hide or restore songs. Only accounts with the moderator or admin role get
 in; grant it with `backend/scripts/moderator.sh grant <email>`.
 
 ## One-time setup
