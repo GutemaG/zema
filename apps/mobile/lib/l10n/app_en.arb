@@ -857,6 +857,27 @@
   "@clipEndLater": {
     "description": "Clip editor: moves the clip end to the next lyric line."
   },
+  "clipWithoutSong": "Without the song",
+  "@clipWithoutSong": {
+    "description": "Clip editor switch: make the video with silent audio."
+  },
+  "clipWithoutSongHint": "Silent, with the lyrics in time, for apps that mute music.",
+  "@clipWithoutSongHint": {
+    "description": "Under the Without the song switch."
+  },
+  "clipLines": "Lines",
+  "@clipLines": {
+    "description": "Clip editor heading: lines to show when the lyrics have no timing."
+  },
+  "clipLinesHint": "These lyrics aren't synced, so the lines you pick show as one page. Up to {max}.",
+  "@clipLinesHint": {
+    "description": "Under the Lines heading.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "clipTabClip": "Clip",
   "@clipTabClip": {
     "description": "Clip editor tab: choosing the part of the song."

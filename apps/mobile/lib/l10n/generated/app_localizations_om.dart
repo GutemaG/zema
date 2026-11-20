@@ -640,6 +640,21 @@ class AppLocalizationsOm extends AppLocalizations {
   String get clipEndLater => 'End a line later';
 
   @override
+  String get clipWithoutSong => 'Without the song';
+
+  @override
+  String get clipWithoutSongHint =>
+      'Silent, with the lyrics in time, for apps that mute music.';
+
+  @override
+  String get clipLines => 'Lines';
+
+  @override
+  String clipLinesHint(int max) {
+    return 'These lyrics aren\'t synced, so the lines you pick show as one page. Up to $max.';
+  }
+
+  @override
   String get clipTabClip => 'Clip';
 
   @override

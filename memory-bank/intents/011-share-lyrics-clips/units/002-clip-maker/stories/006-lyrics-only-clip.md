@@ -2,11 +2,11 @@
 id: 006-lyrics-only-clip
 unit: 002-clip-maker
 intent: 011-share-lyrics-clips
-status: ready
+status: complete
 priority: could
 created: '2026-11-20T18:00:00Z'
 assigned_bolt: 069-clip-extras
-implemented: false
+implemented: true
 ---
 
 # Story: 006-lyrics-only-clip

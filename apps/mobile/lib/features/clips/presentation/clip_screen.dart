@@ -302,6 +302,37 @@ class _RangeTab extends ConsumerWidget {
                     Duration(milliseconds: v.end.round()),
                   ),
           ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.clipWithoutSong),
+          subtitle: Text(l10n.clipWithoutSongHint),
+          value: clip.withoutSong,
+          onChanged: making ? null : (v) => controller.setWithoutSong(value: v),
+        ),
+        if (!controller.timed && controller.lines.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 4),
+            child: Text(l10n.clipLines, style: textTheme.titleSmall),
+          ),
+          Text(
+            l10n.clipLinesHint(ClipController.maxPicked),
+            style: textTheme.bodySmall?.copyWith(color: colors.muted),
+          ),
+          for (final (i, line) in controller.lines.indexed)
+            if (line.trim().isNotEmpty)
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: Text(line),
+                value: clip.picked.contains(i),
+                onChanged:
+                    making ||
+                        (!clip.picked.contains(i) &&
+                            clip.picked.length >= ClipController.maxPicked)
+                    ? null
+                    : (_) => unawaited(controller.toggleLine(i)),
+              ),
+        ],
       ],
     );
   }

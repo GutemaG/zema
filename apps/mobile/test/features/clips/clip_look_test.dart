@@ -208,4 +208,37 @@ void main() {
       expect(shown.heights[1], greaterThan(plain.heights[1]));
     });
   });
+
+  testWidgets('a still page centres all its lines on the text position', (
+    tester,
+  ) async {
+    await tester.runAsync(() async {
+      for (final position in ClipTextPosition.values) {
+        final layout = ClipLyricsLayout(const [
+          'ባይተዋር አረገኝ',
+          'ባዶ ቤት ታቅፌ',
+          'ፍቅር',
+        ], look: ClipLook(position: position));
+        final image = await _decode(
+          await paintClipLyrics(layout, ClipLyricsLayout.page),
+        );
+        final data = (await image.toByteData())!;
+        int? first;
+        var last = 0;
+        for (var y = 0; y < image.height; y++) {
+          for (var x = 0; x < image.width; x += 8) {
+            if (data.getUint8((y * image.width + x) * 4 + 3) > 200) {
+              first ??= y;
+              last = y;
+              break;
+            }
+          }
+        }
+        expect(first, isNotNull);
+        final middle = (first! + last) / 2 / image.height;
+        expect(middle, closeTo(position.focus, 0.03));
+        image.dispose();
+      }
+    });
+  });
 }

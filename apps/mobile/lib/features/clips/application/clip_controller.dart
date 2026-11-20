@@ -87,6 +87,8 @@ class ClipState {
     this.look = const ClipLook(),
     this.preview,
     this.playing = false,
+    this.picked = const [],
+    this.withoutSong = false,
     this.phase = ClipPhase.ready,
     this.progress = 0,
     this.clip,
@@ -102,6 +104,12 @@ class ClipState {
 
   /// Whether the selection is playing in the editor.
   final bool playing;
+
+  /// For lyrics without timing: the lines shown, as indexes in order.
+  final List<int> picked;
+
+  /// Whether the video has silent audio instead of the recording.
+  final bool withoutSong;
   final ClipPhase phase;
 
   /// 0 to 1 while [ClipPhase.making]: painting, then encoding.
@@ -117,6 +125,8 @@ class ClipState {
     ClipLook? look,
     Uint8List? preview,
     bool? playing,
+    List<int>? picked,
+    bool? withoutSong,
     ClipPhase? phase,
     double? progress,
     EncodedClip? clip,
@@ -128,6 +138,8 @@ class ClipState {
     look: look ?? this.look,
     preview: preview ?? this.preview,
     playing: playing ?? this.playing,
+    picked: picked ?? this.picked,
+    withoutSong: withoutSong ?? this.withoutSong,
     phase: phase ?? this.phase,
     progress: progress ?? this.progress,
     clip: clearClip ? null : clip ?? this.clip,
@@ -191,6 +203,41 @@ class ClipController extends Notifier<ClipState> {
   /// The lyric line starts, for snapping the range.
   List<Duration> get lineStarts => _lyrics?.starts ?? const [];
 
+  /// Whether the lyrics have timing; without it the clip is a still page
+  /// of [ClipState.picked] lines.
+  bool get timed => lineStarts.isNotEmpty;
+
+  /// The lyric lines, for picking when they have no timing.
+  List<String> get lines => _lyrics?.texts ?? const [];
+
+  /// The most lines a still page can show.
+  static const maxPicked = 8;
+
+  /// Shows or hides line [index] on the still page.
+  Future<void> toggleLine(int index) async {
+    if (timed || state.phase == ClipPhase.making) return;
+    final picked = {...state.picked};
+    if (!picked.remove(index)) {
+      if (picked.length >= maxPicked) return;
+      picked.add(index);
+    }
+    state = state.copyWith(
+      picked: picked.toList()..sort(),
+      phase: ClipPhase.ready,
+      clearClip: true,
+    );
+    await _applyLook();
+  }
+
+  void setWithoutSong({required bool value}) {
+    if (state.phase == ClipPhase.making) return;
+    state = state.copyWith(
+      withoutSong: value,
+      phase: ClipPhase.ready,
+      clearClip: true,
+    );
+  }
+
   /// Whether any timed line has a transliteration to show.
   bool get hasTransliteration =>
       lineStarts.isNotEmpty &&
@@ -216,6 +263,10 @@ class ClipController extends Notifier<ClipState> {
       track: track,
       start: range.start,
       end: range.end,
+      picked: [
+        for (final (i, t) in lyrics.texts.indexed)
+          if (t.trim().isNotEmpty) i,
+      ].take(4).toList(),
       look: ClipLook.fromPrefs(ref.read(sharedPreferencesProvider)),
     );
     await _applyLook();
@@ -242,12 +293,19 @@ class ClipController extends Notifier<ClipState> {
     final album = await _picture(look.albumPicture);
     final artist = await _picture(look.artistPicture);
     if (!ref.mounted || generation != _look) return;
-    final timed = lyrics.starts.isNotEmpty;
-    _layout = ClipLyricsLayout(
-      ['', if (timed) ...lyrics.texts],
-      translits: [null, if (timed) ...lyrics.translits],
-      look: look,
-    );
+    _layout = timed
+        ? ClipLyricsLayout(
+            ['', ...lyrics.texts],
+            translits: [null, ...lyrics.translits],
+            look: look,
+          )
+        : ClipLyricsLayout(
+            state.picked.isEmpty
+                ? ['']
+                : [for (final i in state.picked) lyrics.texts[i]],
+            translits: [for (final i in state.picked) lyrics.translits[i]],
+            look: look,
+          );
     final old = _scene;
     _scene = ClipScene(
       title: look.title ?? track.title,
@@ -290,6 +348,7 @@ class ClipController extends Notifier<ClipState> {
 
   /// The layout row of the line sung at [t] in the audio: 0 before the first.
   int _rowAt(Duration t) {
+    if (!timed) return ClipLyricsLayout.page;
     var row = 0;
     for (final (i, s) in lineStarts.indexed) {
       if (s > t) break;
@@ -426,8 +485,11 @@ class ClipController extends Notifier<ClipState> {
 
   /// The frames from [start] to [end]: when each starts and its layout row.
   List<({Duration at, int row})> _frames(Duration start, Duration end) => [
-    for (final t in clipFrameTimes(lineStarts, start, end))
-      (at: t.at, row: t.line == null ? 0 : t.line! + 1),
+    if (!timed)
+      (at: Duration.zero, row: ClipLyricsLayout.page)
+    else
+      for (final t in clipFrameTimes(lineStarts, start, end))
+        (at: t.at, row: t.line == null ? 0 : t.line! + 1),
   ];
 
   /// Paints the frames and encodes the video.
@@ -477,7 +539,7 @@ class ClipController extends Notifier<ClipState> {
           .read(clipEncoderProvider)
           .encode(
             ClipRequest(
-              audioUri: track.uri,
+              audioUri: state.withoutSong ? null : track.uri,
               start: state.start,
               end: state.end,
               background: background.path,

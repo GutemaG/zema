@@ -1176,6 +1176,30 @@ abstract class AppLocalizations {
   /// **'End a line later'**
   String get clipEndLater;
 
+  /// Clip editor switch: make the video with silent audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the song'**
+  String get clipWithoutSong;
+
+  /// Under the Without the song switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Silent, with the lyrics in time, for apps that mute music.'**
+  String get clipWithoutSongHint;
+
+  /// Clip editor heading: lines to show when the lyrics have no timing.
+  ///
+  /// In en, this message translates to:
+  /// **'Lines'**
+  String get clipLines;
+
+  /// Under the Lines heading.
+  ///
+  /// In en, this message translates to:
+  /// **'These lyrics aren\'t synced, so the lines you pick show as one page. Up to {max}.'**
+  String clipLinesHint(int max);
+
   /// Clip editor tab: choosing the part of the song.
   ///
   /// In en, this message translates to:

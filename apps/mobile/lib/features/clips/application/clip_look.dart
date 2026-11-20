@@ -123,13 +123,16 @@ class ClipLyricsLayout {
   final heights = <double>[];
   final centers = <double>[];
 
+  /// The row number for a still page: every row bright, the block centred.
+  static const page = -1;
+
   /// How far row [to] sits below row [from], as a part of the frame height.
   double scroll(int from, int to) =>
       (centers[to] - centers[from]) / clipFrameSize.height;
 }
 
 /// A transparent layer with [row] bright at the focus and the rows around it
-/// dimmed, as PNG.
+/// dimmed (or, for [ClipLyricsLayout.page], all rows bright), as PNG.
 Future<Uint8List> paintClipLyrics(ClipLyricsLayout layout, int row) async {
   final recorder = ui.PictureRecorder();
   _drawLyrics(Canvas(recorder), layout, row);
@@ -572,12 +575,22 @@ TextPainter _rowPainter(
 
 void _drawLyrics(Canvas canvas, ClipLyricsLayout layout, int row) {
   const size = clipFrameSize;
-  final offset = size.height * layout.look.position.focus - layout.centers[row];
+  if (layout.rows.isEmpty) return;
+  final page = row == ClipLyricsLayout.page;
+  final offset = page
+      ? size.height * layout.look.position.focus -
+            (layout.centers.last + layout.heights.last / 2) / 2
+      : size.height * layout.look.position.focus - layout.centers[row];
   for (var k = 0; k < layout.rows.length; k++) {
     final top = layout.centers[k] - layout.heights[k] / 2 + offset;
     if (top > size.height) break;
     if (top + layout.heights[k] < 0) continue;
-    final painter = _rowPainter(layout, k, layout.sizes[k], bright: k == row);
+    final painter = _rowPainter(
+      layout,
+      k,
+      layout.sizes[k],
+      bright: page || k == row,
+    );
     painter
       ..paint(canvas, Offset((size.width - painter.width) / 2, top))
       ..dispose();
