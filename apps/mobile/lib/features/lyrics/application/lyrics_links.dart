@@ -88,8 +88,9 @@ final lyricsLinkSyncProvider = Provider<void>((ref) {
 });
 
 /// The lyrics song [trackId] is linked to, or null: the user's choice, else
-/// what its sound matched, else what its title matched. A link to a song
-/// that is no longer in the catalog's index counts as none.
+/// what its sound matched, else what its title matched, else what its track
+/// print matched. A link to a song that is no longer in the catalog's index
+/// counts as none.
 final trackSongProvider = Provider.family<AsyncValue<Song?>, int>((
   ref,
   trackId,
@@ -98,7 +99,8 @@ final trackSongProvider = Provider.family<AsyncValue<Song?>, int>((
     AsyncData(value: final links) => switch (ref
             .watch(trackSoundMatchProvider(trackId))
             ?.songId ??
-        links[trackId]?.songId) {
+        links[trackId]?.songId ??
+        ref.watch(trackPrintMatchProvider(trackId))) {
       final id? => ref.watch(songProvider(id)),
       null => const AsyncData(null),
     },

@@ -367,3 +367,23 @@ class TrackAudioMatches extends Table {
   @override
   Set<Column<Object>> get primaryKey => {trackId};
 }
+
+/// Each library file's track print (intent 013): what the catalog said it
+/// is ([songId], once [lookedUp]), and the song it was shared for
+/// ([sharedSongId]). An empty [print] means the file was too short or
+/// unreadable.
+@DataClassName('TrackPrintRow')
+class TrackPrints extends Table {
+  IntColumn get trackId =>
+      integer().references(Tracks, #id, onDelete: KeyAction.cascade)();
+  IntColumn get sizeBytes => integer()();
+  IntColumn get version => integer()();
+  BlobColumn get print => blob()();
+  TextColumn get songId => text().nullable()();
+  BoolColumn get lookedUp => boolean()();
+  TextColumn get sharedSongId => text().nullable()();
+  DateTimeColumn get checkedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {trackId};
+}

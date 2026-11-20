@@ -80,9 +80,10 @@ recording's.
 ### Uploads are off for now
 
 While server storage is limited, phones send no fingerprints: contributions
-and library sharing skip `attach_fingerprint` and `share_fingerprint`, and the
-Share switch is hidden. Build with `--dart-define=ZEMA_FINGERPRINT_UPLOADS=true`
-to turn them back on. The tables and functions stay; the seed tool still works.
+and library sharing skip `attach_fingerprint` and `share_fingerprint`. Build with
+`--dart-define=ZEMA_FINGERPRINT_UPLOADS=true` to turn them back on. The tables and
+functions stay; the seed tool still works. The Share switch is shown again: it now
+also covers track prints (below), which are small enough to send.
 
 ## Lookups
 
@@ -176,5 +177,19 @@ whose tags don't name it ("Track 01"). It isn't for Listen.
 - **Size:** about 23 KB per song, with 10 KB for the print and 13 KB for keys and
   indexes. That is 230 MB at 10,000 songs, against about 4 MB per song for the
   fingerprints above. Keeping every 32nd value's key would halve the key part.
+- **On the phone:**
+  - A file with no link of any kind, which sound doesn't identify either, is printed
+    from the same 110 s decode and looked up with `match_track`. This happens on play
+    and in the background pass, once per file and print version.
+  - The result is kept in the Drift table `track_prints` (v17), together with the
+    print.
+  - Offline or past the limit, lookups pause for 30 minutes, and the kept print is
+    looked up later.
+  - Link order: manual, then sound, then title, then print. "No lyrics" (a manual
+    link) stops it.
+- **Sharing from the phone:** with the Share switch on, one file per song linked by
+  title or by hand sends its print (`TrackPrintSharer`, 10 per start). A
+  contribution's file needs no separate path: once approved, it is linked to its
+  song and shared like any other file.
 - **Trying it:** `dart run tool/track_print_eval.dart <folder>` (needs ffmpeg).
 

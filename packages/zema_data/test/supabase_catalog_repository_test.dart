@@ -421,6 +421,66 @@ void main() {
     });
   });
 
+  group('track prints', () {
+    final print = TrackPrint(
+      values: Uint32List.fromList([1, 0xffffffff]),
+      duration: const Duration(seconds: 200),
+    );
+
+    test('looks a print up, signed, with the file length', () async {
+      answerWith(
+        (_) => json([
+          {'song_id': 'selam', 'bits': 0.1188, 'shift': 3},
+        ]),
+      );
+      expect(await repository.matchTrack(print, installId: 'install-1234'), [
+        (songId: 'selam', bits: 0.1188),
+      ]);
+      expect(requests.single.url.path, '/rest/v1/rpc/match_track');
+      expect(jsonDecode(requests.single.body), {
+        'version': trackPrintVersion,
+        'print': [1, -1],
+        'duration_ms': 200000,
+        'install_id': 'install-1234',
+        'max_results': 3,
+      });
+    });
+
+    test('shares a print for a song and reads what became of it', () async {
+      for (final (answer, share) in [
+        ('pending', FingerprintShare.pending),
+        ('published', FingerprintShare.published),
+        ('not_needed', FingerprintShare.notNeeded),
+      ]) {
+        answerWith((_) => json(answer));
+        expect(
+          await repository.shareTrackPrint(
+            'selam',
+            print,
+            installId: 'install-1234',
+          ),
+          share,
+        );
+      }
+      expect(requests.last.url.path, '/rest/v1/rpc/share_track_print');
+      expect(jsonDecode(requests.last.body), {
+        'song': 'selam',
+        'version': trackPrintVersion,
+        'print': [1, -1],
+        'duration_ms': 200000,
+        'install_id': 'install-1234',
+      });
+    });
+
+    test('past the daily limit, a RateLimitFailure', () async {
+      answerWith((_) => error('PT429', 429));
+      await expectLater(
+        repository.matchTrack(print, installId: 'x' * 8),
+        throwsA(isA<RateLimitFailure>()),
+      );
+    });
+  });
+
   group('errors become ZemaFailures', () {
     for (final (what, answer, failure) in [
       (

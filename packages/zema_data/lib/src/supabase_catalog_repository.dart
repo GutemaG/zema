@@ -15,7 +15,8 @@ import 'backend_errors.dart';
 /// Every request gives up after [timeout]. Failures are thrown as
 /// [ZemaFailure]s only: [NetworkFailure], [RateLimitFailure],
 /// [BackendFailure] or, for a malformed answer, [LyricsFormatFailure].
-class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
+class SupabaseCatalogRepository
+    implements CatalogRepository, AudioCatalog, TrackPrintCatalog {
   SupabaseCatalogRepository({
     required String url,
     required String key,
@@ -163,6 +164,51 @@ class SupabaseCatalogRepository implements CatalogRepository, AudioCatalog {
       'frame_count': fingerprint.frameCount,
       'hashes': fingerprint.hashes,
       'frames': fingerprint.frames,
+      'install_id': installId,
+    });
+    return switch (answer) {
+      'pending' => FingerprintShare.pending,
+      'published' => FingerprintShare.published,
+      'not_needed' => FingerprintShare.notNeeded,
+      _ => throw LyricsFormatFailure('Unexpected share answer: $answer'),
+    };
+  }
+
+  @override
+  Future<List<TrackPrintMatch>> matchTrack(
+    TrackPrint print, {
+    required String installId,
+    int limit = 3,
+  }) async {
+    final rows = await _call('match_track', {
+      'version': trackPrintVersion,
+      'print': printValuesSigned(print),
+      'duration_ms': print.duration.inMilliseconds,
+      'install_id': installId,
+      'max_results': limit,
+    });
+    return _parse(
+      () => [
+        for (final row in _rows(rows))
+          (
+            songId: row['song_id']! as String,
+            bits: (row['bits']! as num).toDouble(),
+          ),
+      ],
+    );
+  }
+
+  @override
+  Future<FingerprintShare> shareTrackPrint(
+    String songId,
+    TrackPrint print, {
+    required String installId,
+  }) async {
+    final answer = await _call('share_track_print', {
+      'song': songId,
+      'version': trackPrintVersion,
+      'print': printValuesSigned(print),
+      'duration_ms': print.duration.inMilliseconds,
       'install_id': installId,
     });
     return switch (answer) {

@@ -293,6 +293,64 @@ void main() {
       }
     });
 
+    test('track prints: two installs publish one, and a copy finds the '
+        'song', () async {
+      final author = await user();
+      final moderator = await user(moderator: true);
+      final s = song();
+      final recording = Recording(
+        id: newRecordingId(),
+        songId: s.id,
+        source: RecordingSource.localFile,
+        duration: const Duration(minutes: 3),
+        fileName: 'Test Song.mp3',
+      );
+      final id = await submit(
+        author,
+        Contribution.newSong(s, recording: recording),
+      );
+      songIds.add((await moderator.review(id, ReviewDecision.approve))!);
+
+      final values = Uint32List.fromList([
+        for (var i = 0; i < 2000; i++) random.nextInt(1 << 32),
+      ]);
+      TrackPrint print({int flip = 0}) => TrackPrint(
+        values: Uint32List.fromList([
+          for (final v in values) flip == 0 ? v : v ^ (1 << random.nextInt(32)),
+        ]),
+        duration: const Duration(minutes: 3, seconds: 1),
+      );
+      String install() => 'install-${random.nextInt(1 << 32)}';
+
+      final catalog = SupabaseCatalogRepository(url: localUrl, key: key!);
+      try {
+        expect(
+          await catalog.matchTrack(print(), installId: install()),
+          isEmpty,
+        );
+        expect(
+          await catalog.shareTrackPrint(s.id, print(), installId: install()),
+          FingerprintShare.pending,
+        );
+        expect(
+          await catalog.shareTrackPrint(
+            s.id,
+            print(flip: 1),
+            installId: install(),
+          ),
+          FingerprintShare.published,
+        );
+        final [found] = await catalog.matchTrack(
+          print(flip: 1),
+          installId: install(),
+        );
+        expect(found.songId, s.id);
+        expect(found.bits, lessThan(trackPrintMatch));
+      } finally {
+        await catalog.close();
+      }
+    });
+
     test('refusals reach the app with their code', () async {
       final author = await user();
       final moderator = await user(moderator: true);

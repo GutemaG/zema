@@ -30,3 +30,11 @@ final audioCatalogProvider = Provider<AudioCatalog?>(
     _ => null,
   },
 );
+
+/// The catalog's track prints (intent 013), or null without a backend.
+final trackPrintCatalogProvider = Provider<TrackPrintCatalog?>(
+  (ref) => switch (ref.watch(catalogRepositoryProvider)) {
+    final TrackPrintCatalog catalog => catalog,
+    _ => null,
+  },
+);

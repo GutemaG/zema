@@ -266,7 +266,8 @@ class _DetectionSettingsScreenState
                   }
                 },
               ),
-              if (ref.watch(backendConfigProvider).fingerprintUploads)
+              if (ref.watch(backendConfigProvider).fingerprintUploads ||
+                  ref.watch(trackPrintCatalogProvider) != null)
                 SettingsRow(
                   label: l10n.detectionShareFingerprints,
                   trailing: Switch(

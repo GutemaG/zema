@@ -8328,6 +8328,518 @@ class TrackAudioMatchesCompanion extends UpdateCompanion<TrackAudioMatchRow> {
   }
 }
 
+class $TrackPrintsTable extends TrackPrints
+    with TableInfo<$TrackPrintsTable, TrackPrintRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrackPrintsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<int> trackId = GeneratedColumn<int>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tracks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _printMeta = const VerificationMeta('print');
+  @override
+  late final GeneratedColumn<Uint8List> print = GeneratedColumn<Uint8List>(
+    'print',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
+  @override
+  late final GeneratedColumn<String> songId = GeneratedColumn<String>(
+    'song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lookedUpMeta = const VerificationMeta(
+    'lookedUp',
+  );
+  @override
+  late final GeneratedColumn<bool> lookedUp = GeneratedColumn<bool>(
+    'looked_up',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("looked_up" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _sharedSongIdMeta = const VerificationMeta(
+    'sharedSongId',
+  );
+  @override
+  late final GeneratedColumn<String> sharedSongId = GeneratedColumn<String>(
+    'shared_song_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta(
+    'checkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    trackId,
+    sizeBytes,
+    version,
+    print,
+    songId,
+    lookedUp,
+    sharedSongId,
+    checkedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'track_prints';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrackPrintRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeBytesMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('print')) {
+      context.handle(
+        _printMeta,
+        print.isAcceptableOrUnknown(data['print']!, _printMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_printMeta);
+    }
+    if (data.containsKey('song_id')) {
+      context.handle(
+        _songIdMeta,
+        songId.isAcceptableOrUnknown(data['song_id']!, _songIdMeta),
+      );
+    }
+    if (data.containsKey('looked_up')) {
+      context.handle(
+        _lookedUpMeta,
+        lookedUp.isAcceptableOrUnknown(data['looked_up']!, _lookedUpMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lookedUpMeta);
+    }
+    if (data.containsKey('shared_song_id')) {
+      context.handle(
+        _sharedSongIdMeta,
+        sharedSongId.isAcceptableOrUnknown(
+          data['shared_song_id']!,
+          _sharedSongIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {trackId};
+  @override
+  TrackPrintRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrackPrintRow(
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      print: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}print'],
+      )!,
+      songId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_id'],
+      ),
+      lookedUp: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}looked_up'],
+      )!,
+      sharedSongId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shared_song_id'],
+      ),
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TrackPrintsTable createAlias(String alias) {
+    return $TrackPrintsTable(attachedDatabase, alias);
+  }
+}
+
+class TrackPrintRow extends DataClass implements Insertable<TrackPrintRow> {
+  final int trackId;
+  final int sizeBytes;
+  final int version;
+  final Uint8List print;
+  final String? songId;
+  final bool lookedUp;
+  final String? sharedSongId;
+  final DateTime checkedAt;
+  const TrackPrintRow({
+    required this.trackId,
+    required this.sizeBytes,
+    required this.version,
+    required this.print,
+    this.songId,
+    required this.lookedUp,
+    this.sharedSongId,
+    required this.checkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['track_id'] = Variable<int>(trackId);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    map['version'] = Variable<int>(version);
+    map['print'] = Variable<Uint8List>(print);
+    if (!nullToAbsent || songId != null) {
+      map['song_id'] = Variable<String>(songId);
+    }
+    map['looked_up'] = Variable<bool>(lookedUp);
+    if (!nullToAbsent || sharedSongId != null) {
+      map['shared_song_id'] = Variable<String>(sharedSongId);
+    }
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  TrackPrintsCompanion toCompanion(bool nullToAbsent) {
+    return TrackPrintsCompanion(
+      trackId: Value(trackId),
+      sizeBytes: Value(sizeBytes),
+      version: Value(version),
+      print: Value(print),
+      songId: songId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(songId),
+      lookedUp: Value(lookedUp),
+      sharedSongId: sharedSongId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sharedSongId),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory TrackPrintRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrackPrintRow(
+      trackId: serializer.fromJson<int>(json['trackId']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      version: serializer.fromJson<int>(json['version']),
+      print: serializer.fromJson<Uint8List>(json['print']),
+      songId: serializer.fromJson<String?>(json['songId']),
+      lookedUp: serializer.fromJson<bool>(json['lookedUp']),
+      sharedSongId: serializer.fromJson<String?>(json['sharedSongId']),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'trackId': serializer.toJson<int>(trackId),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'version': serializer.toJson<int>(version),
+      'print': serializer.toJson<Uint8List>(print),
+      'songId': serializer.toJson<String?>(songId),
+      'lookedUp': serializer.toJson<bool>(lookedUp),
+      'sharedSongId': serializer.toJson<String?>(sharedSongId),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  TrackPrintRow copyWith({
+    int? trackId,
+    int? sizeBytes,
+    int? version,
+    Uint8List? print,
+    Value<String?> songId = const Value.absent(),
+    bool? lookedUp,
+    Value<String?> sharedSongId = const Value.absent(),
+    DateTime? checkedAt,
+  }) => TrackPrintRow(
+    trackId: trackId ?? this.trackId,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    version: version ?? this.version,
+    print: print ?? this.print,
+    songId: songId.present ? songId.value : this.songId,
+    lookedUp: lookedUp ?? this.lookedUp,
+    sharedSongId: sharedSongId.present ? sharedSongId.value : this.sharedSongId,
+    checkedAt: checkedAt ?? this.checkedAt,
+  );
+  TrackPrintRow copyWithCompanion(TrackPrintsCompanion data) {
+    return TrackPrintRow(
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      version: data.version.present ? data.version.value : this.version,
+      print: data.print.present ? data.print.value : this.print,
+      songId: data.songId.present ? data.songId.value : this.songId,
+      lookedUp: data.lookedUp.present ? data.lookedUp.value : this.lookedUp,
+      sharedSongId: data.sharedSongId.present
+          ? data.sharedSongId.value
+          : this.sharedSongId,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackPrintRow(')
+          ..write('trackId: $trackId, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('version: $version, ')
+          ..write('print: $print, ')
+          ..write('songId: $songId, ')
+          ..write('lookedUp: $lookedUp, ')
+          ..write('sharedSongId: $sharedSongId, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    trackId,
+    sizeBytes,
+    version,
+    $driftBlobEquality.hash(print),
+    songId,
+    lookedUp,
+    sharedSongId,
+    checkedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrackPrintRow &&
+          other.trackId == this.trackId &&
+          other.sizeBytes == this.sizeBytes &&
+          other.version == this.version &&
+          $driftBlobEquality.equals(other.print, this.print) &&
+          other.songId == this.songId &&
+          other.lookedUp == this.lookedUp &&
+          other.sharedSongId == this.sharedSongId &&
+          other.checkedAt == this.checkedAt);
+}
+
+class TrackPrintsCompanion extends UpdateCompanion<TrackPrintRow> {
+  final Value<int> trackId;
+  final Value<int> sizeBytes;
+  final Value<int> version;
+  final Value<Uint8List> print;
+  final Value<String?> songId;
+  final Value<bool> lookedUp;
+  final Value<String?> sharedSongId;
+  final Value<DateTime> checkedAt;
+  const TrackPrintsCompanion({
+    this.trackId = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.version = const Value.absent(),
+    this.print = const Value.absent(),
+    this.songId = const Value.absent(),
+    this.lookedUp = const Value.absent(),
+    this.sharedSongId = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+  });
+  TrackPrintsCompanion.insert({
+    this.trackId = const Value.absent(),
+    required int sizeBytes,
+    required int version,
+    required Uint8List print,
+    this.songId = const Value.absent(),
+    required bool lookedUp,
+    this.sharedSongId = const Value.absent(),
+    required DateTime checkedAt,
+  }) : sizeBytes = Value(sizeBytes),
+       version = Value(version),
+       print = Value(print),
+       lookedUp = Value(lookedUp),
+       checkedAt = Value(checkedAt);
+  static Insertable<TrackPrintRow> custom({
+    Expression<int>? trackId,
+    Expression<int>? sizeBytes,
+    Expression<int>? version,
+    Expression<Uint8List>? print,
+    Expression<String>? songId,
+    Expression<bool>? lookedUp,
+    Expression<String>? sharedSongId,
+    Expression<DateTime>? checkedAt,
+  }) {
+    return RawValuesInsertable({
+      if (trackId != null) 'track_id': trackId,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (version != null) 'version': version,
+      if (print != null) 'print': print,
+      if (songId != null) 'song_id': songId,
+      if (lookedUp != null) 'looked_up': lookedUp,
+      if (sharedSongId != null) 'shared_song_id': sharedSongId,
+      if (checkedAt != null) 'checked_at': checkedAt,
+    });
+  }
+
+  TrackPrintsCompanion copyWith({
+    Value<int>? trackId,
+    Value<int>? sizeBytes,
+    Value<int>? version,
+    Value<Uint8List>? print,
+    Value<String?>? songId,
+    Value<bool>? lookedUp,
+    Value<String?>? sharedSongId,
+    Value<DateTime>? checkedAt,
+  }) {
+    return TrackPrintsCompanion(
+      trackId: trackId ?? this.trackId,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      version: version ?? this.version,
+      print: print ?? this.print,
+      songId: songId ?? this.songId,
+      lookedUp: lookedUp ?? this.lookedUp,
+      sharedSongId: sharedSongId ?? this.sharedSongId,
+      checkedAt: checkedAt ?? this.checkedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (trackId.present) {
+      map['track_id'] = Variable<int>(trackId.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (print.present) {
+      map['print'] = Variable<Uint8List>(print.value);
+    }
+    if (songId.present) {
+      map['song_id'] = Variable<String>(songId.value);
+    }
+    if (lookedUp.present) {
+      map['looked_up'] = Variable<bool>(lookedUp.value);
+    }
+    if (sharedSongId.present) {
+      map['shared_song_id'] = Variable<String>(sharedSongId.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrackPrintsCompanion(')
+          ..write('trackId: $trackId, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('version: $version, ')
+          ..write('print: $print, ')
+          ..write('songId: $songId, ')
+          ..write('lookedUp: $lookedUp, ')
+          ..write('sharedSongId: $sharedSongId, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ZemaDatabase extends GeneratedDatabase {
   _$ZemaDatabase(QueryExecutor e) : super(e);
   $ZemaDatabaseManager get managers => $ZemaDatabaseManager(this);
@@ -8363,6 +8875,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
       $CatalogFingerprintsTable(this);
   late final $TrackAudioMatchesTable trackAudioMatches =
       $TrackAudioMatchesTable(this);
+  late final $TrackPrintsTable trackPrints = $TrackPrintsTable(this);
   late final Index tracksFolder = Index(
     'tracks_folder',
     'CREATE INDEX tracks_folder ON tracks (folder)',
@@ -8430,6 +8943,7 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
     pendingLookups,
     catalogFingerprints,
     trackAudioMatches,
+    trackPrints,
     tracksFolder,
     playlistEntriesOrder,
     playEventsTrack,
@@ -8506,6 +9020,13 @@ abstract class _$ZemaDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('track_audio_matches', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_prints', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -8719,6 +9240,24 @@ final class $$TracksTableReferences
     final cache = $_typedResult.readTableOrNull(
       _trackAudioMatchesRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TrackPrintsTable, List<TrackPrintRow>>
+  _trackPrintsRefsTable(_$ZemaDatabase db) => MultiTypedResultKey.fromTable(
+    db.trackPrints,
+    aliasName: 'tracks__id__track_prints__track_id',
+  );
+
+  $$TrackPrintsTableProcessedTableManager get trackPrintsRefs {
+    final manager = $$TrackPrintsTableTableManager(
+      $_db,
+      $_db.trackPrints,
+    ).filter((f) => f.trackId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_trackPrintsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -9025,6 +9564,31 @@ class $$TracksTableFilterComposer
           }) => $$TrackAudioMatchesTableFilterComposer(
             $db: $db,
             $table: $db.trackAudioMatches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> trackPrintsRefs(
+    Expression<bool> Function($$TrackPrintsTableFilterComposer f) f,
+  ) {
+    final $$TrackPrintsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackPrints,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackPrintsTableFilterComposer(
+            $db: $db,
+            $table: $db.trackPrints,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9408,6 +9972,31 @@ class $$TracksTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> trackPrintsRefs<T extends Object>(
+    Expression<T> Function($$TrackPrintsTableAnnotationComposer a) f,
+  ) {
+    final $$TrackPrintsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackPrints,
+      getReferencedColumn: (t) => t.trackId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackPrintsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.trackPrints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TracksTableTableManager
@@ -9433,6 +10022,7 @@ class $$TracksTableTableManager
             bool trackFingerprintsRefs,
             bool identifiedSongsRefs,
             bool trackAudioMatchesRefs,
+            bool trackPrintsRefs,
           })
         > {
   $$TracksTableTableManager(_$ZemaDatabase db, $TracksTable table)
@@ -9533,6 +10123,7 @@ class $$TracksTableTableManager
                 trackFingerprintsRefs = false,
                 identifiedSongsRefs = false,
                 trackAudioMatchesRefs = false,
+                trackPrintsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -9546,6 +10137,7 @@ class $$TracksTableTableManager
                     if (trackFingerprintsRefs) db.trackFingerprints,
                     if (identifiedSongsRefs) db.identifiedSongs,
                     if (trackAudioMatchesRefs) db.trackAudioMatches,
+                    if (trackPrintsRefs) db.trackPrints,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -9730,6 +10322,26 @@ class $$TracksTableTableManager
                           referencedColumn: 'track_id',
                           typedResults: items,
                         ),
+                      if (trackPrintsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TrackRow,
+                          $TracksTable,
+                          TrackPrintRow,
+                          $TrackPrintsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TracksTableReferences
+                              ._trackPrintsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TracksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).trackPrintsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'track_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -9760,6 +10372,7 @@ typedef $$TracksTableProcessedTableManager =
         bool trackFingerprintsRefs,
         bool identifiedSongsRefs,
         bool trackAudioMatchesRefs,
+        bool trackPrintsRefs,
       })
     >;
 typedef $$HiddenFoldersTableCreateCompanionBuilder =
@@ -15190,6 +15803,374 @@ typedef $$TrackAudioMatchesTableProcessedTableManager =
       TrackAudioMatchRow,
       PrefetchHooks Function({bool trackId})
     >;
+typedef $$TrackPrintsTableCreateCompanionBuilder =
+    TrackPrintsCompanion Function({
+      Value<int> trackId,
+      required int sizeBytes,
+      required int version,
+      required Uint8List print,
+      Value<String?> songId,
+      required bool lookedUp,
+      Value<String?> sharedSongId,
+      required DateTime checkedAt,
+    });
+typedef $$TrackPrintsTableUpdateCompanionBuilder =
+    TrackPrintsCompanion Function({
+      Value<int> trackId,
+      Value<int> sizeBytes,
+      Value<int> version,
+      Value<Uint8List> print,
+      Value<String?> songId,
+      Value<bool> lookedUp,
+      Value<String?> sharedSongId,
+      Value<DateTime> checkedAt,
+    });
+
+final class $$TrackPrintsTableReferences
+    extends BaseReferences<_$ZemaDatabase, $TrackPrintsTable, TrackPrintRow> {
+  $$TrackPrintsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TracksTable _trackIdTable(_$ZemaDatabase db) =>
+      db.tracks.createAlias('track_prints__track_id__tracks__id');
+
+  $$TracksTableProcessedTableManager get trackId {
+    final $_column = $_itemColumn<int>('track_id')!;
+
+    final manager = $$TracksTableTableManager(
+      $_db,
+      $_db.tracks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_trackIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TrackPrintsTableFilterComposer
+    extends Composer<_$ZemaDatabase, $TrackPrintsTable> {
+  $$TrackPrintsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get print => $composableBuilder(
+    column: $table.print,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get lookedUp => $composableBuilder(
+    column: $table.lookedUp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sharedSongId => $composableBuilder(
+    column: $table.sharedSongId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TracksTableFilterComposer get trackId {
+    final $$TracksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableFilterComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackPrintsTableOrderingComposer
+    extends Composer<_$ZemaDatabase, $TrackPrintsTable> {
+  $$TrackPrintsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get print => $composableBuilder(
+    column: $table.print,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songId => $composableBuilder(
+    column: $table.songId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get lookedUp => $composableBuilder(
+    column: $table.lookedUp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sharedSongId => $composableBuilder(
+    column: $table.sharedSongId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TracksTableOrderingComposer get trackId {
+    final $$TracksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableOrderingComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackPrintsTableAnnotationComposer
+    extends Composer<_$ZemaDatabase, $TrackPrintsTable> {
+  $$TrackPrintsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get print =>
+      $composableBuilder(column: $table.print, builder: (column) => column);
+
+  GeneratedColumn<String> get songId =>
+      $composableBuilder(column: $table.songId, builder: (column) => column);
+
+  GeneratedColumn<bool> get lookedUp =>
+      $composableBuilder(column: $table.lookedUp, builder: (column) => column);
+
+  GeneratedColumn<String> get sharedSongId => $composableBuilder(
+    column: $table.sharedSongId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+
+  $$TracksTableAnnotationComposer get trackId {
+    final $$TracksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.trackId,
+      referencedTable: $db.tracks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TracksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TrackPrintsTableTableManager
+    extends
+        RootTableManager<
+          _$ZemaDatabase,
+          $TrackPrintsTable,
+          TrackPrintRow,
+          $$TrackPrintsTableFilterComposer,
+          $$TrackPrintsTableOrderingComposer,
+          $$TrackPrintsTableAnnotationComposer,
+          $$TrackPrintsTableCreateCompanionBuilder,
+          $$TrackPrintsTableUpdateCompanionBuilder,
+          (TrackPrintRow, $$TrackPrintsTableReferences),
+          TrackPrintRow,
+          PrefetchHooks Function({bool trackId})
+        > {
+  $$TrackPrintsTableTableManager(_$ZemaDatabase db, $TrackPrintsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrackPrintsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrackPrintsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrackPrintsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<Uint8List> print = const Value.absent(),
+                Value<String?> songId = const Value.absent(),
+                Value<bool> lookedUp = const Value.absent(),
+                Value<String?> sharedSongId = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+              }) => TrackPrintsCompanion(
+                trackId: trackId,
+                sizeBytes: sizeBytes,
+                version: version,
+                print: print,
+                songId: songId,
+                lookedUp: lookedUp,
+                sharedSongId: sharedSongId,
+                checkedAt: checkedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> trackId = const Value.absent(),
+                required int sizeBytes,
+                required int version,
+                required Uint8List print,
+                Value<String?> songId = const Value.absent(),
+                required bool lookedUp,
+                Value<String?> sharedSongId = const Value.absent(),
+                required DateTime checkedAt,
+              }) => TrackPrintsCompanion.insert(
+                trackId: trackId,
+                sizeBytes: sizeBytes,
+                version: version,
+                print: print,
+                songId: songId,
+                lookedUp: lookedUp,
+                sharedSongId: sharedSongId,
+                checkedAt: checkedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TrackPrintsTable, TrackPrintRow>(table),
+                  $$TrackPrintsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (trackId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.trackId,
+                        referencedTable: $$TrackPrintsTableReferences
+                            ._trackIdTable(db),
+                        referencedColumn: $$TrackPrintsTableReferences
+                            ._trackIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TrackPrintsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ZemaDatabase,
+      $TrackPrintsTable,
+      TrackPrintRow,
+      $$TrackPrintsTableFilterComposer,
+      $$TrackPrintsTableOrderingComposer,
+      $$TrackPrintsTableAnnotationComposer,
+      $$TrackPrintsTableCreateCompanionBuilder,
+      $$TrackPrintsTableUpdateCompanionBuilder,
+      (TrackPrintRow, $$TrackPrintsTableReferences),
+      TrackPrintRow,
+      PrefetchHooks Function({bool trackId})
+    >;
 
 class $ZemaDatabaseManager {
   final _$ZemaDatabase _db;
@@ -15236,4 +16217,6 @@ class $ZemaDatabaseManager {
       $$CatalogFingerprintsTableTableManager(_db, _db.catalogFingerprints);
   $$TrackAudioMatchesTableTableManager get trackAudioMatches =>
       $$TrackAudioMatchesTableTableManager(_db, _db.trackAudioMatches);
+  $$TrackPrintsTableTableManager get trackPrints =>
+      $$TrackPrintsTableTableManager(_db, _db.trackPrints);
 }

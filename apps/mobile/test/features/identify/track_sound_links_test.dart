@@ -31,7 +31,7 @@ class _Decoder implements AudioDecoder {
     Duration maxLength = maxDecodedLength,
   }) async {
     decoded++;
-    expect(maxLength, soundDecodeLength);
+    expect(maxLength, linkDecodeLength);
     if (unreadable) return null;
     final samples = length.inMilliseconds * fingerprintSampleRate ~/ 1000;
     return DecodedAudio(pcm16: Uint8List(samples * 2));
@@ -107,6 +107,26 @@ class _Catalog implements AudioCatalog {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _Prints implements TrackPrintCatalog {
+  String? answer;
+  ZemaFailure? failure;
+  final asked = <TrackPrint>[];
+
+  @override
+  Future<List<TrackPrintMatch>> matchTrack(
+    TrackPrint print, {
+    required String installId,
+    int limit = 3,
+  }) async {
+    asked.add(print);
+    if (failure case final f?) throw f;
+    return [if (answer case final song?) (songId: song, bits: 0.1)];
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 CatalogAudioMatch _server(String song, String recording, Duration at) =>
     CatalogAudioMatch(
       songId: song,
@@ -165,15 +185,18 @@ void main() {
     late _Search search;
     late _Catalog catalog;
     late Map<int, LyricsLink> links;
+    late _Prints prints;
 
-    SoundLinker linker({bool withCatalog = false}) => SoundLinker(
-      decoder: decoder,
-      search: () async => search,
-      store: db.fingerprintsDao,
-      links: () async => links,
-      catalog: withCatalog ? catalog : null,
-      installId: () => 'install-1234',
-    );
+    SoundLinker linker({bool withCatalog = false, bool withPrints = false}) =>
+        SoundLinker(
+          decoder: decoder,
+          search: () async => search,
+          store: db.fingerprintsDao,
+          links: () async => links,
+          catalog: withCatalog ? catalog : null,
+          prints: withPrints ? prints : null,
+          installId: () => 'install-1234',
+        );
 
     setUp(() async {
       db = ZemaDatabase(NativeDatabase.memory());
@@ -190,6 +213,7 @@ void main() {
       decoder = _Decoder();
       search = _Search([]);
       catalog = _Catalog();
+      prints = _Prints();
       links = {};
     });
     tearDown(() => db.close());
@@ -323,6 +347,124 @@ void main() {
       );
       await linker().check(changed);
       expect(decoder.decoded, 2);
+    });
+
+    group('track prints', () {
+      test('when sound finds nothing, the print is looked up and kept, '
+          'in the background too', () async {
+        search.answers = [[]];
+        prints.answer = 'song-p';
+        expect(await linker(withPrints: true).check(track(0)), isNull);
+        final row = (await db.fingerprintsDao.trackPrint(track(0).id))!;
+        expect(row.songId, 'song-p');
+        expect(row.lookedUp, isTrue);
+        expect(
+          TrackPrint.fromBytes(row.print).values.length,
+          greaterThan(trackPrintMinValues),
+        );
+        expect(prints.asked.single.duration, track(0).duration);
+
+        await linker(withPrints: true).check(track(0));
+        expect(decoder.decoded, 1);
+        expect(prints.asked, hasLength(1), reason: 'once per file');
+      });
+
+      test('not when sound matched', () async {
+        search.answers = [
+          [_at('${catalogSearchPrefix}rec-a', _s * 26.25)],
+        ];
+        await linker(withPrints: true).check(track(0));
+        expect(prints.asked, isEmpty);
+        expect(await db.fingerprintsDao.trackPrint(track(0).id), isNull);
+      });
+
+      test('offline: kept and looked up later without decoding again, '
+          'pausing the other lookups meanwhile', () async {
+        search.answers = [[]];
+        prints.failure = const NetworkFailure('offline');
+        final l = linker(withPrints: true);
+        await l.check(track(0));
+        await l.check(track(1));
+        expect(prints.asked, hasLength(1), reason: 'paused after a failure');
+        expect(
+          (await db.fingerprintsDao.trackPrint(track(0).id))!.lookedUp,
+          isFalse,
+        );
+
+        prints
+          ..failure = null
+          ..answer = 'song-p';
+        final decoded = decoder.decoded;
+        await linker(withPrints: true).check(track(0));
+        expect(decoder.decoded, decoded, reason: 'the kept print is used');
+        expect(
+          (await db.fingerprintsDao.trackPrint(track(0).id))!.songId,
+          'song-p',
+        );
+      });
+
+      test('a short or unreadable file is never looked up', () async {
+        search.answers = [[]];
+        decoder.unreadable = true;
+        await linker(withPrints: true).check(track(0));
+        await linker(withPrints: true).check(track(0));
+        expect(prints.asked, isEmpty);
+        expect(decoder.decoded, 1);
+      });
+
+      test('a refused print is not asked again', () async {
+        search.answers = [[]];
+        prints.failure = const BackendFailure('bad_print');
+        await linker(withPrints: true).check(track(0));
+        prints.failure = null;
+        await linker(withPrints: true).check(track(0));
+        expect(prints.asked, hasLength(1));
+      });
+
+      test(
+        'in the lyrics: below a title link, and gone when unlinked',
+        () async {
+          SharedPreferences.setMockInitialValues({});
+          final container = ProviderContainer(
+            overrides: [
+              databaseProvider.overrideWithValue(db),
+              sharedPreferencesProvider.overrideWithValue(
+                await SharedPreferences.getInstance(),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          container
+            ..listen(trackPrintMatchesProvider, (_, _) {})
+            ..listen(lyricsLinksProvider, (_, _) {});
+          search.answers = [[]];
+          prints.answer = 'song-p';
+          await linker(withPrints: true).check(track(0));
+          await container.read(trackPrintMatchesProvider.future);
+          await container.read(lyricsLinksProvider.future);
+          await pumpEventQueue();
+          final id = track(0).id;
+          expect(container.read(trackPrintMatchProvider(id)), 'song-p');
+
+          await db.lyricsLinksDao.replaceAutomatic({
+            id: 'song-t',
+          }, at: DateTime(2026));
+          await pumpEventQueue();
+          expect(
+            container.read(trackPrintMatchProvider(id)),
+            isNull,
+            reason: 'a title link comes first',
+          );
+
+          await db.lyricsLinksDao.setManual(id, null, at: DateTime(2026));
+          await pumpEventQueue();
+          expect(
+            container.read(trackPrintMatchProvider(id)),
+            isNull,
+            reason: 'marked as having no lyrics',
+          );
+        },
+      );
     });
 
     group('in the lyrics', () {

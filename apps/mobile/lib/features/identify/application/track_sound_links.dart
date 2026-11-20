@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:clock/clock.dart';
@@ -43,8 +44,16 @@ abstract interface class SoundSearch {
   });
 }
 
-/// How much of a file is decoded to identify it.
+/// How much of a file its two excerpts are taken from.
 const soundDecodeLength = Duration(seconds: 105);
+
+/// How much of a file is decoded to identify it: enough for the excerpts
+/// and the track print.
+const linkDecodeLength = trackPrintLength;
+
+/// How long lookups of track prints wait after the server couldn't be
+/// reached or said no more today.
+const printLookupPause = Duration(minutes: 30);
 
 /// How long each excerpt is.
 const soundExcerptLength = Duration(seconds: 12);
@@ -95,10 +104,38 @@ bool needsSoundCheck(
   return row.searched != searched || (server && !row.askedServer);
 }
 
+/// Whether [track]'s track print should be made ([row] is none, or for
+/// another file or version) or looked up again ([server] may be asked and
+/// it wasn't answered yet).
+bool needsPrintCheck(Track track, TrackPrintRow? row, {required bool server}) {
+  if (row == null ||
+      row.sizeBytes != track.sizeBytes ||
+      row.version != trackPrintVersion) {
+    return true;
+  }
+  return server && !row.lookedUp;
+}
+
+/// [track]'s track print of its decoded start [pcm] (at
+/// [fingerprintSampleRate]), made off the UI isolate.
+Future<TrackPrint> trackPrintOf(Float32List pcm, Duration duration) {
+  final moved = TransferableTypedData.fromList([pcm]);
+  return Isolate.run(
+    () => const TrackPrinter().print(
+      moved.materialize().asFloat32List(),
+      duration: duration,
+    ),
+  );
+}
+
 /// Identifies library files by their sound (intent 009): two excerpts are
 /// searched among the phone's fingerprints (the library's and the catalog's
 /// kept offline), then, if allowed, on the server, which stores nothing.
 /// A library file that matches lends its song. Results are saved.
+///
+/// When that finds nothing, the file's track print (intent 013) is looked
+/// up in the catalog's [TrackPrintCatalog]: in the background too, once per
+/// file, waiting while offline. The print is kept for sharing.
 class SoundLinker {
   SoundLinker({
     required this._decoder,
@@ -106,6 +143,7 @@ class SoundLinker {
     required this._store,
     required this._links,
     this._catalog,
+    this._prints,
     this._installId,
   });
 
@@ -114,7 +152,14 @@ class SoundLinker {
   final FingerprintsDao _store;
   final Future<Map<int, LyricsLink>> Function() _links;
   final AudioCatalog? _catalog;
+  final TrackPrintCatalog? _prints;
   final String Function()? _installId;
+  DateTime? _printsPausedUntil;
+
+  bool get _askPrints =>
+      _prints != null &&
+      _installId != null &&
+      !(_printsPausedUntil?.isAfter(clock.now()) ?? false);
 
   /// Identifies [track] if it needs it (see [needsSoundCheck]); [server]
   /// allows asking the catalog when the phone finds nothing. Returns the
@@ -123,25 +168,34 @@ class SoundLinker {
     final search = await _search();
     final asking = server && _catalog != null;
     final row = await _store.audioMatch(track.id);
-    if (!needsSoundCheck(
+    final soundDue = needsSoundCheck(
       track,
       row,
       searched: search.recordingCount,
       server: asking,
-    )) {
-      return _matchOf(row);
-    }
-    final audio = await _decoder.decode(
-      track.uri,
-      maxLength: soundDecodeLength,
     );
+    final known = soundDue ? null : _matchOf(row);
+    if (known != null) return known;
+    final printRow = await _store.trackPrint(track.id);
+    final printDue = needsPrintCheck(track, printRow, server: _askPrints);
+    if (!soundDue && !printDue) return null;
+    if (!soundDue && printRow != null && _printFresh(printRow, track)) {
+      await _checkPrint(track, null, printRow);
+      return null;
+    }
+    final audio = await _decoder.decode(track.uri, maxLength: linkDecodeLength);
     final pcm = audio == null ? null : pcm16ToFloat(audio.pcm16);
+    if (!soundDue) {
+      await _checkPrint(track, pcm, printRow);
+      return null;
+    }
+    final decoded = pcm == null
+        ? Duration.zero
+        : Duration(microseconds: pcm.length * 1000000 ~/ fingerprintSampleRate);
     final starts = pcm == null
         ? const <Duration>[]
         : soundExcerptStarts(
-            Duration(
-              microseconds: pcm.length * 1000000 ~/ fingerprintSampleRate,
-            ),
+            decoded < soundDecodeLength ? decoded : soundDecodeLength,
           );
     final heard = <(Duration, LibraryHeard)>[];
     for (final start in starts) {
@@ -187,7 +241,67 @@ class SoundLinker {
         checkedAt: clock.now().toUtc(),
       ),
     );
+    if (match == null && printDue) await _checkPrint(track, pcm, printRow);
     return match;
+  }
+
+  /// Makes [track]'s print from [pcm] (or keeps [row]'s) and looks it up
+  /// when the server may be asked. Saves the result.
+  Future<void> _checkPrint(
+    Track track,
+    Float32List? pcm,
+    TrackPrintRow? row,
+  ) async {
+    final fresh = row != null && _printFresh(row, track);
+    final print = fresh
+        ? TrackPrint.fromBytes(row.print)
+        : pcm == null
+        ? TrackPrint(values: Uint32List(0), duration: track.duration)
+        : await trackPrintOf(pcm, track.duration);
+    final usable =
+        print.values.length >= trackPrintMinValues &&
+        print.duration >= trackPrintMinOverlap;
+    var lookedUp = !usable || (fresh && row.lookedUp);
+    var songId = fresh ? row.songId : null;
+    if (!lookedUp && _askPrints) {
+      try {
+        final found = await _prints!.matchTrack(
+          print,
+          installId: _installId!(),
+          limit: 1,
+        );
+        songId = found.firstOrNull?.songId;
+        lookedUp = true;
+      } on NetworkFailure catch (e) {
+        _pausePrints(track, e);
+      } on RateLimitFailure catch (e) {
+        _pausePrints(track, e);
+      } on ZemaFailure catch (e) {
+        // Refused: asking again won't change the answer.
+        _log.warning('Print of track ${track.id} refused', e);
+        lookedUp = true;
+      }
+    }
+    await _store.putTrackPrint(
+      TrackPrintsCompanion.insert(
+        trackId: Value(track.id),
+        sizeBytes: track.sizeBytes,
+        version: trackPrintVersion,
+        print: print.toBytes(),
+        songId: Value(songId),
+        lookedUp: lookedUp,
+        sharedSongId: Value(fresh ? row.sharedSongId : null),
+        checkedAt: clock.now().toUtc(),
+      ),
+    );
+  }
+
+  static bool _printFresh(TrackPrintRow row, Track track) =>
+      row.sizeBytes == track.sizeBytes && row.version == trackPrintVersion;
+
+  void _pausePrints(Track track, ZemaFailure e) {
+    _log.info('Print of track ${track.id} not looked up: $e');
+    _printsPausedUntil = clock.now().add(printLookupPause);
   }
 
   Future<SoundMatch?> _onPhone(
@@ -351,8 +465,22 @@ final soundLinkerProvider = Provider<SoundLinker>((ref) {
     store: db.fingerprintsDao,
     links: () => ref.read(lyricsLinksRepositoryProvider).watchLinks().first,
     catalog: ref.watch(audioCatalogProvider),
+    prints: ref.watch(trackPrintCatalogProvider),
     installId: () => installId(preferences),
   );
+});
+
+/// What library files' track prints matched, by track ID.
+final trackPrintMatchesProvider = StreamProvider<Map<int, String>>(
+  (ref) => ref.watch(databaseProvider).fingerprintsDao.watchTrackPrintMatches(),
+);
+
+/// The song [trackId]'s track print matched, when it decides the track's
+/// lyrics: the track has no link at all (by hand or by title).
+final trackPrintMatchProvider = Provider.family<String?, int>((ref, trackId) {
+  final links = ref.watch(lyricsLinksProvider).value;
+  if (links == null || links.containsKey(trackId)) return null;
+  return ref.watch(trackPrintMatchesProvider).value?[trackId];
 });
 
 /// Whether [link] leaves the track to be identified by sound: no manual

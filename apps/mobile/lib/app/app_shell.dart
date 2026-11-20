@@ -150,6 +150,7 @@ class AppShell extends ConsumerWidget {
     ref.listen(reportStartupFlushProvider, (_, _) {});
     ref.listen(pendingLookupFlushProvider, (_, _) {});
     ref.listen(fingerprintShareSyncProvider, (_, _) {});
+    ref.listen(trackPrintShareSyncProvider, (_, _) {});
     ref.listen(offlineCatalogUpdatesProvider, (_, _) {});
     ref.listen(askShareFingerprintsProvider, (_, next) {
       if (next case AsyncData(value: true)) {

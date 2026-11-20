@@ -16,6 +16,7 @@ import '../../catalog/data/catalog_lyrics_repository.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/application/track_lyrics.dart';
 import '../data/audio_decoder.dart';
+import 'track_print_sharing.dart';
 
 final _log = Logger('identify.shared');
 
@@ -87,8 +88,9 @@ final contributionFingerprintsProvider = Provider<ContributionFingerprints?>((
   );
 });
 
-/// Whether this phone shares the fingerprints of library songs the catalog
-/// has none for; null until the user is asked.
+/// Whether this phone shares the track prints of linked library songs and,
+/// when uploads are on, the fingerprints of ones the catalog has none for;
+/// null until the user is asked.
 final shareFingerprintsProvider =
     NotifierProvider<ShareFingerprintsSetting, bool?>(
       ShareFingerprintsSetting.new,
@@ -232,13 +234,28 @@ final fingerprintSharerProvider = Provider<FingerprintSharer?>((ref) {
 /// songs could help the catalog.
 final askShareFingerprintsProvider = FutureProvider<bool>((ref) async {
   if (ref.watch(shareFingerprintsProvider) != null) return false;
+  final prints = ref.watch(trackPrintSharerProvider);
   final sharer = ref.watch(fingerprintSharerProvider);
-  if (sharer == null) return false;
   try {
-    return (await sharer.needed()).isNotEmpty;
+    if (prints != null && (await prints.needed()).isNotEmpty) return true;
+    return sharer != null && (await sharer.needed()).isNotEmpty;
   } on ZemaFailure {
     return false;
   }
+});
+
+/// Shares track prints when Zema starts and when sharing is turned on.
+/// Kept alive by the app shell.
+final trackPrintShareSyncProvider = Provider<void>((ref) {
+  if (ref.watch(shareFingerprintsProvider) != true) return;
+  final sharer = ref.watch(trackPrintSharerProvider);
+  if (sharer == null) return;
+  unawaited(
+    sharer.share().then<void>(
+      (sent) => _log.info('Shared $sent track prints'),
+      onError: (Object e) => _log.warning('Sharing track prints failed', e),
+    ),
+  );
 });
 
 /// Shares fingerprints when Zema starts and when sharing is turned on.

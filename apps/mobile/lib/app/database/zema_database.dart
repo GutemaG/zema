@@ -46,6 +46,7 @@ part 'zema_database.g.dart';
     PendingLookups,
     CatalogFingerprints,
     TrackAudioMatches,
+    TrackPrints,
   ],
   daos: [
     LibraryDao,
@@ -77,7 +78,7 @@ class ZemaDatabase extends _$ZemaDatabase {
   );
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -130,6 +131,8 @@ class ZemaDatabase extends _$ZemaDatabase {
       from14To15: (m, schema) => m.createTable(schema.catalogFingerprints),
       // v16: library files identified by their sound.
       from15To16: (m, schema) => m.createTable(schema.trackAudioMatches),
+      // v17: library files' track prints.
+      from16To17: (m, schema) => m.createTable(schema.trackPrints),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

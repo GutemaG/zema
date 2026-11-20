@@ -10,6 +10,7 @@ export 'src/audio/fingerprint_index.dart';
 export 'src/audio/fingerprinter.dart';
 export 'src/audio/pending_fingerprint.dart';
 export 'src/audio/track_print.dart';
+export 'src/audio/track_print_catalog.dart';
 export 'src/backup/backup_document.dart';
 export 'src/backup/backup_matcher.dart';
 export 'src/backup/backup_repository.dart';

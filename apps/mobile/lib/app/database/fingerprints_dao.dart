@@ -9,7 +9,12 @@ part 'fingerprints_dao.g.dart';
 /// fingerprint goes with its row), of catalog recordings kept offline, and
 /// what library files were identified as by their sound.
 @DriftAccessor(
-  tables: [TrackFingerprints, CatalogFingerprints, TrackAudioMatches],
+  tables: [
+    TrackFingerprints,
+    CatalogFingerprints,
+    TrackAudioMatches,
+    TrackPrints,
+  ],
 )
 class FingerprintsDao extends DatabaseAccessor<ZemaDatabase>
     with _$FingerprintsDaoMixin {
@@ -175,6 +180,32 @@ class FingerprintsDao extends DatabaseAccessor<ZemaDatabase>
 
   Future<void> putAudioMatch(TrackAudioMatchesCompanion match) =>
       into(trackAudioMatches).insertOnConflictUpdate(match);
+
+  Future<TrackPrintRow?> trackPrint(int trackId) => (select(
+    trackPrints,
+  )..where((p) => p.trackId.equals(trackId))).getSingleOrNull();
+
+  Future<void> putTrackPrint(TrackPrintsCompanion print) =>
+      into(trackPrints).insertOnConflictUpdate(print);
+
+  /// The songs library files' prints matched, by track ID.
+  Stream<Map<int, String>> watchTrackPrintMatches() =>
+      (select(trackPrints)..where((p) => p.songId.isNotNull())).watch().map(
+        (rows) => {for (final row in rows) row.trackId: row.songId!},
+      );
+
+  /// Every library file's track print, by track ID.
+  Future<Map<int, TrackPrintRow>> trackPrintsByTrack() async => {
+    for (final row in await select(trackPrints).get()) row.trackId: row,
+  };
+
+  /// The songs a print was shared for.
+  Future<Set<String>> sharedPrintSongs() async => {
+    for (final row in await (select(
+      trackPrints,
+    )..where((p) => p.sharedSongId.isNotNull())).get())
+      row.sharedSongId!,
+  };
 }
 
 /// A catalog fingerprint on the phone, without its bytes.

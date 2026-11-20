@@ -20,6 +20,9 @@ const double trackPrintSampleRate = fingerprintSampleRate / 2;
 /// How far two prints are shifted against each other when compared.
 const Duration trackPrintMaxShift = Duration(seconds: 2);
 
+/// The fewest values a print needs for the server to take it (30 s).
+const int trackPrintMinValues = 650;
+
 /// The least audio two prints must share to be compared.
 const Duration trackPrintMinOverlap = Duration(seconds: 30);
 

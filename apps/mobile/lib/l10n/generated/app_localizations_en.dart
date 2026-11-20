@@ -2757,7 +2757,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareFingerprintsMessage =>
-      'Some songs in your library can\'t be identified by sound yet. Zema can send their fingerprints to the catalog, so Listen finds them for everyone. Only fingerprints leave your phone, never the audio. You can change this in Settings.';
+      'Zema can send small fingerprints of the songs in your library to the catalog, so other people\'s copies of the same songs find their lyrics, even when they are badly named. Only fingerprints leave your phone, never the audio. You can change this in Settings.';
 
   @override
   String get shareFingerprintsYes => 'Share';
