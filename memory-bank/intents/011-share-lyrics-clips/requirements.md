@@ -1,16 +1,16 @@
 ---
 intent: 011-share-lyrics-clips
 phase: inception
-status: draft
+status: approved
 created: 2026-10-29T15:44:10Z
-updated: 2026-10-29T15:44:10Z
+updated: 2026-11-20T18:00:00Z
 ---
 
 # Requirements: Share Lyrics Clips
 
 > Source: product owner request, 2026-10-29 (share part of a song with its lyrics to
-> TikTok, YouTube, Snapchat and others) · Complexity ★★★★ · Native or FFmpeg encoding
-> (spike decides) · Needs 002 (player) and 003 (synced lyrics) · **Spike first.**
+> TikTok, YouTube, Snapchat and others) · Complexity ★★★★ · Android first, native encoding
+> (MediaCodec + MediaMuxer, no FFmpeg) · Needs 002 (player) and 003 (synced lyrics) · **Encoder first.**
 
 ## Intent Overview
 
@@ -32,29 +32,39 @@ Shorts, Snapchat, Instagram, WhatsApp, Telegram or any other app.
 
 ## Functional Requirements
 
-### FR-0: Spike (before full build)
-- **Description**: Throw-away prototype that makes one 60 s 1080×1920 MP4 (H.264 + AAC)
-  from a local file and its synced lyrics, on a real Android phone and on iOS. Compare a
-  maintained FFmpeg build with native encoding (AVFoundation on iOS, MediaCodec and
-  MediaMuxer on Android): app size, render time, memory, licence.
-- **Acceptance Criteria**: Decision recorded with evidence (render time for 60 s on a
-  mid-range Android phone, added app size).
+### FR-0: Encoder first
+- **Description**: The native Android encoder (MediaCodec + MediaMuxer) is built first
+  and timed on the owner's phone before the editor is built on it.
+- **Acceptance Criteria**: A 60 s 1080×1920 clip renders in under 30 s on the owner's
+  phone, or the encoder falls back to 720×1280; the time is recorded in the bolt.
 - **Priority**: Must
 
 ### FR-1: Pick the clip
 - **Description**: A "Share clip" action (Now Playing, Song detail, song menu C03) opens a
   clip editor for a library track linked to lyrics: start and end handles on the song's
   timeline, the lyric lines under it, and Play to hear the selection. Handles can snap to
-  the start of a lyric line. The length is capped (default 60 s; 2 min allowed).
+  the start of a lyric line. The selection starts at 60 s and can be stretched to 2 min.
 - **Acceptance Criteria**: The selection can't exceed the cap or the track; the preview
   plays exactly the selected part.
 - **Priority**: Must
 
 ### FR-2: Choose the look
-- **Description**: A small set of layouts: cover art (or a letter tile) with a blurred
-  background, the current line large and the next line dimmed, in the Night Vigil
-  palette. Options: transliteration on or off, and the Zema mark.
-- **Priority**: Must (one layout); Should (more layouts)
+- **Description**: One layout: the current line large and the next line dimmed. Every
+  choice below has a default, so a clip can be made without touching any of them, and
+  the editor shows a live preview:
+  - **Background**: the cover art blurred (default), a photo from the gallery, or a
+    plain colour (Night Vigil by default).
+  - **Transparency**: how much the background is dimmed behind the text (default 40 %).
+  - **Text**: size (default medium), colour (default white) and position (default
+    centre); transliteration on or off (default off).
+  - **Song details**: title (on), artist name (on) and album name (off), shown at the
+    top; each can be edited for the clip only.
+  - **Pictures**: the album picture (default the cover art, or a gallery photo) and an
+    artist picture (none by default; a gallery photo), shown small next to the names.
+  - **Zema mark**: on by default, can be turned off.
+  - The last choices (except photos and edited names) become the defaults for the
+    next clip.
+- **Priority**: Must (defaults and preview); Should (the rest)
 
 ### FR-3: Make the video
 - **Description**: Cut the selected audio from the user's file and render the lyric
@@ -89,7 +99,7 @@ Shorts, Snapchat, Instagram, WhatsApp, Telegram or any other app.
 |-------------|--------|--------|
 | Render time | 60 s clip, mid-range Android phone | < 30 s (the spike sets the bar) |
 | Memory | Peak during render | No crash on a 3 GB RAM phone |
-| App size | Added by the encoder | To measure in the spike; prefer native if FFmpeg adds > 20 MB |
+| App size | Added by the encoder | ~0 (native) |
 
 ### Privacy
 | Requirement | Standard | Notes |
@@ -111,11 +121,12 @@ Shorts, Snapchat, Instagram, WhatsApp, Telegram or any other app.
 **Project-wide standards**: Required standards will be loaded from memory-bank standards folder by Construction Agent
 
 **Intent-specific constraints**:
-- Android and iOS.
+- Android first. iOS (AVFoundation) is a later intent; the encoder sits behind a Dart
+  interface so iOS can plug in.
 - Only local library files: the catalog has no audio, so a track must be linked to its
   song to share synced lyrics.
-- `ffmpeg_kit_flutter` was retired in 2025; any FFmpeg build used must be maintained
-  and its licence (LGPL/GPL) acceptable for the store app.
+- No FFmpeg: `ffmpeg_kit_flutter` was retired in 2025, and native encoding adds no app
+  size or licence questions.
 - Sharing uses the system share menu; app-specific SDKs (TikTok Share Kit, Snapchat
   Creative Kit) need developer accounts and are out of scope for now.
 
@@ -139,7 +150,7 @@ Shorts, Snapchat, Instagram, WhatsApp, Telegram or any other app.
 
 | Question | Owner | Due Date | Resolution |
 |----------|-------|----------|------------|
-| Cap at 60 s or 2 min by default? | Product owner | Requirements review | Pending (proposed: 60 s default, 2 min allowed) |
-| Is the Zema mark on by default, and can it be turned off? | Product owner | Requirements review | Pending |
-| Include a link to the song in the share text (needs a public web page)? | Product owner | Requirements review | Pending |
-| Build before or after 005 (accounts)? | Product owner | Requirements review | Pending (no dependency on 005) |
+| Cap at 60 s or 2 min by default? | Product owner | 2026-11-20 | 60 s default, up to 2 min |
+| Is the Zema mark on by default, and can it be turned off? | Product owner | 2026-11-20 | On by default, can be turned off |
+| Include a link to the song in the share text? | Product owner | 2026-11-20 | No link for now: title and artist only |
+| Which platforms? | Product owner | 2026-11-20 | Android first; iOS later |

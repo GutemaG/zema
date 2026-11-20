@@ -1,70 +1,29 @@
 ---
 intent: 011-share-lyrics-clips
 created: 2026-10-29T15:44:10Z
-completed: null
-status: in-progress
+completed: 2026-11-20T18:00:00Z
+status: complete
 ---
 
 # Inception Log: 011-share-lyrics-clips
 
-## Overview
+Share part of a song (60 s, up to 2 min) as a portrait video with synced lyrics.
 
-**Intent**: Share part of a song (up to 1–2 minutes) as a video with synced lyrics to social media
-**Type**: New Feature (green-field)
-**Created**: 2026-10-29T15:44:10Z
-**Source**: product owner request, 2026-10-29 (see requirements.md header)
-
-## Artifacts Created
-
-| Artifact | Status | File |
-|----------|--------|------|
-| Requirements | 📝 draft | requirements.md |
-| System Context | ⬜ | system-context.md |
-| Units | ⬜ | units/ |
-| Stories | ⬜ | units/*/stories/ |
-| Bolt Plan | ⬜ | memory-bank/bolts/ |
-
-## Summary
-
-| Metric | Count |
-|--------|-------|
-| Functional Requirements | 7 (draft, FR-0 to FR-6) |
-| Non-Functional Requirements | see requirements.md |
-| Units | 0 |
-| Stories | 0 |
-| Bolts Planned | 0 |
-
-## Units Breakdown
-
-| Unit | Stories | Bolts | Priority |
-|------|---------|-------|----------|
+| Artifact | File |
+|----------|------|
+| Requirements | requirements.md (approved) |
+| System Context | system-context.md |
+| Units | units.md, units/ (2 units, 7 stories) |
+| Bolts | bolts 065–069 |
 
 ## Decision Log
 
-| Date | Decision | Rationale | Approved |
-|------|----------|-----------|----------|
-| 2026-10-29T15:44:10Z | Intent created as draft | Videos made on the phone and shared through the system share menu; encoder chosen by a spike | Yes |
-
-## Scope Changes
-
-| Date | Change | Reason | Impact |
-|------|--------|--------|--------|
-
-## Ready for Construction
-
-**Checklist**:
-- [ ] All requirements documented
-- [ ] System context defined
-- [ ] Units decomposed
-- [ ] Stories created for all units
-- [ ] Bolts planned
-- [ ] Human review complete
-
-## Next Steps
-
-1. Resolve open questions in requirements.md
-2. Run requirements skill (Checkpoints 1–2) via `/specsmd-inception-agent`
+| Date | Decision |
+|------|----------|
+| 2026-10-29 | Intent created as draft |
+| 2026-11-20 | 60 s default, up to 2 min; Zema mark on, can be turned off; no song link; Android first with native MediaCodec + MediaMuxer (no FFmpeg); iOS later |
+| 2026-11-20 | The user chooses background, text and transparency (all with defaults), artist and album names, and album and artist pictures (story 007, bolt 068) |
 
 ## Dependencies
 
-002 (player) and 003 (synced lyrics), both complete. No dependency on 004–010.
+002 (player) and 003 (synced lyrics), both complete.
