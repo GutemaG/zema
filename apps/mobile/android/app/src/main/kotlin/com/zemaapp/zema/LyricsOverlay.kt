@@ -426,12 +426,13 @@ object LyricsOverlay {
         }
         draggable(words, "bar")
         val lock = icon(R.drawable.ic_overlay_lock_open, R.string.overlay_lock) { setLocked(true) }
+        val minimize = icon(R.drawable.ic_overlay_minimize, R.string.overlay_minimize) { switchTo(Mode.BUBBLE) }
         val expand = icon(R.drawable.ic_overlay_expand, R.string.overlay_expand) { switchTo(Mode.PANEL) }
         val close = icon(R.drawable.ic_overlay_close, R.string.overlay_close) { close() }
         barNow = now
         barNext = next
         barLock = lock
-        barButtons = listOf(expand, close)
+        barButtons = listOf(minimize, expand, close)
         return LinearLayout(themed).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -439,6 +440,7 @@ object LyricsOverlay {
             setPadding(dp(16), dp(10), dp(6), dp(10))
             addView(words)
             addView(lock)
+            addView(minimize)
             addView(expand)
             addView(close)
         }

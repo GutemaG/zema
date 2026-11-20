@@ -37,9 +37,11 @@ floats when the user leaves Zema, by default.
 - Song menu: "Float lyrics" for linked songs (asks for the overlay permission if missing;
   plays the song next and skips to it when it isn't the current one).
 - The headless overlay engine overrides `playerOverlayProvider` with null (no player there).
+- Follow-ups: a minimize button shrinks the bar back to the bubble; when Zema's song
+  changes or stops, its sheet hides at once instead of after the 10 s hide delay.
 
 ## Tests
 
 `test/features/detection/player_overlay_test.dart`: floats by default, Close for one song
-only, the setting off with Float lyrics, priority over a detected app. Not checked on a
+only, the setting off with Float lyrics, priority over a detected app, the next song hiding the last at once. Not checked on a
 phone.

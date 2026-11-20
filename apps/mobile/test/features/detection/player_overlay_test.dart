@@ -129,6 +129,18 @@ void main() {
     expect(overlay.hidden, greaterThan(0));
   });
 
+  test(
+    'the next song hides the last one at once, while its lyrics load',
+    () async {
+      final container = start();
+      container.read(_own.notifier).play(7);
+      await settle();
+      container.read(_own.notifier).stop();
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      expect(overlay.hidden, 1, reason: 'before the 40 ms hide delay');
+    },
+  );
+
   test('closed, it stays away for that song only', () async {
     final container = start();
     container.read(_own.notifier).play(7);

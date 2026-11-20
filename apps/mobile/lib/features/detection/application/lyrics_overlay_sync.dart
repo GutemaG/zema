@@ -146,6 +146,10 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
         OverlayStart.tap || null => false,
       };
 
+  /// Whether a song played in Zema is shown: it goes at once when that
+  /// song changes or stops, not after [overlayHideDelayProvider].
+  var ownShown = false;
+
   void apply() {
     final sheet = ref.read(overlayContentProvider);
     final own = ref.read(playerOverlayProvider);
@@ -154,8 +158,18 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
         (own.playing || sheet == null)) {
       hiding?.cancel();
       hiding = null;
+      ownShown = true;
       unawaited(overlay.show(own.sheet));
       return;
+    }
+    if (ownShown) {
+      ownShown = false;
+      if (sheet == null || !wanted(sheet.key)) {
+        hiding?.cancel();
+        hiding = null;
+        unawaited(overlay.hide());
+        return;
+      }
     }
     final playing = ref.read(currentDetectionProvider) != null;
     if (sheet == null && playing && ref.read(detectedSongProvider) == null) {
