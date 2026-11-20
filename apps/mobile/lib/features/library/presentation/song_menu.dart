@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,8 @@ import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../detection/application/lyrics_overlay_sync.dart';
+import '../../detection/application/player_overlay.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/presentation/match_lyrics_sheet.dart';
 import '../../player/application/player_providers.dart';
@@ -93,6 +96,9 @@ class SongMenu extends ConsumerWidget {
     final lyrics = ref.read(lyricsLinksControllerProvider);
     final linkedSong = ref.watch(trackSongProvider(track.id)).value;
     final linked = linkedSong != null;
+    final overlay = ref.read(lyricsOverlayProvider);
+    final choices = ref.read(overlayChoicesProvider.notifier);
+    final queue = ref.read(playerStateProvider).value;
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -188,6 +194,28 @@ class SongMenu extends ConsumerWidget {
                     ),
                   ),
                 ),
+              ),
+            if (linked && Platform.isAndroid)
+              item(
+                Icons.picture_in_picture_alt_outlined,
+                l10n.songFloatLyrics,
+                close(() async {
+                  if (!await overlay.canShow()) {
+                    await overlay.openSettings();
+                    notify(l10n.songFloatLyricsAllow);
+                    return;
+                  }
+                  choices.open(playerOverlayKey(track.id));
+                  if (queue?.current?.id != track.id) {
+                    if (queue == null || queue.queue.isEmpty) {
+                      await player.playList([track]);
+                    } else {
+                      await player.playNext(track);
+                      await player.next();
+                    }
+                  }
+                  notify(l10n.songFloatLyricsOn);
+                }),
               ),
             item(
               Icons.lyrics_outlined,

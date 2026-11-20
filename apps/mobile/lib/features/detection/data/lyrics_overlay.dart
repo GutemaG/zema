@@ -253,6 +253,16 @@ abstract interface class LyricsOverlay {
 
   Future<void> hide();
 
+  /// Gives the sheets of [source] its clock: at [at], [position] and
+  /// [playing]. For sources Android doesn't report, such as Zema itself.
+  Future<void> setClock(
+    String source, {
+    required bool playing,
+    required Duration position,
+    required DateTime at,
+    Duration? duration,
+  });
+
   Future<OverlayAppearance> appearance();
 
   Future<void> setAppearance(OverlayAppearance appearance);
@@ -274,6 +284,15 @@ class NoLyricsOverlay implements LyricsOverlay {
 
   @override
   Future<void> hide() async {}
+
+  @override
+  Future<void> setClock(
+    String source, {
+    required bool playing,
+    required Duration position,
+    required DateTime at,
+    Duration? duration,
+  }) async {}
 
   @override
   Future<OverlayAppearance> appearance() async => const OverlayAppearance();
@@ -308,6 +327,21 @@ class AndroidLyricsOverlay implements LyricsOverlay {
 
   @override
   Future<void> hide() => _call<void>('hide', 'Hiding lyrics');
+
+  @override
+  Future<void> setClock(
+    String source, {
+    required bool playing,
+    required Duration position,
+    required DateTime at,
+    Duration? duration,
+  }) => _call<void>('clock', 'Timing lyrics', {
+    'sourcePackage': source,
+    'playbackState': playing ? 'playing' : 'paused',
+    'positionMs': position.inMilliseconds,
+    'positionUpdatedAt': at.millisecondsSinceEpoch,
+    'durationMs': ?duration?.inMilliseconds,
+  });
 
   @override
   Future<OverlayAppearance> appearance() async => OverlayAppearance.fromMap(

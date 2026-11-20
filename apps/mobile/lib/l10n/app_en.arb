@@ -1193,6 +1193,22 @@
   "@lyricsOffsetReset": {
     "description": "Button: set the lyrics timing correction back to zero."
   },
+  "songFloatLyrics": "Float lyrics",
+  "@songFloatLyrics": {
+    "description": "Song menu item (Android): show the song's lyrics in a floating window over other apps while it plays."
+  },
+  "songFloatLyricsOn": "Lyrics float when you leave Zema",
+  "@songFloatLyricsOn": {
+    "description": "Snackbar after Float lyrics: the floating window appears once the user goes to another app or the home screen."
+  },
+  "songFloatLyricsAllow": "Allow Zema to display over other apps, then try again",
+  "@songFloatLyricsAllow": {
+    "description": "Snackbar after Float lyrics when the display-over-other-apps permission is missing; Android's settings for it have just opened."
+  },
+  "settingsFloatLyrics": "Float lyrics when I leave Zema",
+  "@settingsFloatLyrics": {
+    "description": "Settings switch (Android): the lyrics of the song playing in Zema float over other apps and the home screen."
+  },
   "songViewLyrics": "View lyrics",
   "@songViewLyrics": {
     "description": "Song menu item: open the song's page with its full lyrics."

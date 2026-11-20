@@ -29,6 +29,7 @@ class AppSettings {
     this.pauseOnUnplug = true,
     this.duckOnInterruption = false,
     this.gapless = true,
+    this.floatLyrics = true,
   });
 
   /// The choices for [minTrackSeconds]; 0 is off.
@@ -59,6 +60,10 @@ class AppSettings {
   final bool duckOnInterruption;
   final bool gapless;
 
+  /// Android: the lyrics of a song playing in Zema float over other apps
+  /// when the user leaves Zema.
+  final bool floatLyrics;
+
   Duration get minTrackDuration => Duration(seconds: minTrackSeconds);
 
   AppSettings copyWith({
@@ -70,6 +75,7 @@ class AppSettings {
     bool? pauseOnUnplug,
     bool? duckOnInterruption,
     bool? gapless,
+    bool? floatLyrics,
   }) {
     return AppSettings(
       palette: palette ?? this.palette,
@@ -80,6 +86,7 @@ class AppSettings {
       pauseOnUnplug: pauseOnUnplug ?? this.pauseOnUnplug,
       duckOnInterruption: duckOnInterruption ?? this.duckOnInterruption,
       gapless: gapless ?? this.gapless,
+      floatLyrics: floatLyrics ?? this.floatLyrics,
     );
   }
 
@@ -93,7 +100,8 @@ class AppSettings {
       other.sleepTimerDefault == sleepTimerDefault &&
       other.pauseOnUnplug == pauseOnUnplug &&
       other.duckOnInterruption == duckOnInterruption &&
-      other.gapless == gapless;
+      other.gapless == gapless &&
+      other.floatLyrics == floatLyrics;
 
   @override
   int get hashCode => Object.hash(
@@ -105,6 +113,7 @@ class AppSettings {
     pauseOnUnplug,
     duckOnInterruption,
     gapless,
+    floatLyrics,
   );
 
   @override
@@ -113,5 +122,6 @@ class AppSettings {
       'languageCode: $languageCode, minTrackSeconds: $minTrackSeconds, '
       'sleepTimerDefault: ${sleepTimerDefault.name}, '
       'pauseOnUnplug: $pauseOnUnplug, '
-      'duckOnInterruption: $duckOnInterruption, gapless: $gapless)';
+      'duckOnInterruption: $duckOnInterruption, gapless: $gapless, '
+      'floatLyrics: $floatLyrics)';
 }

@@ -111,6 +111,16 @@ class SettingsController extends Notifier<AppSettings> {
     );
   }
 
+  Future<void> setFloatLyrics(bool value) async {
+    if (value == state.floatLyrics) {
+      return;
+    }
+    state = state.copyWith(floatLyrics: value);
+    await _persist(
+      () => ref.read(settingsRepositoryProvider).saveFloatLyrics(value),
+    );
+  }
+
   /// A failed save keeps the new value for this session; it is only lost on
   /// the next launch.
   /// Applies every setting in [next] that differs, e.g. from a restored
@@ -124,6 +134,7 @@ class SettingsController extends Notifier<AppSettings> {
     await setPauseOnUnplug(next.pauseOnUnplug);
     await setDuckOnInterruption(next.duckOnInterruption);
     await setGapless(next.gapless);
+    await setFloatLyrics(next.floatLyrics);
   }
 
   Future<void> _persist(Future<void> Function() save) async {

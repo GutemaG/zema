@@ -41,6 +41,16 @@ class OverlayChannel(private val context: Context, messenger: BinaryMessenger) {
                     )
                     result.success(null)
                 }
+                "clock" -> {
+                    val args = (call.arguments as? Map<*, *>).orEmpty()
+                    val source = args["sourcePackage"] as? String
+                    if (source == null) {
+                        result.error("bad_arguments", "A source is needed", null)
+                    } else {
+                        LyricsOverlay.setClock(source, args.entries.associate { (k, v) -> k.toString() to v })
+                        result.success(null)
+                    }
+                }
                 "hide" -> {
                     LyricsOverlay.hide()
                     result.success(null)

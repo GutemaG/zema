@@ -8,9 +8,11 @@ import 'package:zema_core/zema_core.dart';
 import '../../catalog/data/catalog_lyrics_repository.dart';
 import '../../lyrics/application/lyrics_links.dart';
 import '../../lyrics/application/track_lyrics.dart';
+import '../../settings/application/settings_controller.dart';
 import '../data/lyrics_overlay.dart';
 import 'detected_song.dart';
 import 'detection_providers.dart';
+import 'player_overlay.dart';
 
 final _log = Logger('detection.overlay');
 
@@ -146,6 +148,15 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
 
   void apply() {
     final sheet = ref.read(overlayContentProvider);
+    final own = ref.read(playerOverlayProvider);
+    if (own != null &&
+        playerOverlayWanted(ref, own.sheet.key) &&
+        (own.playing || sheet == null)) {
+      hiding?.cancel();
+      hiding = null;
+      unawaited(overlay.show(own.sheet));
+      return;
+    }
     final playing = ref.read(currentDetectionProvider) != null;
     if (sheet == null && playing && ref.read(detectedSongProvider) == null) {
       return;
@@ -169,10 +180,23 @@ final lyricsOverlaySyncProvider = Provider<void>((ref) {
   ref.listen(overlayContentProvider, (_, _) => apply(), fireImmediately: true);
   ref.listen(overlayChoicesProvider, (_, _) => apply());
   ref.listen(overlayStartProvider, (_, _) => apply());
+  ref.listen(playerOverlayProvider, (_, _) => apply());
+  ref.listen(settingsProvider.select((s) => s.floatLyrics), (_, _) => apply());
   final subscription = overlay.actions.listen((action) {
     switch (action) {
       case OverlayClosed(:final key):
         ref.read(overlayChoicesProvider.notifier).close(key);
+      case OverlayOffset(:final key, :final offset)
+          when playerOverlayTrack(key) != null:
+        final trackId = playerOverlayTrack(key)!;
+        unawaited(
+          savePlayerOverlayOffset(ref, trackId, offset).catchError((
+            Object e,
+            StackTrace s,
+          ) {
+            _log.warning('Could not save the timing', e, s);
+          }),
+        );
       case OverlayOffset(:final key, :final offset):
         final detected = ref.read(detectedSongProvider);
         if (detected is! DetectedMatch || detected.key != key) return;

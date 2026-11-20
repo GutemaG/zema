@@ -259,6 +259,16 @@ class SettingsScreen extends ConsumerWidget {
               title: l10n.settingsSectionOtherApps,
               children: [
                 SettingsRow(
+                  label: l10n.settingsFloatLyrics,
+                  trailing: toggle(
+                    settings.floatLyrics,
+                    controller.setFloatLyrics,
+                  ),
+                  onTap: () => unawaited(
+                    controller.setFloatLyrics(!settings.floatLyrics),
+                  ),
+                ),
+                SettingsRow(
                   label: l10n.detectionSettingsTitle,
                   onTap: () =>
                       unawaited(context.push(AppRoutes.detectionSettings)),

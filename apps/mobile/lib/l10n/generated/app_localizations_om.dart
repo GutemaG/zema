@@ -924,6 +924,19 @@ class AppLocalizationsOm extends AppLocalizations {
   String get lyricsOffsetReset => 'Reset timing';
 
   @override
+  String get songFloatLyrics => 'Float lyrics';
+
+  @override
+  String get songFloatLyricsOn => 'Lyrics float when you leave Zema';
+
+  @override
+  String get songFloatLyricsAllow =>
+      'Allow Zema to display over other apps, then try again';
+
+  @override
+  String get settingsFloatLyrics => 'Float lyrics when I leave Zema';
+
+  @override
   String get songViewLyrics => 'View lyrics';
 
   @override

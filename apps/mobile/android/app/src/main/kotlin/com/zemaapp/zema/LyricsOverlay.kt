@@ -55,6 +55,7 @@ object LyricsOverlay {
 
     private var sheet: LyricsSheet? = null
     private var clock: PlaybackClock? = null
+    private val givenClocks = mutableMapOf<String, PlaybackClock>()
     private var mode = Mode.BUBBLE
     private var locked = false
     private var suspended = false
@@ -128,6 +129,16 @@ object LyricsOverlay {
         forgetViews()
     }
 
+    /** The clock of [source] when Android doesn't report it (Zema's own player). */
+    fun setClock(source: String, event: Map<String, Any?>) {
+        val given = PlaybackClock.of(event) ?: return
+        givenClocks[source] = given
+        if (sheet?.source != source) return
+        clock = given
+        main.removeCallbacks(tick)
+        tick.run()
+    }
+
     fun setAppInFront(front: Boolean) {
         if (front == suspended) return
         suspended = front
@@ -153,7 +164,7 @@ object LyricsOverlay {
 
     private fun watch(source: String) {
         stopWatching?.invoke()
-        clock = null
+        clock = givenClocks[source]
         stopWatching = PlaybackHub.listen { event ->
             if (event["sourcePackage"] != source || sheet?.source != source) return@listen
             if (event["playbackState"] == "gone") {

@@ -68,6 +68,10 @@ class _FakeSettingsRepository implements SettingsRepository {
   @override
   Future<void> saveGapless(bool value) async =>
       _record(SettingsRepository.gaplessKey, 'gapless:$value');
+
+  @override
+  Future<void> saveFloatLyrics(bool value) async =>
+      _record(SettingsRepository.floatLyricsKey, 'floatLyrics:$value');
 }
 
 ProviderContainer _container(

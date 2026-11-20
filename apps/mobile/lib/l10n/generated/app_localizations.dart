@@ -1578,6 +1578,30 @@ abstract class AppLocalizations {
   /// **'Reset timing'**
   String get lyricsOffsetReset;
 
+  /// Song menu item (Android): show the song's lyrics in a floating window over other apps while it plays.
+  ///
+  /// In en, this message translates to:
+  /// **'Float lyrics'**
+  String get songFloatLyrics;
+
+  /// Snackbar after Float lyrics: the floating window appears once the user goes to another app or the home screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics float when you leave Zema'**
+  String get songFloatLyricsOn;
+
+  /// Snackbar after Float lyrics when the display-over-other-apps permission is missing; Android's settings for it have just opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Zema to display over other apps, then try again'**
+  String get songFloatLyricsAllow;
+
+  /// Settings switch (Android): the lyrics of the song playing in Zema float over other apps and the home screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Float lyrics when I leave Zema'**
+  String get settingsFloatLyrics;
+
   /// Song menu item: open the song's page with its full lyrics.
   ///
   /// In en, this message translates to:

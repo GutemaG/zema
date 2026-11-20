@@ -16,6 +16,7 @@ class SettingsRepository {
   static const String pauseOnUnplugKey = 'pauseOnUnplug';
   static const String duckOnInterruptionKey = 'duckOnInterruption';
   static const String gaplessKey = 'gapless';
+  static const String floatLyricsKey = 'floatLyrics';
 
   final SharedPreferences _prefs;
 
@@ -50,6 +51,7 @@ class SettingsRepository {
       duckOnInterruption:
           _prefs.getBool(duckOnInterruptionKey) ?? defaults.duckOnInterruption,
       gapless: _prefs.getBool(gaplessKey) ?? defaults.gapless,
+      floatLyrics: _prefs.getBool(floatLyricsKey) ?? defaults.floatLyrics,
     );
   }
 
@@ -83,6 +85,8 @@ class SettingsRepository {
 
   /// Throws [SettingsWriteException] if the value could not be saved.
   Future<void> saveGapless(bool value) => _saveBool(gaplessKey, value);
+
+  Future<void> saveFloatLyrics(bool value) => _saveBool(floatLyricsKey, value);
 
   Future<void> _save(String key, String value) =>
       _write(key, _prefs.setString(key, value));
