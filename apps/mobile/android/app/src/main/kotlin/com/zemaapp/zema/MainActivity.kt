@@ -65,6 +65,7 @@ class MainActivity : AudioServiceActivity() {
                 DetectionChannel(applicationContext, messenger),
                 OverlayChannel(applicationContext, messenger),
                 KeepListeningChannel(applicationContext, messenger),
+                ClipChannel(applicationContext, messenger),
             )
             engine.addEngineLifecycleListener(object : FlutterEngine.EngineLifecycleListener {
                 override fun onPreEngineRestart() {}
@@ -78,6 +79,7 @@ class MainActivity : AudioServiceActivity() {
                     made.detection.dispose()
                     made.overlay.dispose()
                     made.keepListening.dispose()
+                    made.clip.dispose()
                     channels.remove(engine)
                     Handler(Looper.getMainLooper()).post { OverlayEngine.check() }
                 }
@@ -94,6 +96,7 @@ class MainActivity : AudioServiceActivity() {
         val detection: DetectionChannel,
         val overlay: OverlayChannel,
         val keepListening: KeepListeningChannel,
+        val clip: ClipChannel,
     )
 
     companion object {

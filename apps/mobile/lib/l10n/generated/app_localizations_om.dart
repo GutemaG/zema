@@ -613,6 +613,27 @@ class AppLocalizationsOm extends AppLocalizations {
   String get songShareFailed => 'Couldn\'t open sharing for this song';
 
   @override
+  String get songTestClip => 'Test clip video (60 s)';
+
+  @override
+  String songTestClipMaking(int percent) {
+    return 'Making a test clip… $percent%';
+  }
+
+  @override
+  String songTestClipDone(String seconds, int width, int height) {
+    return 'Made in $seconds s at $width×$height. Saved to Movies/Zema.';
+  }
+
+  @override
+  String songTestClipNotSaved(String seconds, int width, int height) {
+    return 'Made in $seconds s at $width×$height, but it couldn\'t be saved to the gallery.';
+  }
+
+  @override
+  String get songTestClipFailed => 'Couldn\'t make the test clip';
+
+  @override
   String get favoritesEmptyTitle => 'No favorites yet';
 
   @override

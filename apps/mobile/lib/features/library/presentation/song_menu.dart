@@ -10,6 +10,7 @@ import '../../../app/routes.dart';
 import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../clips/application/test_clip.dart';
 import '../../detection/application/lyrics_overlay_sync.dart';
 import '../../detection/application/player_overlay.dart';
 import '../../lyrics/application/lyrics_links.dart';
@@ -99,6 +100,7 @@ class SongMenu extends ConsumerWidget {
     final overlay = ref.read(lyricsOverlayProvider);
     final choices = ref.read(overlayChoicesProvider.notifier);
     final queue = ref.read(playerStateProvider).value;
+    final container = ProviderScope.containerOf(context, listen: false);
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -215,6 +217,43 @@ class SongMenu extends ConsumerWidget {
                     }
                   }
                   notify(l10n.songFloatLyricsOn);
+                }),
+              ),
+            if (linked && ref.watch(clipEncoderProvider).isSupported)
+              item(
+                Icons.movie_outlined,
+                l10n.songTestClip,
+                close(() async {
+                  var shown = -1;
+                  try {
+                    final made = await makeTestClip(
+                      container,
+                      track,
+                      onProgress: (f) {
+                        final percent = (f * 100).floor();
+                        if (percent ~/ 10 == shown ~/ 10) return;
+                        shown = percent;
+                        notify(l10n.songTestClipMaking(percent));
+                      },
+                    );
+                    final seconds = (made.clip.took.inMilliseconds / 1000)
+                        .toStringAsFixed(1);
+                    notify(
+                      made.saved
+                          ? l10n.songTestClipDone(
+                              seconds,
+                              made.clip.width,
+                              made.clip.height,
+                            )
+                          : l10n.songTestClipNotSaved(
+                              seconds,
+                              made.clip.width,
+                              made.clip.height,
+                            ),
+                    );
+                  } on Exception {
+                    notify(l10n.songTestClipFailed);
+                  }
                 }),
               ),
             item(

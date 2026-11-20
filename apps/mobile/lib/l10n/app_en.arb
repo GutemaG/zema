@@ -821,6 +821,29 @@
   "@songShareFailed": {
     "description": "Snackbar when the share sheet could not be opened."
   },
+  "songTestClip": "Test clip video (60 s)",
+  "@songTestClip": {
+    "description": "Song menu, temporary: makes a 60 second lyrics video to time the encoder on this phone."
+  },
+  "songTestClipMaking": "Making a test clip… {percent}%",
+  "@songTestClipMaking": {
+    "description": "Snackbar while the test clip is made.",
+    "placeholders": {"percent": {"type": "int"}}
+  },
+  "songTestClipDone": "Made in {seconds} s at {width}×{height}. Saved to Movies/Zema.",
+  "@songTestClipDone": {
+    "description": "Snackbar when the test clip is done and saved.",
+    "placeholders": {"seconds": {"type": "String"}, "width": {"type": "int"}, "height": {"type": "int"}}
+  },
+  "songTestClipNotSaved": "Made in {seconds} s at {width}×{height}, but it couldn't be saved to the gallery.",
+  "@songTestClipNotSaved": {
+    "description": "Snackbar when the test clip was made but not saved.",
+    "placeholders": {"seconds": {"type": "String"}, "width": {"type": "int"}, "height": {"type": "int"}}
+  },
+  "songTestClipFailed": "Couldn't make the test clip",
+  "@songTestClipFailed": {
+    "description": "Snackbar when the test clip failed."
+  },
   "favoritesEmptyTitle": "No favorites yet",
   "@favoritesEmptyTitle": {
     "description": "Title when there are no favorite songs."

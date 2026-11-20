@@ -1122,6 +1122,36 @@ abstract class AppLocalizations {
   /// **'Couldn\'t open sharing for this song'**
   String get songShareFailed;
 
+  /// Song menu, temporary: makes a 60 second lyrics video to time the encoder on this phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Test clip video (60 s)'**
+  String get songTestClip;
+
+  /// Snackbar while the test clip is made.
+  ///
+  /// In en, this message translates to:
+  /// **'Making a test clip… {percent}%'**
+  String songTestClipMaking(int percent);
+
+  /// Snackbar when the test clip is done and saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Made in {seconds} s at {width}×{height}. Saved to Movies/Zema.'**
+  String songTestClipDone(String seconds, int width, int height);
+
+  /// Snackbar when the test clip was made but not saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Made in {seconds} s at {width}×{height}, but it couldn\'t be saved to the gallery.'**
+  String songTestClipNotSaved(String seconds, int width, int height);
+
+  /// Snackbar when the test clip failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t make the test clip'**
+  String get songTestClipFailed;
+
   /// Title when there are no favorite songs.
   ///
   /// In en, this message translates to:
