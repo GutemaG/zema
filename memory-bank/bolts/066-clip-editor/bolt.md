@@ -3,14 +3,14 @@ id: 066-clip-editor
 unit: 002-clip-maker
 intent: 011-share-lyrics-clips
 type: simple-construction-bolt
-status: in-progress
+status: complete
 stories:
   - 002-pick-clip
 created: '2026-11-20T18:00:00Z'
 started: '2026-11-20T23:00:00Z'
-completed: null
-current_stage: test
-stages_completed: [plan, implement]
+completed: '2026-11-21T00:00:00Z'
+current_stage: null
+stages_completed: [plan, implement, test]
 requires_bolts: [065-clip-encoder]
 enables_bolts: [067-clip-render-share]
 requires_units: []
@@ -36,10 +36,14 @@ The clip editor with handles, snapping, preview and its three entry points.
 
 ## Stories Included
 
-- [ ] **002-pick-clip**
+- [x] **002-pick-clip**
 
 ## Stages
 
-- [ ] **1. plan** → implementation-plan.md
-- [ ] **2. implement** → code + implementation-walkthrough.md
-- [ ] **3. test** → tests + test-walkthrough.md
+- [x] **1. plan** → implementation-plan.md
+- [x] **2. implement** → code + implementation-walkthrough.md
+- [x] **3. test** → tests + test-walkthrough.md
+
+## Tests
+
+`clip_look_test` and `clip_encoder_test`; the owner tried it on their phone: the lines scroll in time and the look is good.

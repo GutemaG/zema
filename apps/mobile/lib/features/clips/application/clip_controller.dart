@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
@@ -11,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:zema_core/zema_core.dart';
 
 import '../../../app/database/database_provider.dart';
+import '../../../app/preferences_provider.dart';
 import '../../library/application/artwork_provider.dart';
 import '../../library/application/song_info.dart';
 import '../../lyrics/application/track_lyrics.dart';
@@ -33,9 +35,23 @@ final clipFolderProvider = FutureProvider<Directory>(
       Directory(p.join((await getTemporaryDirectory()).path, 'clips')),
 );
 
-/// A track's lyric lines for a clip, with their start times in the audio
-/// (none for plain lyrics).
-typedef ClipLyrics = ({List<String> texts, List<Duration> starts});
+/// Lets the user pick a photo for a clip; its path, or null.
+final clipPicturePickerProvider = Provider<Future<String?> Function()>(
+  (ref) =>
+      () async => (await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1440,
+        maxHeight: 1440,
+      ))?.path,
+);
+
+/// A track's lyric lines for a clip, with their transliterations and start
+/// times in the audio (none for plain lyrics).
+typedef ClipLyrics = ({
+  List<String> texts,
+  List<String?> translits,
+  List<Duration> starts,
+});
 
 final clipLyricsProvider = FutureProvider.autoDispose.family<ClipLyrics, int>((
   ref,
@@ -43,13 +59,18 @@ final clipLyricsProvider = FutureProvider.autoDispose.family<ClipLyrics, int>((
 ) async {
   final lyrics = await ref.watch(trackLyricsProvider(trackId).future);
   if (lyrics == null) {
-    return (texts: const <String>[], starts: const <Duration>[]);
+    return (
+      texts: const <String>[],
+      translits: const <String?>[],
+      starts: const <Duration>[],
+    );
   }
   final engine = lyrics.synced?.engine;
   final timed = engine != null && engine.lineCount == lyrics.lines.length;
   final shift = timed ? ref.watch(lyricsShiftProvider(lyrics)) : Duration.zero;
   return (
     texts: [for (final sung in lyrics.lines) sung.line.text],
+    translits: [for (final sung in lyrics.lines) sung.line.transliteration],
     starts: timed
         ? [for (var i = 0; i < engine.lineCount; i++) engine.startOf(i) + shift]
         : const <Duration>[],
@@ -63,6 +84,7 @@ class ClipState {
     this.track,
     this.start = Duration.zero,
     this.end = Duration.zero,
+    this.look = const ClipLook(),
     this.preview,
     this.playing = false,
     this.phase = ClipPhase.ready,
@@ -73,6 +95,7 @@ class ClipState {
   final Track? track;
   final Duration start;
   final Duration end;
+  final ClipLook look;
 
   /// The frame at [start], or at the playing line while [playing], as PNG.
   final Uint8List? preview;
@@ -91,6 +114,7 @@ class ClipState {
     Track? track,
     Duration? start,
     Duration? end,
+    ClipLook? look,
     Uint8List? preview,
     bool? playing,
     ClipPhase? phase,
@@ -101,6 +125,7 @@ class ClipState {
     track: track ?? this.track,
     start: start ?? this.start,
     end: end ?? this.end,
+    look: look ?? this.look,
     preview: preview ?? this.preview,
     playing: playing ?? this.playing,
     phase: phase ?? this.phase,
@@ -124,23 +149,36 @@ class ClipController extends Notifier<ClipState> {
   Directory? _folder;
   ClipScene? _scene;
   ClipLyrics? _lyrics;
+  ui.Image? _coverImage;
+  final _pictures = <String, ui.Image?>{};
+  var _look = 0;
   ClipLyricsLayout? _layout;
   ClipJob? _job;
   var _cancelled = false;
   AudioPlayer? _player;
   StreamSubscription<Duration>? _playing;
-  int? _previewRow;
+  (int, int)? _shown;
+  (int, int)? _wanted;
+  final _retired = <ClipScene>[];
   var _painting = false;
-  int? _wantedRow;
+  var _playingAt = Duration.zero;
 
   @override
   ClipState build() {
+    ref.listen(clipLyricsProvider(trackId), (_, _) {});
     ref.onDispose(() {
       _cancelled = true;
       unawaited(_job?.cancel());
       unawaited(_playing?.cancel());
       unawaited(_player?.dispose());
       _scene?.dispose();
+      for (final scene in _retired) {
+        scene.dispose();
+      }
+      _coverImage?.dispose();
+      for (final image in _pictures.values) {
+        image?.dispose();
+      }
       final folder = _folder;
       if (folder != null && folder.existsSync()) {
         folder.deleteSync(recursive: true);
@@ -152,6 +190,11 @@ class ClipController extends Notifier<ClipState> {
 
   /// The lyric line starts, for snapping the range.
   List<Duration> get lineStarts => _lyrics?.starts ?? const [];
+
+  /// Whether any timed line has a transliteration to show.
+  bool get hasTransliteration =>
+      lineStarts.isNotEmpty &&
+      (_lyrics?.translits.any((t) => t?.trim().isNotEmpty ?? false) ?? false);
 
   Future<void> _load() async {
     final found = await ref.read(databaseProvider).libraryDao.tracksByIds([
@@ -167,18 +210,71 @@ class ClipController extends Notifier<ClipState> {
       track.duration,
       position: playing ? ref.read(positionProvider).value : null,
     );
-    _layout = ClipLyricsLayout([
-      '',
-      if (lyrics.starts.isNotEmpty) ...lyrics.texts,
-    ]);
-    _scene = ClipScene(
-      title: track.title,
-      artist: track.artist,
-      cover: await _cover(track),
-    );
+    _coverImage = await _cover(track);
     if (!ref.mounted) return;
-    state = state.copyWith(track: track, start: range.start, end: range.end);
-    _showRowAt(range.start);
+    state = state.copyWith(
+      track: track,
+      start: range.start,
+      end: range.end,
+      look: ClipLook.fromPrefs(ref.read(sharedPreferencesProvider)),
+    );
+    await _applyLook();
+  }
+
+  /// Changes the look; the preview follows.
+  Future<void> setLook(ClipLook look) async {
+    if (state.track == null || state.phase == ClipPhase.making) return;
+    state = state.copyWith(look: look, phase: ClipPhase.ready, clearClip: true);
+    await _applyLook();
+  }
+
+  /// A gallery photo for the look, or null if none was picked.
+  Future<String?> pickPicture() => ref.read(clipPicturePickerProvider)();
+
+  /// Rebuilds the scene and layout for the current look and repaints.
+  Future<void> _applyLook() async {
+    final track = state.track;
+    final lyrics = _lyrics;
+    if (track == null || lyrics == null) return;
+    final generation = ++_look;
+    final look = state.look;
+    final photo = await _picture(look.photo, width: 1080);
+    final album = await _picture(look.albumPicture);
+    final artist = await _picture(look.artistPicture);
+    if (!ref.mounted || generation != _look) return;
+    final timed = lyrics.starts.isNotEmpty;
+    _layout = ClipLyricsLayout(
+      ['', if (timed) ...lyrics.texts],
+      translits: [null, if (timed) ...lyrics.translits],
+      look: look,
+    );
+    final old = _scene;
+    _scene = ClipScene(
+      title: look.title ?? track.title,
+      artist: look.artist ?? track.artist,
+      album: look.album ?? track.album,
+      cover: _coverImage,
+      photo: photo,
+      albumPicture: album,
+      artistPicture: artist,
+      look: look,
+    );
+    if (old != null) {
+      _painting ? _retired.add(old) : old.dispose();
+    }
+    _showRowAt(state.playing ? _playingAt : state.start);
+  }
+
+  /// A picked photo, decoded once per path.
+  Future<ui.Image?> _picture(String? path, {int width = 480}) async {
+    if (path == null) return null;
+    if (_pictures.containsKey(path)) return _pictures[path];
+    final file = File(path);
+    final image = file.existsSync()
+        ? await decodeClipCover(await file.readAsBytes(), width: width)
+        : null;
+    _pictures[path] = image;
+    return image;
   }
 
   Future<ui.Image?> _cover(Track track) async {
@@ -205,27 +301,36 @@ class ClipController extends Notifier<ClipState> {
   /// Repaints the preview for the line at [t], skipping rows passed while
   /// painting.
   void _showRowAt(Duration t) {
-    final row = _rowAt(t);
-    if (row == _previewRow && state.preview != null) return;
-    _wantedRow = row;
+    final wanted = (_rowAt(t), _look);
+    if (wanted == _shown && state.preview != null) return;
+    _wanted = wanted;
     if (!_painting) unawaited(_paintPreview());
   }
 
   Future<void> _paintPreview() async {
-    final scene = _scene;
-    final layout = _layout;
-    if (scene == null || layout == null) return;
     _painting = true;
     try {
-      while (_wantedRow != null && _wantedRow != _previewRow) {
-        final row = _wantedRow!;
-        final preview = await paintClipPreview(scene, layout, row, scale: 0.5);
+      while (_wanted != null && _wanted != _shown) {
+        final scene = _scene;
+        final layout = _layout;
+        if (scene == null || layout == null) return;
+        final wanted = _wanted!;
+        final preview = await paintClipPreview(
+          scene,
+          layout,
+          wanted.$1,
+          scale: 0.5,
+        );
         if (!ref.mounted) return;
-        _previewRow = row;
+        _shown = wanted;
         state = state.copyWith(preview: preview);
       }
     } finally {
       _painting = false;
+      for (final scene in _retired) {
+        scene.dispose();
+      }
+      _retired.clear();
     }
   }
 
@@ -298,7 +403,10 @@ class ClipController extends Notifier<ClipState> {
     if (!ref.mounted) return;
     state = state.copyWith(playing: true);
     await _playing?.cancel();
-    _playing = player.positionStream.listen((p) => _showRowAt(start + p));
+    _playing = player.positionStream.listen((p) {
+      _playingAt = start + p;
+      _showRowAt(_playingAt);
+    });
     unawaited(
       player.processingStateStream
           .firstWhere((s) => s == ProcessingState.completed)
@@ -389,6 +497,7 @@ class ClipController extends Notifier<ClipState> {
           File(f.path).deleteSync();
         }
         background.deleteSync();
+        unawaited(state.look.save(ref.read(sharedPreferencesProvider)));
         if (ref.mounted) {
           state = state.copyWith(
             phase: ClipPhase.done,

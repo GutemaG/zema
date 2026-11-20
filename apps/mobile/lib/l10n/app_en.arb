@@ -857,6 +857,158 @@
   "@clipEndLater": {
     "description": "Clip editor: moves the clip end to the next lyric line."
   },
+  "clipTabClip": "Clip",
+  "@clipTabClip": {
+    "description": "Clip editor tab: choosing the part of the song."
+  },
+  "clipTabLook": "Look",
+  "@clipTabLook": {
+    "description": "Clip editor tab: choosing how the video looks."
+  },
+  "clipBackground": "Background",
+  "@clipBackground": {
+    "description": "Clip look: heading for the background choices."
+  },
+  "clipBackgroundSong": "Song colours",
+  "@clipBackgroundSong": {
+    "description": "Clip background: a gradient from the song's cover colour."
+  },
+  "clipBackgroundCover": "Blurred cover",
+  "@clipBackgroundCover": {
+    "description": "Clip background: the cover art, blurred."
+  },
+  "clipBackgroundPhoto": "Photo",
+  "@clipBackgroundPhoto": {
+    "description": "Clip background: a photo from the gallery."
+  },
+  "clipBackgroundColor": "Colour",
+  "@clipBackgroundColor": {
+    "description": "Clip background: a plain colour."
+  },
+  "clipColorNumber": "Colour {number}",
+  "@clipColorNumber": {
+    "description": "Screen reader label of a background colour swatch.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "clipDim": "Transparency",
+  "@clipDim": {
+    "description": "Clip look: how much the background is darkened behind the text."
+  },
+  "clipDimPercent": "{percent} %",
+  "@clipDimPercent": {
+    "description": "Clip transparency slider value.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "clipText": "Text",
+  "@clipText": {
+    "description": "Clip look: heading for text size, position and colour."
+  },
+  "clipTextSmall": "Small",
+  "@clipTextSmall": {
+    "description": "Clip text size."
+  },
+  "clipTextMedium": "Medium",
+  "@clipTextMedium": {
+    "description": "Clip text size."
+  },
+  "clipTextLarge": "Large",
+  "@clipTextLarge": {
+    "description": "Clip text size."
+  },
+  "clipTextTop": "Top",
+  "@clipTextTop": {
+    "description": "Clip text position."
+  },
+  "clipTextCenter": "Centre",
+  "@clipTextCenter": {
+    "description": "Clip text position."
+  },
+  "clipTextBottom": "Bottom",
+  "@clipTextBottom": {
+    "description": "Clip text position."
+  },
+  "clipTextColorNumber": "Text colour {number}",
+  "@clipTextColorNumber": {
+    "description": "Screen reader label of a text colour swatch.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "clipTransliteration": "Transliteration",
+  "@clipTransliteration": {
+    "description": "Clip look: show each line's transliteration below it."
+  },
+  "clipDetails": "Song details",
+  "@clipDetails": {
+    "description": "Clip look: heading for the names shown at the top."
+  },
+  "clipDetailTitle": "Title",
+  "@clipDetailTitle": {
+    "description": "Clip look: the song title shown at the top."
+  },
+  "clipDetailArtist": "Artist",
+  "@clipDetailArtist": {
+    "description": "Clip look: the artist name shown at the top."
+  },
+  "clipDetailAlbum": "Album",
+  "@clipDetailAlbum": {
+    "description": "Clip look: the album name shown at the top."
+  },
+  "clipEditName": "Edit {name}",
+  "@clipEditName": {
+    "description": "Tooltip: edit a name for this clip only.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "clipPictures": "Pictures",
+  "@clipPictures": {
+    "description": "Clip look: heading for the album and artist pictures."
+  },
+  "clipAlbumPicture": "Album picture",
+  "@clipAlbumPicture": {
+    "description": "Clip look: the picture next to the names."
+  },
+  "clipArtistPicture": "Artist picture",
+  "@clipArtistPicture": {
+    "description": "Clip look: a round artist photo next to the names."
+  },
+  "clipPictureCover": "Cover art",
+  "@clipPictureCover": {
+    "description": "Clip album picture: the song's cover art."
+  },
+  "clipPictureNone": "None",
+  "@clipPictureNone": {
+    "description": "Clip artist picture: none."
+  },
+  "clipPicturePhoto": "Your photo",
+  "@clipPicturePhoto": {
+    "description": "Clip picture: a photo the user picked."
+  },
+  "clipPictureChoose": "Choose a photo",
+  "@clipPictureChoose": {
+    "description": "Tooltip: pick a gallery photo for the clip."
+  },
+  "clipPictureClear": "Remove the photo",
+  "@clipPictureClear": {
+    "description": "Tooltip: remove the picked photo."
+  },
+  "clipMark": "Zema mark",
+  "@clipMark": {
+    "description": "Clip look: the small Zema mark in the corner."
+  },
   "clipRange": "{start} – {end} · {seconds} s",
   "@clipRange": {
     "description": "The part of the song in the clip, and its length.",

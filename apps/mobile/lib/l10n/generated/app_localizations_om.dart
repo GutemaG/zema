@@ -640,6 +640,113 @@ class AppLocalizationsOm extends AppLocalizations {
   String get clipEndLater => 'End a line later';
 
   @override
+  String get clipTabClip => 'Clip';
+
+  @override
+  String get clipTabLook => 'Look';
+
+  @override
+  String get clipBackground => 'Background';
+
+  @override
+  String get clipBackgroundSong => 'Song colours';
+
+  @override
+  String get clipBackgroundCover => 'Blurred cover';
+
+  @override
+  String get clipBackgroundPhoto => 'Photo';
+
+  @override
+  String get clipBackgroundColor => 'Colour';
+
+  @override
+  String clipColorNumber(int number) {
+    return 'Colour $number';
+  }
+
+  @override
+  String get clipDim => 'Transparency';
+
+  @override
+  String clipDimPercent(int percent) {
+    return '$percent %';
+  }
+
+  @override
+  String get clipText => 'Text';
+
+  @override
+  String get clipTextSmall => 'Small';
+
+  @override
+  String get clipTextMedium => 'Medium';
+
+  @override
+  String get clipTextLarge => 'Large';
+
+  @override
+  String get clipTextTop => 'Top';
+
+  @override
+  String get clipTextCenter => 'Centre';
+
+  @override
+  String get clipTextBottom => 'Bottom';
+
+  @override
+  String clipTextColorNumber(int number) {
+    return 'Text colour $number';
+  }
+
+  @override
+  String get clipTransliteration => 'Transliteration';
+
+  @override
+  String get clipDetails => 'Song details';
+
+  @override
+  String get clipDetailTitle => 'Title';
+
+  @override
+  String get clipDetailArtist => 'Artist';
+
+  @override
+  String get clipDetailAlbum => 'Album';
+
+  @override
+  String clipEditName(String name) {
+    return 'Edit $name';
+  }
+
+  @override
+  String get clipPictures => 'Pictures';
+
+  @override
+  String get clipAlbumPicture => 'Album picture';
+
+  @override
+  String get clipArtistPicture => 'Artist picture';
+
+  @override
+  String get clipPictureCover => 'Cover art';
+
+  @override
+  String get clipPictureNone => 'None';
+
+  @override
+  String get clipPicturePhoto => 'Your photo';
+
+  @override
+  String get clipPictureChoose => 'Choose a photo';
+
+  @override
+  String get clipPictureClear => 'Remove the photo';
+
+  @override
+  String get clipMark => 'Zema mark';
+
+  @override
   String clipRange(String start, String end, int seconds) {
     return '$start – $end · $seconds s';
   }

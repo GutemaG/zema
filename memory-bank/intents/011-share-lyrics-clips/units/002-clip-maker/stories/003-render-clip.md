@@ -2,11 +2,11 @@
 id: 003-render-clip
 unit: 002-clip-maker
 intent: 011-share-lyrics-clips
-status: ready
+status: complete
 priority: must
 created: '2026-11-20T18:00:00Z'
 assigned_bolt: 067-clip-render-share
-implemented: false
+implemented: true
 ---
 
 # Story: 003-render-clip

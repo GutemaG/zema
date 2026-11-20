@@ -1176,6 +1176,204 @@ abstract class AppLocalizations {
   /// **'End a line later'**
   String get clipEndLater;
 
+  /// Clip editor tab: choosing the part of the song.
+  ///
+  /// In en, this message translates to:
+  /// **'Clip'**
+  String get clipTabClip;
+
+  /// Clip editor tab: choosing how the video looks.
+  ///
+  /// In en, this message translates to:
+  /// **'Look'**
+  String get clipTabLook;
+
+  /// Clip look: heading for the background choices.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get clipBackground;
+
+  /// Clip background: a gradient from the song's cover colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Song colours'**
+  String get clipBackgroundSong;
+
+  /// Clip background: the cover art, blurred.
+  ///
+  /// In en, this message translates to:
+  /// **'Blurred cover'**
+  String get clipBackgroundCover;
+
+  /// Clip background: a photo from the gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get clipBackgroundPhoto;
+
+  /// Clip background: a plain colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get clipBackgroundColor;
+
+  /// Screen reader label of a background colour swatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour {number}'**
+  String clipColorNumber(int number);
+
+  /// Clip look: how much the background is darkened behind the text.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency'**
+  String get clipDim;
+
+  /// Clip transparency slider value.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent} %'**
+  String clipDimPercent(int percent);
+
+  /// Clip look: heading for text size, position and colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get clipText;
+
+  /// Clip text size.
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get clipTextSmall;
+
+  /// Clip text size.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get clipTextMedium;
+
+  /// Clip text size.
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get clipTextLarge;
+
+  /// Clip text position.
+  ///
+  /// In en, this message translates to:
+  /// **'Top'**
+  String get clipTextTop;
+
+  /// Clip text position.
+  ///
+  /// In en, this message translates to:
+  /// **'Centre'**
+  String get clipTextCenter;
+
+  /// Clip text position.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom'**
+  String get clipTextBottom;
+
+  /// Screen reader label of a text colour swatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Text colour {number}'**
+  String clipTextColorNumber(int number);
+
+  /// Clip look: show each line's transliteration below it.
+  ///
+  /// In en, this message translates to:
+  /// **'Transliteration'**
+  String get clipTransliteration;
+
+  /// Clip look: heading for the names shown at the top.
+  ///
+  /// In en, this message translates to:
+  /// **'Song details'**
+  String get clipDetails;
+
+  /// Clip look: the song title shown at the top.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get clipDetailTitle;
+
+  /// Clip look: the artist name shown at the top.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get clipDetailArtist;
+
+  /// Clip look: the album name shown at the top.
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get clipDetailAlbum;
+
+  /// Tooltip: edit a name for this clip only.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {name}'**
+  String clipEditName(String name);
+
+  /// Clip look: heading for the album and artist pictures.
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures'**
+  String get clipPictures;
+
+  /// Clip look: the picture next to the names.
+  ///
+  /// In en, this message translates to:
+  /// **'Album picture'**
+  String get clipAlbumPicture;
+
+  /// Clip look: a round artist photo next to the names.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist picture'**
+  String get clipArtistPicture;
+
+  /// Clip album picture: the song's cover art.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover art'**
+  String get clipPictureCover;
+
+  /// Clip artist picture: none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get clipPictureNone;
+
+  /// Clip picture: a photo the user picked.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photo'**
+  String get clipPicturePhoto;
+
+  /// Tooltip: pick a gallery photo for the clip.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo'**
+  String get clipPictureChoose;
+
+  /// Tooltip: remove the picked photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the photo'**
+  String get clipPictureClear;
+
+  /// Clip look: the small Zema mark in the corner.
+  ///
+  /// In en, this message translates to:
+  /// **'Zema mark'**
+  String get clipMark;
+
   /// The part of the song in the clip, and its length.
   ///
   /// In en, this message translates to:

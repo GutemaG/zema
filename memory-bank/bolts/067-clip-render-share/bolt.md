@@ -3,15 +3,15 @@ id: 067-clip-render-share
 unit: 002-clip-maker
 intent: 011-share-lyrics-clips
 type: simple-construction-bolt
-status: in-progress
+status: complete
 stories:
   - 003-render-clip
   - 004-share-clip
 created: '2026-11-20T18:00:00Z'
 started: '2026-11-20T20:30:00Z'
-completed: null
-current_stage: test
-stages_completed: [plan, implement]
+completed: '2026-11-21T00:00:00Z'
+current_stage: null
+stages_completed: [plan, implement, test]
 requires_bolts: [066-clip-editor]
 enables_bolts: [068-clip-look]
 requires_units: []
@@ -46,11 +46,15 @@ Paint the frames with the default look, encode, then share or save; clean up.
 
 ## Stories Included
 
-- [ ] **003-render-clip**
-- [ ] **004-share-clip**
+- [x] **003-render-clip**
+- [x] **004-share-clip**
 
 ## Stages
 
 - [x] **1. plan** → implementation-plan.md
 - [x] **2. implement** → code + implementation-walkthrough.md
-- [ ] **3. test** → tests + test-walkthrough.md
+- [x] **3. test** → tests + test-walkthrough.md
+
+## Tests
+
+`clip_look_test` and `clip_encoder_test`; the owner tried it on their phone: the lines scroll in time and the look is good.

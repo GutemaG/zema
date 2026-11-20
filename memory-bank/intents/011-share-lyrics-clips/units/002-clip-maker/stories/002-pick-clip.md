@@ -2,11 +2,11 @@
 id: 002-pick-clip
 unit: 002-clip-maker
 intent: 011-share-lyrics-clips
-status: ready
+status: complete
 priority: must
 created: '2026-11-20T18:00:00Z'
 assigned_bolt: 066-clip-editor
-implemented: false
+implemented: true
 ---
 
 # Story: 002-pick-clip

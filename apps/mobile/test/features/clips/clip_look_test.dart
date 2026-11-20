@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema/features/clips/application/clip_look.dart';
 import 'package:zema/features/clips/application/clip_timeline.dart';
 
@@ -111,6 +112,100 @@ void main() {
         preview.dispose();
         scene.dispose();
       }
+    });
+  });
+
+  group('ClipLook', () {
+    test('defaults: song colours, no dim, 40 % behind pictures', () {
+      const look = ClipLook();
+      expect(look.background, ClipBackground.song);
+      expect(look.effectiveDim, 0);
+      expect(look.copyWith(background: ClipBackground.cover).effectiveDim, 0.4);
+      expect(
+        (look.showTitle, look.showArtist, look.showAlbum),
+        (true, true, false),
+      );
+    });
+
+    test('keeps choices but not photos or edited names', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      await const ClipLook(
+        background: ClipBackground.photo,
+        photo: '/p.jpg',
+        dim: 0.3,
+        textSize: ClipTextSize.large,
+        textColor: 2,
+        position: ClipTextPosition.top,
+        showAlbum: true,
+        title: 'Edited',
+        artistPicture: '/a.jpg',
+        mark: false,
+      ).save(prefs);
+      final back = ClipLook.fromPrefs(prefs);
+      expect(back.background, ClipBackground.song);
+      expect(back.photo, isNull);
+      expect(back.dim, 0.3);
+      expect(back.textSize, ClipTextSize.large);
+      expect(back.textColor, 2);
+      expect(back.position, ClipTextPosition.top);
+      expect(back.showAlbum, isTrue);
+      expect(back.title, isNull);
+      expect(back.artistPicture, isNull);
+      expect(back.mark, isFalse);
+    });
+
+    test('bad saved choices fall back to the defaults', () async {
+      SharedPreferences.setMockInitialValues({
+        ClipLook.prefsKey: '{"textColor": 99, "dim": "x", "background": 3}',
+      });
+      final back = ClipLook.fromPrefs(await SharedPreferences.getInstance());
+      expect(back.textColor, 0);
+      expect(back.dim, isNull);
+      expect(back.background, ClipBackground.song);
+      SharedPreferences.setMockInitialValues({ClipLook.prefsKey: 'not json'});
+      expect(
+        ClipLook.fromPrefs(await SharedPreferences.getInstance()).background,
+        ClipBackground.song,
+      );
+    });
+  });
+
+  testWidgets('a bright background is dimmed until the text reads', (
+    tester,
+  ) async {
+    await tester.runAsync(() async {
+      final recorder = ui.PictureRecorder();
+      ui.Canvas(recorder)
+          .drawColor(const ui.Color(0xFFFFFFFF), ui.BlendMode.src);
+      final white = await recorder.endRecording().toImage(64, 64);
+      final scene = ClipScene(
+        title: 'Song',
+        cover: white,
+        look: const ClipLook(background: ClipBackground.photo, dim: 0),
+      );
+      final image = await _decode(await scene.background());
+      final pixel = (await image.toByteData())!;
+      const at = (1500 * 1080 + 540) * 4;
+      expect(pixel.getUint8(at), inInclusiveRange(80, 120));
+      image.dispose();
+      scene.dispose();
+    });
+  });
+
+  testWidgets('transliterations make rows taller when shown', (tester) async {
+    await tester.runAsync(() async {
+      const rows = ['', 'ፍቅር'];
+      const translits = [null, 'fikir'];
+      final plain = ClipLyricsLayout(rows, translits: translits);
+      final shown = ClipLyricsLayout(
+        rows,
+        translits: translits,
+        look: const ClipLook(transliteration: true),
+      );
+      expect(plain.translits[1], isNull);
+      expect(shown.translits[1], 'fikir');
+      expect(shown.heights[1], greaterThan(plain.heights[1]));
     });
   });
 }
