@@ -2,6 +2,7 @@ package com.zemaapp.zema
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -9,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.content.FileProvider
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -22,13 +24,15 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Makes lyrics clip videos for the Dart `AndroidClipEncoder`, one at a time.
  *
  * Methods:
- * - `encode` {id, audioUri?, startMs, endMs, frames: [{path, atMs}], outPath, fps,
- *   transitionMs}
+ * - `encode` {id, audioUri?, startMs, endMs, background, frames: [{path, atMs, scroll}],
+ *   outPath, fps, transitionMs, window: {top, bottom, fade}}
  *   → {path, width, height, millis, codec}; see [ClipEncoder]. Errors:
  *   `cancelled`, `encode_failed`, `bad_args`
  * - `cancel` {id}: stops that encode; its file is deleted
  * - `saveToGallery` {path, name} → the new video's content URI (Movies/Zema).
  *   Android 10 and later; `unsupported` before that
+ * - `share` {path, text}: the share menu with the video (a file under the
+ *   cache's `clips` folder) and the text
  *
  * Calls to Dart:
  * - `progress` {id, fraction} about once a second of video
@@ -77,8 +81,36 @@ class ClipChannel(private val context: Context, messenger: BinaryMessenger) :
                     }
                 }
             }
+            "share" -> {
+                val path = call.argument<String>("path")
+                if (path == null) {
+                    result.error("bad_args", "share needs a path", null)
+                    return
+                }
+                try {
+                    share(File(path), call.argument<String>("text"))
+                    result.success(null)
+                } catch (e: Exception) {
+                    Log.w(TAG, "Sharing a clip failed", e)
+                    result.error("share_failed", e.message, null)
+                }
+            }
             else -> result.notImplemented()
         }
+    }
+
+    private fun share(file: File, text: String?) {
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.clips", file)
+        val send = Intent(Intent.ACTION_SEND).apply {
+            type = "video/mp4"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            if (text != null) putExtra(Intent.EXTRA_TEXT, text)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(
+            Intent.createChooser(send, null)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION),
+        )
     }
 
     private fun encode(call: MethodCall, result: MethodChannel.Result) {
@@ -89,20 +121,29 @@ class ClipChannel(private val context: Context, messenger: BinaryMessenger) :
         val frames = call.argument<List<Map<String, Any?>>>("frames")?.mapNotNull { f ->
             val path = f["path"] as? String
             val at = (f["atMs"] as? Number)?.toLong()
-            if (path == null || at == null) null else ClipEncoder.Frame(path, at * 1000)
+            val scroll = (f["scroll"] as? Number)?.toFloat() ?: 0f
+            if (path == null || at == null) null else ClipEncoder.Frame(path, at * 1000, scroll)
         }
-        if (id == null || out == null || start == null || end == null || frames.isNullOrEmpty()) {
-            result.error("bad_args", "encode needs an id, a range, frames and an outPath", null)
+        val background = call.argument<String>("background")
+        val window = call.argument<Map<String, Any?>>("window")
+        if (id == null || out == null || start == null || end == null || background == null ||
+            frames.isNullOrEmpty()
+        ) {
+            result.error("bad_args", "encode needs an id, a range, a background, frames and an outPath", null)
             return
         }
         val request = ClipEncoder.Request(
             audio = call.argument<String>("audioUri")?.let { Uri.parse(it) },
             startUs = start * 1000,
             endUs = end * 1000,
+            background = background,
             frames = frames,
             out = File(out),
             fps = call.argument<Number>("fps")?.toInt() ?: 30,
             transitionUs = (call.argument<Number>("transitionMs")?.toLong() ?: 250) * 1000,
+            windowTop = (window?.get("top") as? Number)?.toFloat() ?: 0f,
+            windowBottom = (window?.get("bottom") as? Number)?.toFloat() ?: 1f,
+            windowFade = (window?.get("fade") as? Number)?.toFloat() ?: 0f,
         )
         val stop = AtomicBoolean(false)
         jobs[id] = stop

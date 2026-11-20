@@ -38,6 +38,11 @@ abstract final class AppRoutes {
   static String songInfo(int id) =>
       Uri(path: songInfoPath, queryParameters: {'id': '$id'}).toString();
 
+  /// Share clip (intent 011) for track [id], above the shell.
+  static const String clipPath = '/clip';
+  static String clip(int id) =>
+      Uri(path: clipPath, queryParameters: {'id': '$id'}).toString();
+
   /// Listen (intent 009), above the shell; opened from Home.
   static const String listen = '/listen';
 

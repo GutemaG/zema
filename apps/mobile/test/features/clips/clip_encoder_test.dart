@@ -15,6 +15,7 @@ ClipRequest _request({
   audioUri: 'content://media/1',
   start: start,
   end: end,
+  background: 'bg.png',
   frames: frames,
   outPath: 'out.mp4',
 );
@@ -117,7 +118,7 @@ void main() {
           end: _s * 63,
           frames: const [
             ClipFrame('a.png', Duration.zero),
-            ClipFrame('b.png', Duration(milliseconds: 2500)),
+            ClipFrame('b.png', Duration(milliseconds: 2500), scroll: 0.1),
           ],
         ),
       );
@@ -128,10 +129,12 @@ void main() {
       expect(args['startMs'], 3000);
       expect(args['endMs'], 63000);
       expect(args['fps'], 30);
-      expect(args['transitionMs'], 250);
+      expect(args['transitionMs'], 450);
+      expect(args['background'], 'bg.png');
+      expect(args['window'], {'top': 0, 'bottom': 1, 'fade': 0});
       expect(args['frames'], [
-        {'path': 'a.png', 'atMs': 0},
-        {'path': 'b.png', 'atMs': 2500},
+        {'path': 'a.png', 'atMs': 0, 'scroll': 0},
+        {'path': 'b.png', 'atMs': 2500, 'scroll': 0.1},
       ]);
 
       await progress(args['id']! as String, 0.5);

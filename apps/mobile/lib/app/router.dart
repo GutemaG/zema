@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/clips/presentation/clip_screen.dart';
 import '../features/onboarding/application/onboarding.dart';
 import '../features/onboarding/presentation/onboarding_screen.dart';
 import '../features/detection/presentation/detected_lyrics_screen.dart';
@@ -173,6 +174,12 @@ GoRouter buildRouter(Ref ref, {String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.songInfoPath,
         builder: (_, state) => SongInfoScreen(
+          trackId: int.tryParse(state.uri.queryParameters['id'] ?? ''),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.clipPath,
+        builder: (_, state) => ClipScreen(
           trackId: int.tryParse(state.uri.queryParameters['id'] ?? ''),
         ),
       ),

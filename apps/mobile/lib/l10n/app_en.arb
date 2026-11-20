@@ -821,28 +821,97 @@
   "@songShareFailed": {
     "description": "Snackbar when the share sheet could not be opened."
   },
-  "songTestClip": "Test clip video (60 s)",
-  "@songTestClip": {
-    "description": "Song menu, temporary: makes a 60 second lyrics video to time the encoder on this phone."
+  "songShareClip": "Share clip",
+  "@songShareClip": {
+    "description": "Song menu: make a short video of the song with its lyrics."
   },
-  "songTestClipMaking": "Making a test clip… {percent}%",
-  "@songTestClipMaking": {
-    "description": "Snackbar while the test clip is made.",
-    "placeholders": {"percent": {"type": "int"}}
+  "clipTitle": "Share clip",
+  "@clipTitle": {
+    "description": "Title of the screen that makes a lyrics video."
   },
-  "songTestClipDone": "Made in {seconds} s at {width}×{height}. Saved to Movies/Zema.",
-  "@songTestClipDone": {
-    "description": "Snackbar when the test clip is done and saved.",
-    "placeholders": {"seconds": {"type": "String"}, "width": {"type": "int"}, "height": {"type": "int"}}
+  "clipPreview": "Preview of the video",
+  "@clipPreview": {
+    "description": "Screen reader label of the clip preview picture."
   },
-  "songTestClipNotSaved": "Made in {seconds} s at {width}×{height}, but it couldn't be saved to the gallery.",
-  "@songTestClipNotSaved": {
-    "description": "Snackbar when the test clip was made but not saved.",
-    "placeholders": {"seconds": {"type": "String"}, "width": {"type": "int"}, "height": {"type": "int"}}
+  "clipPlay": "Play the clip",
+  "@clipPlay": {
+    "description": "Plays the chosen part of the song in the clip editor."
   },
-  "songTestClipFailed": "Couldn't make the test clip",
-  "@songTestClipFailed": {
-    "description": "Snackbar when the test clip failed."
+  "clipStop": "Stop",
+  "@clipStop": {
+    "description": "Stops playing the chosen part in the clip editor."
+  },
+  "clipStartEarlier": "Start a line earlier",
+  "@clipStartEarlier": {
+    "description": "Clip editor: moves the clip start to the previous lyric line."
+  },
+  "clipStartLater": "Start a line later",
+  "@clipStartLater": {
+    "description": "Clip editor: moves the clip start to the next lyric line."
+  },
+  "clipEndEarlier": "End a line earlier",
+  "@clipEndEarlier": {
+    "description": "Clip editor: moves the clip end to the previous lyric line."
+  },
+  "clipEndLater": "End a line later",
+  "@clipEndLater": {
+    "description": "Clip editor: moves the clip end to the next lyric line."
+  },
+  "clipRange": "{start} – {end} · {seconds} s",
+  "@clipRange": {
+    "description": "The part of the song in the clip, and its length.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "clipMake": "Make video",
+  "@clipMake": {
+    "description": "Button that makes the lyrics video."
+  },
+  "clipMaking": "Making the video… {percent}%",
+  "@clipMaking": {
+    "description": "Progress while the video is made.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "clipFailed": "Couldn't make the video. Try again.",
+  "@clipFailed": {
+    "description": "Shown when making the video failed."
+  },
+  "clipShare": "Share",
+  "@clipShare": {
+    "description": "Button that opens the share menu with the video."
+  },
+  "clipShareFailed": "Couldn't open sharing",
+  "@clipShareFailed": {
+    "description": "Snackbar when the share menu couldn't open."
+  },
+  "clipSave": "Save",
+  "@clipSave": {
+    "description": "Button that saves the video to the gallery."
+  },
+  "clipSaved": "Saved to Movies/Zema",
+  "@clipSaved": {
+    "description": "Snackbar when the video was saved to the gallery."
+  },
+  "clipSaveFailed": "Couldn't save the video",
+  "@clipSaveFailed": {
+    "description": "Snackbar when saving the video failed."
+  },
+  "clipCopyright": "Some apps mute or remove videos with copyrighted music.",
+  "@clipCopyright": {
+    "description": "Note under the clip buttons."
   },
   "favoritesEmptyTitle": "No favorites yet",
   "@favoritesEmptyTitle": {

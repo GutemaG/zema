@@ -5,27 +5,37 @@ import 'package:logging/logging.dart';
 
 final _log = Logger('clips.encoder');
 
-/// A picture shown in the clip from [at] (from the clip's start) until the
-/// next frame's time.
+/// A lyric layer (a transparent picture) shown in the clip from [at] (from
+/// the clip's start) until the next frame's time. [scroll] is how far its
+/// content sits above the previous frame's, as a part of the height: the old
+/// layer scrolls up by it while this one slides in.
 class ClipFrame {
-  const ClipFrame(this.path, this.at);
+  const ClipFrame(this.path, this.at, {this.scroll = 0});
 
   final String path;
   final Duration at;
+  final double scroll;
 }
 
+/// The band of the frame, as parts of its height, where lyrics show; they
+/// fade out over [fade] at both edges.
+typedef ClipWindow = ({double top, double bottom, double fade});
+
 /// What to make: [audioUri] from [start] to [end] (none: a silent clip), with
-/// [frames] in time order, the first at zero, written to [outPath]. Each
-/// frame fades into the next over [transition], centred on its time.
+/// [frames] in time order, the first at zero, drawn over [background],
+/// written to [outPath]. Each frame scrolls in over [transition], centred on
+/// its time.
 class ClipRequest {
   ClipRequest({
     required this.audioUri,
     required this.start,
     required this.end,
+    required this.background,
     required this.frames,
     required this.outPath,
+    this.window = (top: 0, bottom: 1, fade: 0),
     this.fps = 30,
-    this.transition = const Duration(milliseconds: 250),
+    this.transition = const Duration(milliseconds: 450),
   }) {
     if (end <= start) {
       throw ArgumentError.value(end, 'end', 'is not after start');
@@ -46,7 +56,9 @@ class ClipRequest {
   final String? audioUri;
   final Duration start;
   final Duration end;
+  final String background;
   final List<ClipFrame> frames;
+  final ClipWindow window;
   final String outPath;
   final int fps;
   final Duration transition;
@@ -109,6 +121,10 @@ abstract interface class ClipEncoder {
   /// Copies the clip at [path] to the gallery as [name]. Returns false if it
   /// couldn't.
   Future<bool> saveToGallery(String path, {required String name});
+
+  /// Opens the share menu with the clip at [path] and [text]. Returns false
+  /// if it couldn't.
+  Future<bool> share(String path, {required String text});
 }
 
 /// Android: MediaCodec and MediaMuxer through `zema/clip`, no FFmpeg.
@@ -143,10 +159,16 @@ class AndroidClipEncoder implements ClipEncoder {
           'audioUri': request.audioUri,
           'startMs': request.start.inMilliseconds,
           'endMs': request.end.inMilliseconds,
+          'background': request.background,
           'frames': [
             for (final f in request.frames)
-              {'path': f.path, 'atMs': f.at.inMilliseconds},
+              {'path': f.path, 'atMs': f.at.inMilliseconds, 'scroll': f.scroll},
           ],
+          'window': {
+            'top': request.window.top,
+            'bottom': request.window.bottom,
+            'fade': request.window.fade,
+          },
           'outPath': request.outPath,
           'fps': request.fps,
           'transitionMs': request.transition.inMilliseconds,
@@ -190,6 +212,17 @@ class AndroidClipEncoder implements ClipEncoder {
       return false;
     }
   }
+
+  @override
+  Future<bool> share(String path, {required String text}) async {
+    try {
+      await _channel.invokeMethod<void>('share', {'path': path, 'text': text});
+      return true;
+    } on PlatformException catch (e) {
+      _log.warning('Could not share a clip: ${e.code}', e);
+      return false;
+    }
+  }
 }
 
 class UnsupportedClipEncoder implements ClipEncoder {
@@ -208,4 +241,7 @@ class UnsupportedClipEncoder implements ClipEncoder {
   @override
   Future<bool> saveToGallery(String path, {required String name}) async =>
       false;
+
+  @override
+  Future<bool> share(String path, {required String text}) async => false;
 }

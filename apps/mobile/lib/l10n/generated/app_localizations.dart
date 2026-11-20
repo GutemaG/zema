@@ -1122,35 +1122,119 @@ abstract class AppLocalizations {
   /// **'Couldn\'t open sharing for this song'**
   String get songShareFailed;
 
-  /// Song menu, temporary: makes a 60 second lyrics video to time the encoder on this phone.
+  /// Song menu: make a short video of the song with its lyrics.
   ///
   /// In en, this message translates to:
-  /// **'Test clip video (60 s)'**
-  String get songTestClip;
+  /// **'Share clip'**
+  String get songShareClip;
 
-  /// Snackbar while the test clip is made.
+  /// Title of the screen that makes a lyrics video.
   ///
   /// In en, this message translates to:
-  /// **'Making a test clip… {percent}%'**
-  String songTestClipMaking(int percent);
+  /// **'Share clip'**
+  String get clipTitle;
 
-  /// Snackbar when the test clip is done and saved.
+  /// Screen reader label of the clip preview picture.
   ///
   /// In en, this message translates to:
-  /// **'Made in {seconds} s at {width}×{height}. Saved to Movies/Zema.'**
-  String songTestClipDone(String seconds, int width, int height);
+  /// **'Preview of the video'**
+  String get clipPreview;
 
-  /// Snackbar when the test clip was made but not saved.
+  /// Plays the chosen part of the song in the clip editor.
   ///
   /// In en, this message translates to:
-  /// **'Made in {seconds} s at {width}×{height}, but it couldn\'t be saved to the gallery.'**
-  String songTestClipNotSaved(String seconds, int width, int height);
+  /// **'Play the clip'**
+  String get clipPlay;
 
-  /// Snackbar when the test clip failed.
+  /// Stops playing the chosen part in the clip editor.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t make the test clip'**
-  String get songTestClipFailed;
+  /// **'Stop'**
+  String get clipStop;
+
+  /// Clip editor: moves the clip start to the previous lyric line.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a line earlier'**
+  String get clipStartEarlier;
+
+  /// Clip editor: moves the clip start to the next lyric line.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a line later'**
+  String get clipStartLater;
+
+  /// Clip editor: moves the clip end to the previous lyric line.
+  ///
+  /// In en, this message translates to:
+  /// **'End a line earlier'**
+  String get clipEndEarlier;
+
+  /// Clip editor: moves the clip end to the next lyric line.
+  ///
+  /// In en, this message translates to:
+  /// **'End a line later'**
+  String get clipEndLater;
+
+  /// The part of the song in the clip, and its length.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} – {end} · {seconds} s'**
+  String clipRange(String start, String end, int seconds);
+
+  /// Button that makes the lyrics video.
+  ///
+  /// In en, this message translates to:
+  /// **'Make video'**
+  String get clipMake;
+
+  /// Progress while the video is made.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the video… {percent}%'**
+  String clipMaking(int percent);
+
+  /// Shown when making the video failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t make the video. Try again.'**
+  String get clipFailed;
+
+  /// Button that opens the share menu with the video.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get clipShare;
+
+  /// Snackbar when the share menu couldn't open.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open sharing'**
+  String get clipShareFailed;
+
+  /// Button that saves the video to the gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get clipSave;
+
+  /// Snackbar when the video was saved to the gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to Movies/Zema'**
+  String get clipSaved;
+
+  /// Snackbar when saving the video failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the video'**
+  String get clipSaveFailed;
+
+  /// Note under the clip buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'Some apps mute or remove videos with copyrighted music.'**
+  String get clipCopyright;
 
   /// Title when there are no favorite songs.
   ///

@@ -26,9 +26,12 @@ import java.nio.FloatBuffer
 import java.util.concurrent.CancellationException
 
 /**
- * Makes a portrait MP4 (H.264 + AAC) from part of an audio file and a few
- * pictures, each shown from its time until the next one's, cross-fading over
- * [Request.transitionUs] centred on that time.
+ * Makes a portrait MP4 (H.264 + AAC) from part of an audio file, a still
+ * background and a few lyric layers (transparent pictures). Each layer shows
+ * from its time until the next one's; on a change the old layer scrolls up by
+ * the new one's [Frame.scroll] while the new one slides in from below and
+ * fades over it, eased over [Request.transitionUs] centred on that time.
+ * Layers fade out towards the edges of [Request.windowTop]..[Request.windowBottom].
  *
  * The audio from [Request.startUs] to [Request.endUs] is decoded, faded in
  * and out, and encoded to AAC first, in memory; then the pictures are drawn
@@ -43,16 +46,21 @@ class ClipEncoder(
     private val cancelled: () -> Boolean,
     private val progress: (Double) -> Unit,
 ) {
-    class Frame(val path: String, val atUs: Long)
+    /** A lyric layer from [atUs]; [scroll] is how far, as a part of the height, its content sits above the previous layer's. */
+    class Frame(val path: String, val atUs: Long, val scroll: Float = 0f)
 
     class Request(
         val audio: Uri?,
         val startUs: Long,
         val endUs: Long,
+        val background: String,
         val frames: List<Frame>,
         val out: File,
         val fps: Int,
         val transitionUs: Long,
+        val windowTop: Float = 0f,
+        val windowBottom: Float = 1f,
+        val windowFade: Float = 0f,
     ) {
         val durationUs: Long get() = endUs - startUs
     }
@@ -301,7 +309,8 @@ class ClipEncoder(
         try {
             surface = codec.createInputSurface()
             codec.start()
-            gl = Gl(surface, width, height)
+            gl = Gl(surface, width, height, floatArrayOf(request.windowTop, request.windowBottom, request.windowFade))
+            gl.loadBackground(request.background)
             muxer = MediaMuxer(request.out.absolutePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
             val mux = muxer
             var videoTrack = -1
@@ -358,12 +367,14 @@ class ClipEncoder(
                     fadeStartUs = if (shown < 0) Long.MIN_VALUE else request.frames[frame].atUs - half
                     shown = frame
                 }
-                val mix = if (request.transitionUs <= 0 || fadeStartUs == Long.MIN_VALUE) {
+                val linear = if (request.transitionUs <= 0 || fadeStartUs == Long.MIN_VALUE) {
                     1f
                 } else {
                     ((tUs - fadeStartUs).toFloat() / request.transitionUs).coerceIn(0f, 1f)
                 }
-                gl.draw(tUs * 1000, mix)
+                val mix = linear * linear * (3 - 2 * linear)
+                val scroll = request.frames[shown].scroll
+                gl.draw(tUs * 1000, mix, mix * scroll, -(1 - mix) * scroll)
                 drain(false)
                 if (n % request.fps == 0) progress(AUDIO_SHARE + (1 - AUDIO_SHARE) * n / count)
             }
@@ -392,15 +403,21 @@ class ClipEncoder(
     }
 
     /**
-     * Draws the current picture full-frame onto the encoder's surface with
-     * EGL, blended over the previous one while they cross-fade.
+     * Draws the background and the lyric layers onto the encoder's surface
+     * with EGL: the previous layer blended into the current one while they
+     * change, each shifted by its scroll and faded at the window's edges.
      */
-    private class Gl(surface: Surface, private val width: Int, private val height: Int) {
+    private class Gl(
+        surface: Surface,
+        private val width: Int,
+        private val height: Int,
+        private val band: FloatArray,
+    ) {
         private val display: EGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
         private val context: EGLContext
         private val window: EGLSurface
         private val program: Int
-        private val textures = IntArray(2)
+        private val textures = IntArray(3)
         private var current = 0
         private val quad: FloatBuffer = ByteBuffer.allocateDirect(QUAD.size * 4)
             .order(ByteOrder.nativeOrder()).asFloatBuffer().apply { put(QUAD).position(0) }
@@ -425,13 +442,23 @@ class ClipEncoder(
             window = EGL14.eglCreateWindowSurface(display, configs[0], surface, intArrayOf(EGL14.EGL_NONE), 0)
             check(EGL14.eglMakeCurrent(display, window, window, context)) { "EGL makeCurrent failed" }
             program = link(VERTEX, FRAGMENT)
-            GLES20.glGenTextures(2, textures, 0)
+            GLES20.glGenTextures(3, textures, 0)
             for (texture in textures) {
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture)
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+            }
+        }
+
+        fun loadBackground(path: String) {
+            val bitmap = BitmapFactory.decodeFile(path) ?: throw IllegalArgumentException("Bad background $path")
+            try {
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[2])
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
+            } finally {
+                bitmap.recycle()
             }
         }
 
@@ -454,8 +481,11 @@ class ClipEncoder(
             }
         }
 
-        /** Draws the previous picture blended into the current one by [mix] (1: current only). */
-        fun draw(ptsNs: Long, mix: Float) {
+        /**
+         * Draws the previous layer blended into the current one by [mix] (1: current
+         * only), shifted up by [fromShift] and [toShift] parts of the height.
+         */
+        fun draw(ptsNs: Long, mix: Float, fromShift: Float, toShift: Float) {
             GLES20.glViewport(0, 0, width, height)
             GLES20.glClearColor(0f, 0f, 0f, 1f)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -474,14 +504,23 @@ class ClipEncoder(
             GLES20.glActiveTexture(GLES20.GL_TEXTURE1)
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[current])
             GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "uTo"), 1)
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE2)
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[2])
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "uBack"), 2)
             GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uMix"), mix)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uFromShift"), fromShift)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uToShift"), toShift)
+            GLES20.glUniform3f(
+                GLES20.glGetUniformLocation(program, "uWindow"),
+                band[0], band[1], band[2],
+            )
             GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
             EGLExt.eglPresentationTimeANDROID(display, window, ptsNs)
             check(EGL14.eglSwapBuffers(display, window)) { "EGL swap failed" }
         }
 
         fun release() {
-            GLES20.glDeleteTextures(2, textures, 0)
+            GLES20.glDeleteTextures(3, textures, 0)
             GLES20.glDeleteProgram(program)
             EGL14.eglMakeCurrent(display, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT)
             EGL14.eglDestroySurface(display, window)
@@ -530,13 +569,27 @@ class ClipEncoder(
             """
 
             private const val FRAGMENT = """
-                precision mediump float;
+                precision highp float;
                 varying vec2 vCoord;
+                uniform sampler2D uBack;
                 uniform sampler2D uFrom;
                 uniform sampler2D uTo;
                 uniform float uMix;
+                uniform float uFromShift;
+                uniform float uToShift;
+                uniform vec3 uWindow;
+                vec4 layer(sampler2D s, float shift) {
+                    vec2 c = vec2(vCoord.x, vCoord.y + shift);
+                    if (c.y < 0.0 || c.y > 1.0) return vec4(0.0);
+                    return texture2D(s, c);
+                }
                 void main() {
-                    gl_FragColor = mix(texture2D(uFrom, vCoord), texture2D(uTo, vCoord), uMix);
+                    vec4 back = texture2D(uBack, vCoord);
+                    vec4 lyrics = mix(layer(uFrom, uFromShift), layer(uTo, uToShift), uMix);
+                    float fade = max(uWindow.z, 0.0001);
+                    lyrics *= smoothstep(uWindow.x, uWindow.x + fade, vCoord.y)
+                        * (1.0 - smoothstep(uWindow.y - fade, uWindow.y, vCoord.y));
+                    gl_FragColor = vec4(lyrics.rgb + back.rgb * (1.0 - lyrics.a), 1.0);
                 }
             """
         }

@@ -613,25 +613,66 @@ class AppLocalizationsTi extends AppLocalizations {
   String get songShareFailed => 'Couldn\'t open sharing for this song';
 
   @override
-  String get songTestClip => 'Test clip video (60 s)';
+  String get songShareClip => 'Share clip';
 
   @override
-  String songTestClipMaking(int percent) {
-    return 'Making a test clip… $percent%';
+  String get clipTitle => 'Share clip';
+
+  @override
+  String get clipPreview => 'Preview of the video';
+
+  @override
+  String get clipPlay => 'Play the clip';
+
+  @override
+  String get clipStop => 'Stop';
+
+  @override
+  String get clipStartEarlier => 'Start a line earlier';
+
+  @override
+  String get clipStartLater => 'Start a line later';
+
+  @override
+  String get clipEndEarlier => 'End a line earlier';
+
+  @override
+  String get clipEndLater => 'End a line later';
+
+  @override
+  String clipRange(String start, String end, int seconds) {
+    return '$start – $end · $seconds s';
   }
 
   @override
-  String songTestClipDone(String seconds, int width, int height) {
-    return 'Made in $seconds s at $width×$height. Saved to Movies/Zema.';
+  String get clipMake => 'Make video';
+
+  @override
+  String clipMaking(int percent) {
+    return 'Making the video… $percent%';
   }
 
   @override
-  String songTestClipNotSaved(String seconds, int width, int height) {
-    return 'Made in $seconds s at $width×$height, but it couldn\'t be saved to the gallery.';
-  }
+  String get clipFailed => 'Couldn\'t make the video. Try again.';
 
   @override
-  String get songTestClipFailed => 'Couldn\'t make the test clip';
+  String get clipShare => 'Share';
+
+  @override
+  String get clipShareFailed => 'Couldn\'t open sharing';
+
+  @override
+  String get clipSave => 'Save';
+
+  @override
+  String get clipSaved => 'Saved to Movies/Zema';
+
+  @override
+  String get clipSaveFailed => 'Couldn\'t save the video';
+
+  @override
+  String get clipCopyright =>
+      'Some apps mute or remove videos with copyrighted music.';
 
   @override
   String get favoritesEmptyTitle => 'No favorites yet';
