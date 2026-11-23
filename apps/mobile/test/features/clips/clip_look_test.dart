@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zema/features/clips/application/clip_look.dart';
+import 'package:zema/features/clips/data/clip_encoder.dart';
 import 'package:zema/features/clips/application/clip_timeline.dart';
 
 const _s = Duration(seconds: 1);
@@ -106,7 +107,7 @@ void main() {
         expect((background.width, background.height), (1080, 1920));
         background.dispose();
         final preview = await _decode(
-          await paintClipPreview(scene, layout, 1, scale: 0.5),
+          await paintClipBackground(scene, scale: 0.5),
         );
         expect((preview.width, preview.height), (540, 960));
         preview.dispose();
@@ -141,6 +142,8 @@ void main() {
         title: 'Edited',
         artistPicture: '/a.jpg',
         mark: false,
+        style: ClipLyricsStyle.line,
+        animation: ClipLineAnimation.zoom,
       ).save(prefs);
       final back = ClipLook.fromPrefs(prefs);
       expect(back.background, ClipBackground.song);
@@ -153,6 +156,7 @@ void main() {
       expect(back.title, isNull);
       expect(back.artistPicture, isNull);
       expect(back.mark, isFalse);
+      expect(back.motion, ClipMotion.zoom);
     });
 
     test('bad saved choices fall back to the defaults', () async {
@@ -206,6 +210,52 @@ void main() {
       expect(plain.translits[1], isNull);
       expect(shown.translits[1], 'fikir');
       expect(shown.heights[1], greaterThan(plain.heights[1]));
+    });
+  });
+
+  test('one line at a time moves by its animation; scrolling scrolls', () {
+    const look = ClipLook();
+    expect(look.motion, ClipMotion.scroll);
+    expect(look.copyWith(style: ClipLyricsStyle.line).motion, ClipMotion.rise);
+  });
+
+  test('every motion ends with only the new line, in place', () {
+    for (final motion in ClipMotion.values) {
+      final (old, next) = clipMoves(motion, 1, scroll: 0.1);
+      expect(old.alpha, 0, reason: '$motion');
+      expect(next, (alpha: 1.0, shift: 0.0, scale: 1.0), reason: '$motion');
+      final (start, _) = clipMoves(motion, 0, scroll: 0.1);
+      expect(start, (alpha: 1.0, shift: 0.0, scale: 1.0), reason: '$motion');
+    }
+  });
+
+  testWidgets('one line at a time paints only the sung line', (tester) async {
+    await tester.runAsync(() async {
+      Future<int> inkRows(ClipLook look) async {
+        final layout = ClipLyricsLayout(const [
+          'ባይተዋር አረገኝ',
+          'ባዶ ቤት ታቅፌ',
+          'ፍቅር',
+        ], look: look);
+        final image = await _decode(await paintClipLyrics(layout, 1));
+        final data = (await image.toByteData())!;
+        var rows = 0;
+        for (var y = 0; y < image.height; y++) {
+          for (var x = 0; x < image.width; x += 8) {
+            if (data.getUint8((y * image.width + x) * 4 + 3) > 40) {
+              rows++;
+              break;
+            }
+          }
+        }
+        image.dispose();
+        return rows;
+      }
+
+      final scroll = await inkRows(const ClipLook());
+      final line = await inkRows(const ClipLook(style: ClipLyricsStyle.line));
+      expect(line, greaterThan(0));
+      expect(line, lessThan(scroll / 2));
     });
   });
 

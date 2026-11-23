@@ -79,6 +79,33 @@ final clipLyricsProvider = FutureProvider.autoDispose.family<ClipLyrics, int>((
 
 enum ClipPhase { ready, making, done, failed }
 
+/// The editor's preview: the background and the lyric layer, as half-size
+/// PNGs, and the layer [from] which the lyrics move by [motion] (none: they
+/// just show). [serial] changes with every new preview.
+class ClipPreview {
+  const ClipPreview({
+    required this.background,
+    required this.lyrics,
+    required this.serial,
+    this.from,
+    this.scroll = 0,
+    this.motion = ClipMotion.scroll,
+    this.focus = 0.5,
+  });
+
+  final Uint8List background;
+  final Uint8List lyrics;
+  final int serial;
+  final Uint8List? from;
+
+  /// How far [lyrics]' content sits below [from]'s, as a part of the height.
+  final double scroll;
+  final ClipMotion motion;
+
+  /// Where the sung line sits, as a part of the height.
+  final double focus;
+}
+
 class ClipState {
   const ClipState({
     this.track,
@@ -99,8 +126,8 @@ class ClipState {
   final Duration end;
   final ClipLook look;
 
-  /// The frame at [start], or at the playing line while [playing], as PNG.
-  final Uint8List? preview;
+  /// The frame at [start], or at the playing line while [playing].
+  final ClipPreview? preview;
 
   /// Whether the selection is playing in the editor.
   final bool playing;
@@ -123,7 +150,7 @@ class ClipState {
     Duration? start,
     Duration? end,
     ClipLook? look,
-    Uint8List? preview,
+    ClipPreview? preview,
     bool? playing,
     List<int>? picked,
     bool? withoutSong,
@@ -173,6 +200,10 @@ class ClipController extends Notifier<ClipState> {
   (int, int)? _wanted;
   final _retired = <ClipScene>[];
   var _painting = false;
+  Uint8List? _back;
+  var _backFor = -1;
+  Uint8List? _shownLyrics;
+  int? _demoFrom;
   var _playingAt = Duration.zero;
 
   @override
@@ -275,15 +306,18 @@ class ClipController extends Notifier<ClipState> {
   /// Changes the look; the preview follows.
   Future<void> setLook(ClipLook look) async {
     if (state.track == null || state.phase == ClipPhase.making) return;
+    final moved =
+        look.motion != state.look.motion ||
+        look.position != state.look.position;
     state = state.copyWith(look: look, phase: ClipPhase.ready, clearClip: true);
-    await _applyLook();
+    await _applyLook(demo: moved && !state.playing);
   }
 
   /// A gallery photo for the look, or null if none was picked.
   Future<String?> pickPicture() => ref.read(clipPicturePickerProvider)();
 
   /// Rebuilds the scene and layout for the current look and repaints.
-  Future<void> _applyLook() async {
+  Future<void> _applyLook({bool demo = false}) async {
     final track = state.track;
     final lyrics = _lyrics;
     if (track == null || lyrics == null) return;
@@ -307,6 +341,7 @@ class ClipController extends Notifier<ClipState> {
             look: look,
           );
     final old = _scene;
+    _back = null;
     _scene = ClipScene(
       title: look.title ?? track.title,
       artist: look.artist ?? track.artist,
@@ -320,7 +355,13 @@ class ClipController extends Notifier<ClipState> {
     if (old != null) {
       _painting ? _retired.add(old) : old.dispose();
     }
-    _showRowAt(state.playing ? _playingAt : state.start);
+    _showRowAt(state.playing ? _playingAt : state.start, demo: demo);
+  }
+
+  /// Shows the look's line change once in the preview.
+  void replayMotion() {
+    if (state.phase == ClipPhase.making || state.playing) return;
+    _showRowAt(state.start, demo: true);
   }
 
   /// A picked photo, decoded once per path.
@@ -358,9 +399,16 @@ class ClipController extends Notifier<ClipState> {
   }
 
   /// Repaints the preview for the line at [t], skipping rows passed while
-  /// painting.
-  void _showRowAt(Duration t) {
-    final wanted = (_rowAt(t), _look);
+  /// painting. With [demo], it moves there from the line before (the first
+  /// line from the start's dots) to show the look's motion.
+  void _showRowAt(Duration t, {bool demo = false}) {
+    var row = _rowAt(t);
+    if (demo && timed) {
+      if (row == 0) row = 1;
+      _demoFrom = row - 1;
+      _shown = null;
+    }
+    final wanted = (row, _look);
     if (wanted == _shown && state.preview != null) return;
     _wanted = wanted;
     if (!_painting) unawaited(_paintPreview());
@@ -374,15 +422,42 @@ class ClipController extends Notifier<ClipState> {
         final layout = _layout;
         if (scene == null || layout == null) return;
         final wanted = _wanted!;
-        final preview = await paintClipPreview(
-          scene,
-          layout,
-          wanted.$1,
-          scale: 0.5,
-        );
+        final shown = _shown;
+        final demo = _demoFrom;
+        _demoFrom = null;
+        if (_back == null || _backFor != wanted.$2) {
+          _back = await paintClipBackground(scene, scale: 0.5);
+          _backFor = wanted.$2;
+        }
+        final background = _back!;
+        final lyrics = await paintClipLyrics(layout, wanted.$1, scale: 0.5);
+        Uint8List? from;
+        var scroll = 0.0;
+        if (demo != null) {
+          from = await paintClipLyrics(layout, demo, scale: 0.5);
+          scroll = layout.scroll(demo, wanted.$1);
+        } else if (state.playing &&
+            shown != null &&
+            shown.$2 == wanted.$2 &&
+            shown.$1 >= 0 &&
+            wanted.$1 >= 0) {
+          from = _shownLyrics;
+          scroll = layout.scroll(shown.$1, wanted.$1);
+        }
         if (!ref.mounted) return;
         _shown = wanted;
-        state = state.copyWith(preview: preview);
+        _shownLyrics = lyrics;
+        state = state.copyWith(
+          preview: ClipPreview(
+            background: background,
+            lyrics: lyrics,
+            serial: (state.preview?.serial ?? 0) + 1,
+            from: from,
+            scroll: scroll,
+            motion: layout.look.motion,
+            focus: layout.look.position.focus,
+          ),
+        );
       }
     } finally {
       _painting = false;
@@ -545,6 +620,9 @@ class ClipController extends Notifier<ClipState> {
               background: background.path,
               frames: frames,
               window: clipWindow,
+              motion: layout.look.motion,
+              center: layout.look.position.focus,
+              transition: clipTransition(layout.look.motion),
               outPath: p.join(folder.path, 'zema-clip.mp4'),
             ),
           );

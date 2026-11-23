@@ -10,6 +10,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/format_duration.dart';
 import '../application/clip_controller.dart';
 import '../application/clip_look.dart';
+import 'clip_preview.dart';
 
 /// Share clip: pick the part of the song (handles snap to lines, Play to
 /// hear it with the preview following) and its look, then Make video,
@@ -81,10 +82,10 @@ class _Body extends ConsumerWidget {
                               Semantics(
                                 image: true,
                                 label: l10n.clipPreview,
-                                child: Image.memory(
-                                  preview,
-                                  fit: BoxFit.cover,
-                                  gaplessPlayback: true,
+                                onTapHint: l10n.clipReplayMotion,
+                                child: GestureDetector(
+                                  onTap: controller.replayMotion,
+                                  child: ClipPreviewView(preview: preview),
                                 ),
                               ),
                               if (!making)
@@ -426,6 +427,48 @@ class _LookTab extends ConsumerWidget {
       key: const PageStorageKey('clip-look'),
       padding: const EdgeInsets.symmetric(horizontal: ZemaSpacing.screenSide),
       children: [
+        if (controller.timed) ...[
+          heading(l10n.clipLyricsStyle),
+          SegmentedButton<ClipLyricsStyle>(
+            showSelectedIcon: false,
+            segments: [
+              ButtonSegment(
+                value: ClipLyricsStyle.scroll,
+                label: Text(l10n.clipStyleScroll),
+              ),
+              ButtonSegment(
+                value: ClipLyricsStyle.line,
+                label: Text(l10n.clipStyleLine),
+              ),
+            ],
+            selected: {look.style},
+            onSelectionChanged: enabled
+                ? (s) => set(look.copyWith(style: s.single))
+                : null,
+          ),
+          if (look.style == ClipLyricsStyle.line) ...[
+            heading(l10n.clipAnimation),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                for (final (kind, label) in [
+                  (ClipLineAnimation.rise, l10n.clipAnimationRise),
+                  (ClipLineAnimation.fade, l10n.clipAnimationFade),
+                  (ClipLineAnimation.zoom, l10n.clipAnimationZoom),
+                  (ClipLineAnimation.outIn, l10n.clipAnimationOutIn),
+                ])
+                  ChoiceChip(
+                    label: Text(label),
+                    selected: look.animation == kind,
+                    onSelected: enabled
+                        ? (_) => set(look.copyWith(animation: kind))
+                        : null,
+                  ),
+              ],
+            ),
+          ],
+        ],
         heading(l10n.clipBackground),
         Wrap(
           spacing: 8,

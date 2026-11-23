@@ -132,49 +132,80 @@ class ClipLyricsLayout {
 }
 
 /// A transparent layer with [row] bright at the focus and the rows around it
-/// dimmed (or, for [ClipLyricsLayout.page], all rows bright), as PNG.
-Future<Uint8List> paintClipLyrics(ClipLyricsLayout layout, int row) async {
-  final recorder = ui.PictureRecorder();
-  _drawLyrics(Canvas(recorder), layout, row);
-  return _png(await _toImage(recorder));
-}
-
-/// The whole frame with [row] at the focus, as the video shows it, as PNG
-/// at [scale] of its size.
-Future<Uint8List> paintClipPreview(
-  ClipScene scene,
+/// dimmed, or only [row] for [ClipLyricsStyle.line] (or, for
+/// [ClipLyricsLayout.page], all rows bright), as PNG at [scale] of its size.
+Future<Uint8List> paintClipLyrics(
   ClipLyricsLayout layout,
   int row, {
   double scale = 1,
 }) async {
-  const size = clipFrameSize;
-  final area = Offset.zero & size;
   final recorder = ui.PictureRecorder();
-  final canvas = Canvas(recorder)
+  _drawLyrics(Canvas(recorder)..scale(scale), layout, row);
+  return _png(await _toImage(recorder, scale: scale));
+}
+
+/// The scene's background, header and mark as PNG at [scale] of its size.
+Future<Uint8List> paintClipBackground(
+  ClipScene scene, {
+  double scale = 1,
+}) async {
+  final recorder = ui.PictureRecorder();
+  Canvas(recorder)
     ..scale(scale)
     ..drawImage(
       await scene._image(),
       Offset.zero,
       Paint()..filterQuality = FilterQuality.medium,
-    )
-    ..saveLayer(area, Paint());
-  _drawLyrics(canvas, layout, row);
-  const w = clipWindow;
-  final clear = _colors.bg.withValues(alpha: 0);
-  canvas
-    ..drawRect(
-      area,
-      Paint()
-        ..blendMode = BlendMode.dstIn
-        ..shader = ui.Gradient.linear(
-          Offset.zero,
-          Offset(0, size.height),
-          [clear, clear, _colors.bg, _colors.bg, clear, clear],
-          [0, w.top, w.top + w.fade, w.bottom - w.fade, w.bottom, 1],
-        ),
-    )
-    ..restore();
+    );
   return _png(await _toImage(recorder, scale: scale));
+}
+
+/// How long one line takes to give way to the next.
+Duration clipTransition(ClipMotion motion) => motion == ClipMotion.outIn
+    ? const Duration(milliseconds: 600)
+    : const Duration(milliseconds: 450);
+
+/// One lyric layer's place in a change: its [alpha], how far it is moved up
+/// as a part of the height, and its [scale] around the sung line.
+typedef ClipLayerMove = ({double alpha, double shift, double scale});
+
+/// The old and new layers' moves at [linear] (0 to 1) through a change by
+/// [motion]; [scroll] is how far the new layer's content sits below the
+/// old's. The encoder draws the same moves.
+(ClipLayerMove, ClipLayerMove) clipMoves(
+  ClipMotion motion,
+  double linear, {
+  double scroll = 0,
+}) {
+  double ease(double x) => x * x * (3 - 2 * x);
+  const rise = 0.04;
+  final m = ease(linear.clamp(0, 1));
+  return switch (motion) {
+    ClipMotion.scroll => (
+      (alpha: 1 - m, shift: m * scroll, scale: 1),
+      (alpha: m, shift: -(1 - m) * scroll, scale: 1),
+    ),
+    ClipMotion.fade => (
+      (alpha: 1 - m, shift: 0, scale: 1),
+      (alpha: m, shift: 0, scale: 1),
+    ),
+    ClipMotion.rise => (
+      (alpha: 1 - m, shift: m * rise, scale: 1),
+      (alpha: m, shift: -(1 - m) * rise, scale: 1),
+    ),
+    ClipMotion.zoom => (
+      (alpha: 1 - m, shift: 0, scale: 1 + 0.12 * m),
+      (alpha: m, shift: 0, scale: 0.85 + 0.15 * m),
+    ),
+    ClipMotion.outIn => () {
+      final out = ease((2 * linear).clamp(0, 1));
+      final back = ease((2 * linear - 1).clamp(0, 1));
+      return (
+        (alpha: 1 - out, shift: out * rise / 2, scale: 1.0),
+        (alpha: back, shift: -(1 - back) * rise / 2, scale: 1.0),
+      );
+    }(),
+  };
 }
 
 Future<ui.Image> _toImage(
@@ -581,7 +612,9 @@ void _drawLyrics(Canvas canvas, ClipLyricsLayout layout, int row) {
       ? size.height * layout.look.position.focus -
             (layout.centers.last + layout.heights.last / 2) / 2
       : size.height * layout.look.position.focus - layout.centers[row];
+  final alone = !page && layout.look.style == ClipLyricsStyle.line;
   for (var k = 0; k < layout.rows.length; k++) {
+    if (alone && k != row) continue;
     final top = layout.centers[k] - layout.heights[k] / 2 + offset;
     if (top > size.height) break;
     if (top + layout.heights[k] < 0) continue;

@@ -132,6 +132,7 @@ void main() {
       expect(args['transitionMs'], 450);
       expect(args['background'], 'bg.png');
       expect(args['window'], {'top': 0, 'bottom': 1, 'fade': 0});
+      expect((args['motion'], args['center']), ('scroll', 0.5));
       expect(args['frames'], [
         {'path': 'a.png', 'atMs': 0, 'scroll': 0},
         {'path': 'b.png', 'atMs': 2500, 'scroll': 0.1},

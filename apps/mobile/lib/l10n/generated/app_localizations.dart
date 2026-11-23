@@ -1212,6 +1212,60 @@ abstract class AppLocalizations {
   /// **'Look'**
   String get clipTabLook;
 
+  /// Clip preview: tap hint that replays how one lyric line gives way to the next.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the line change again'**
+  String get clipReplayMotion;
+
+  /// Clip look: heading for how the lyrics move.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics'**
+  String get clipLyricsStyle;
+
+  /// Clip look: all lines stacked, scrolling up as each is sung.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrolling'**
+  String get clipStyleScroll;
+
+  /// Clip look: only the sung line shows, replaced by the next.
+  ///
+  /// In en, this message translates to:
+  /// **'One line'**
+  String get clipStyleLine;
+
+  /// Clip look: heading for how one line gives way to the next.
+  ///
+  /// In en, this message translates to:
+  /// **'Animation'**
+  String get clipAnimation;
+
+  /// Clip animation: the line rises out as the next rises in.
+  ///
+  /// In en, this message translates to:
+  /// **'Rise'**
+  String get clipAnimationRise;
+
+  /// Clip animation: a cross fade between lines.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade'**
+  String get clipAnimationFade;
+
+  /// Clip animation: the line grows away as the next grows in.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom'**
+  String get clipAnimationZoom;
+
+  /// Clip animation: the line fades out, then the next fades in.
+  ///
+  /// In en, this message translates to:
+  /// **'Out, then in'**
+  String get clipAnimationOutIn;
+
   /// Clip look: heading for the background choices.
   ///
   /// In en, this message translates to:

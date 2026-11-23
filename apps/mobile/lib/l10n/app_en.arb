@@ -886,6 +886,42 @@
   "@clipTabLook": {
     "description": "Clip editor tab: choosing how the video looks."
   },
+  "clipReplayMotion": "Show the line change again",
+  "@clipReplayMotion": {
+    "description": "Clip preview: tap hint that replays how one lyric line gives way to the next."
+  },
+  "clipLyricsStyle": "Lyrics",
+  "@clipLyricsStyle": {
+    "description": "Clip look: heading for how the lyrics move."
+  },
+  "clipStyleScroll": "Scrolling",
+  "@clipStyleScroll": {
+    "description": "Clip look: all lines stacked, scrolling up as each is sung."
+  },
+  "clipStyleLine": "One line",
+  "@clipStyleLine": {
+    "description": "Clip look: only the sung line shows, replaced by the next."
+  },
+  "clipAnimation": "Animation",
+  "@clipAnimation": {
+    "description": "Clip look: heading for how one line gives way to the next."
+  },
+  "clipAnimationRise": "Rise",
+  "@clipAnimationRise": {
+    "description": "Clip animation: the line rises out as the next rises in."
+  },
+  "clipAnimationFade": "Fade",
+  "@clipAnimationFade": {
+    "description": "Clip animation: a cross fade between lines."
+  },
+  "clipAnimationZoom": "Zoom",
+  "@clipAnimationZoom": {
+    "description": "Clip animation: the line grows away as the next grows in."
+  },
+  "clipAnimationOutIn": "Out, then in",
+  "@clipAnimationOutIn": {
+    "description": "Clip animation: the line fades out, then the next fades in."
+  },
   "clipBackground": "Background",
   "@clipBackground": {
     "description": "Clip look: heading for the background choices."

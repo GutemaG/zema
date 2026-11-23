@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/theme/clip_colors.dart';
+import '../data/clip_encoder.dart';
 
 /// What fills a clip's background.
 enum ClipBackground {
@@ -17,6 +18,27 @@ enum ClipBackground {
 
   /// One of [clipPlainColors].
   color,
+}
+
+/// How the lyrics move through a clip.
+enum ClipLyricsStyle {
+  /// The lines stacked, scrolling up as each is sung.
+  scroll,
+
+  /// Only the sung line, replaced by the next with a [ClipLineAnimation].
+  line,
+}
+
+/// How one line gives way to the next in [ClipLyricsStyle.line].
+enum ClipLineAnimation {
+  rise(ClipMotion.rise),
+  fade(ClipMotion.fade),
+  zoom(ClipMotion.zoom),
+  outIn(ClipMotion.outIn);
+
+  const ClipLineAnimation(this.motion);
+
+  final ClipMotion motion;
 }
 
 enum ClipTextSize {
@@ -63,6 +85,8 @@ class ClipLook {
     this.albumPicture,
     this.artistPicture,
     this.mark = true,
+    this.style = ClipLyricsStyle.scroll,
+    this.animation = ClipLineAnimation.rise,
   });
 
   final ClipBackground background;
@@ -101,6 +125,14 @@ class ClipLook {
 
   /// Whether the small Zema mark shows in the top corner.
   final bool mark;
+  final ClipLyricsStyle style;
+  final ClipLineAnimation animation;
+
+  /// How the video changes from one line to the next.
+  ClipMotion get motion => switch (style) {
+    ClipLyricsStyle.scroll => ClipMotion.scroll,
+    ClipLyricsStyle.line => animation.motion,
+  };
 
   static const maxDim = 0.8;
 
@@ -130,6 +162,8 @@ class ClipLook {
     Object? albumPicture = _keep,
     Object? artistPicture = _keep,
     bool? mark,
+    ClipLyricsStyle? style,
+    ClipLineAnimation? animation,
   }) => ClipLook(
     background: background ?? this.background,
     photo: photo == _keep ? this.photo : photo as String?,
@@ -152,6 +186,8 @@ class ClipLook {
         ? this.artistPicture
         : artistPicture as String?,
     mark: mark ?? this.mark,
+    style: style ?? this.style,
+    animation: animation ?? this.animation,
   );
 
   static const prefsKey = 'clipLook';
@@ -172,6 +208,8 @@ class ClipLook {
     'showArtist': showArtist,
     'showAlbum': showAlbum,
     'mark': mark,
+    'style': style.name,
+    'animation': animation.name,
   };
 
   /// The last kept choices, or the defaults for anything missing or bad.
@@ -209,6 +247,12 @@ class ClipLook {
         showArtist: j['showArtist'] != false,
         showAlbum: j['showAlbum'] == true,
         mark: j['mark'] != false,
+        style: pick(ClipLyricsStyle.values, j['style'], ClipLyricsStyle.scroll),
+        animation: pick(
+          ClipLineAnimation.values,
+          j['animation'],
+          ClipLineAnimation.rise,
+        ),
       );
     } on FormatException {
       return const ClipLook();

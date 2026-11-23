@@ -17,14 +17,34 @@ class ClipFrame {
   final double scroll;
 }
 
+/// How a new frame replaces the old one.
+enum ClipMotion {
+  /// The old frame scrolls up by the new one's [ClipFrame.scroll] as the new
+  /// one slides in.
+  scroll,
+
+  /// A cross fade.
+  fade,
+
+  /// The old frame rises out as the new one rises in from a little below.
+  rise,
+
+  /// The old frame grows away as the new one grows in.
+  zoom,
+
+  /// The old frame fades out, then the new one fades in.
+  outIn,
+}
+
 /// The band of the frame, as parts of its height, where lyrics show; they
 /// fade out over [fade] at both edges.
 typedef ClipWindow = ({double top, double bottom, double fade});
 
 /// What to make: [audioUri] from [start] to [end] (none: a silent clip), with
 /// [frames] in time order, the first at zero, drawn over [background],
-/// written to [outPath]. Each frame scrolls in over [transition], centred on
-/// its time.
+/// written to [outPath]. Each frame comes in by [motion] over [transition],
+/// centred on its time; [center] is the sung line's height, as a part of the
+/// frame's, that [ClipMotion.zoom] grows around.
 class ClipRequest {
   ClipRequest({
     required this.audioUri,
@@ -34,6 +54,8 @@ class ClipRequest {
     required this.frames,
     required this.outPath,
     this.window = (top: 0, bottom: 1, fade: 0),
+    this.motion = ClipMotion.scroll,
+    this.center = 0.5,
     this.fps = 30,
     this.transition = const Duration(milliseconds: 450),
   }) {
@@ -59,6 +81,8 @@ class ClipRequest {
   final String background;
   final List<ClipFrame> frames;
   final ClipWindow window;
+  final ClipMotion motion;
+  final double center;
   final String outPath;
   final int fps;
   final Duration transition;
@@ -169,6 +193,8 @@ class AndroidClipEncoder implements ClipEncoder {
             'bottom': request.window.bottom,
             'fade': request.window.fade,
           },
+          'motion': request.motion.name,
+          'center': request.center,
           'outPath': request.outPath,
           'fps': request.fps,
           'transitionMs': request.transition.inMilliseconds,

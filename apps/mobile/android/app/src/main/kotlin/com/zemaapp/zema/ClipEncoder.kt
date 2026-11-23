@@ -28,9 +28,9 @@ import java.util.concurrent.CancellationException
 /**
  * Makes a portrait MP4 (H.264 + AAC) from part of an audio file, a still
  * background and a few lyric layers (transparent pictures). Each layer shows
- * from its time until the next one's; on a change the old layer scrolls up by
- * the new one's [Frame.scroll] while the new one slides in from below and
- * fades over it, eased over [Request.transitionUs] centred on that time.
+ * from its time until the next one's; on a change the old layer gives way to
+ * the new one by [Request.motion], eased over [Request.transitionUs] centred
+ * on that time.
  * Layers fade out towards the edges of [Request.windowTop]..[Request.windowBottom].
  *
  * The audio from [Request.startUs] to [Request.endUs] is decoded, faded in
@@ -49,6 +49,24 @@ class ClipEncoder(
     /** A lyric layer from [atUs]; [scroll] is how far, as a part of the height, its content sits above the previous layer's. */
     class Frame(val path: String, val atUs: Long, val scroll: Float = 0f)
 
+    /** How a new layer replaces the old one. */
+    enum class Motion {
+        /** The old layer scrolls up by the new one's [Frame.scroll] while the new one slides in and fades over it. */
+        SCROLL,
+
+        /** A cross fade. */
+        FADE,
+
+        /** The old layer rises out as the new one rises in from a little below. */
+        RISE,
+
+        /** The old layer grows away as the new one grows in, around [Request.center]. */
+        ZOOM,
+
+        /** The old layer fades out, then the new one fades in. */
+        OUT_IN,
+    }
+
     class Request(
         val audio: Uri?,
         val startUs: Long,
@@ -61,6 +79,9 @@ class ClipEncoder(
         val windowTop: Float = 0f,
         val windowBottom: Float = 1f,
         val windowFade: Float = 0f,
+        val motion: Motion = Motion.SCROLL,
+        /** Where the sung line sits, as a part of the height: the centre of [Motion.ZOOM]. */
+        val center: Float = 0.5f,
     ) {
         val durationUs: Long get() = endUs - startUs
     }
@@ -309,7 +330,11 @@ class ClipEncoder(
         try {
             surface = codec.createInputSurface()
             codec.start()
-            gl = Gl(surface, width, height, floatArrayOf(request.windowTop, request.windowBottom, request.windowFade))
+            gl = Gl(
+                surface, width, height,
+                floatArrayOf(request.windowTop, request.windowBottom, request.windowFade),
+                request.center,
+            )
             gl.loadBackground(request.background)
             muxer = MediaMuxer(request.out.absolutePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
             val mux = muxer
@@ -372,9 +397,8 @@ class ClipEncoder(
                 } else {
                     ((tUs - fadeStartUs).toFloat() / request.transitionUs).coerceIn(0f, 1f)
                 }
-                val mix = linear * linear * (3 - 2 * linear)
-                val scroll = request.frames[shown].scroll
-                gl.draw(tUs * 1000, mix, mix * scroll, -(1 - mix) * scroll)
+                val (from, to) = moves(linear, request.frames[shown].scroll)
+                gl.draw(tUs * 1000, from, to)
                 drain(false)
                 if (n % request.fps == 0) progress(AUDIO_SHARE + (1 - AUDIO_SHARE) * n / count)
             }
@@ -389,6 +413,26 @@ class ClipEncoder(
             if (muxer != null) {
                 if (started) runCatching { muxer.stop() }
                 muxer.release()
+            }
+        }
+    }
+
+    /**
+     * The old and new layers' alpha, upward shift and scale at [linear]
+     * through a change, for [Request.motion].
+     */
+    private fun moves(linear: Float, scroll: Float): Pair<FloatArray, FloatArray> {
+        fun ease(x: Float) = x * x * (3 - 2 * x)
+        val m = ease(linear)
+        return when (request.motion) {
+            Motion.SCROLL -> floatArrayOf(1 - m, m * scroll, 1f) to floatArrayOf(m, -(1 - m) * scroll, 1f)
+            Motion.FADE -> floatArrayOf(1 - m, 0f, 1f) to floatArrayOf(m, 0f, 1f)
+            Motion.RISE -> floatArrayOf(1 - m, m * RISE, 1f) to floatArrayOf(m, -(1 - m) * RISE, 1f)
+            Motion.ZOOM -> floatArrayOf(1 - m, 0f, 1 + 0.12f * m) to floatArrayOf(m, 0f, 0.85f + 0.15f * m)
+            Motion.OUT_IN -> {
+                val out = ease((2 * linear).coerceAtMost(1f))
+                val back = ease((2 * linear - 1).coerceAtLeast(0f))
+                floatArrayOf(1 - out, out * RISE / 2, 1f) to floatArrayOf(back, -(1 - back) * RISE / 2, 1f)
             }
         }
     }
@@ -412,6 +456,7 @@ class ClipEncoder(
         private val width: Int,
         private val height: Int,
         private val band: FloatArray,
+        private val center: Float,
     ) {
         private val display: EGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
         private val context: EGLContext
@@ -482,10 +527,10 @@ class ClipEncoder(
         }
 
         /**
-         * Draws the previous layer blended into the current one by [mix] (1: current
-         * only), shifted up by [fromShift] and [toShift] parts of the height.
+         * Draws the previous layer by [from] and the current one by [to]: each
+         * its alpha, its upward shift as a part of the height, and its scale.
          */
-        fun draw(ptsNs: Long, mix: Float, fromShift: Float, toShift: Float) {
+        fun draw(ptsNs: Long, from: FloatArray, to: FloatArray) {
             GLES20.glViewport(0, 0, width, height)
             GLES20.glClearColor(0f, 0f, 0f, 1f)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -507,9 +552,9 @@ class ClipEncoder(
             GLES20.glActiveTexture(GLES20.GL_TEXTURE2)
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[2])
             GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "uBack"), 2)
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uMix"), mix)
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uFromShift"), fromShift)
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uToShift"), toShift)
+            GLES20.glUniform3f(GLES20.glGetUniformLocation(program, "uFromMove"), from[0], from[1], from[2])
+            GLES20.glUniform3f(GLES20.glGetUniformLocation(program, "uToMove"), to[0], to[1], to[2])
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uCenter"), center)
             GLES20.glUniform3f(
                 GLES20.glGetUniformLocation(program, "uWindow"),
                 band[0], band[1], band[2],
@@ -574,18 +619,20 @@ class ClipEncoder(
                 uniform sampler2D uBack;
                 uniform sampler2D uFrom;
                 uniform sampler2D uTo;
-                uniform float uMix;
-                uniform float uFromShift;
-                uniform float uToShift;
+                uniform vec3 uFromMove;
+                uniform vec3 uToMove;
+                uniform float uCenter;
                 uniform vec3 uWindow;
-                vec4 layer(sampler2D s, float shift) {
-                    vec2 c = vec2(vCoord.x, vCoord.y + shift);
-                    if (c.y < 0.0 || c.y > 1.0) return vec4(0.0);
-                    return texture2D(s, c);
+                vec4 layer(sampler2D s, vec3 move) {
+                    vec2 pivot = vec2(0.5, uCenter);
+                    vec2 c = (vCoord - pivot) / move.z + pivot;
+                    c.y += move.y;
+                    if (c.x < 0.0 || c.x > 1.0 || c.y < 0.0 || c.y > 1.0) return vec4(0.0);
+                    return texture2D(s, c) * move.x;
                 }
                 void main() {
                     vec4 back = texture2D(uBack, vCoord);
-                    vec4 lyrics = mix(layer(uFrom, uFromShift), layer(uTo, uToShift), uMix);
+                    vec4 lyrics = min(layer(uFrom, uFromMove) + layer(uTo, uToMove), vec4(1.0));
                     float fade = max(uWindow.z, 0.0001);
                     lyrics *= smoothstep(uWindow.x, uWindow.x + fade, vCoord.y)
                         * (1.0 - smoothstep(uWindow.y - fade, uWindow.y, vCoord.y));
@@ -606,5 +653,8 @@ class ClipEncoder(
         private const val AUDIO_SHARE = 0.15
 
         private const val STALL_NANOS = 10_000_000_000L
+
+        /** How far, as a part of the height, a line rises in and out. */
+        private const val RISE = 0.04f
     }
 }

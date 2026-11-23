@@ -661,6 +661,33 @@ class AppLocalizationsOm extends AppLocalizations {
   String get clipTabLook => 'Look';
 
   @override
+  String get clipReplayMotion => 'Show the line change again';
+
+  @override
+  String get clipLyricsStyle => 'Lyrics';
+
+  @override
+  String get clipStyleScroll => 'Scrolling';
+
+  @override
+  String get clipStyleLine => 'One line';
+
+  @override
+  String get clipAnimation => 'Animation';
+
+  @override
+  String get clipAnimationRise => 'Rise';
+
+  @override
+  String get clipAnimationFade => 'Fade';
+
+  @override
+  String get clipAnimationZoom => 'Zoom';
+
+  @override
+  String get clipAnimationOutIn => 'Out, then in';
+
+  @override
   String get clipBackground => 'Background';
 
   @override
