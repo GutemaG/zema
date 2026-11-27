@@ -123,8 +123,8 @@ Shorts, Snapchat, Instagram, WhatsApp, Telegram or any other app.
 **Intent-specific constraints**:
 - Android first. iOS (AVFoundation) is a later intent; the encoder sits behind a Dart
   interface so iOS can plug in.
-- Only local library files: the catalog has no audio, so a track must be linked to its
-  song to share synced lyrics.
+- Only local library files: the catalog has no audio, so a track needs lyrics of its own
+  to share: linked to a catalog song, waiting for review, or saved on this phone only.
 - No FFmpeg: `ffmpeg_kit_flutter` was retired in 2025, and native encoding adds no app
   size or licence questions.
 - Sharing uses the system share menu; app-specific SDKs (TikTok Share Kit, Snapchat

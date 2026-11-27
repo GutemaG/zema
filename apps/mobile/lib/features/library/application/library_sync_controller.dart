@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:zema_core/zema_core.dart';
@@ -37,7 +38,9 @@ final librarySyncProvider =
     );
 
 /// Runs library scans: automatically once access is granted (at app start
-/// or when the user allows it), and on demand. Only one scan runs at a time.
+/// or when the user allows it), each time the app comes back to the
+/// foreground (files may have been added, changed or removed meanwhile),
+/// and on demand. Only one scan runs at a time.
 class LibrarySyncController extends Notifier<LibrarySyncState> {
   Future<void>? _running;
 
@@ -50,6 +53,14 @@ class LibrarySyncController extends Notifier<LibrarySyncState> {
         scheduleMicrotask(() => unawaited(sync()));
       }
     }, fireImmediately: true);
+    final lifecycle = AppLifecycleListener(
+      onResume: () {
+        if (ref.read(libraryAccessProvider).value == LibraryAccess.granted) {
+          unawaited(sync());
+        }
+      },
+    );
+    ref.onDispose(lifecycle.dispose);
     return const LibrarySyncState();
   }
 

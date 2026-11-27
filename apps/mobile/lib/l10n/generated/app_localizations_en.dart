@@ -734,6 +734,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clipTextCenter => 'Centre';
 
   @override
+  String get clipDragToMove =>
+      'Or drag the lyrics on the preview to place them anywhere';
+
+  @override
   String get clipTextBottom => 'Bottom';
 
   @override

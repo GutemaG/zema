@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -163,6 +164,37 @@ void main() {
 
       expect(container.read(librarySyncProvider).hasFailed, isFalse);
       expect(container.read(librarySyncProvider).failure, isNull);
+    });
+
+    test('scans again when the app comes back to the foreground', () async {
+      final scanner = FakeLibraryScanner([scannedAudio(1, '/m/a.mp3')]);
+      final container = await _container(
+        scanner: scanner,
+        permissions: FakeAudioPermissionService(),
+      );
+      container.listen(librarySyncProvider, (_, _) {});
+      await pumpEventQueue();
+
+      scanner.files = [
+        scannedAudio(1, '/m/a.mp3'),
+        scannedAudio(2, '/m/b.mp3'),
+      ];
+      for (final state in [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]) {
+        TestWidgetsFlutterBinding.instance.handleAppLifecycleStateChanged(
+          state,
+        );
+      }
+      await pumpEventQueue();
+
+      expect(scanner.scans, 2);
+      expect(await _tracks(container), hasLength(2));
     });
   });
 }

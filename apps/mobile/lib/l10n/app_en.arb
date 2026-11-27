@@ -988,6 +988,10 @@
   "@clipTextCenter": {
     "description": "Clip text position."
   },
+  "clipDragToMove": "Or drag the lyrics on the preview to place them anywhere",
+  "@clipDragToMove": {
+    "description": "Hint under the lyrics position buttons on the clip screen: the lyrics can be dragged on the preview."
+  },
   "clipTextBottom": "Bottom",
   "@clipTextBottom": {
     "description": "Clip text position."

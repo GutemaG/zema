@@ -90,6 +90,7 @@ class ClipPreview {
     this.from,
     this.scroll = 0,
     this.motion = ClipMotion.scroll,
+    this.x = 0.5,
     this.focus = 0.5,
   });
 
@@ -102,7 +103,8 @@ class ClipPreview {
   final double scroll;
   final ClipMotion motion;
 
-  /// Where the sung line sits, as a part of the height.
+  /// Where the sung line sits, as a part of the width and of the height.
+  final double x;
   final double focus;
 }
 
@@ -455,6 +457,7 @@ class ClipController extends Notifier<ClipState> {
             from: from,
             scroll: scroll,
             motion: layout.look.motion,
+            x: layout.look.position.x,
             focus: layout.look.position.focus,
           ),
         );
@@ -621,6 +624,7 @@ class ClipController extends Notifier<ClipState> {
               frames: frames,
               window: clipWindow,
               motion: layout.look.motion,
+              centerX: layout.look.position.x,
               center: layout.look.position.focus,
               transition: clipTransition(layout.look.motion),
               outPath: p.join(folder.path, 'zema-clip.mp4'),

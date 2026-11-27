@@ -1350,6 +1350,12 @@ abstract class AppLocalizations {
   /// **'Centre'**
   String get clipTextCenter;
 
+  /// Hint under the lyrics position buttons on the clip screen: the lyrics can be dragged on the preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Or drag the lyrics on the preview to place them anywhere'**
+  String get clipDragToMove;
+
   /// Clip text position.
   ///
   /// In en, this message translates to:

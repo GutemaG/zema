@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show immutable;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/theme/clip_colors.dart';
@@ -51,15 +53,58 @@ enum ClipTextSize {
   final double scale;
 }
 
-enum ClipTextPosition {
-  top(0.32),
-  center(0.42),
-  bottom(0.56);
+/// Where the sung line sits on the frame: [x] across and [focus] down, each
+/// as a part of the frame, kept inside the area the lyrics can use. Lines
+/// wrap narrower the further they are from the middle, so they stay on the
+/// frame.
+@immutable
+class ClipTextPosition {
+  const ClipTextPosition._(this.x, this.focus);
 
-  const ClipTextPosition(this.focus);
+  /// [x] and [focus] clamped to their ranges.
+  factory ClipTextPosition(double x, double focus) => ClipTextPosition._(
+    x.clamp(minX, maxX).toDouble(),
+    focus.clamp(minFocus, maxFocus).toDouble(),
+  );
 
-  /// Where the sung line sits, as a part of the height.
+  static const top = ClipTextPosition._(0.5, 0.32);
+  static const center = ClipTextPosition._(0.5, 0.42);
+  static const bottom = ClipTextPosition._(0.5, 0.56);
+  static const presets = [top, center, bottom];
+
+  static const minX = 0.3;
+  static const maxX = 0.7;
+  static const minFocus = 0.3;
+  static const maxFocus = 0.85;
+
+  final double x;
   final double focus;
+
+  /// This position moved by [dx] and [dy] parts of the frame.
+  ClipTextPosition moved(double dx, double dy) =>
+      ClipTextPosition(x + dx, focus + dy);
+
+  /// Read back from [toJson], or from the preset name kept before positions
+  /// were free; null when [j] is neither.
+  static ClipTextPosition? fromJson(Object? j) => switch (j) {
+    {'x': final num x, 'y': final num y} => ClipTextPosition(
+      x.toDouble(),
+      y.toDouble(),
+    ),
+    'top' => top,
+    'center' => center,
+    'bottom' => bottom,
+    _ => null,
+  };
+
+  Map<String, Object?> toJson() => {'x': x, 'y': focus};
+
+  @override
+  bool operator ==(Object other) =>
+      other is ClipTextPosition && other.x == x && other.focus == focus;
+
+  @override
+  int get hashCode => Object.hash(x, focus);
 }
 
 const _keep = Object();
@@ -202,7 +247,7 @@ class ClipLook {
     'dim': dim,
     'textSize': textSize.name,
     'textColor': textColor,
-    'position': position.name,
+    'position': position.toJson(),
     'transliteration': transliteration,
     'showTitle': showTitle,
     'showArtist': showArtist,
@@ -237,11 +282,8 @@ class ClipLook {
         dim: dim?.clamp(0, maxDim),
         textSize: pick(ClipTextSize.values, j['textSize'], ClipTextSize.medium),
         textColor: index(j['textColor'], clipTextColors.length),
-        position: pick(
-          ClipTextPosition.values,
-          j['position'],
-          ClipTextPosition.center,
-        ),
+        position:
+            ClipTextPosition.fromJson(j['position']) ?? ClipTextPosition.center,
         transliteration: j['transliteration'] == true,
         showTitle: j['showTitle'] != false,
         showArtist: j['showArtist'] != false,

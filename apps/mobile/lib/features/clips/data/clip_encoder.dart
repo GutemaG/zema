@@ -43,8 +43,9 @@ typedef ClipWindow = ({double top, double bottom, double fade});
 /// What to make: [audioUri] from [start] to [end] (none: a silent clip), with
 /// [frames] in time order, the first at zero, drawn over [background],
 /// written to [outPath]. Each frame comes in by [motion] over [transition],
-/// centred on its time; [center] is the sung line's height, as a part of the
-/// frame's, that [ClipMotion.zoom] grows around.
+/// centred on its time; [centerX] and [center] are where the sung line sits
+/// across and down, as parts of the frame, that [ClipMotion.zoom] grows
+/// around.
 class ClipRequest {
   ClipRequest({
     required this.audioUri,
@@ -55,6 +56,7 @@ class ClipRequest {
     required this.outPath,
     this.window = (top: 0, bottom: 1, fade: 0),
     this.motion = ClipMotion.scroll,
+    this.centerX = 0.5,
     this.center = 0.5,
     this.fps = 30,
     this.transition = const Duration(milliseconds: 450),
@@ -82,6 +84,7 @@ class ClipRequest {
   final List<ClipFrame> frames;
   final ClipWindow window;
   final ClipMotion motion;
+  final double centerX;
   final double center;
   final String outPath;
   final int fps;
@@ -194,6 +197,7 @@ class AndroidClipEncoder implements ClipEncoder {
             'fade': request.window.fade,
           },
           'motion': request.motion.name,
+          'centerX': request.centerX,
           'center': request.center,
           'outPath': request.outPath,
           'fps': request.fps,

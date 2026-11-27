@@ -85,7 +85,19 @@ class _Body extends ConsumerWidget {
                                 onTapHint: l10n.clipReplayMotion,
                                 child: GestureDetector(
                                   onTap: controller.replayMotion,
-                                  child: ClipPreviewView(preview: preview),
+                                  child: ClipPreviewView(
+                                    preview: preview,
+                                    onMoved: making
+                                        ? null
+                                        : (dx, dy) => unawaited(
+                                            controller.setLook(
+                                              clip.look.copyWith(
+                                                position: clip.look.position
+                                                    .moved(dx, dy),
+                                              ),
+                                            ),
+                                          ),
+                                  ),
                                 ),
                               ),
                               if (!making)
@@ -559,10 +571,24 @@ class _LookTab extends ConsumerWidget {
               label: Text(l10n.clipTextBottom),
             ),
           ],
-          selected: {look.position},
+          emptySelectionAllowed: true,
+          selected: {
+            if (ClipTextPosition.presets.contains(look.position)) look.position,
+          },
           onSelectionChanged: enabled
-              ? (v) => set(look.copyWith(position: v.single))
+              ? (v) {
+                  if (v.isNotEmpty) set(look.copyWith(position: v.single));
+                }
               : null,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            l10n.clipDragToMove,
+            style: textTheme.bodySmall?.copyWith(
+              color: context.zemaColors.muted,
+            ),
+          ),
         ),
         _Swatches(
           colors: clipTextColors,

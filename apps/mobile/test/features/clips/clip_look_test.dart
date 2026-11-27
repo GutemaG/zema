@@ -159,6 +159,27 @@ void main() {
       expect(back.motion, ClipMotion.zoom);
     });
 
+    test('keeps a dragged position, within its limits', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      await ClipLook(position: ClipTextPosition(0.35, 0.7)).save(prefs);
+      expect(ClipLook.fromPrefs(prefs).position, ClipTextPosition(0.35, 0.7));
+      expect(
+        ClipTextPosition.center.moved(-1, 1),
+        ClipTextPosition(ClipTextPosition.minX, ClipTextPosition.maxFocus),
+      );
+    });
+
+    test('reads the preset names kept before positions were free', () async {
+      SharedPreferences.setMockInitialValues({
+        ClipLook.prefsKey: '{"position": "bottom"}',
+      });
+      expect(
+        ClipLook.fromPrefs(await SharedPreferences.getInstance()).position,
+        ClipTextPosition.bottom,
+      );
+    });
+
     test('bad saved choices fall back to the defaults', () async {
       SharedPreferences.setMockInitialValues({
         ClipLook.prefsKey: '{"textColor": 99, "dim": "x", "background": 3}',
@@ -263,7 +284,10 @@ void main() {
     tester,
   ) async {
     await tester.runAsync(() async {
-      for (final position in ClipTextPosition.values) {
+      for (final position in [
+        ...ClipTextPosition.presets,
+        ClipTextPosition(0.5, 0.8),
+      ]) {
         final layout = ClipLyricsLayout(const [
           'ባይተዋር አረገኝ',
           'ባዶ ቤት ታቅፌ',
@@ -289,6 +313,33 @@ void main() {
         expect(middle, closeTo(position.focus, 0.03));
         image.dispose();
       }
+    });
+  });
+
+  testWidgets('lyrics moved to one side stay on the frame', (tester) async {
+    await tester.runAsync(() async {
+      final position = ClipTextPosition(ClipTextPosition.minX, 0.42);
+      final layout = ClipLyricsLayout(const [
+        'ባይተዋር አረገኝ ባዶ ቤት ታቅፌ ፍቅር',
+      ], look: ClipLook(position: position));
+      final image = await _decode(
+        await paintClipLyrics(layout, ClipLyricsLayout.page),
+      );
+      final data = (await image.toByteData())!;
+      int? left;
+      var right = 0;
+      for (var x = 0; x < image.width; x++) {
+        for (var y = 0; y < image.height; y += 4) {
+          if (data.getUint8((y * image.width + x) * 4 + 3) > 200) {
+            left ??= x;
+            right = x;
+            break;
+          }
+        }
+      }
+      expect(left, greaterThan(0));
+      expect((left! + right) / 2 / image.width, closeTo(position.x, 0.03));
+      image.dispose();
     });
   });
 }

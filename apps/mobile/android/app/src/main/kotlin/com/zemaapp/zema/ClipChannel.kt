@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Methods:
  * - `encode` {id, audioUri?, startMs, endMs, background, frames: [{path, atMs, scroll}],
  *   outPath, fps, transitionMs, window: {top, bottom, fade},
- *   motion (scroll, fade, rise, zoom, outIn), center}
+ *   motion (scroll, fade, rise, zoom, outIn), centerX, center}
  *   → {path, width, height, millis, codec}; see [ClipEncoder]. Errors:
  *   `cancelled`, `encode_failed`, `bad_args`
  * - `cancel` {id}: stops that encode; its file is deleted
@@ -152,6 +152,7 @@ class ClipChannel(private val context: Context, messenger: BinaryMessenger) :
                 "outIn" -> ClipEncoder.Motion.OUT_IN
                 else -> ClipEncoder.Motion.SCROLL
             },
+            centerX = (call.argument<Number>("centerX"))?.toFloat() ?: 0.5f,
             center = (call.argument<Number>("center"))?.toFloat() ?: 0.5f,
         )
         val stop = AtomicBoolean(false)

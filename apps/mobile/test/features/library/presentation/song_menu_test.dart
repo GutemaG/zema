@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zema/app/database/own_copies_dao.dart';
 import 'package:zema/app/database/zema_database.dart' show ZemaDatabase;
 import 'package:zema/app/routes.dart';
+import 'package:zema/features/clips/application/clip_controller.dart';
+import 'package:zema/features/clips/data/clip_encoder.dart';
 import 'package:zema/features/library/application/library_access_controller.dart';
 import 'package:zema/features/library/presentation/add_to_playlist_sheet.dart';
 import 'package:zema/features/library/presentation/album_screen.dart';
@@ -40,6 +44,7 @@ class _App {
 Future<_App> _pump(
   WidgetTester tester, {
   Brightness phoneBrightness = Brightness.dark,
+  List<Override> overrides = const [],
 }) async {
   useScreen(tester, size: const Size(360, 900));
   final app = _App(
@@ -56,6 +61,7 @@ Future<_App> _pump(
     audioHandler: app.handler,
     phoneBrightness: phoneBrightness,
     savedPrefs: {LibraryAccessController.explainedKey: true},
+    overrides: overrides,
   );
   return app;
 }
@@ -109,6 +115,48 @@ void main() {
       expect(find.text(_l10n.songUnlinkLyrics), findsNothing);
       expect(find.text(_l10n.songChangeLyrics), findsNothing);
       expect(find.textContaining('dit'), findsNothing);
+    });
+
+    testWidgets('Share clip shows for lyrics saved on this phone, not yet '
+        'approved', (tester) async {
+      final app = await _pump(
+        tester,
+        overrides: [
+          clipEncoderProvider.overrideWithValue(AndroidClipEncoder()),
+        ],
+      );
+      final tracks = (await tester.runAsync(app.db.libraryDao.allTracks))!;
+      await tester.runAsync(
+        () => app.db.ownCopiesDao.add(
+          OwnCopy(
+            contributionId: localCopyId(1),
+            kind: ContributionKind.newSong,
+            song: const Song(
+              id: '',
+              title: 'Amlak',
+              sections: [
+                LyricSection(
+                  id: 'v1',
+                  kind: SectionKind.verse,
+                  lines: [LyricLine('Line one')],
+                ),
+              ],
+              playOrder: ['v1'],
+            ),
+            trackId: tracks.firstWhere((t) => t.title == 'Amlak').id,
+            submittedAt: DateTime.utc(2026, 11, 27),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await _openMenu(tester, 'Amlak');
+      expect(find.text(_l10n.songShareClip), findsOneWidget);
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+
+      await _openMenu(tester, 'Kidus');
+      expect(find.text(_l10n.songShareClip), findsNothing);
     });
 
     testWidgets('Play next and Add to queue, with a snackbar', (tester) async {

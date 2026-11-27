@@ -601,8 +601,13 @@ TextPainter _rowPainter(
     textDirection: TextDirection.ltr,
     maxLines: note ? null : 6,
     ellipsis: note ? null : '…',
-  )..layout(maxWidth: clipFrameSize.width - 2 * _side);
+  )..layout(maxWidth: _lyricsWidth(layout.look.position));
 }
+
+/// How wide lyric rows wrap centred at [position]'s x: as wide as the
+/// frame allows on both sides.
+double _lyricsWidth(ClipTextPosition position) =>
+    2 * clipFrameSize.width * math.min(position.x, 1 - position.x) - 2 * _side;
 
 void _drawLyrics(Canvas canvas, ClipLyricsLayout layout, int row) {
   const size = clipFrameSize;
@@ -625,7 +630,10 @@ void _drawLyrics(Canvas canvas, ClipLyricsLayout layout, int row) {
       bright: page || k == row,
     );
     painter
-      ..paint(canvas, Offset((size.width - painter.width) / 2, top))
+      ..paint(
+        canvas,
+        Offset(size.width * layout.look.position.x - painter.width / 2, top),
+      )
       ..dispose();
   }
 }

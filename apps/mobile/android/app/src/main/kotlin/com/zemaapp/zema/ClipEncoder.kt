@@ -60,7 +60,7 @@ class ClipEncoder(
         /** The old layer rises out as the new one rises in from a little below. */
         RISE,
 
-        /** The old layer grows away as the new one grows in, around [Request.center]. */
+        /** The old layer grows away as the new one grows in, around [Request.centerX] and [Request.center]. */
         ZOOM,
 
         /** The old layer fades out, then the new one fades in. */
@@ -80,6 +80,8 @@ class ClipEncoder(
         val windowBottom: Float = 1f,
         val windowFade: Float = 0f,
         val motion: Motion = Motion.SCROLL,
+        /** Where the sung line sits, as a part of the width: the centre of [Motion.ZOOM] across. */
+        val centerX: Float = 0.5f,
         /** Where the sung line sits, as a part of the height: the centre of [Motion.ZOOM]. */
         val center: Float = 0.5f,
     ) {
@@ -333,6 +335,7 @@ class ClipEncoder(
             gl = Gl(
                 surface, width, height,
                 floatArrayOf(request.windowTop, request.windowBottom, request.windowFade),
+                request.centerX,
                 request.center,
             )
             gl.loadBackground(request.background)
@@ -456,6 +459,7 @@ class ClipEncoder(
         private val width: Int,
         private val height: Int,
         private val band: FloatArray,
+        private val centerX: Float,
         private val center: Float,
     ) {
         private val display: EGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
@@ -554,6 +558,7 @@ class ClipEncoder(
             GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "uBack"), 2)
             GLES20.glUniform3f(GLES20.glGetUniformLocation(program, "uFromMove"), from[0], from[1], from[2])
             GLES20.glUniform3f(GLES20.glGetUniformLocation(program, "uToMove"), to[0], to[1], to[2])
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uCenterX"), centerX)
             GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uCenter"), center)
             GLES20.glUniform3f(
                 GLES20.glGetUniformLocation(program, "uWindow"),
@@ -621,10 +626,11 @@ class ClipEncoder(
                 uniform sampler2D uTo;
                 uniform vec3 uFromMove;
                 uniform vec3 uToMove;
+                uniform float uCenterX;
                 uniform float uCenter;
                 uniform vec3 uWindow;
                 vec4 layer(sampler2D s, vec3 move) {
-                    vec2 pivot = vec2(0.5, uCenter);
+                    vec2 pivot = vec2(uCenterX, uCenter);
                     vec2 c = (vCoord - pivot) / move.z + pivot;
                     c.y += move.y;
                     if (c.x < 0.0 || c.x > 1.0 || c.y < 0.0 || c.y > 1.0) return vec4(0.0);

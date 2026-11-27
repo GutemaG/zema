@@ -11,6 +11,7 @@ import '../../../app/theme/zema_colors.dart';
 import '../../../app/theme/zema_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../clips/application/clip_controller.dart';
+import '../../contribute/application/own_copies.dart';
 import '../../detection/application/lyrics_overlay_sync.dart';
 import '../../detection/application/player_overlay.dart';
 import '../../lyrics/application/lyrics_links.dart';
@@ -97,6 +98,8 @@ class SongMenu extends ConsumerWidget {
     final lyrics = ref.read(lyricsLinksControllerProvider);
     final linkedSong = ref.watch(trackSongProvider(track.id)).value;
     final linked = linkedSong != null;
+    final hasLyrics =
+        linked || ref.watch(trackOwnCopyProvider(track.id)).value != null;
     final overlay = ref.read(lyricsOverlayProvider);
     final choices = ref.read(overlayChoicesProvider.notifier);
     final queue = ref.read(playerStateProvider).value;
@@ -196,7 +199,7 @@ class SongMenu extends ConsumerWidget {
                   ),
                 ),
               ),
-            if (linked && Platform.isAndroid)
+            if (hasLyrics && Platform.isAndroid)
               item(
                 Icons.picture_in_picture_alt_outlined,
                 l10n.songFloatLyrics,
@@ -218,7 +221,7 @@ class SongMenu extends ConsumerWidget {
                   notify(l10n.songFloatLyricsOn);
                 }),
               ),
-            if (linked && ref.watch(clipEncoderProvider).isSupported)
+            if (hasLyrics && ref.watch(clipEncoderProvider).isSupported)
               item(
                 Icons.movie_outlined,
                 l10n.songShareClip,
